@@ -1,5 +1,7 @@
 ﻿using CmsData.Codes;
 using CmsData.Finance;
+using Dapper;
+using MoreLinq;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -10,13 +12,11 @@ using System.Data.Linq.Mapping;
 using System.Data.SqlClient;
 using System.Diagnostics;
 using System.Linq;
-using MoreLinq;
 using System.Reflection;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
-using Dapper;
 using UtilityExtensions;
-using System.Text;
 
 namespace CmsData
 {
@@ -26,24 +26,7 @@ namespace CmsData
 
         private int nextTagId = 11;
 
-        public int NextTagId
-        {
-            get { return nextTagId++; }
-        }
-
-#if DEBUG2
-        class DebugTextWriter : System.IO.TextWriter {
-           public override void Write(char[] buffer, int index, int count) {
-               Debug.Write(new string(buffer, index, count));
-           }
-
-           public override void Write(string value) {
-               Debug.Write(value);
-           }
-
-           public override Encoding Encoding => Encoding.Default;
-        }
-#endif
+        public int NextTagId => nextTagId++;
 
         public static CMSDataContext Create(string host, bool asReadOnly = false)
         {
@@ -54,8 +37,8 @@ namespace CmsData
         private string _connectionString;
         internal string ConnectionString
         {
-            get { return _connectionString ?? Connection.ConnectionString; }
-            set { _connectionString = value; }
+            get => _connectionString ?? Connection.ConnectionString;
+            set => _connectionString = value;
         }
 
         public static CMSDataContext Create(string connStr, string host)
@@ -64,19 +47,14 @@ namespace CmsData
             {
                 ConnectionString = connStr,
                 Host = host,
-#if DEBUG2
-                Log = new DebugTextWriter()
-#endif
             };
         }
+
         partial void OnCreated()
         {
-#if DEBUG
-            CommandTimeout = 60;
-#else
             CommandTimeout = 1200;
-#endif
         }
+
         private string _LogFile;
         public string LogFile
         {
@@ -90,12 +68,12 @@ namespace CmsData
                 return _LogFile;
             }
         }
-        public override void SubmitChanges(System.Data.Linq.ConflictMode failureMode)
+        public override void SubmitChanges(ConflictMode failureMode)
         {
             if (ObjectTrackingEnabled == true)
             {
                 ChangeSet cs = GetChangeSet();
-                var typesToCheck = new Type[] { typeof(string), typeof(System.Data.Linq.Binary) };//, typeof(DateTime) };
+                var typesToCheck = new Type[] { typeof(string), typeof(Binary) };
                 var insertsUpdates = (
                     from i in cs.Inserts.Union(cs.Updates)
                     join m in Mapping.GetTables() on i.GetType() equals m.RowType.Type
@@ -152,7 +130,7 @@ namespace CmsData
             var cb = new SqlConnectionStringBuilder(cs.ConnectionString);
             cb.InitialCatalog = $"CMS_{host}";
             cb.PersistSecurityInfo = true;
-            return cb.ConnectionString;
+            return Util.ParseEnv(cb.ConnectionString);
         }
 
         public void ClearCache2()
@@ -205,22 +183,27 @@ namespace CmsData
                 throw new ArgumentException("Unknown type.");
             }
         }
+
         public Person LoadPersonById(int id)
         {
             return People.FirstOrDefault(p => p.PeopleId == id);
         }
+
         public Family LoadFamilyByPersonId(int id)
         {
             return Families.SingleOrDefault(ff => ff.People.Any(mm => mm.PeopleId == id));
         }
+
         public Organization LoadOrganizationById(int? id)
         {
             return Organizations.FirstOrDefault(o => o.OrganizationId == id);
         }
+
         public Contact LoadContactById(int? id)
         {
             return Contacts.FirstOrDefault(o => o.ContactId == id);
         }
+
         public OrgFilter OrgFilter(Guid? id)
         {
             var filter = OrgFilters.SingleOrDefault(vv => vv.QueryId == id);
@@ -231,6 +214,7 @@ namespace CmsData
 
             return filter;
         }
+
         public bool OrgIdOk(int? id)
         {
             var i = (from o in Organizations
@@ -238,6 +222,7 @@ namespace CmsData
                      select o.OrganizationId).SingleOrDefault();
             return i > 0;
         }
+
         public bool PeopleIdOk(int? id)
         {
             var i = (from o in People
@@ -245,23 +230,28 @@ namespace CmsData
                      select o.PeopleId).SingleOrDefault();
             return i > 0;
         }
+
         public Meeting LoadMeetingById(int? id)
         {
             return Meetings.SingleOrDefault(m => m.MeetingId == id);
         }
+
         public Organization LoadOrganizationByName(string name)
         {
             return Organizations.FirstOrDefault(o => o.OrganizationName == name);
         }
+
         public Organization LoadOrganizationByName(string name, int divid)
         {
             return Organizations.SingleOrDefault(o => o.OrganizationName == name && o.DivisionId == divid);
         }
+
         public string FetchExtra(int pid, string field)
         {
             return PeopleExtras.OrderByDescending(e => e.TransactionTime)
                 .First(e => e.Field == field && e.PeopleId == pid).StrValue;
         }
+
         public DateTime? FetchExtraDate(int pid, string field)
         {
             return PeopleExtras.OrderByDescending(e => e.TransactionTime)
@@ -273,6 +263,7 @@ namespace CmsData
             var qid = FetchLastQuery().Id;
             return PeopleQuery(qid);
         }
+
         public IQueryable<Person> PeopleQuery(Guid id)
         {
             if (id == null)
@@ -310,6 +301,7 @@ namespace CmsData
         {
             return PeopleQuery2(query.ToString());
         }
+
         public List<int> PeopleQueryIds(object query)
         {
             return PeopleQuery2(query).Select(ii => ii.PeopleId).ToList();
@@ -352,9 +344,6 @@ namespace CmsData
                 qB = MatchNothing();
             }
             var c = qB.ToClause();
-#if DEBUG2
-            var sql = c.ToSql();
-#endif
             var q = People.Where(c.Predicate(this));
             if (c.PlusParentsOf)
             {
@@ -372,12 +361,10 @@ namespace CmsData
 
             return q;
         }
+
         public IQueryable<Person> PeopleQueryCode(string code, bool fromDirectory = false)
         {
             var c = Condition.Parse(code);
-#if DEBUG2
-            var sql = c.ToSql();
-#endif
             if (fromDirectory)
             {
                 c.FromDirectory = true;
@@ -400,6 +387,7 @@ namespace CmsData
 
             return q;
         }
+
         public IQueryable<Person> PeopleQueryCondition(Condition c)
         {
             var q = People.Where(c.Predicate(this));
@@ -419,6 +407,7 @@ namespace CmsData
 
             return q;
         }
+
         public IQueryable<Person> PersonQueryParents(IQueryable<Person> q)
         {
             var q2 = PeopleUtils.GetParentsAndAdultsIds(q);
@@ -437,6 +426,7 @@ namespace CmsData
             SubmitChanges();
             return tag.People(this);
         }
+
         public IQueryable<Person> PersonQueryPlusParents(IQueryable<Person> q)
         {
             var tag1 = PopulateTemporaryTag(q.Select(pp => pp.PeopleId).Distinct());
@@ -458,6 +448,7 @@ namespace CmsData
             AddTag1ToTag2(tag1.Id, tag2.Id);
             return tag2.People(this);
         }
+
         public IQueryable<Person> PersonQueryFirstPersonSameEmail(IQueryable<Person> q)
         {
             var qq = from p in q
@@ -467,6 +458,7 @@ namespace CmsData
             var tag = PopulateTemporaryTag(qq.Distinct());
             return tag.People(this);
         }
+
         public IQueryable<Person> ReturnPrimaryAdults(IQueryable<Person> q)
         {
             var q2 = from p in q
@@ -479,17 +471,20 @@ namespace CmsData
             SubmitChanges();
             return tag.People(this);
         }
+
         public void TagAll(IQueryable<Person> list)
         {
             var tag = TagCurrent();
             TagAll(list, tag);
         }
+
         public void TagAll(IQueryable<Person> list, Tag tag)
         {
             var ft = PopulateTemporaryTag(list.Select(pp => pp.PeopleId));
             AddTag1ToTag2(ft.Id, tag.Id);
             SubmitChanges();
         }
+
         public void TagAll2(IQueryable<Person> list, Tag tag)
         {
             ExecuteCommand("delete TagPerson where Id = {0}", tag.Id);
@@ -514,6 +509,7 @@ namespace CmsData
             var a = plist.Select(pp => pp.Value).ToArray();
             ExecuteCommand(s, a);
         }
+
         public string GetWhereClause(IQueryable<Person> list)
         {
             var q2 = list.Select(pp => pp.PeopleId).Distinct();
@@ -572,6 +568,7 @@ This search uses multiple steps which cannot be duplicated in a single query.
 
             return s;
         }
+
         public void TagAll(IEnumerable<int> list, Tag tag)
         {
             foreach (var id in list)
@@ -581,6 +578,7 @@ This search uses multiple steps which cannot be duplicated in a single query.
 
             SubmitChanges();
         }
+
         public void UnTagAll(IQueryable<Person> list)
         {
             var person = list.FirstOrDefault();
@@ -608,6 +606,7 @@ This search uses multiple steps which cannot be duplicated in a single query.
                 ExecuteCommand(cmd);
             }
         }
+
         public void TagAll(List<int> list, Tag tag)
         {
             for (var i = 0; i < list.Count; i += maxints)
@@ -617,11 +616,13 @@ This search uses multiple steps which cannot be duplicated in a single query.
                 ExecuteCommand(cmd);
             }
         }
+
         public Tag PopulateSpecialTag(Guid QueryId, int TagTypeId)
         {
             var q = PeopleQuery(QueryId);
             return PopulateSpecialTag(q, TagTypeId);
         }
+
         public Tag PopulateSpecialTag(IQueryable<Person> q, int TagTypeId)
         {
             string name;
@@ -658,6 +659,7 @@ This search uses multiple steps which cannot be duplicated in a single query.
             ExecuteCommand(s, plist.Select(pp => pp.Value).ToArray());
             return tag;
         }
+
         public Tag NewTemporaryTag()
         {
             var tag = FetchOrCreateTag(Util.SessionId, Util.UserPeopleId ?? Util.UserId1, NextTagId);
@@ -665,6 +667,7 @@ This search uses multiple steps which cannot be duplicated in a single query.
             ExecuteCommand("delete TagPerson where Id = {0}", tag.Id);
             return tag;
         }
+
         public Tag PopulateTemporaryTag(IQueryable<int> q)
         {
             var tag = NewTemporaryTag();
@@ -690,6 +693,7 @@ This search uses multiple steps which cannot be duplicated in a single query.
             ExecuteCommand(s, args);
             return tag;
         }
+
         public Tag PopulateTempTag(IEnumerable<int> a)
         {
             var tag = NewTemporaryTag();
@@ -697,10 +701,12 @@ This search uses multiple steps which cannot be duplicated in a single query.
             PopulateTempTag(tag.Id, list);
             return tag;
         }
+
         public void ClearTag(Tag tag)
         {
             ExecuteCommand("delete TagPerson where Id = {0}", tag.Id);
         }
+
         public int PopulateSpecialTag(IQueryable<Person> q, string tagname, int tagTypeId)
         {
             var tag = FetchOrCreateTag(tagname, Util.UserPeopleId ?? Util.UserId1, tagTypeId);
@@ -710,16 +716,19 @@ This search uses multiple steps which cannot be duplicated in a single query.
             TagAll(q, tag);
             return tag.Id;
         }
+
         public void DePopulateSpecialTag(IQueryable<Person> q, int TagTypeId)
         {
             var tag = FetchOrCreateTag(Util.SessionId, Util.UserPeopleId ?? Util.UserId1, TagTypeId);
             TagPeople.DeleteAllOnSubmit(tag.PersonTags);
             SubmitChanges();
         }
+
         public Tag TagById(int id)
         {
             return Tags.SingleOrDefault(t => t.Id == id);
         }
+
         public Tag TagCurrent()
         {
             if (Util2.CurrentTag.StartsWith("QueryTag:"))
@@ -727,11 +736,15 @@ This search uses multiple steps which cannot be duplicated in a single query.
                 var tag = Tags.FirstOrDefault(t =>
                     t.Name == Util2.CurrentTagName && t.TypeId == DbUtil.TagTypeId_QueryTags);
                 if (tag != null)
+                {
                     return tag;
+                }
+
                 Util2.CurrentTag = "UnNamed";
             }
             return FetchOrCreateTag(Util2.CurrentTagName, Util2.CurrentTagOwnerId, DbUtil.TagTypeId_Personal);
         }
+
         public int NewPeopleManagerId
         {
             get
@@ -748,6 +761,7 @@ This search uses multiple steps which cannot be duplicated in a single query.
                 return q.First();
             }
         }
+
         public IEnumerable<Person> GetNewPeopleManagers()
         {
             var s = Setting("NewPeopleManagerIds", "");
@@ -852,13 +866,7 @@ This search uses multiple steps which cannot be duplicated in a single query.
             return _roleids;
         }
 
-        public Person CurrentUserPerson
-        {
-            get
-            {
-                return Users.Where(u => u.UserId == Util.UserId).Select(u => u.Person).SingleOrDefault();
-            }
-        }
+        public Person CurrentUserPerson => Users.Where(u => u.UserId == Util.UserId).Select(u => u.Person).SingleOrDefault();
         public Tag OrgLeadersOnlyTag2()
         {
             return FetchOrCreateTag(Util.SessionId, Util.UserPeopleId, DbUtil.TagTypeId_OrgLeadersOnly);
@@ -881,12 +889,14 @@ This search uses multiple steps which cannot be duplicated in a single query.
             }
             return tag;
         }
+
         public Tag FetchTag(string tagname, int? ownerId, int tagtypeid)
         {
             var tag = Tags.FirstOrDefault(t =>
                 t.Name == tagname && t.PeopleId == ownerId && t.TypeId == tagtypeid);
             return tag;
         }
+
         public int[] GetLeaderOrgIds(int? me)
         {
             var o1 = from o in Organizations
@@ -904,6 +914,7 @@ This search uses multiple steps which cannot be duplicated in a single query.
             var oids = o1.Union(o2).Union(o3).ToArray();
             return oids;
         }
+
         public int[] GetParentChildOrgIds(int? parent)
         {
             var o1 = from o in Organizations
@@ -921,6 +932,7 @@ This search uses multiple steps which cannot be duplicated in a single query.
             var oids = o1.Union(o2).Union(o3).ToArray();
             return oids;
         }
+
         public void SetOrgLeadersOnly()
         {
             var me = Util.UserPeopleId;
@@ -977,30 +989,35 @@ This search uses multiple steps which cannot be duplicated in a single query.
                 select p;
             TagAll(q, tag);
         }
+
         [Function(Name = "dbo.AddAbsents")]
         public int AddAbsents([Parameter(DbType = "Int")] int? meetid, [Parameter(DbType = "Int")] int? userid)
         {
             var result = ExecuteMethodCall(this, (MethodInfo)(MethodInfo.GetCurrentMethod()), meetid, userid);
             return (int)(result.ReturnValue);
         }
+
         [Function(Name = "dbo.UpdateAttendStr")]
         public int UpdateAttendStr([Parameter(DbType = "Int")] int? orgid, [Parameter(DbType = "Int")] int? pid)
         {
             var result = ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), orgid, pid);
             return ((int)(result.ReturnValue));
         }
+
         [Function(Name = "dbo.UpdatePastAttendStr")]
         public int UpdatePastAttendStr([Parameter(DbType = "Int")] int? orgid, [Parameter(DbType = "Int")] int? pid)
         {
             var result = ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), orgid, pid);
             return ((int)(result.ReturnValue));
         }
+
         public class TopGiver
         {
             public int PeopleId;
             public string Name;
             public decimal Amount;
         }
+
         public class AttendMeetingInfo1
         {
             public AttendMeetingInfo2 info;
@@ -1013,6 +1030,7 @@ This search uses multiple steps which cannot be duplicated in a single query.
             public Meeting BFCMeeting;
             public int path;
         }
+
         public class AttendMeetingInfo2
         {
             public int? AttendedElsewhere { get; set; }
@@ -1039,6 +1057,7 @@ This search uses multiple steps which cannot be duplicated in a single query.
             var result = ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), MeetingId, PeopleId);
             return (IMultipleResults)result.ReturnValue;
         }
+
         public AttendMeetingInfo1 AttendMeetingInfo0(int MeetingId, int PeopleId)
         {
             var r = AttendMeetingInfo(MeetingId, PeopleId);
@@ -1071,10 +1090,12 @@ This search uses multiple steps which cannot be duplicated in a single query.
             o.BFCMeeting = r.GetResult<Meeting>().FirstOrDefault();
             return o;
         }
+
         public class RecordAttendInfo
         {
             public string ret { get; set; }
         }
+
         [Function(Name = "dbo.RecordAttend")]
         [ResultType(typeof(RecordAttendInfo))]
         private IMultipleResults RecordAttend([Parameter(DbType = "Int")] int? meetingId, [Parameter(DbType = "Int")] int? peopleId, [Parameter(DbType = "Bit")] bool? present)
@@ -1161,6 +1182,7 @@ This search uses multiple steps which cannot be duplicated in a single query.
             }
             SubmitChanges();
         }
+
         public void SetUserPreference(int id, string pref, object value)
         {
             var u = Users.Single(uu => uu.UserId == id);
@@ -1188,126 +1210,147 @@ This search uses multiple steps which cannot be duplicated in a single query.
             var result = ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), tid, trandt, typeid, orgid, pid);
             return ((int)(result.ReturnValue));
         }
+
         [Function(Name = "dbo.FlagOddTransaction")]
         public int FlagOddTransaction([Parameter(DbType = "Int")] int? pid, [Parameter(DbType = "Int")] int? orgid)
         {
             var result = ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), pid, orgid);
             return ((int)(result.ReturnValue));
         }
+
         [Function(Name = "dbo.MergeCampuses")]
         public int MergeCampuses([Parameter(DbType = "Int")] int destCampus, [Parameter(DbType = "Int")] int oldCampus)
         {
             var result = ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), destCampus, oldCampus);
             return ((int)(result.ReturnValue));
         }
+
         [Function(Name = "dbo.PurgePerson")]
         public int PurgePerson([Parameter(DbType = "Int")] int? pid)
         {
             var result = ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), pid);
             return ((int)(result.ReturnValue));
         }
+
         [Function(Name = "dbo.PurgeOrganization")]
         public int PurgeOrganization([Parameter(DbType = "Int")] int? oid)
         {
             var result = ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), oid);
             return ((int)(result.ReturnValue));
         }
+
         [Function(Name = "dbo.UpdateMainFellowship")]
         public int UpdateMainFellowship([Parameter(DbType = "Int")] int? orgid)
         {
             var result = ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), orgid);
             return ((int)(result.ReturnValue));
         }
+
         [Function(Name = "dbo.UpdateMeetingCounters")]
         public int UpdateMeetingCounters([Parameter(DbType = "Int")] int? mid)
         {
             var result = ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), mid);
             return ((int)(result.ReturnValue));
         }
+
         [Function(Name = "dbo.DeletePeopleExtras")]
         public int DeletePeopleExtras([Parameter(DbType = "varchar(50)")] string field)
         {
             var result = ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), field);
             return ((int)(result.ReturnValue));
         }
+
         [Function(Name = "dbo.DeleteSpecialTags")]
         public int DeleteSpecialTags([Parameter(DbType = "Int")] int? pid)
         {
             var result = ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), pid);
             return ((int)(result.ReturnValue));
         }
+
         [Function(Name = "dbo.UpdateResCodes")]
         public int UpdateResCodes()
         {
             var result = ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())));
             return ((int)(result.ReturnValue));
         }
+
         [Function(Name = "dbo.PurgeAllPeopleInCampus")]
         public int PurgeAllPeopleInCampus([Parameter(DbType = "Int")] int? cid)
         {
             var result = ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), cid);
             return ((int)(result.ReturnValue));
         }
+
         [Function(Name = "dbo.PopulateComputedEnrollmentTransactions")]
         public int PopulateComputedEnrollmentTransactions([Parameter(DbType = "Int")] int? orgid)
         {
             var result = ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), orgid);
             return ((int)(result.ReturnValue));
         }
+
         [Function(Name = "dbo.RepairTransactions")]
         public int RepairTransactions([Parameter(DbType = "Int")] int? orgid)
         {
             var result = ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), orgid);
             return ((int)(result.ReturnValue));
         }
+
         [Function(Name = "dbo.RepairTransactionsOrgs")]
         public int RepairTransactionsOrgs([Parameter(DbType = "Int")] int? orgid)
         {
             var result = ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), orgid);
             return ((int)(result.ReturnValue));
         }
+
         [Function(Name = "dbo.UpdateSchoolGrade")]
         public int UpdateSchoolGrade([Parameter(DbType = "Int")] int? pid)
         {
             var result = ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), pid);
             return ((int)(result.ReturnValue));
         }
+
         [Function(Name = "dbo.UpdateLastActivity")]
         public int UpdateLastActivity([Parameter(DbType = "Int")] int? userid)
         {
             var result = ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), userid);
             return ((int)(result.ReturnValue));
         }
+
         [Function(Name = "dbo.PurgeUser")]
         public int PurgeUser([Parameter(DbType = "Int")] int? uid)
         {
             var result = ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), uid);
             return ((int)(result.ReturnValue));
         }
+
         [Function(Name = "dbo.DeleteQBTree")]
         public int DeleteQBTree([Parameter(DbType = "Int")] int? qid)
         {
             var result = ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), qid);
             return ((int)(result.ReturnValue));
         }
+
         [Function(Name = "dbo.SetMainDivision")]
         public int SetMainDivision([Parameter(DbType = "Int")] int? orgid, [Parameter(DbType = "Int")] int? divid)
         {
             var result = ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), orgid, divid);
             return ((int)(result.ReturnValue));
         }
+
         [Function(Name = "dbo.DeleteQueryBitTags")]
         public int DeleteQueryBitTags()
         {
             var result = ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())));
             return ((int)(result.ReturnValue));
         }
+
         [Function(Name = "dbo.CreateMeeting")]
         public int CreateMeeting([Parameter(DbType = "Int")] int oid, [Parameter(DbType = "DateTime")] DateTime? mdt)
         {
             var result = ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), oid, mdt);
             return ((int)(result.ReturnValue));
         }
+
         [Function(Name = "dbo.CreateZipCodesRange")]
         public int CreateZipCodesRange(
             [Parameter(DbType = "Int")] int startwith,
@@ -1317,6 +1360,7 @@ This search uses multiple steps which cannot be duplicated in a single query.
             var result = ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), startwith, endwith, marginalcode);
             return ((int)(result.ReturnValue));
         }
+
         [Function(Name = "dbo.DeleteZipCodesRange")]
         public int DeleteZipCodesRange(
             [Parameter(DbType = "Int")] int startwith,
@@ -1325,30 +1369,35 @@ This search uses multiple steps which cannot be duplicated in a single query.
             var result = ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), startwith, endwith);
             return ((int)(result.ReturnValue));
         }
+
         [Function(Name = "dbo.InsertDuplicate")]
         public int InsertDuplicate([Parameter(DbType = "Int")] int i1, [Parameter(DbType = "Int")] int i2)
         {
             var result = ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), i1, i2);
             return ((int)(result.ReturnValue));
         }
+
         [Function(Name = "dbo.NoEmailDupsInTag")]
         public int NoEmailDupsInTag([Parameter(DbType = "Int")] int tagid)
         {
             var result = ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), tagid);
             return ((int)(result.ReturnValue));
         }
+
         [Function(Name = "dbo.AttendUpdateN")]
         public int AttendUpdateN([Parameter(DbType = "Int")] int pid, [Parameter(DbType = "Int")] int max)
         {
             var result = ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), pid, max);
             return ((int)(result.ReturnValue));
         }
+
         [Function(Name = "dbo.TrackOpen")]
         public int TrackOpen([Parameter(DbType = "UniqueIdentifier")] Guid guid)
         {
             var result = ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), guid);
             return ((int)(result.ReturnValue));
         }
+
         [Function(Name = "dbo.TrackClick")]
         public int TrackClick([Parameter(DbType = "VarChar(50)")] string hash,
             [Parameter(DbType = "VarChar(2000)")] ref string link)
@@ -1357,54 +1406,63 @@ This search uses multiple steps which cannot be duplicated in a single query.
             link = ((string)(result.GetParameterValue(1)));
             return ((int)(result.ReturnValue));
         }
+
         [Function(Name = "dbo.SpamReporterRemove")]
         public int SpamReporterRemove([Parameter(DbType = "VARCHAR(100)")] string email)
         {
             var result = ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), email);
             return ((int)(result.ReturnValue));
         }
+
         [Function(Name = "dbo.DropOrgMember")]
         public int DropOrgMember([Parameter(DbType = "Int")] int oid, [Parameter(DbType = "Int")] int pid)
         {
             var result = ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), oid, pid);
             return ((int)(result.ReturnValue));
         }
+
         [Function(Name = "dbo.FastDrop")]
         public int FastDrop([Parameter(DbType = "Int")] int oid, [Parameter(DbType = "Int")] int pid, [Parameter(DbType = "DateTime")] DateTime dropdate, [Parameter(DbType = "NVARCHAR(150)")] string orgname)
         {
             var result = ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), oid, pid, dropdate, orgname);
             return ((int)(result.ReturnValue));
         }
+
         [Function(Name = "dbo.RemoveFromEnrollmentHistory")]
         public int RemoveFromEnrollmentHistory([Parameter(DbType = "Int")] int organizationid, [Parameter(DbType = "Int")] int peopleid)
         {
             var result = ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), organizationid, peopleid);
             return ((int)(result.ReturnValue));
         }
+
         [Function(Name = "dbo.DeleteEnrollmentTransaction")]
         public int DeleteEnrollmentTransaction([Parameter(DbType = "Int")] int id)
         {
             var result = ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), id);
             return ((int)(result.ReturnValue));
         }
+
         [Function(Name = "dbo.RepairEnrollmentTransaction")]
         public int RepairEnrollmentTransaction([Parameter(DbType = "Int")] int oid, [Parameter(DbType = "Int")] int pid)
         {
             var result = ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), oid, pid);
             return ((int)(result.ReturnValue));
         }
+
         [Function(Name = "dbo.PopulateTempTag")]
         public int PopulateTempTag([Parameter(DbType = "Int")] int id, [Parameter(DbType = "VARCHAR(MAX)")] string list)
         {
             var result = ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), id, list);
             return ((int)(result.ReturnValue));
         }
+
         [Function(Name = "dbo.AddTag1ToTag2")]
         public int AddTag1ToTag2([Parameter(DbType = "Int")] int t1, [Parameter(DbType = "Int")] int t2)
         {
             var result = ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), t1, t2);
             return ((int)(result.ReturnValue));
         }
+
         [Function(Name = "dbo.UpdateQuestion")]
         public int UpdateQuestion(
             [Parameter(DbType = "Int")] int? oid,
@@ -1415,16 +1473,19 @@ This search uses multiple steps which cannot be duplicated in a single query.
             var result = ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), oid, pid, n, answer);
             return ((int)(result.ReturnValue));
         }
+
         [Function(Name = "dbo.ArchiveContent")]
         public int ArchiveContent([Parameter(DbType = "Int")] int? id)
         {
             var result = ExecuteMethodCall(this, (MethodInfo)(MethodBase.GetCurrentMethod()), id);
             return (int)(result?.ReturnValue ?? 0);
         }
+
         public IQueryable<View.OrgPerson> OrgPeople(int? oid, string sgfilter)
         {
             return OrgPeople(oid, GroupSelectCode.Member, null, null, sgfilter, false, false, false);
         }
+
         public IQueryable<View.OrgPerson> OrgPeople(
              int? oid,
              string first,
@@ -1438,6 +1499,7 @@ This search uses multiple steps which cannot be duplicated in a single query.
                 Util2.CurrentTagName, Util2.CurrentTagOwnerId, filterchecked,
                 filtertag, null, Util.UserPeopleId);
         }
+
         public IQueryable<View.OrgPerson> OrgPeople(
              int? oid,
              string grouptype,
@@ -1453,6 +1515,7 @@ This search uses multiple steps which cannot be duplicated in a single query.
                 Util2.CurrentTagName, Util2.CurrentTagOwnerId, filterchecked,
                 filtertag, null, Util.UserPeopleId);
         }
+
         public OrganizationMember LoadOrgMember(int PeopleId, string OrgName, bool orgmustexist)
         {
             if (orgmustexist)
@@ -1465,6 +1528,7 @@ This search uses multiple steps which cannot be duplicated in a single query.
             }
             return OrganizationMember.Load(this, PeopleId, OrgName);
         }
+
         public IEnumerable<string[]> StatusFlags()
         {
             var q = from c in Queries
@@ -1480,6 +1544,7 @@ This search uses multiple steps which cannot be duplicated in a single query.
                      select new[] { a[0], a[1] };
             return q2;
         }
+
         public IEnumerable<string[]> QueryStatClauses()
         {
             var q = from c in Queries
@@ -1494,14 +1559,17 @@ This search uses multiple steps which cannot be duplicated in a single query.
                      select new[] { a[0], a[1] };
             return q2;
         }
+
         public Content ContentFromID(int id)
         {
             return Contents.SingleOrDefault(c => c.Id == id);
         }
+
         public Content Content(string name)
         {
             return Contents.FirstOrDefault(c => c.Name == name);
         }
+
         public string Content(string name, string defaultValue)
         {
             var content = Contents.FirstOrDefault(c => c.Name == name);
@@ -1512,6 +1580,7 @@ This search uses multiple steps which cannot be duplicated in a single query.
 
             return defaultValue;
         }
+
         public Content ContentOfTypeHtml(string name)
         {
             var content = (from c in Contents
@@ -1524,6 +1593,7 @@ This search uses multiple steps which cannot be duplicated in a single query.
                            select c).FirstOrDefault();
             return content;
         }
+
         public string ContentOfTypeSql(string name)
         {
             var content = (from c in Contents
@@ -1537,6 +1607,7 @@ This search uses multiple steps which cannot be duplicated in a single query.
 
             return content.Body;
         }
+
         public Content ContentOfTypeSavedDraft(string name)
         {
             var content = (from c in Contents
@@ -1546,6 +1617,7 @@ This search uses multiple steps which cannot be duplicated in a single query.
                            select c).FirstOrDefault();
             return content;
         }
+
         public string ContentOfTypePythonScript(string name)
         {
             var content = (from c in Contents
@@ -1559,6 +1631,7 @@ This search uses multiple steps which cannot be duplicated in a single query.
 
             return content.Body;
         }
+
         public string ContentOfTypeText(string name)
         {
             var content = (from c in Contents
@@ -1572,6 +1645,7 @@ This search uses multiple steps which cannot be duplicated in a single query.
 
             return content.Body;
         }
+
         public Content Content(string name, string defaultValue, int contentTypeId)
         {
             var c = Contents.FirstOrDefault(cc => cc.Name == name && cc.TypeID == contentTypeId);
@@ -1596,27 +1670,33 @@ This search uses multiple steps which cannot be duplicated in a single query.
             SubmitChanges();
             return c;
         }
+
         public Content Content(string name, int contentTypeId)
         {
             return Contents.FirstOrDefault(cc => cc.Name == name && cc.TypeID == contentTypeId);
         }
+
         public string Content2(string name, string defaultValue, int contentTypeId)
         {
             var c = Content(name, defaultValue, contentTypeId);
             return c.Body;
         }
+
         public string ContentHtml(string name, string defaultValue)
         {
             return Content2(name, defaultValue, ContentTypeCode.TypeHtml);
         }
+
         public string ContentText(string name, string defaultValue)
         {
             return Content2(name, defaultValue, ContentTypeCode.TypeText);
         }
+
         public string ContentSql(string name, string defaultValue)
         {
             return Content2(name, defaultValue, ContentTypeCode.TypeSqlScript);
         }
+
         public void WriteContentSql(string name, string sql, string keyword = null)
         {
             var c = Content(name, ContentTypeCode.TypeSqlScript);
@@ -1630,10 +1710,14 @@ This search uses multiple steps which cannot be duplicated in a single query.
                 Contents.InsertOnSubmit(c);
             }
             c.Body = sql;
-            if(keyword.HasValue())
-                c.SetKeyWords(this, new [] {keyword});
+            if (keyword.HasValue())
+            {
+                c.SetKeyWords(this, new[] { keyword });
+            }
+
             SubmitChanges();
         }
+
         public void WriteContentPython(string name, string script, string keyword = null)
         {
             var c = Content(name, ContentTypeCode.TypePythonScript);
@@ -1647,10 +1731,14 @@ This search uses multiple steps which cannot be duplicated in a single query.
                 Contents.InsertOnSubmit(c);
             }
             c.Body = script;
-            if(keyword.HasValue())
-                c.SetKeyWords(this, new [] {keyword});
+            if (keyword.HasValue())
+            {
+                c.SetKeyWords(this, new[] { keyword });
+            }
+
             SubmitChanges();
         }
+
         public void WriteContentText(string name, string text, string keyword = null)
         {
             var c = Content(name, ContentTypeCode.TypeText);
@@ -1663,11 +1751,15 @@ This search uses multiple steps which cannot be duplicated in a single query.
                 };
                 Contents.InsertOnSubmit(c);
             }
-            if(keyword.HasValue())
-                c.SetKeyWords(this, new [] {keyword});
+            if (keyword.HasValue())
+            {
+                c.SetKeyWords(this, new[] { keyword });
+            }
+
             c.Body = text;
             SubmitChanges();
         }
+
         public void WriteContentHtml(string name, string text, string keyword = null)
         {
             var c = Content(name, ContentTypeCode.TypeHtml);
@@ -1680,11 +1772,15 @@ This search uses multiple steps which cannot be duplicated in a single query.
                 };
                 Contents.InsertOnSubmit(c);
             }
-            if(keyword.HasValue())
-                c.SetKeyWords(this, new [] {keyword});
+            if (keyword.HasValue())
+            {
+                c.SetKeyWords(this, new[] { keyword });
+            }
+
             c.Body = text;
             SubmitChanges();
         }
+
         public void SetNoLock()
         {
             //ExecuteCommand("SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED");
@@ -1712,6 +1808,7 @@ This search uses multiple steps which cannot be duplicated in a single query.
             }
             return c.Id;
         }
+
         public int FetchOrCreatePositionId(string name)
         {
             if (!name.HasValue())
@@ -1729,6 +1826,7 @@ This search uses multiple steps which cannot be duplicated in a single query.
             }
             return familyPosition.Id;
         }
+
         public int FetchOrCreateRoleId(string name)
         {
             if (!name.HasValue())
@@ -1746,6 +1844,7 @@ This search uses multiple steps which cannot be duplicated in a single query.
             }
             return role.RoleId;
         }
+
         public int FetchOrCreateOrgTypeId(string name)
         {
             if (!name.HasValue())
@@ -1770,6 +1869,7 @@ This search uses multiple steps which cannot be duplicated in a single query.
         {
             return FetchOrCreateFund(0, Description);
         }
+
         public EntryPoint FetchOrCreateEntryPoint(string type)
         {
             var ep = EntryPoints.SingleOrDefault(pp => pp.Description == type);
@@ -1850,6 +1950,7 @@ This search uses multiple steps which cannot be duplicated in a single query.
             FromActiveRecords = false;
             return n;
         }
+
         public int ActiveRecords2()
         {
             const string name = "ActiveRecords2";
@@ -1870,6 +1971,7 @@ This search uses multiple steps which cannot be duplicated in a single query.
             FromActiveRecords = false;
             return n;
         }
+
         public int ActiveRecordsdt(DateTime dt)
         {
             Condition cc = ScratchPadCondition();
@@ -1888,6 +1990,7 @@ This search uses multiple steps which cannot be duplicated in a single query.
             FromActiveRecords = false;
             return n;
         }
+
         public int ActiveRecords2dt(DateTime dt)
         {
             Condition cc = ScratchPadCondition();
@@ -1946,15 +2049,18 @@ This search uses multiple steps which cannot be duplicated in a single query.
 
             return null;
         }
+
         public Registration.Settings CreateRegistrationSettings(int orgId)
         {
             var o = LoadOrganizationById(orgId);
             return Registration.Settings.CreateSettings(o.RegSettingXml, this, orgId);
         }
+
         public Registration.Settings CreateRegistrationSettings(string s, int orgId)
         {
             return Registration.Settings.CreateSettings(s, this, orgId);
         }
+
         public void UpdateStatusFlags()
         {
             var temptag = PopulateTempTag(new List<int>());
@@ -1970,7 +2076,7 @@ This search uses multiple steps which cannot be duplicated in a single query.
             ExecuteCommand("dbo.DeleteOldQueryBitTags");
         }
 
-        public void RetrieveBatchData()  // code has mostly been moved over from CmsWeb.Models.TransactionsModel.cs with some cleanup
+        public void RetrieveBatchData(string startdt = null, string enddt = null)  // code has mostly been moved over from CmsWeb.Models.TransactionsModel.cs with some cleanup
         {
             IGateway[] gateways = {
                 Gateway(false, null, PaymentProcessTypes.OneTimeGiving, false),
@@ -1978,13 +2084,16 @@ This search uses multiple steps which cannot be duplicated in a single query.
                 Gateway(false, null, PaymentProcessTypes.RecurringGiving, false)
             };
 
-            var today = DateTime.Now;
-            var start = today.AddDays(0 - Setting("AutoSyncBatchDatesWindow").ToInt());
+            DateTime? dateFrom = (startdt != null) ? (DateTime?)DateTime.Parse(startdt) : null;
+            DateTime? dateTo = (enddt != null) ? (DateTime?)DateTime.Parse(enddt) : null;
+
+            var rangeTo = dateTo ?? DateTime.Now;
+            var rangeFrom = dateFrom ?? rangeTo.AddDays(0 - Setting("AutoSyncBatchDatesWindow").ToInt());
 
             var transactions
                 = from t in ViewTransactionLists
-                join org in Organizations on t.OrgId equals org.OrganizationId
-                select t;
+                  join org in Organizations on t.OrgId equals org.OrganizationId
+                  select t;
 
             foreach (var gateway in gateways.Where(g => g.IsNotNull()).DistinctBy(g => g.Identifier))
             {
@@ -1996,16 +2105,16 @@ This search uses multiple steps which cannot be duplicated in a single query.
                 if (gateway.UseIdsForSettlementDates)
                 {
                     var tranids = (from t in transactions
-                        where t.TransactionDate >= start
-                        where t.TransactionDate <= today
-                        where t.Settled == null
-                        where t.Moneytran == true
-                        select t.TransactionId).ToList();
+                                   where t.TransactionDate >= rangeFrom
+                                   where t.TransactionDate <= rangeTo
+                                   where t.Settled == null
+                                   where t.Moneytran == true
+                                   select t.TransactionId).ToList();
                     gateway.CheckBatchSettlements(tranids);
                 }
                 else
                 {
-                    gateway.CheckBatchSettlements(start, today);
+                    gateway.CheckBatchSettlements(rangeFrom, rangeTo);
                 }
             }
         }
@@ -2024,6 +2133,7 @@ This search uses multiple steps which cannot be duplicated in a single query.
                 progid, divid, org, orgtype, days0, days, tagid);
             return ((int)(result.ReturnValue));
         }
+
         [Function(Name = "dbo.AddExtraValueData")]
         public int AddExtraValueData(
             [Parameter(DbType = "Int")] int? pid,
@@ -2038,6 +2148,7 @@ This search uses multiple steps which cannot be duplicated in a single query.
                 pid, field, strvalue, datevalue, text, intvalue, bitvalue);
             return (int)(result?.ReturnValue ?? 0);
         }
+
         [Function(Name = "dbo.TryIpWarmup")]
         public int TryIpWarmup()
         {
@@ -2074,6 +2185,7 @@ This search uses multiple steps which cannot be duplicated in a single query.
             c.Body += $"{Util.Now:M/d/yy HH:mm:ss tt} {data}\n";
             SubmitChanges();
         }
+
         [Function(Name = "dbo.InsertIpLog")]
         public int? InsertIpLog([Parameter(DbType = "varchar(50)")] string ip, [Parameter(DbType = "varchar(50)")] string id)
         {

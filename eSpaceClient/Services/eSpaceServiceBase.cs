@@ -4,6 +4,8 @@ using RestSharp.Authenticators;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Linq;
+using System.Net;
 
 namespace eSpace.Services
 {
@@ -21,13 +23,17 @@ namespace eSpace.Services
             }
             var response = restClient.Execute<eSpaceResponse<T>>(request);
             var data = response.Data;
-            if (data != null && data.IsSuccessStatusCode)
+            if (response.IsSuccessful && data != null && data.IsSuccessStatusCode)
             {
                 list = data.Data;
             }
             else
             {
-                throw new Exception(data.Message ?? "An unknown error occurred while processing the request");
+                if (new[] { HttpStatusCode.Unauthorized, HttpStatusCode.Forbidden }.Contains(response.StatusCode))
+                {
+                    throw new Exception($"Invalid eSPACE credentials or access denied ({response.StatusCode})");
+                }
+                throw new Exception(data?.Message ?? $"eSPACE returned an error: {response.StatusCode} {response.StatusDescription}");
             }
         }
 

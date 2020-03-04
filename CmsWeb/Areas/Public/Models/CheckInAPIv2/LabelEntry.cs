@@ -4,6 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Web.WebPages;
 using CmsData;
 using CmsWeb.Areas.Public.Models.CheckInAPIv2.Caching;
+using UtilityExtensions;
 
 namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
 {
@@ -21,10 +22,13 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
 		public string font;
 		public int fontSize;
 
+        public bool invert;
+        public int order;
+
 		public Point<decimal> start = new Point<decimal>();
 		public Point<int> align = new Point<int>();
 		public Point<decimal> end = new Point<decimal>();
-		public Point<int> size = new Point<int>();
+		public Point<decimal> size = new Point<decimal>();
 
 		public LabelEntry( AttendanceCacheSet cacheSet, LabelFormatEntry formatEntry, Attendance attendance, AttendanceGroup group = null, int index = 0 )
 		{
@@ -45,7 +49,27 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
 					data = formatEntry.fieldFormat;
 					break;
 
-				default:
+                case 6:
+                    // populate box data so that it is printed if data is present
+                    // later we remove box entries if they are behind a blank field by querying this data prop
+                    try
+                    {
+                        if (formatEntry.invert && formatEntry.fieldID != 0)
+                        {
+                            data = getField(cacheSet, (LabelField)formatEntry.fieldID, formatEntry.fieldFormat, attendance, group);
+                        }
+                        else
+                        {
+                            data = "print";
+                        }
+                    }
+                    catch (Exception)
+                    {
+                        data = "Format Exception";
+                    }
+
+                    break;
+                default:
 					data = "";
 					break;
 			}
@@ -64,6 +88,9 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
 
 			size.x = formatEntry.width;
 			size.y = formatEntry.height;
+
+            invert = formatEntry.invert;
+            order = formatEntry.order;
 		}
 
 		public string getField( AttendanceCacheSet cacheSet, LabelField field, string format, Attendance attendance, AttendanceGroup group )
@@ -121,7 +148,25 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
 
 					return string.Format( format, member, guest );
 
-				default:
+                case LabelField.PERSON_FULL_NAME:
+                    return string.Format(format, person.PreferredName, person.LastName);
+
+                case LabelField.PERSON_DOB:
+                    return string.Format(format, person.BirthDate);
+
+                case LabelField.PERSON_EMERGENCY_NAME:
+                    return string.Format(format, person.GetRecReg().Emcontact);
+
+                case LabelField.PERSON_EMERGENCY_PHONE:
+                    return string.Format(format, person.GetRecReg().Emphone.FmtFone());
+                    
+                case LabelField.PERSON_SCHOOL:
+                    return string.Format(format, person.SchoolOther);
+
+                case LabelField.PERSON_GRADE:
+                    return string.Format(format, person.Grade);
+
+                default:
 					return "";
 			}
 		}
@@ -201,6 +246,19 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
 
 				case LabelField.GROUP_SUBGROUPS:
 					return group.subgroupName;
+
+                case LabelField.GROUP_LOCATION_AND_SUBGROUP:
+                    org = cacheSet.getOrganization(group.groupID);
+                    List<string> groupItems = new List<string>();
+                    if (org != null && org.Location.HasValue())
+                    {
+                        groupItems.Add(org.Location);
+                    }
+                    if (group.subgroupName.HasValue())
+                    {
+                        groupItems.Add(group.subgroupName);
+                    }
+                    return string.Format( format, string.Join( " - ", groupItems) );
 
                 case LabelField.GROUP_NAME_AND_TIME:
                     org = cacheSet.getOrganization(group.groupID);

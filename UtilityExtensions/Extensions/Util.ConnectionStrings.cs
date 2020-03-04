@@ -1,6 +1,7 @@
-using System.Linq;
+using System;
 using System.Configuration;
 using System.Data.SqlClient;
+using System.Linq;
 
 namespace UtilityExtensions
 {
@@ -25,7 +26,7 @@ namespace UtilityExtensions
                 {
                     if (HttpContextFactory.Current?.Request != null)
                     {
-                        return HttpContextFactory.Current.Request.Url.Authority.SplitStr(".:")[0];
+                        return HttpContextFactory.Current.Request.Url.Authority.SplitStr(".:").First();
                     }
                 }
                 catch
@@ -34,10 +35,7 @@ namespace UtilityExtensions
                 return null;
             }
 
-            set
-            {
-                _host = value;
-            }
+            set => _host = value;
         }
         public static string DbServer
         {
@@ -57,43 +55,38 @@ namespace UtilityExtensions
             get
             {
                 if (IsDebug())
+                {
                     return false;
+                }
+
                 return ConfigurationManager.AppSettings["INSERT_X-FORWARDED-PROTO"] == "true";
             }
         }
 
-        public static string GetConnectionString(string host)
+        public static string ParseEnv(string value)
         {
-            var cs = ConnectionStringSettings(host) ?? ConfigurationManager.ConnectionStrings["CMS"];
-            var cb = new SqlConnectionStringBuilder(cs?.ConnectionString ?? "Data Source=(local);Integrated Security=True");
-            var a = host.Split('.', ':');
-            cb.InitialCatalog = $"CMS_{a[0]}";
-            return cb.ConnectionString;
+            return Environment.ExpandEnvironmentVariables(value ?? "");
         }
 
-        public static string GetConnectionString2(string db, int? timeout = null)
+        public static string GetConnectionString(string host, int? timeout = null)
         {
-            var cs = ConnectionStringSettings(db) ?? ConfigurationManager.ConnectionStrings["CMS"];
-            var cb = new SqlConnectionStringBuilder(cs.ConnectionString);
+            var a = host.Split('.', ':').First();
+            return GetConnectionStringForDatabase($"CMS_{a}");
+        }
+
+        public static string GetConnectionStringForDatabase(string db, int? timeout = null)
+        {
+            var cs = ConnectionStringSettings;
+            var cb = new SqlConnectionStringBuilder(cs.ConnectionString ?? "Data Source=(local);Integrated Security=True");
             if (timeout.HasValue)
             {
                 cb.ConnectTimeout = timeout.Value;
             }
             cb.InitialCatalog = db;
-            return cb.ConnectionString;
+            return ParseEnv(cb.ConnectionString);
         }
 
-        private static ConnectionStringSettings ConnectionStringSettings(string host)
-        {
-            var h2 = ConfigurationManager.AppSettings["CmsHosted2"];
-            if (h2.HasValue())
-            {
-                var a = h2.Split(',');
-                if (a.Contains(host))
-                    return ConfigurationManager.ConnectionStrings["CMS2"];
-            }
-            return ConfigurationManager.ConnectionStrings["CMS"];
-        }
+        private static ConnectionStringSettings ConnectionStringSettings = ConfigurationManager.ConnectionStrings["CMS"];
 
         private const string STR_ConnectionString = "ConnectionString";
         public static string ConnectionString
@@ -101,19 +94,27 @@ namespace UtilityExtensions
             get
             {
                 if (HttpContextFactory.Current != null)
+                {
                     if (HttpContextFactory.Current.Session != null)
+                    {
                         if (HttpContextFactory.Current.Session[STR_ConnectionString] != null)
+                        {
                             return HttpContextFactory.Current.Session[STR_ConnectionString].ToString();
+                        }
+                    }
+                }
 
-                var cs = ConnectionStringSettings(Host);
+                var cs = ConnectionStringSettings;
                 var cb = new SqlConnectionStringBuilder(cs.ConnectionString);
                 cb.InitialCatalog = $"CMS_{Host}";
-                return cb.ConnectionString;
+                return ParseEnv(cb.ConnectionString);
             }
             set
             {
                 if (HttpContextFactory.Current != null)
+                {
                     HttpContextFactory.Current.Session[STR_ConnectionString] = value;
+                }
             }
         }
 
@@ -121,37 +122,22 @@ namespace UtilityExtensions
         {
             var pw = ConfigurationManager.AppSettings["readonlypassword"];
             if (!pw.HasValue())
+            {
                 return ConnectionString;
+            }
 
-            var cs = ConnectionStringSettings(host ?? Host);
+            var cs = ConnectionStringSettings;
             var cb = new SqlConnectionStringBuilder(cs.ConnectionString);
             cb.InitialCatalog = $"CMS_{host ?? Host}";
             cb.IntegratedSecurity = false;
             cb.UserID = (finance ? $"ro-{cb.InitialCatalog}-finance" : $"ro-{cb.InitialCatalog}");
             cb.Password = pw;
-            return cb.ConnectionString;
+            return ParseEnv(cb.ConnectionString);
         }
 
         public static string ConnectionStringReadOnly => ReadOnlyConnectionString();
 
         public static string ConnectionStringReadOnlyFinance => ReadOnlyConnectionString(finance: true);
-
-        public static string ConnectionStringImage
-        {
-            get
-            {
-                var cs = ConnectionStringSettings(Host);
-                var cb = new SqlConnectionStringBuilder(cs.ConnectionString);
-                var a = Host.Split('.', ':');
-                cb.InitialCatalog = $"CMSi_{a[0]}";
-                return cb.ConnectionString;
-            }
-        }
-        public static string GetConnectionString2(string cs, string db)
-        {
-            return new SqlConnectionStringBuilder(cs)
-                { InitialCatalog = db }.ConnectionString;
-        }
     }
 }
 

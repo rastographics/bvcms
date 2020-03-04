@@ -23,7 +23,6 @@ namespace CmsWeb.Areas.Manage.Controllers
         [Route("~/Transactions/{id:int}")]
         public ActionResult Index(int? id, int? goerid = null, int? senderid = null, string reference = "", string desc = "")
         {
-            ViewBag.db = CurrentDatabase;
             var m = new TransactionsModel(CurrentDatabase, id, reference, desc) { GoerId = goerid, SenderId = senderid };
             return View(m);
         }

@@ -37,6 +37,10 @@ namespace CmsWeb.Common
 
         public string TwoFactorAuthSecretKey => GetString("TwoFactorAuthSecretKey");
 
+        public string RemoteDepositCaptureService => GetString("x9service");
+
+        public string RemoteDepositCaptureServiceToken => GetString("x9serviceToken");
+
         /// <summary>
         ///     Returns a string representation of this application setting
         /// </summary>

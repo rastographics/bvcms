@@ -106,43 +106,20 @@ namespace CmsWeb.Models
             return q.Take(maximumRows).ToDataTable();
         }
 
-        public IQueryable<DonorDetail> GetValidContributionDetails(DateTime startdt, DateTime enddt,
+        public IQueryable<CmsData.View.GetContributionsDetail> GetValidContributionDetails(DateTime startdt, DateTime enddt,
             int campusid, bool pledges, bool? nontaxdeductible, bool includeUnclosed, int? tagid, string fundids)
         {
-            var q = from c in CurrentDatabase.GetContributionsDetails(startdt, enddt, campusid, pledges, (nontaxdeductible is null ? null : nontaxdeductible?.ToInt()), null, includeUnclosed, tagid, fundids)
+            var nontax = nontaxdeductible is null ? null : nontaxdeductible?.ToInt();
+            var q = from c in CurrentDatabase.GetContributionsDetails(startdt, enddt, campusid, pledges, nontax, null, includeUnclosed, tagid, fundids)
                     where !ContributionTypeCode.ReturnedReversedTypes.Contains(c.ContributionTypeId)
-                    select new DonorDetail
-                    {
-                        FamilyId = c.FamilyId,
-                        Date = c.DateX.Value.ToShortDateString(),
-                        GiverId = c.PeopleId,
-                        CreditGiverId = c.CreditGiverId,
-                        HeadName = c.HeadName,
-                        SpouseName = c.SpouseName,                        
-                        Amount = c.Amount ?? 0m,
-                        Pledge = c.PledgeAmount ?? 0m,
-                        CheckNo = c.CheckNo,
-                        ContributionDesc = c.ContributionDesc,
-                        FundId = c.FundId,
-                        FundName = c.FundName,
-                        BundleHeaderId = c.BundleHeaderId ?? 0,
-                        BundleType = c.BundleType,
-                        BundleStatus = c.BundleStatus,
-                        PeopleId = c.PeopleId,
-                        ContributionTypeId = c.ContributionTypeId,
-                        ContributionStatusId = c.ContributionStatusId,
-                        ContributionId = c.ContributionId,
-                        CreditGiverId2 = c.CreditGiverId2,
-                        OpenPledgeFund =c.OpenPledgeFund,
-                        SpouseId = c.SpouseId
-                    };
+                    select c;
             return q;
         }
+
         public DataTable DonorDetails(DateTime startdt, DateTime enddt,
             int fundid, int campusid, bool pledges, bool? nontaxdeductible, bool includeUnclosed, int? tagid, string fundids)
         {
             var UseTitles = !CurrentDatabase.Setting("NoTitlesOnStatements");
-            int? online = null;
 
             if (CurrentDatabase.Setting("UseLabelNameForDonorDetails"))
             {
@@ -152,10 +129,21 @@ namespace CmsWeb.Models
                         let head1 = CurrentDatabase.People.Single(hh => hh.PeopleId == p.Family.HeadOfHouseholdId)
                         let head2 = CurrentDatabase.People.SingleOrDefault(sp => sp.PeopleId == p.Family.HeadOfHouseholdSpouseId)
                         let altcouple = p.Family.FamilyExtras.SingleOrDefault(ee => (ee.FamilyId == p.FamilyId) && ee.Field == "CoupleName" && p.SpouseId != null).Data
+                        let head1name = UseTitles ? (
+                                        head1.TitleCode != null
+                                        ? head1.TitleCode + " " + head1.Name
+                                        : head1.Name) : head1.Name
+                        let mrandmrs = head1.TitleCode != null
+                                       ? head1.TitleCode + " and Mrs. " + head1.Name
+                                       : "Mr. and Mrs. " + head1.Name
+                        let suffix = head1.SuffixCode.Length > 0 ? ", " + head1.SuffixCode : ""
+                        let prefnames = head1.PreferredName + " and " + head2.PreferredName + " " + head1.LastName + suffix
+                        let headorjoint = head2 == null ? head1name : (UseTitles ? mrandmrs : prefnames)
+                        let famname = altcouple.Length > 0 ? altcouple : headorjoint
                         select new
                         {
                             c.FamilyId,
-                            Date = c.Date,
+                            Date = c.DateX.Value.ToShortDateString(),
                             GiverId = c.PeopleId,
                             c.CreditGiverId,
                             c.HeadName,
@@ -163,13 +151,13 @@ namespace CmsWeb.Models
                             MainFellowship = mainFellowship,
                             MemberStatus = p.MemberStatus.Description,
                             p.JoinDate,
-                            Amount = c.Amount,
+                            Amount = c.Amount ?? 0m,
                             Pledge = c.PledgeAmount ?? 0m,
                             c.CheckNo,
                             c.ContributionDesc,
                             c.FundId,
                             c.FundName,
-                            BundleHeaderId = c.BundleHeaderId,
+                            BundleHeaderId = c.BundleHeaderId ?? 0m,
                             c.BundleType,
                             c.BundleStatus,
                             Addr = p.PrimaryAddress,
@@ -179,14 +167,7 @@ namespace CmsWeb.Models
                             Zip = p.PrimaryZip,
                             FirstName = p.PreferredName,
                             p.LastName,
-                            FamilyName = altcouple.Length > 0 ? altcouple : head2 == null
-                                ? (UseTitles ? (head1.TitleCode != null ? head1.TitleCode + " " + head1.Name : head1.Name) : head1.Name)
-                                : (UseTitles
-                                        ? (head1.TitleCode != null
-                                            ? head1.TitleCode + " and Mrs. " + head1.Name
-                                            : "Mr. and Mrs. " + head1.Name)
-                                        : head1.PreferredName + " and " + head2.PreferredName + " " + head1.LastName +
-                                           (head1.SuffixCode.Length > 0 ? ", " + head1.SuffixCode : "")),
+                            FamilyName = famname,
                             p.EmailAddress
                         };
                 return q.ToDataTable();
@@ -194,7 +175,7 @@ namespace CmsWeb.Models
             }
             else
             {
-                var q = from c in CurrentDatabase.GetContributionsDetails(startdt, enddt, campusid, pledges, nontaxdeductible.ToInt(), online, includeUnclosed, tagid, fundids)
+                var q = from c in GetValidContributionDetails(startdt, enddt, campusid, pledges, nontaxdeductible, includeUnclosed, tagid, fundids)
                         join p in CurrentDatabase.People on c.CreditGiverId equals p.PeopleId
                         let mainFellowship = CurrentDatabase.Organizations.SingleOrDefault(oo => oo.OrganizationId == p.BibleFellowshipClassId).OrganizationName
                         let spouse = CurrentDatabase.People.SingleOrDefault(sp => sp.PeopleId == p.SpouseId)
@@ -225,6 +206,7 @@ namespace CmsWeb.Models
                 return q.ToDataTable();
             }
         }
+
         public DataTable ExcelDonorTotals(DateTime startdt, DateTime enddt,
             int campusid, bool? pledges, bool? nontaxdeductible, int? Online, bool includeUnclosed, int? tagid, string fundids, bool includePledges)
         {
