@@ -114,12 +114,12 @@ namespace CmsWeb.Areas.Setup.Controllers
         {
             string redirectUrl = "~/Home/Index";
 #if DEBUG
-            redirectUrl = $"http://{Configuration.Current.TenantHostDev}/Pushpay/ProcessPayment?paymentToken={paymentToken}&sr{sr}";
+            redirectUrl = $"http://{Configuration.Current.TenantHostDev}/Pushpay/ProcessPayment?paymentToken={paymentToken}&sr={sr}";
 #else
             if (!string.IsNullOrEmpty(sr)&&!string.IsNullOrEmpty(paymentToken))
             {
                 var state = sr.Split('_')[1];
-                redirectUrl = $"https://{state}.{Configuration.Current.OrgBaseDomain}/Pushpay/ProcessPayment?paymentToken={paymentToken}&sr{sr}";
+                redirectUrl = $"https://{state}.{Configuration.Current.OrgBaseDomain}/Pushpay/ProcessPayment?paymentToken={paymentToken}&sr={sr}";
             }
 #endif
             return Redirect(redirectUrl);
@@ -182,7 +182,7 @@ namespace CmsWeb.Areas.Setup.Controllers
 
             SetGivingLink(oid.Value);
             string mobile = CurrentDatabase.People.SingleOrDefault(p => p.PeopleId == PeopleId).CellPhone;
-            return Redirect($"{_givingLink}?ru={_ru}&sr=ot_{_state}&rcv=false&r=no&up={mobile}");
+            return Redirect($"{_givingLink}?ru={_ru}&sr=ot_{_state}_{PeopleId}&rcv=false&r=no&up={mobile}");
         }
 
         [Route("~/Pushpay/OnePage/{OrgId:int}")]
@@ -233,7 +233,7 @@ namespace CmsWeb.Areas.Setup.Controllers
         {
             SetGivingLink(OrgId);
             string mobile = CurrentDatabase.People.SingleOrDefault(p => p.PeopleId == PeopleId).CellPhone;
-            return Redirect($"{_givingLink}?ru={_ru}&sr=rp_{_state}&r=monthly&up={mobile}");
+            return Redirect($"{_givingLink}?ru={_ru}&sr=rp_{_state}_{PeopleId}&r=monthly&up={mobile}");
         }
 
         [Route("~/Pushpay/Registration/{DatumId:int}")]
@@ -275,7 +275,7 @@ namespace CmsWeb.Areas.Setup.Controllers
         {
             try
             {
-                var reference = sr.Split('_')[0];
+                var reference = sr.Split('_')[0];                
                 Payment payment = await _pushpayPayment.GetPayment(paymentToken);
 
                 switch (reference)
@@ -285,7 +285,8 @@ namespace CmsWeb.Areas.Setup.Controllers
                         if (oid == null)
                             return View("OnePageGiving/NotConfigured");
 
-                        return await OneTimeProcess(payment, oid.Value);
+                        var pid = sr.Split('_')[2];
+                        return await OneTimeProcess(payment, oid.Value, Int32.Parse(pid));
                         
                     case "rp":
                         RecurringPayment recurringPayment = await _pushpayPayment.GetRecurringPayment(paymentToken);
@@ -297,28 +298,6 @@ namespace CmsWeb.Areas.Setup.Controllers
                     case "pd":
                         return PayAmtDueProcess(payment, Int32.Parse(reference.Substring(2)));
                 }
-                //if (sr.Substring(0, 3) == "Org")
-                //{
-                //    Payment payment = await _pushpayPayment.GetPayment(paymentToken);
-                //    if (payment == null)
-                //    {
-                //        RecurringPayment recurringPayment = await _pushpayPayment.GetRecurringPayment(paymentToken);                   
-                //        return RecurringProcess(recurringPayment);
-                //    }                   
-                  
-                //    return await OneTimeProcess(payment, Int32.Parse(sr.Substring(4)));                    
-                //}
-
-                //if (sr.Substring(0, 3) == "dat")
-                //{
-                //    return await RegistrationProcess(paymentToken, Int32.Parse(sr.Substring(4)));
-                //}
-
-                //if (sr.Substring(0, 9) == "payamtdue")
-                //{
-                //    Payment payment = await _pushpayPayment.GetPayment(paymentToken);
-                //    return PayAmtDueProcess(payment, Int32.Parse(sr.Substring(10)));
-                //}
                 throw new Exception("sr reference is not correct");
             }
             catch (Exception ex)
@@ -329,7 +308,7 @@ namespace CmsWeb.Areas.Setup.Controllers
             }
         }
 
-        private async Task<ActionResult> OneTimeProcess(Payment payment, int orgId)
+        private async Task<ActionResult> OneTimeProcess(Payment payment, int orgId, int pid)
         {
             if (payment != null && !_resolver.TransactionAlreadyImported(payment))
             {
@@ -344,10 +323,9 @@ namespace CmsWeb.Areas.Setup.Controllers
                     // create a new bundle for each payment not part of a PushPay batch or settlement
                     bundle = _resolver.CreateBundle(payment.CreatedOn.ToLocalTime(), payment.Amount.Amount, null, null, payment.TransactionId, BundleReferenceIdTypeCode.PushPayStandaloneTransaction);
                 }
-                int? PersonId = _resolver.ResolvePersonId(payment.Payer);
                 ContributionFund fund = _resolver.ResolveFund(payment.Fund);
-                Contribution contribution = _resolver.ResolvePayment(payment, fund, PersonId, bundle);
-                Transaction transaction = _resolver.ResolveTransaction(payment, PersonId.Value, orgId, "Online Giving");
+                Contribution contribution = _resolver.ResolvePayment(payment, fund, pid, bundle);
+                Transaction transaction = _resolver.ResolveTransaction(payment, pid, orgId, "Online Giving");
             }
             ViewBag.Message = "Thank you, your transaction is complete for Online Giving.";
             return View();
