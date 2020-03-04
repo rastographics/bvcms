@@ -27,7 +27,7 @@ namespace CmsWeb.Areas.Setup.Controllers
         private string _givingLink;
         private string _defaultMerchantHandle;
         private string _state;
-        private string _ru = "touchpointest";
+        private string _ru;
 
         public PushpayController(IRequestManager requestManager) : base(requestManager)
         {
