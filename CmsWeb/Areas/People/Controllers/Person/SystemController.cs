@@ -33,7 +33,7 @@ namespace CmsWeb.Areas.People.Controllers
             }
             else
             {
-                u = AccountModel.AddUser(peopleId ?? Util2.CurrentPeopleId);
+                u = AccountModel.AddUser(CurrentDatabase, peopleId ?? Util2.CurrentPeopleId);
                 var name = Util.ActivePerson as string;
                 DbUtil.LogPersonActivity($"New User for: {name}", peopleId ?? Util2.CurrentPeopleId, name);
                 ViewBag.username = u.Username;
@@ -73,7 +73,7 @@ namespace CmsWeb.Areas.People.Controllers
             var pp = CurrentDatabase.LoadPersonById(user.PeopleId.Value);
             if (sendwelcome)
             {
-                AccountModel.SendNewUserEmail(u);
+                AccountModel.SendNewUserEmail(CurrentDatabase, u);
             }
 
             var name = Util.ActivePerson as string;

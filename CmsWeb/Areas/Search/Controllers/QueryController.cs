@@ -1,10 +1,3 @@
-/* Author: David Carroll
- * Copyright (c) 2008, 2009 Bellevue Baptist Church
- * Licensed under the GNU General Public License (GPL v2)
- * you may not use this code except in compliance with the License.
- * You may obtain a copy of the License at http://bvcms.codeplex.com/license
- */
-
 using CmsData;
 using CmsWeb.Areas.Search.Models;
 using CmsWeb.Code;
@@ -12,6 +5,7 @@ using CmsWeb.Lifecycle;
 using Dapper;
 using Elmah;
 using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
 using System.Net;
@@ -339,6 +333,15 @@ namespace CmsWeb.Areas.Search.Controllers
             {
                 return Json(new { error = ex.Message + $". Please report this to {ConfigurationManager.AppSettings["supportemail"]}" });
             }
+        }
+
+        [HttpPost]
+        public JsonResult ToggleCurrentTag()
+        {
+            Dictionary<string, string> json = new Dictionary<string, string>();
+            json.Add("CurrentTag", Util2.CurrentTag);
+
+            return Json(json, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]

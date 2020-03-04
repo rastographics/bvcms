@@ -375,6 +375,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Areas\CheckIn\CheckInAreaRegistration.cs" />
+    <Compile Include="Areas\CheckIn\Controllers\WebCheckinLabelsController.cs" />
     <Compile Include="Areas\CheckIn\Models\CheckinTimeModel.cs" />
     <Compile Include="App_Start\ApiMessageLoggingHandler.cs" />
     <Compile Include="App_Start\ApiAuthorizeAttribute.cs" />
@@ -531,7 +532,6 @@
     <Compile Include="Areas\Finance\Models\ContributionStatementsExtra.cs" />
     <Compile Include="Areas\Finance\Models\BatchImport\BatchImportContributions.cs" />
     <Compile Include="Areas\Finance\Models\ContributionStatementsExtract.cs" />
-    <Compile Include="Areas\Finance\Models\CustomStatements.cs" />
     <Compile Include="Areas\Finance\Models\DonorTotalsOptions.cs" />
     <Compile Include="Areas\Finance\Models\FundTotalInfo.cs" />
     <Compile Include="Areas\Finance\Models\GLExportResult.cs" />
@@ -1886,6 +1886,7 @@
     <Content Include="Areas\People\Views\Shared\CombineGiving.cshtml" />
     <Content Include="Areas\People\Views\Task\_ActionsMenu.cshtml" />
     <Content Include="Areas\Manage\Views\Account\AuthDisabled.cshtml" />
+    <Content Include="Areas\CheckIn\Views\WebCheckinLabels\Index.cshtml" />
     <Content Include="Areas\Org\Views\Org\EditorTemplates\ESpaceEventId.cshtml" />
     <Content Include="Areas\Org\Views\Org\DisplayTemplates\ESpaceEventId.cshtml" />
     <Content Include="Areas\Org\Views\Org\Other\eSpaceResults.cshtml" />
