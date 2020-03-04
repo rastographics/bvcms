@@ -27,7 +27,7 @@ namespace CmsWeb.Areas.Setup.Controllers
         private string _givingLink;
         private string _defaultMerchantHandle;
         private string _state;
-        private const string _ru = "touchpointest";
+        private string _ru = "touchpointest";
 
         public PushpayController(IRequestManager requestManager) : base(requestManager)
         {
@@ -56,8 +56,9 @@ namespace CmsWeb.Areas.Setup.Controllers
             _pushpayPayment = new PushpayPayment(_pushpay, CurrentDatabase, processType);
             _resolver = new PushpayResolver(_pushpay, CurrentDatabase);
             _defaultMerchantHandle = _pushpayPayment._merchantHandle;
-            _givingLink = $"{Configuration.Current.PushpayGivingLinkBase}";
+            _givingLink = Configuration.Current.PushpayGivingLinkBase;
             _state = CurrentDatabase.Host;
+            _ru = Configuration.Current.PushpayRU;
         }
 
         /// <summary>

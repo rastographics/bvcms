@@ -25,6 +25,8 @@ namespace CmsWeb.Common
 
         public string PushpayGivingLinkBase => GetString("PushpayGivingLinkBase");
 
+        public string PushpayRU => GetString("PushpayRU");
+
         public string PushpayScope => GetString("PushpayScope");
 
         public string StatusCheckUrl => GetString("StatusCheckUrl");
