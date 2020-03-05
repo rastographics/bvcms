@@ -61,9 +61,9 @@ namespace TransactionGateway
             }
         }
 
-        public string ResolvePayerKey(int PeopleId)
+        public static string ResolvePayerKey(CMSDataContext db, int PeopleId)
         {
-            PeopleExtra pe = _db.PeopleExtras.Where(c => c.PeopleId == PeopleId && c.Field == "PushPayKey").FirstOrDefault();
+            PeopleExtra pe = db.PeopleExtras.Where(c => c.PeopleId == PeopleId && c.Field == "PushPayKey").FirstOrDefault();
             if (pe == null) return null;                     
             return  pe.StrValue;
         }

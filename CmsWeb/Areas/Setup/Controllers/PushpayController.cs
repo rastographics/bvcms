@@ -24,10 +24,12 @@ namespace CmsWeb.Areas.Setup.Controllers
         private PushpayConnection _pushpay;
         private PushpayPayment _pushpayPayment;
         private PushpayResolver _resolver;
+
         private string _givingLink;
         private string _defaultMerchantHandle;
         private string _state;
         private string _ru;
+        private bool isTesting;
 
         public PushpayController(IRequestManager requestManager) : base(requestManager)
         {
@@ -40,7 +42,7 @@ namespace CmsWeb.Areas.Setup.Controllers
             {
                 Console.WriteLine(e.Message);
             }
-            
+
 
             _pushpay = new PushpayConnection(
                 CurrentDatabase.GetSetting("PushPayAccessToken", ""),
@@ -58,7 +60,12 @@ namespace CmsWeb.Areas.Setup.Controllers
             _defaultMerchantHandle = _pushpayPayment._merchantHandle;
             _givingLink = Configuration.Current.PushpayGivingLinkBase;
             _state = CurrentDatabase.Host;
-            _ru = Configuration.Current.PushpayRU;
+
+            isTesting = MultipleGatewayUtils.GatewayTesting(CurrentDatabase, processType);
+            if (isTesting)
+                _ru = "touchpointest";
+            else
+                _ru = Configuration.Current.PushpayRU;
         }
 
         /// <summary>
@@ -177,7 +184,7 @@ namespace CmsWeb.Areas.Setup.Controllers
         public ActionResult OneTime(int PeopleId)
         {
             var oid = CmsData.API.APIContribution.OneTimeGiftOrgId(CurrentDatabase);
-            if (oid == null)            
+            if (oid == null)
                 return View("OnePageGiving/NotConfigured");
 
             SetGivingLink(oid.Value);
@@ -190,7 +197,7 @@ namespace CmsWeb.Areas.Setup.Controllers
         {
             SetGivingLink(OrgId);
             return Redirect($"{_givingLink}?rcv=false");
-        }               
+        }
 
         [Route("~/Pushpay/RecurringManagment/{PeopleId:int}")]
         public async Task<ActionResult> RecurringManagment(int PeopleId)
@@ -203,9 +210,9 @@ namespace CmsWeb.Areas.Setup.Controllers
                 return View("OnePageGiving/NotConfigured");
 
             ViewBag.PeopleId = PeopleId;
-            ViewBag.OrgId = oid;            
+            ViewBag.OrgId = oid;
 
-            string payerKey = _resolver.ResolvePayerKey(PeopleId);
+            string payerKey = PushpayResolver.ResolvePayerKey(CurrentDatabase, PeopleId);
             IEnumerable<RecurringPayment> rpList = await _pushpayPayment.GetRecurringPaymentsForAPayer(payerKey);
             if (rpList == null || rpList.Count() == 0)
             {
@@ -260,14 +267,14 @@ namespace CmsWeb.Areas.Setup.Controllers
                 CurrentDatabase.LogActivity($"No datum founded with id: {DatumId}");
                 return View("~/Views/Shared/PageError.cshtml");
             }
-            return Redirect($"{_givingLink}?ru={_ru}&sr=re{DatumId}_{_state}&rcv=false&r=no&up={mobile}&a={Amount}&fnd={fundName}&al=true&fndv=lock");
-        }        
+            return Redirect($"{_givingLink}?ru={_ru}&sr=re_{_state}_{DatumId}&rcv=false&r=no&up={mobile}&a={Amount}&fnd={fundName}&al=true&fndv=lock");
+        }
 
         [Route("~/Pushpay/PayAmtDue/{transactionId:int}/{amtdue:decimal}/{OrgId:int}")]
         public ActionResult PayAmtDue(int transactionId, decimal amtdue, int OrgId)
         {
             SetGivingLink(OrgId);
-            return Redirect($"{_givingLink}?ru={_ru}&sr=pd{transactionId}_{_state}&rcv=false&r=no&a={amtdue}&fndv=lock");
+            return Redirect($"{_givingLink}?ru={_ru}&sr=pd_{_state}_{transactionId}&rcv=false&r=no&a={amtdue}&fndv=lock");
         }
 
         [Route("~/Pushpay/ProcessPayment")]
@@ -275,9 +282,9 @@ namespace CmsWeb.Areas.Setup.Controllers
         {
             try
             {
-                var reference = sr.Split('_')[0];                
-                Payment payment = await _pushpayPayment.GetPayment(paymentToken);
-
+                var reference = sr.Split('_')[0];
+                int refId = Int32.Parse(sr.Split('_')[2]);
+                Payment payment;
                 switch (reference)
                 {
                     case "ot":
@@ -285,18 +292,18 @@ namespace CmsWeb.Areas.Setup.Controllers
                         if (oid == null)
                             return View("OnePageGiving/NotConfigured");
 
-                        var pid = sr.Split('_')[2];
-                        return await OneTimeProcess(payment, oid.Value, Int32.Parse(pid));
-                        
+                        return await OneTimeProcess(paymentToken, oid.Value);
+
                     case "rp":
                         RecurringPayment recurringPayment = await _pushpayPayment.GetRecurringPayment(paymentToken);
                         return RecurringProcess(recurringPayment);
 
                     case "re":
-                        return await RegistrationProcess(paymentToken, Int32.Parse(reference.Substring(2)));
+                        return await RegistrationProcess(paymentToken, refId);
 
                     case "pd":
-                        return PayAmtDueProcess(payment, Int32.Parse(reference.Substring(2)));
+                        payment = await _pushpayPayment.GetPayment(paymentToken);
+                        return PayAmtDueProcess(payment, refId);
                 }
                 throw new Exception("sr reference is not correct");
             }
@@ -308,8 +315,9 @@ namespace CmsWeb.Areas.Setup.Controllers
             }
         }
 
-        private async Task<ActionResult> OneTimeProcess(Payment payment, int orgId, int pid)
+        private async Task<ActionResult> OneTimeProcess(string paymentToken, int orgId)
         {
+            Payment payment = await _pushpayPayment.GetPayment(paymentToken);
             if (payment != null && !_resolver.TransactionAlreadyImported(payment))
             {
                 // determine the batch to put the payment in
@@ -324,17 +332,19 @@ namespace CmsWeb.Areas.Setup.Controllers
                     bundle = _resolver.CreateBundle(payment.CreatedOn.ToLocalTime(), payment.Amount.Amount, null, null, payment.TransactionId, BundleReferenceIdTypeCode.PushPayStandaloneTransaction);
                 }
                 ContributionFund fund = _resolver.ResolveFund(payment.Fund);
+                int? pid = _resolver.ResolvePersonId(payment.Payer);
                 Contribution contribution = _resolver.ResolvePayment(payment, fund, pid, bundle);
-                Transaction transaction = _resolver.ResolveTransaction(payment, pid, orgId, "Online Giving");
+                Transaction transaction = _resolver.ResolveTransaction(payment, pid.Value, orgId, "Online Giving");
             }
             ViewBag.Message = "Thank you, your transaction is complete for Online Giving.";
             return View();
         }
 
         private ActionResult RecurringProcess(RecurringPayment recurringPayment)
-        {            
+        {
             if (recurringPayment?.Schedule != null)
             {
+                _resolver.ResolvePersonId(recurringPayment.Payer);
                 ViewBag.Message = "Thanks for set up your recurring giving.";
                 return View();
             }
@@ -355,14 +365,26 @@ namespace CmsWeb.Areas.Setup.Controllers
             PaymentForm pf = PaymentForm.CreatePaymentForm(m);
 
             Payment payment = await _pushpayPayment.GetPayment(paymentToken);
-            m.transactionId = CreateTransaction(payment, pf);
+            if (payment == null || _resolver.TransactionAlreadyImported(payment))
+            {
+                ViewBag.Message = "Payment not vallid or expired";
+                return View("~/Views/Shared/PageError.cshtml");
+            }
 
+            m.transactionId = CreateTransaction(payment, pf);
             m.UpdateDatum();
+
             return Redirect($"/OnlineReg/ProcessExternalPayment/dat_{datumId}");
         }
 
         private ActionResult PayAmtDueProcess(Payment payment, int transactionId)
         {
+            if (payment == null || _resolver.TransactionAlreadyImported(payment))
+            {
+                ViewBag.Message = "Payment not vallid or expired";
+                return View("~/Views/Shared/PageError.cshtml");
+            }
+
             Transaction ti = CurrentDatabase.Transactions.Where(p => p.Id == transactionId).FirstOrDefault();
             PaymentForm pf = PaymentForm.CreatePaymentFormForBalanceDue(CurrentDatabase, ti, payment.Amount.Amount, payment.Payer.emailAddress);
             int tranId = CreateTransaction(payment, pf);
@@ -386,7 +408,7 @@ namespace CmsWeb.Areas.Setup.Controllers
             ti.TransactionId = payment.TransactionId;
             ti.Name = person.Name;
             ti.First = person.FirstName;
-            ti.MiddleInitial = person.MiddleName[0].ToString();
+            ti.MiddleInitial = !string.IsNullOrEmpty(person.MiddleName) ? person.MiddleName[0].ToString() : null;
             ti.Last = person.LastName;
             ti.Suffix = person.SuffixCode;
             ti.Donate = pf.Donate;
