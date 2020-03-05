@@ -26,6 +26,8 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
 
 		public readonly List<FamilyMember> members = new List<FamilyMember>();
 
+        public string memberList = "";
+
 		public static Family forID( CMSDataContext dataContext, CMSImageDataContext imageContext, int familyID, int campus, DateTime date, bool returnPictureUrls = false)
 		{
 			Family family = new Family();
@@ -171,6 +173,7 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
 		private void loadMembers( CMSDataContext cmsdb, CMSImageDataContext cmsidb, int campus, DateTime date, bool returnPictureUrls )
 		{
 			members.AddRange( FamilyMember.forFamilyID( cmsdb, cmsidb, id, campus, date, returnPictureUrls ) );
+            memberList = string.Join(", ", members.Where(m => m.name != name).Select(x => x.firstName));
 		}
 
 		private void loadPicture( CMSDataContext cmsdb, CMSImageDataContext cmsidb )
