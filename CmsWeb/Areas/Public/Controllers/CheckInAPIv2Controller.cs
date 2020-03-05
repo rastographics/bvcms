@@ -328,10 +328,10 @@ namespace CmsWeb.Areas.Public.Controllers
 
 			Message message = Message.createFromString( data );
 
-            Models.CheckInAPIv2.Person person = JsonConvert.DeserializeObject<Models.CheckInAPIv2.Person>(message.data);
+            Models.CheckInAPIv2.Person person = JsonConvert.DeserializeObject<Models.CheckInAPIv2.Person>(message.data);    // new data
             person.clean();
 
-            CmsData.Person p = CurrentDatabase.LoadPersonById(person.id);
+            CmsData.Person p = CurrentDatabase.Copy().LoadPersonById(person.id);   // existing data
 
 			if( p == null ) {
 				return Message.createErrorReturn( "Person not found", Message.API_ERROR_PERSON_NOT_FOUND );
@@ -342,19 +342,20 @@ namespace CmsWeb.Areas.Public.Controllers
             p.CopyProperties2(m);
             m.CellPhone = new CellPhoneInfo()
             {
-                Number = person.mobilePhone
+                Number = person.mobilePhone,
+                ReceiveText = p.ReceiveSMS
             };
             m.Gender = new Code.CodeInfo(p.GenderId, p.Gender.Description);
             m.MaritalStatus = new Code.CodeInfo(p.MaritalStatusId, p.MaritalStatus.Description);
             m.EmailAddress = new EmailInfo()
             {
                 Address = p.EmailAddress,
-                Send = p.SendEmailAddress1.GetValueOrDefault()
+                Send = p.SendEmailAddress1.GetValueOrDefault(true)
             };
             m.EmailAddress2 = new EmailInfo()
             {
                 Address = p.EmailAddress2,
-                Send = p.SendEmailAddress2.GetValueOrDefault()
+                Send = p.SendEmailAddress2.GetValueOrDefault(true)
             };
 
             m.UpdatePerson(CurrentDatabase);
