@@ -45,6 +45,7 @@ namespace CmsData
                     PeopleId = PeopleId,
                     MemberTypeId = MemberTypeId,
                     OrganizationName = orgname,
+                    EnrollmentDate = EnrollmentDate, //Adding Enrollment Date to show on the system after droppíng member.
                     TransactionDate = dropdate,
                     TransactionTypeId = 5, // drop
                     CreatedBy = Util.UserId1,
