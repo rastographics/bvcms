@@ -1,4 +1,4 @@
-﻿<div class="search-modal modal fade" id="search-box" tabindex="-1" role="dialog" aria-labelledby="search-box-label" aria-hidden="true">
+﻿<div class="search-modal modal fade" id="search-box-search-person" tabindex="-1" role="dialog" aria-labelledby="search-box-label" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
@@ -9,7 +9,7 @@
                             <div class="input-group input-group-lg">
                                 <span class="input-group-addon"><i class="fa fa-search fa-fw"></i></span>
                                 <div id="search-add-component">
-                                    <search-add v-on:display-results="updateResults(results, context)" :target="'#search-box'" :context="'search'" :placeholder="'People or organizations...'"></search-add>
+                                    <search-add v-on:display-results="updateResults(results, context)" :target="'#search-box-search-person'" :context="'search'" :placeholder="'People or organizations...'"></search-add>
                                 </div>
                             </div>
                         </div>
