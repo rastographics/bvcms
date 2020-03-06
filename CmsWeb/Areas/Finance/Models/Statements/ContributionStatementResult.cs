@@ -43,65 +43,35 @@ namespace CmsWeb.Areas.Finance.Models.Report
             response.AddHeader("content-disposition", $"filename={filename}.pdf");
             var cs = ContributionStatementsExtract.GetStatementSpecification(CurrentDatabase, statementType ?? "all");
 
-            if (showCheckNo || showNotes)
+            var c = new ContributionStatements
             {
-                var c = new ContributionStatements
-                {
-                    FamilyId = FamilyId,
-                    FromDate = FromDate,
-                    PeopleId = PeopleId,
-                    SpouseId = SpouseId,
-                    ToDate = ToDate,
-                    typ = typ,
-                    NumberOfColumns = 1,
-                    ShowCheckNo = showCheckNo,
-                    ShowNotes = showNotes
-                };
+                FamilyId = FamilyId,
+                FromDate = FromDate,
+                PeopleId = PeopleId,
+                SpouseId = SpouseId,
+                ToDate = ToDate,
+                typ = typ,
+                //TODO: once we switch to entirely html-based statement templates we won't need to check for these options
+                NumberOfColumns = showCheckNo || showNotes ? 1 : 2,
+                ShowCheckNo = showCheckNo,
+                ShowNotes = showNotes
+            };
 
-                IEnumerable<ContributorInfo> q = null;
-                switch (typ)
-                {
-                    case 1:
-                        q = APIContribution.Contributors(CurrentDatabase, FromDate, ToDate, PeopleId, SpouseId, 0, cs.Funds, noaddressok, useMinAmt, singleStatement: singleStatement);
-                        break;
-                    case 2:
-                        FamilyId = CurrentDatabase.People.Single(p => p.PeopleId == PeopleId).FamilyId;
-                        q = APIContribution.Contributors(CurrentDatabase, FromDate, ToDate, 0, 0, FamilyId, cs.Funds, noaddressok, useMinAmt, singleStatement: singleStatement);
-                        break;
-                    case 3:
-                        q = APIContribution.Contributors(CurrentDatabase, FromDate, ToDate, 0, 0, 0, cs.Funds, noaddressok, useMinAmt, singleStatement: singleStatement);
-                        break;
-                }
-                c.Run(response.OutputStream, CurrentDatabase, q, cs);
-            }
-            else
+            IEnumerable<ContributorInfo> q = null;
+            switch (typ)
             {
-                var c = new ContributionStatements
-                {
-                    FamilyId = FamilyId,
-                    FromDate = FromDate,
-                    PeopleId = PeopleId,
-                    SpouseId = SpouseId,
-                    ToDate = ToDate,
-                    typ = typ
-                };
-
-                IEnumerable<ContributorInfo> q = null;
-                switch (typ)
-                {
-                    case 1:
-                        q = APIContribution.Contributors(CurrentDatabase, FromDate, ToDate, PeopleId, SpouseId, 0, cs.Funds, noaddressok, useMinAmt, singleStatement: singleStatement);
-                        break;
-                    case 2:
-                        FamilyId = CurrentDatabase.People.Single(p => p.PeopleId == PeopleId).FamilyId;
-                        q = APIContribution.Contributors(CurrentDatabase, FromDate, ToDate, 0, 0, FamilyId, cs.Funds, noaddressok, useMinAmt, singleStatement: singleStatement);
-                        break;
-                    case 3:
-                        q = APIContribution.Contributors(CurrentDatabase, FromDate, ToDate, 0, 0, 0, cs.Funds, noaddressok, useMinAmt, singleStatement: singleStatement);
-                        break;
-                }
-                c.Run(response.OutputStream, CurrentDatabase, q, cs);
+                case 1:
+                    q = APIContribution.Contributors(CurrentDatabase, FromDate, ToDate, PeopleId, SpouseId, 0, cs.Funds, noaddressok, useMinAmt, singleStatement: singleStatement);
+                    break;
+                case 2:
+                    FamilyId = CurrentDatabase.People.Single(p => p.PeopleId == PeopleId).FamilyId;
+                    q = APIContribution.Contributors(CurrentDatabase, FromDate, ToDate, 0, 0, FamilyId, cs.Funds, noaddressok, useMinAmt, singleStatement: singleStatement);
+                    break;
+                case 3:
+                    q = APIContribution.Contributors(CurrentDatabase, FromDate, ToDate, 0, 0, 0, cs.Funds, noaddressok, useMinAmt, singleStatement: singleStatement);
+                    break;
             }
+            c.Run(response.OutputStream, CurrentDatabase, q, cs);
         }
     }
 }

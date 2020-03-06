@@ -3,7 +3,6 @@ using CmsData.API;
 using CmsData.Codes;
 using CmsData.View;
 using CmsWeb.Properties;
-using HandlebarsDotNet;
 using HtmlAgilityPack;
 using iTextSharp.text;
 using iTextSharp.text.pdf;
@@ -27,12 +26,14 @@ namespace CmsWeb.Areas.Finance.Models.Report
         private PageEvent pageEvents = new PageEvent();
         private string _fundDisplaySetting;
 
+        public Guid? UUId { get; set; }
         public int FamilyId { get; set; }
         public int PeopleId { get; set; }
         public int? SpouseId { get; set; }
         public int typ { get; set; }
         public DateTime FromDate { get; set; }
         public DateTime ToDate { get; set; }
+        //TODO: once we switch to entirely html-based statement templates we won't need to check for these options
         public int NumberOfColumns { get; set; } = 2;
         public bool ShowCheckNo { get; set; }
         public bool ShowNotes { get; set; }
@@ -40,7 +41,7 @@ namespace CmsWeb.Areas.Finance.Models.Report
         public int LastSet() => (pageEvents.FamilySet.Count == 0)
             ? 0 : pageEvents.FamilySet.Max(kp => kp.Value);
 
-        public List<int> Sets() => (pageEvents.FamilySet.Count == 0)
+        public List<int> Sets() => (pageEvents?.FamilySet?.Count == 0)
             ? new List<int>()
             : pageEvents.FamilySet.Values.Distinct().ToList();
         
@@ -58,13 +59,14 @@ namespace CmsWeb.Areas.Finance.Models.Report
 
         private void HtmlToPdfMethod(Stream stream, CMSDataContext db, IEnumerable<ContributorInfo> q, StatementSpecification cs, int set)
         {
-            var html = db.Content("StatementTemplate", ContentTypeCode.TypeText)?.Body ?? Resource1.ContributionStatementTemplate;
-            var bodyHtml = db.Content("StatementTemplateBody", ContentTypeCode.TypeText)?.Body ?? Resource1.ContributionStatementTemplateBody;
-            var header = cs.Header ?? db.ContentHtml("StatementHeader", Resource1.ContributionStatementHeader);
-            var notice = cs.Notice ?? db.ContentHtml("StatementNotice", Resource1.ContributionStatementNotice);
-            var footer = db.ContentHtml("StatementTemplateFooter", "");
-            var runningtotals = db.ContributionsRuns.OrderByDescending(mm => mm.Id).First();
-            var options = GetOptions(bodyHtml);
+            IConverter converter = GetConverter();
+            string html = db.Content("StatementTemplate", ContentTypeCode.TypeText)?.Body ?? Resource1.ContributionStatementTemplate;
+            string bodyHtml = db.Content("StatementTemplateBody", ContentTypeCode.TypeText)?.Body ?? Resource1.ContributionStatementTemplateBody;
+            string header = cs.Header ?? db.ContentHtml("StatementHeader", Resource1.ContributionStatementHeader);
+            string notice = cs.Notice ?? db.ContentHtml("StatementNotice", Resource1.ContributionStatementNotice);
+            string footer = db.ContentHtml("StatementTemplateFooter", "");
+            ContributionsRun runningtotals = db.ContributionsRuns.Where(mm => mm.UUId == UUId).SingleOrDefault();
+            StatementOptions options = GetStatementOptions(bodyHtml);
 
             var toDate = ToDate.Date.AddHours(24).AddSeconds(-1);
 
@@ -72,28 +74,35 @@ namespace CmsWeb.Areas.Finance.Models.Report
             {
                 GlobalSettings =
                 {
+                    DocumentTitle = cs.Description ?? $"Contribution Statement {toDate:d}",
+                    Margins = options.Margins,
+                    PaperSize = options.PaperSize,
                     ProduceOutline = false,
-                    DocumentTitle = cs.Description,
-                    PaperSize = PaperKind.Letter,
-                    Margins =
-                    {
-                        Bottom = 0.5,
-                        Left = 0.5,
-                        Right = 0.5,
-                        Top = 0.5,
-                        Unit = Unit.Inches
-                    }
                 }
             };
 
-            var contributors = q;
+            var familiesInSet = pageEvents.FamilySet.Where(k => k.Value == set).Select(k => k.Key);
+            var contributors = q.Where(c => set == 0 || familiesInSet.Contains(c.FamilyId));
             var count = 0;
-            runningtotals.Processed = 0;
+            if (runningtotals != null)
+            {
+                runningtotals.Processed = 0;
+            }
             db.SubmitChanges();
 
+            var currentSet = 1;
             foreach (var contributor in contributors)
             {
                 count++;
+                if (set == 0)
+                {
+                    pageEvents.FamilySet[contributor.FamilyId] = currentSet;
+                    if (count % 10 == 0)
+                    {
+                        currentSet++;
+                    }
+                }
+
                 var contributions = APIContribution.Contributions(db, contributor, FromDate, toDate, cs.Funds).ToList();
                 var pledges = APIContribution.Pledges(db, contributor, toDate, cs.Funds).ToList();
                 var giftsinkind = APIContribution.GiftsInKind(db, contributor, FromDate, toDate, cs.Funds).ToList();
@@ -130,12 +139,21 @@ namespace CmsWeb.Areas.Finance.Models.Report
                     };
                     data.body = db.RenderTemplate(bodyHtml, data);
                     var htmlDocument = db.RenderTemplate(html, data);
-                    document.Objects.Add(new ObjectSettings { HtmlText = htmlDocument });
+                    document.Objects.Add(new ObjectSettings {
+                        CountPages = true,
+                        FooterSettings = options.Footer,
+                        HeaderSettings = options.Header ?? new HeaderSettings(),
+                        HtmlText = htmlDocument,
+                        LoadSettings = new LoadSettings { BlockLocalFileAccess = true }
+                    });
                 }
 
-                runningtotals.Processed += 1;
-                runningtotals.CurrSet = set;
-                db.SubmitChanges();
+                if (runningtotals != null)
+                {
+                    runningtotals.Processed += 1;
+                    runningtotals.CurrSet = set;
+                    db.SubmitChanges();
+                }
             }
 
             if (count == 0)
@@ -146,19 +164,11 @@ namespace CmsWeb.Areas.Finance.Models.Report
                     </a>" });
             }
 
-            if (set != 0)
-            {
-                runningtotals.Completed = DateTime.Now;
-            }
-
-            db.SubmitChanges();
-
-            IConverter converter = GetConverter();
             byte[] bytes = converter.Convert(document);
             stream.Write(bytes, 0, bytes.Length);
         }
 
-        private StatementOptions GetOptions(string html)
+        private StatementOptions GetStatementOptions(string html)
         {
             var options = new StatementOptions();
             HtmlDocument doc = new HtmlDocument();
@@ -167,6 +177,27 @@ namespace CmsWeb.Areas.Finance.Models.Report
             if (node != null)
             {
                 options = JsonConvert.DeserializeObject<StatementOptions>(node.InnerText);
+            }
+            if (options.Margins == null)
+            {
+                options.Margins = new MarginSettings
+                {
+                    All = 0.5,
+                    Unit = Unit.Inches
+                };
+            }
+            if (options.PaperSize == 0)
+            {
+                options.PaperSize = PaperKind.Letter;
+            }
+            if (options.Footer == null)
+            {
+                options.Footer = new FooterSettings
+                {
+                    RightText = "Page [page] of [topage]",
+                    FontName = "Helvetica",
+                    FontSize = 10
+                };
             }
             return options;
         }
@@ -189,18 +220,22 @@ namespace CmsWeb.Areas.Finance.Models.Report
             return new ListOfNormalContributions(list);
         }
 
-        private IConverter GetConverter()
+        public static IConverter _converter;
+        public IConverter GetConverter()
         {
-            IConverter converter = HttpContextFactory.Current.Application["PechkinConverter"] as IConverter;
-            if (converter == null)
+            if (_converter == null)
             {
-                converter = new ThreadSafeConverter(
-                    new RemotingToolset<PdfToolset>(
-                        new WinAnyCPUEmbeddedDeployment(
-                            new TempFolderDeployment())));
-                HttpContextFactory.Current.Application["PechkinConverter"] = converter;
+                _converter = HttpContextFactory.Current.Application["PechkinConverter"] as IConverter;
+                if (_converter == null)
+                {
+                    _converter = new ThreadSafeConverter(
+                        new RemotingToolset<PdfToolset>(
+                            new WinAnyCPUEmbeddedDeployment(
+                                new TempFolderDeployment())));
+                    HttpContextFactory.Current.Application["PechkinConverter"] = _converter;
+                }
             }
-            return converter;
+            return _converter;
         }
 
         public void StandardMethod(Stream stream, CMSDataContext db, IEnumerable<ContributorInfo> q, StatementSpecification cs, int set = 0)
@@ -221,7 +256,7 @@ namespace CmsWeb.Areas.Finance.Models.Report
             var dc = w.DirectContent;
 
             var prevfid = 0;
-            var runningtotals = db.ContributionsRuns.OrderByDescending(mm => mm.Id).First();
+            var runningtotals = db.ContributionsRuns.Where(mm => mm.UUId == UUId).Single();
 
             runningtotals.Processed = 0;
             db.SubmitChanges();
@@ -931,7 +966,7 @@ p { font-size: 11px; }
             public int PeopleId { get; set; }
             public int NextPeopleId { get; set; }
 
-            public Dictionary<int, int> FamilySet { get; set; }
+            public Dictionary<int, int> FamilySet { get; set; } = new Dictionary<int, int>();
 
             public override void OnOpenDocument(PdfWriter writer, Document document)
             {
@@ -940,10 +975,6 @@ p { font-size: 11px; }
                 base.OnOpenDocument(writer, document);
                 font = BaseFont.CreateFont(BaseFont.HELVETICA, BaseFont.CP1252, BaseFont.NOT_EMBEDDED);
                 dc = writer.DirectContent;
-                if (set == 0)
-                {
-                    FamilySet = new Dictionary<int, int>();
-                }
 
                 npages = new NPages(dc);
             }

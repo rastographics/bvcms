@@ -2,6 +2,7 @@ using CmsData;
 using CmsData.API;
 using CmsWeb.Properties;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml.Linq;
@@ -14,24 +15,22 @@ namespace CmsWeb.Areas.Finance.Models.Report
     {
         public DateTime fd { get; set; }
         public DateTime td { get; set; }
-        public string OutputFile { get; set; }
-        public string Host { get; set; }
+        public string id { get; set; }
+        public Guid UUId => Guid.Parse(id);
+        public string OutputFile { get; }
+        public string Host { get; }
         public int LastSet { get; set; }
         public string StartsWith { get; set; }
         public string Sort { get; set; }
         public int? TagId { get; set; }
         public bool ExcludeElectronic { get; set; }
 
-        // For extended report
-        public bool showCheckNo { get; set; }
-        public bool showNotes { get; set; }
-
         public ContributionStatementsExtract(string host, DateTime fd, DateTime td, string outputFile, string startswith, string sort, int? tagid, bool excludeelectronic)
         {
             this.fd = fd;
             this.td = td;
-            this.Host = host;
-            this.OutputFile = outputFile;
+            Host = host;
+            OutputFile = outputFile;
             TagId = tagid;
             StartsWith = startswith;
             Sort = sort;
@@ -39,82 +38,33 @@ namespace CmsWeb.Areas.Finance.Models.Report
         }
 
         public CMSDataContext Db { get; set; }
-        public void DoWork(StatementSpecification cs)
+        public void DoWork(ContributionStatements statements, StatementSpecification cs, List<ContributorInfo> contributorInfos)
         {
             Db = CMSDataContext.Create(Host);
-            Db.CommandTimeout = 1200;
 
-            var noaddressok = !Db.Setting("RequireAddressOnStatement", true);
-            showCheckNo = Db.Setting("RequireCheckNoOnStatement");
-            showNotes = Db.Setting("RequireNotesOnStatement");
-            const bool useMinAmt = true;
-
-            var qc = APIContribution.Contributors(Db, fd, td, 0, 0, 0, cs.Funds, noaddressok, useMinAmt, StartsWith, Sort, tagid: TagId, excludeelectronic: ExcludeElectronic);
-            var runningtotals = Db.ContributionsRuns.OrderByDescending(mm => mm.Id).First();
-            var contributorInfos = qc.ToList();
+            var runningtotals = Db.ContributionsRuns.Where(mm => mm.UUId == UUId).Single();
             runningtotals.Count = contributorInfos.Count();
             Db.SubmitChanges();
-            if (showCheckNo || showNotes)
+
+            using (var stream = new FileStream(OutputFile, FileMode.Create))
             {
-                var c = new ContributionStatements
-                {
-                    FromDate = fd,
-                    ToDate = td,
-                    typ = 3,
-                    NumberOfColumns = 1,
-                    ShowCheckNo = showCheckNo,
-                    ShowNotes = showNotes
-                };
-                using (var stream = new FileStream(OutputFile, FileMode.Create))
-                {
-                    c.Run(stream, Db, contributorInfos, cs);
-                }
-
-                LastSet = c.LastSet();
-                var sets = c.Sets();
-                foreach (var set in sets)
-                {
-                    using (var stream = new FileStream(Output(OutputFile, set), FileMode.Create))
-                    {
-                        c.Run(stream, Db, contributorInfos, cs, set);
-                    }
-                }
-
-                runningtotals = Db.ContributionsRuns.OrderByDescending(mm => mm.Id).First();
-                runningtotals.LastSet = LastSet;
-                runningtotals.Sets = string.Join(",", sets);
-                runningtotals.Completed = DateTime.Now;
-                Db.SubmitChanges();
+                statements.Run(stream, Db, contributorInfos, cs);
             }
-            else
+
+            LastSet = statements.LastSet();
+            var sets = statements.Sets();
+            foreach (var set in sets)
             {
-                var c = new ContributionStatements
+                using (var stream = new FileStream(Output(OutputFile, set), FileMode.Create))
                 {
-                    FromDate = fd,
-                    ToDate = td,
-                    typ = 3
-                };
-                using (var stream = new FileStream(OutputFile, FileMode.Create))
-                {
-                    c.Run(stream, Db, contributorInfos, cs);
+                    statements.Run(stream, Db, contributorInfos, cs, set);
                 }
-
-                LastSet = c.LastSet();
-                var sets = c.Sets();
-                foreach (var set in sets)
-                {
-                    using (var stream = new FileStream(Output(OutputFile, set), FileMode.Create))
-                    {
-                        c.Run(stream, Db, contributorInfos, cs, set);
-                    }
-                }
-
-                runningtotals = Db.ContributionsRuns.OrderByDescending(mm => mm.Id).First();
-                runningtotals.LastSet = LastSet;
-                runningtotals.Sets = string.Join(",", sets);
-                runningtotals.Completed = DateTime.Now;
-                Db.SubmitChanges();
             }
+
+            runningtotals.LastSet = LastSet;
+            runningtotals.Sets = string.Join(",", sets);
+            runningtotals.Completed = DateTime.Now;
+            Db.SubmitChanges();
         }
 
         public static StatementSpecification GetStatementSpecification(CMSDataContext db, string name)
@@ -126,7 +76,6 @@ namespace CmsWeb.Areas.Finance.Models.Report
             {
                 return new StatementSpecification()
                 {
-                    Description = "All Statements",
                     Notice = standardnotice,
                     Header = standardheader,
                     Funds = null

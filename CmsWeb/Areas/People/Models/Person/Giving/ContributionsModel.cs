@@ -141,7 +141,7 @@ namespace CmsWeb.Areas.People.Models
         private IQueryable<Contribution> GetContributionRecords()
         {
             var currentUser = CurrentDatabase.CurrentUserPerson;
-            var isFinanceUser = Roles.GetRolesForUser().Contains("Finance");
+            var isFinanceUser = CurrentDatabase.CurrentRoles().Contains("Finance");
             var isCurrentUser = currentUser.PeopleId == Person.PeopleId;
             var isSpouse = currentUser.PeopleId == Person.SpouseId;
             var isFamilyMember = currentUser.FamilyId == Person.FamilyId;
