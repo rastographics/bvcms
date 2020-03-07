@@ -256,10 +256,12 @@ namespace CmsWeb.Areas.Finance.Models.Report
             var dc = w.DirectContent;
 
             var prevfid = 0;
-            var runningtotals = db.ContributionsRuns.Where(mm => mm.UUId == UUId).Single();
-
-            runningtotals.Processed = 0;
-            db.SubmitChanges();
+            var runningtotals = UUId.HasValue ? db.ContributionsRuns.Where(mm => mm.UUId == UUId).SingleOrDefault() : null;
+            if (runningtotals != null)
+            {
+                runningtotals.Processed = 0;
+                db.SubmitChanges();
+            }
             var count = 0;
             foreach (var ci in contributors)
             {
@@ -277,9 +279,12 @@ namespace CmsWeb.Areas.Finance.Models.Report
 
                 if ((contributions.Count + pledges.Count + giftsinkind.Count + nontaxitems.Count) == 0)
                 {
-                    runningtotals.Processed += 1;
-                    runningtotals.CurrSet = set;
-                    db.SubmitChanges();
+                    if (runningtotals != null)
+                    {
+                        runningtotals.Processed += 1;
+                        runningtotals.CurrSet = set;
+                        db.SubmitChanges();
+                    }
                     if (set == 0)
                     {
                         pageEvents.FamilySet[ci.PeopleId] = 0;
@@ -838,10 +843,12 @@ p { font-size: 11px; }
                     pos = doc.Top;
                     doc.NewPage();
                 }
-
-                runningtotals.Processed += 1;
-                runningtotals.CurrSet = set;
-                db.SubmitChanges();
+                if (runningtotals != null)
+                {
+                    runningtotals.Processed += 1;
+                    runningtotals.CurrSet = set;
+                    db.SubmitChanges();
+                }
             }
 
             if (count == 0)
@@ -856,7 +863,7 @@ p { font-size: 11px; }
             }
             doc.Close();
 
-            if (set == LastSet())
+            if (set == LastSet() && runningtotals != null)
             {
                 runningtotals.Completed = DateTime.Now;
             }
