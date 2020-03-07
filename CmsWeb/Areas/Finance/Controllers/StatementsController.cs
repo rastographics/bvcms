@@ -157,7 +157,7 @@ namespace CmsWeb.Areas.Finance.Controllers
                 var sets = r.Sets.Split(',').Select(ss => ss.ToInt()).ToList();
                 foreach (var set in sets)
                 {
-                    html.Append($"<a href=\"/Statements/Download/{id}/{set}\">PDF with {set} pages per household</a><br>");
+                    html.Append($"<a href=\"/Statements/Download/{id}/{set}\">Download PDF {set}</a><br>");
                 }
             }
             ViewBag.download = html.ToString();
