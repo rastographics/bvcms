@@ -40,7 +40,7 @@ namespace CmsWeb.Areas.Public.Controllers
             BaseMessage dataIn = BaseMessage.createFromString(data);
             MobilePostCreate mpc = JsonConvert.DeserializeObject<MobilePostCreate>(dataIn.data);
 
-            MobileAccount account = MobileAccount.Create(mpc.first, mpc.last, mpc.email, mpc.phone, mpc.dob);
+            MobileAccount account = MobileAccount.Create(CurrentDatabase, mpc.first, mpc.last, mpc.email, mpc.phone, mpc.dob);
 
             var br = new BaseMessage();
 

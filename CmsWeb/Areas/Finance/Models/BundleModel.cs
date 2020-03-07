@@ -35,6 +35,8 @@ namespace CmsWeb.Areas.Finance.Models
         }
 
         public int BundleStatusId { get; set; }
+        public string CustomBundleReport { get; set; }
+        public bool RemoteDepositEnabled { get; set; }
         public bool IsAdmin => CurrentDatabase.CurrentUser.InRole("Admin") || CurrentDatabase.CurrentUser.InRole("FinanceAdmin");
         public bool IsDataEntry => CurrentDatabase.CurrentUser.InRole("FinanceDataEntry");
         public bool CanEdit => BundleStatusId == BundleStatusCode.Open || BundleStatusId == BundleStatusCode.OpenForDataEntry || IsAdmin;
@@ -91,14 +93,12 @@ namespace CmsWeb.Areas.Finance.Models
 
         public BundleHeader Bundle;
 
-        public BundleModel()
-        {
-        }
-
         public BundleModel(int id, CMSDataContext db)
         {
             CurrentDatabase = db;
             BundleId = id;
+            RemoteDepositEnabled = db.Setting("RemoteDepositCaptureEnabled");
+            CustomBundleReport = db.Setting("CustomBundleReport", "");
         }
 
         private IQueryable<Contribution> bundleItems;

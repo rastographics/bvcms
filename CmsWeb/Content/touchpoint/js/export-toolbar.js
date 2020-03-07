@@ -4,9 +4,19 @@
         $.InitFunctions = {};
 
     $.InitFunctions.TagAllCallBack = function (a) {
-        $(".taguntag:visible").removeClass('btn-default').removeClass('btn-success');
-        $(".taguntag:visible").addClass('btn-default');
-        $(".taguntag:visible").html("<i class='fa fa-tag'></i> Remove");
+        $.post('/Query/ToggleCurrentTag', null, function (ret) {
+            console.log(ret);
+            if (ret.CurrentTag.length > 0) {
+                $(".taguntag:visible").removeClass('btn-default').removeClass('btn-success');
+                $(".taguntag:visible").addClass('btn-default');
+                $(".taguntag:visible").html("<i class='fa fa-tag'></i> Remove");
+                window.location.reload();
+            }
+            else {
+                swal("Error!", "Internal Server Error", "error");
+                $.unblock();
+            }
+        });
     };
 
     $('body').on('click', '#singleemail', function (ev) {

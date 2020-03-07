@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using CmsData;
@@ -78,32 +79,21 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
                         // case SECURITY_LABELS_PER_FAMILY: Security Label Per Family (Handled outside this routine)
 
                         case SECURITY_LABELS_PER_MEETING:
-                            foreach (AttendanceGroup group in groups)
                             {
-                                Organization org = cacheSet.getOrganization(group.groupID);
-                                if (org != null && org.NoSecurityLabel != true && org.NumCheckInLabels > 0 && group.present)
+                                for (int iX = 0; iX < groups.Count; iX++)
                                 {
                                     labelTypes.Add(Label.Type.SECURITY);
                                 }
-                            }
 
-                            break;
+                                break;
+                            }
 
                         case SECURITY_LABELS_PER_CHILD:
-                            bool needsSecurityLabel = false;
-                            foreach (AttendanceGroup group in groups)
-                            {
-                                Organization org = cacheSet.getOrganization(group.groupID);
-                                if (org != null && org.NoSecurityLabel != true && org.NumCheckInLabels > 0 && group.present)
-                                {
-                                    needsSecurityLabel = true;
-                                }
-                            }
-                            if (needsSecurityLabel)
                             {
                                 labelTypes.Add(Label.Type.SECURITY);
+
+                                break;
                             }
-                            break;
                     }
                 }
                 else
@@ -172,5 +162,22 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
                 }
             }
         }
+
+        public void populateSubgroups(SqlConnection db, AttendanceCacheSet cacheSet)
+        {
+            foreach (AttendanceGroup group in groups)
+            {
+                Organization org = cacheSet.getOrganization(group.groupID);
+                if (org != null)
+                {
+                    var subgroups = Subgroup.forGroupID(db, group.groupID, peopleID);
+                    if (subgroups.Count > 0)
+                    {
+                        group.subgroupName = subgroups.First().name;
+                    }
+                }
+            }
+        }
+
     }
 }

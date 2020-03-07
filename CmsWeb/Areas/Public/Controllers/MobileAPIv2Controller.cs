@@ -48,7 +48,7 @@ namespace CmsWeb.Areas.Public.Controllers
 
             if (message.version < (int)MobileMessage.Version.EIGHT)
             {
-                MobileAccountV1 account = MobileAccountV1.Create(mpc.first, mpc.last, mpc.email, mpc.phone, mpc.dob);
+                MobileAccountV1 account = MobileAccountV1.Create(CurrentDatabase, mpc.first, mpc.last, mpc.email, mpc.phone, mpc.dob);
 
                 MobileMessage response = new MobileMessage();
 
@@ -255,7 +255,7 @@ namespace CmsWeb.Areas.Public.Controllers
                 return response;
             }
 
-            User user = AccountModel.AddUser(message.argInt);
+            User user = AccountModel.AddUser(CurrentDatabase, message.argInt);
 
             response.id = user.UserId;
             response.data = user.Username;
