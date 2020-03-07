@@ -124,7 +124,7 @@ namespace CmsData
             return expr;
         }
         public Expression IsRecentGiverFunds()
-        {
+        {            
             if (!db.FromBatch)
             {
                 if (db.CurrentUser == null || db.CurrentUser.Roles.All(rr => rr != "Finance"))
@@ -141,7 +141,12 @@ namespace CmsData
             }
             //throw new Exception($"fundset '{Quarters}' was not found");
             var fundlist = string.Join(",", fundcsv);
-            var q = db.RecentGiverFunds(Days, fundlist).Select(v => v.PeopleId.Value);
+
+            if (TaxNonTax.IsNotNull()) TaxNonTaxBool = TaxNonTax == "TaxDed" ? false : true;
+            else
+                TaxNonTaxBool = null;
+
+            var q = db.RecentGiverFunds(Days, fundlist, TaxNonTaxBool).Select(v => v.PeopleId.Value);
             var tag = db.PopulateTemporaryTag(q);
             Expression<Func<Person, bool>> pred = null;
 

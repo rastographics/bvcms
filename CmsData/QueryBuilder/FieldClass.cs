@@ -112,6 +112,9 @@ namespace CmsData
                     case Param.EndDate:
                         list.AddParamDate(attr, prop);
                         break;
+                    case Param.TaxNonTax:
+                        list.AddParamDate(attr, prop);
+                        break;
                 }
             }
             if (list.Any(vv => vv.Name == "Div"))
@@ -233,6 +236,7 @@ namespace CmsData
         PmmLabels,
         Tags,
         Tag,
+        TaxNonTax,
         SavedQueryIdDesc,
         MemberTypes,
         AttendTypes

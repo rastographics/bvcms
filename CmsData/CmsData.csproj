@@ -1182,6 +1182,7 @@
     </Resource>
     <Content Include="Migrations\20200224_Add_CreatedDate_OrgMemberDocuments_Column.sql" />
     <Content Include="Migrations\20200224_Create_OrgTemporaryDocuments_Table.sql" />
+    <Content Include="Migrations\20200306_Alter_RecentGiverFunds.sql" />
     <Content Include="QueryBuilder\CompareMap.xml">
       <SubType>Designer</SubType>
     </Content>

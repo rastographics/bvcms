@@ -75,6 +75,8 @@ namespace CmsData
         public bool IsPublic { get; set; }
         public DateTime CreatedOn { get; set; }
         public string Quarters { get; set; }
+        public string TaxNonTax { get; set; }
+        public bool? TaxNonTaxBool { get; set; }
         public string FundIds { get; set; }
         public string SavedQuery { get; set; }
         public string SavedQueryIdDesc => SavedQuery;
@@ -578,6 +580,7 @@ namespace CmsData
             StartDate = from.StartDate;
             Tags = from.Tags;
             TextValue = from.TextValue;
+            TaxNonTax = from.TaxNonTax;
         }
         public void DeleteClause()
         {
