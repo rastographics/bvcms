@@ -54,7 +54,7 @@ namespace CmsData
                 list.Add(qs, ot);
             }
             var url = db.ServerLink(
-                $"/OnlineReg/RsvpLinkSg/{ot.Id.ToCode()}?confirm={confirm}&message={HttpUtility.UrlEncode(msg)}&regrets=true");
+                $"/OnlineReg/RsvpLinkSg/{ot.Id.ToCode()}?confirm={confirm}&message={HttpUtility.UrlEncode(msg)}");
 
             var href = d["href"];
             if (href.Contains("regretslink", ignoreCase: true))

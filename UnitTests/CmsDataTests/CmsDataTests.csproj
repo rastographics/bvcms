@@ -123,6 +123,7 @@
     <Compile Include="Classes\PeopleUtilsTests.cs" />
     <Compile Include="Classes\ProtectMyMinistryHelperTests.cs" />
     <Compile Include="DbUtil\CMSDataContextTests.cs" />
+    <Compile Include="Email\ReplacementCodes\Links\SupportLinkTests.cs" />
     <Compile Include="Email\ReplacementCodes\Links\UnlayerLinkTests.cs" />
     <Compile Include="Extensions\ContributionTests.cs" />
     <Compile Include="Finance\AcceptivaGatewayTests.cs" />
