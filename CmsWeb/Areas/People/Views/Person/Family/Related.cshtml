@@ -3,7 +3,7 @@
 @using CmsWeb.Areas.People.Models
 @model FamilyModel
 @{
-    var dialog = "/SearchAdd2/Dialog/Fuzzy/RelatedFamily/" + Model.Person.PeopleId;
+    var dialog = "/SearchAdd2/Dialog/RelatedFamily/" + Model.Person.PeopleId;
     var showFamilyQueryLink = false;
     if (User.IsInRole("OrgLeadersOnly"))
     {

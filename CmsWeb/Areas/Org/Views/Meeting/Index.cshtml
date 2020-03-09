@@ -135,13 +135,13 @@
                                     </label>
                                 </div>
                                 <div class="pull-right">
-                                    <a href="/SearchAdd2/Dialog/Fuzzy/registered/@Model.meeting.MeetingId" class="btn btn-success hidden searchadd"><i class="fa fa-plus-circle"></i> Add Registered</a>
+                                    <a href="/SearchAdd2/Dialog/registered/@Model.meeting.MeetingId" class="btn btn-success hidden searchadd"><i class="fa fa-plus-circle"></i> Add Registered</a>
                                 </div>
                             </div>
                         }
                         @if (User.IsInRole("Attendance") && Model.ShowAddGuest)
                         {
-                            <a href="/SearchAdd2/Dialog/Fuzzy/visitor/@Model.meeting.MeetingId" class="btn btn-success searchadd pull-right" title="Click to Add Guests to Meeting"><i class="fa fa-plus-circle"></i> Add Guests</a>
+                            <a href="/SearchAdd2/Dialog/visitor/@Model.meeting.MeetingId" class="btn btn-success searchadd pull-right" title="Click to Add Guests to Meeting"><i class="fa fa-plus-circle"></i> Add Guests</a>
                         }
                     </div>
                 </div>

@@ -5,7 +5,7 @@
 }
 <tr cid="@Model.ContributionId">
     <td>
-        <a href="/SearchAdd2/Dialog/Fuzzy/contributor/@Model.ContributionId" class="searchadd pid">
+        <a href="/SearchAdd2/Dialog/contributor/@Model.ContributionId" class="searchadd pid">
             @(Model.PeopleId == null ? "Select" : Model.PeopleId.ToString())
         </a>
         <input type="hidden" class="date" value="@Model.Date.FormatDate()" />
