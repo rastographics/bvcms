@@ -48,6 +48,11 @@
     (function () {
         var passcodes = document.querySelectorAll('[name="passcode"].hidden-xs');
         passcodes.forEach(function (el) {
+            el.onkeydown = function (event) {
+                if (13 == event.keyCode || 10 == event.keyCode) {
+                    event.preventDefault();
+                }
+            };
             el.onkeyup = function (event) {
                 var target = event.target;
                 if (0 <= event.key && 9 >= event.key) {
