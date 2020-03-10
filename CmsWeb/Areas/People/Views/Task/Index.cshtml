@@ -106,7 +106,7 @@
                             &nbsp;
                             @if (Model.IsAnOwner)
                             {
-                                <a href="/SearchAdd2/Dialog/Fuzzy/taskabout/@Model.Id?displaySkipSearch=false" class="searchadd">
+                                <a href="/SearchAdd2/Dialog/taskabout/@Model.Id?displaySkipSearch=false" class="searchadd">
                                     <i class="fa fa-pencil"></i>
                                 </a>
                             }
@@ -159,7 +159,7 @@
                             <dd>
                                 @if (Model.IsOwner)
                                 {
-                                    <a href="/SearchAdd2/Dialog/Fuzzy/taskowner/@Model.Id?displaySkipSearch=false" class="searchadd">
+                                    <a href="/SearchAdd2/Dialog/taskowner/@Model.Id?displaySkipSearch=false" class="searchadd">
                                         @(Model.Owner ?? "Empty")
                                     </a>
                                 }
@@ -180,7 +180,7 @@
                             <dd>
                                 @if (Model.IsOwner)
                                 {
-                                    <a href="/SearchAdd2/Dialog/Fuzzy/taskdelegate/@Model.Id?displaySkipSearch=false" class="searchadd">
+                                    <a href="/SearchAdd2/Dialog/taskdelegate/@Model.Id?displaySkipSearch=false" class="searchadd">
                                         @(Model.CoOwner ?? "Empty")
                                     </a>
                                 }
