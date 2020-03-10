@@ -3,7 +3,8 @@
 @model CmsWeb.Areas.People.Models.ContributionsModel
 @{
     var campusId = Model.Person.CampusId;
-    var YearList = Model.GivingYearsList();
+    var overrideSelection = HttpContextFactory.Current.Session["ushgiving-Year"] != null;
+    var YearList = Model.GivingYearsList(overrideSelection);
     var GivingSummary = Model.GetGivingSummary();
     var givingSumCollapse = Model.givingSumCollapse == true ? "in" : "";
     var collapseArrow = givingSumCollapse == "in" ? "down" : "right";
