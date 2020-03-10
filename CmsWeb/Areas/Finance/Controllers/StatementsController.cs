@@ -149,7 +149,7 @@ namespace CmsWeb.Areas.Finance.Controllers
             var html = new StringBuilder();
             if (r.CurrSet > 0)
             {
-                html.Append("<a href=\"/Statements/Download\">PDF with all households</a><br>");
+                html.Append($"<a href=\"/Statements/Download/{id}\">PDF with all households</a><br>");
             }
 
             if (r.Sets.HasValue())
