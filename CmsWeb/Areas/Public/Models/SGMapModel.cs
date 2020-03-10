@@ -89,6 +89,22 @@ namespace CmsWeb.Models
             if (!orgIdList.Any() && !_isInitialSearchResult) return new SGInfo[] {};
 
             // To be shown on the Small Group Finder, organizations/groups must have the following:
+            // NOTE: for debugging purposes...
+            /*
+            var debug = (from o in DbUtil.Db.Organizations
+                let host = o.OrganizationMembers.FirstOrDefault(mm =>
+                    mm.OrgMemMemTags.Any(mt => mt.MemberTag.Name == "HostHome") || mm.PeopleId == o.LeaderId).Person
+                let schedule = o.OrgSchedules.FirstOrDefault().MeetingTime
+                let addr = o.OrganizationExtras
+                    .FirstOrDefault(oe => extraValueForAddress != null && oe.Field == extraValueForAddress).Data
+                select new
+                {
+                    Org = o,
+                    OrgHost = host,
+                    Schedule = schedule,
+                    ExtraValueLocation = addr
+                }).ToList();
+                */
             // 1. A host home (Leader with address)
             // 2. At least one meeting
             // -OR-
@@ -173,7 +189,7 @@ Meeting Time: [SGF:Day] at [SGF:Time]<br />
             var mapPinTextColor = DbUtil.Db.Setting("UX-MapPinTextColor", "000000");
 
             return (from ql in qlist
-                    where ql.gc.Latitude != 0
+                    where ql.gc == null || ql.gc.Latitude != 0
                     select new
                     {
                         model = ql,
@@ -190,8 +206,8 @@ Meeting Time: [SGF:Day] at [SGF:Time]<br />
                 {
                     html = BuildMapFromTemplate(template, i.dict),
                     org = i.model.org,
-                    latitude = i.model.gc.Latitude,
-                    longitude = i.model.gc.Longitude,
+                    latitude = i.model.gc?.Latitude ?? 0,
+                    longitude = i.model.gc?.Longitude ?? 0,
                     image =
                         $"//chart.googleapis.com/chart?chst=d_map_pin_letter&chld={i.model.markertext}|{i.model.color}|{mapPinTextColor}"
                 });
