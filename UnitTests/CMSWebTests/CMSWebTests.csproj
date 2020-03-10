@@ -140,6 +140,7 @@
     <Compile Include="Areas\OnlineReg\Models\OnlineReg\OnlineRegModelTests.cs" />
     <Compile Include="Areas\OnlineReg\Models\OnlineReg\PaymentFormTests.cs" />
     <Compile Include="Areas\Public\Models\CheckIn\CheckInModelTests.cs" />
+    <Compile Include="Areas\Public\Models\MobileAPIv2\MobileAccountTests.cs" />
     <Compile Include="Areas\Public\Models\SmallGroupFinderModelTests.cs" />
     <Compile Include="Areas\Reports\Models\Export\ExportPeopleTests.cs" />
     <Compile Include="Areas\Reports\Models\Reports\Export\ExportInvolvementsTests.cs" />
