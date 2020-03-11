@@ -3,6 +3,7 @@ using CmsData.Codes;
 using CmsWeb.Areas.Search.Controllers;
 using CmsWeb.Constants;
 using CmsWeb.Models;
+using CmsWeb.Properties;
 using HandlebarsDotNet;
 using System;
 using System.Collections.Generic;

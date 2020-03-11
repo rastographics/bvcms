@@ -3,6 +3,7 @@ using CmsData.Codes;
 using CmsData.Registration;
 using CmsData.View;
 using CmsWeb.Areas.Main.Models;
+using CmsWeb.Properties;
 using Elmah;
 using System;
 using System.Collections.Generic;
@@ -11,6 +12,7 @@ using System.Web;
 using System.Web.Hosting;
 using System.Web.Mvc;
 using UtilityExtensions;
+using Settings = CmsData.Registration.Settings;
 
 namespace CmsWeb.Areas.OnlineReg.Models
 {

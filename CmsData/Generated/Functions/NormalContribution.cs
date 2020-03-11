@@ -15,6 +15,12 @@ namespace CmsData.View
 
         private DateTime? _ContributionDate;
 
+        private int _ContributionTypeId;
+
+        private string _ContributionType;
+
+        private string _BundleType;
+
         private string _FundName;
 
         private string _CheckNo;
@@ -24,10 +30,42 @@ namespace CmsData.View
         private string _Description;
 
         private string _FundDescription;
-
+        
         public NormalContribution()
         {
         }
+
+        public NormalContribution(NonTaxContribution c)
+        {
+            ContributionId = c.ContributionId;
+            ContributionAmount = c.ContributionAmount;
+            ContributionDate = c.ContributionDate;
+            ContributionTypeId = c.ContributionTypeId;
+            ContributionType = c.ContributionType;
+            BundleType = c.BundleType;
+            FundName = c.FundName;
+            CheckNo = c.CheckNo;
+            Name = c.Name;
+            Description = c.Description;
+            FundDescription = c.FundDescription;
+        }
+
+        public NormalContribution(GiftsInKind c)
+        {
+            ContributionId = c.ContributionId;
+            ContributionAmount = c.ContributionAmount;
+            ContributionDate = c.ContributionDate;
+            ContributionTypeId = c.ContributionTypeId;
+            ContributionType = c.ContributionType;
+            BundleType = c.BundleType;
+            FundName = c.FundName;
+            CheckNo = c.CheckNo;
+            Name = c.Name;
+            Description = c.Description;
+            FundDescription = c.FundDescription;
+        }
+
+        public static explicit operator NormalContribution(NonTaxContribution c) => new NormalContribution(c);
 
         [Column(Name = "ContributionId", Storage = "_ContributionId", DbType = "int NOT NULL")]
         public int ContributionId
@@ -67,6 +105,48 @@ namespace CmsData.View
                 if (_ContributionDate != value)
                 {
                     _ContributionDate = value;
+                }
+            }
+        }
+
+        [Column(Name = "ContributionTypeId", Storage = "_ContributionTypeId", DbType = "int")]
+        public int ContributionTypeId
+        {
+            get => _ContributionTypeId;
+
+            set
+            {
+                if (_ContributionTypeId != value)
+                {
+                    _ContributionTypeId = value;
+                }
+            }
+        }
+
+        [Column(Name = "ContributionType", Storage = "_ContributionType", DbType = "nvarchar(50)")]
+        public string ContributionType
+        {
+            get => _ContributionType;
+
+            set
+            {
+                if (_ContributionType != value)
+                {
+                    _ContributionType = value;
+                }
+            }
+        }
+
+        [Column(Name = "BundleType", Storage = "_BundleType", DbType = "nvarchar(50)")]
+        public string BundleType
+        {
+            get => _BundleType;
+
+            set
+            {
+                if (_BundleType != value)
+                {
+                    _BundleType = value;
                 }
             }
         }

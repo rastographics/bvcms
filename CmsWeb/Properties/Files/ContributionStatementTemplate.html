@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style type="text/css">
+        * {
+            font-family: Helvetica, Helv;
+            font-size: 11pt;
+            margin: 0;
+            padding: 0;
+            text-align: left;
+            text-indent: 0;
+            vertical-align: top;
+            -webkit-border-horizontal-spacing: 0;
+        }
+
+        thead {
+            display: table-header-group;
+        }
+
+        tfoot {
+            display: table-header-group;
+        }
+
+        table,
+        tbody {
+            page-break-inside: auto;
+        }
+
+        table {
+            margin-bottom: 20pt;
+        }
+
+        tr {
+            page-break-inside: avoid !important;
+        }
+
+        td, th {
+            padding: 2pt;
+        }
+
+        .right {
+            text-align: right;
+        }
+
+        .header {
+            border-bottom: 2px solid black;
+        }
+        .subtotal {
+            border-top: 2px solid black;
+        }
+    </style>
+</head>
+<body>
+    <table style="width:100%;height: 3.5in;">
+        <tbody>
+            <tr>
+                <td style="width: 55%">{{{header}}}</td>
+                <td class="right">Printed: {{FmtDate now}} id:{{contributor.PeopleId}} {{contributor.CampusId}}<br />{{{notice}}}</td>
+            </tr>
+            <tr>
+                <td style="padding-left:20pt;font-size:13pt">{{contributor.Name}}<br />{{{contributor.MailingAddress}}}</td>
+                <td></td>
+            </tr>
+        </tbody>
+    </table>
+    {{{body}}}
+    {{{footer}}}
+</body>
+</html>

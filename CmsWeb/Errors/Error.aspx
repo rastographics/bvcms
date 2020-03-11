@@ -2,6 +2,7 @@
 <%@ Page Language="C#" AutoEventWireup="true" %>
 <%@ Import Namespace="System.Security.Cryptography" %>
 <%@ Import Namespace="System.Threading" %>
+<%@ Import Namespace="CmsWeb.Properties" %>
 <script runat="server">
    void Page_Load() {
       byte[] delay = new byte[1];

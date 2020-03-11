@@ -15,6 +15,12 @@ namespace CmsData.View
 
         private DateTime? _ContributionDate;
 
+        private int _ContributionTypeId;
+
+        private string _ContributionType;
+
+        private string _BundleType;
+
         private string _FundName;
 
         private string _CheckNo;
@@ -67,6 +73,48 @@ namespace CmsData.View
                 if (_ContributionDate != value)
                 {
                     _ContributionDate = value;
+                }
+            }
+        }
+
+        [Column(Name = "ContributionTypeId", Storage = "_ContributionTypeId", DbType = "int")]
+        public int ContributionTypeId
+        {
+            get => _ContributionTypeId;
+
+            set
+            {
+                if (_ContributionTypeId != value)
+                {
+                    _ContributionTypeId = value;
+                }
+            }
+        }
+
+        [Column(Name = "ContributionType", Storage = "_ContributionType", DbType = "nvarchar(50)")]
+        public string ContributionType
+        {
+            get => _ContributionType;
+
+            set
+            {
+                if (_ContributionType != value)
+                {
+                    _ContributionType = value;
+                }
+            }
+        }
+
+        [Column(Name = "BundleType", Storage = "_BundleType", DbType = "nvarchar(50)")]
+        public string BundleType
+        {
+            get => _BundleType;
+
+            set
+            {
+                if (_BundleType != value)
+                {
+                    _BundleType = value;
                 }
             }
         }

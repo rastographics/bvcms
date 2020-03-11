@@ -8,6 +8,7 @@ using System.Data.SqlClient;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text.RegularExpressions;
+using UtilityExtensions;
 
 namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
 {
@@ -113,14 +114,8 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
 			} else {
 				string first = "";
 				string last = "";
-				string[] parts = search.Split( ' ' );
 
-				if( parts.Length == 1 ) {
-					last = parts[0];
-				} else if( parts.Length > 1 ) {
-					first = parts[0];
-					last = parts[1];
-				}
+                Util.NameSplit(search, out first, out last);
 
 				qFamilies = @"SELECT TOP 50
 										family.FamilyId AS id,
