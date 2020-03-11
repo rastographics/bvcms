@@ -7,6 +7,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
 using System.Xml.Linq;
+using CsQuery.ExtensionMethods.Internal;
 
 namespace UtilityExtensions
 {
@@ -208,31 +209,38 @@ namespace UtilityExtensions
             return new string(password);
         }
 
+        /**
+         * TPD-447 fundamentally changes the way this method acts. Now, the search algorithm inside FetchPeople()
+         * will check to see if a first and/or last name is present. If only one name is present (without spaces) it is
+         * treated as neither a first name nor a last name; instead the algorithm will search all name fields (first, last,
+         * nickname, etc.).
+         * Possible inputs: "John Smith" || "John" || "Smith" || "Smith, John" || "Smith,John" || "John " || " Smith"
+         */
         public static void NameSplit(string name, out string first, out string last)
         {
-            if ((name ?? "").Contains(","))
+            first = last = "";
+            if (name.IsNullOrEmpty() || string.IsNullOrWhiteSpace(name)) return;
+            bool swapOrder = name.Contains(","); // e.g "Smith, John" OR "Smith,John"
+            var namesList = name.Split(new[] { ' ', ',' }, StringSplitOptions.RemoveEmptyEntries); // replace comma with space if present, (e.g "Smith,John" => "Smith John") and split.
+
+            if (namesList.Length > 1) // first and last name are present
             {
-                var a = (name ?? "").Split(',');
-                first = "";
-                if (a.Length > 1)
-                {
-                    first = a[1].Trim();
-                    last = a[0].Trim();
-                }
-                else
-                    last = a[0].Trim();
+                first = swapOrder ? namesList[1] : namesList[0]; // first = "John" whether var is "Smith,John" OR "John Smith"
+                last = swapOrder ? namesList[0] : namesList[1]; // last = "Smith" whether var is "Smith,John" OR "John Smith"
             }
-            else
+            else // only one name is present, but there may be spaces.
             {
-                var a = (name ?? "").Split(' ');
-                first = "";
-                if (a.Length > 1)
+                if (name.Contains(" ")) // user is searching either <space>name (Last) or name<space> (First)
                 {
-                    first = a[0];
-                    last = a[1];
+                    if (name.ToCharArray()[0] == ' ') // <space>name; user is searching by lastname only. 
+                    {
+                        last = namesList[0]; // first = ""
+                    }
+                    else // name<space>; user is searching by firstname only.
+                    {
+                        first = namesList[0]; // last = ""
+                    }
                 }
-                else
-                    last = a[0];
             }
         }
 
