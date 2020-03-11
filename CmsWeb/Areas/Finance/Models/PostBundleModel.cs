@@ -224,7 +224,7 @@ namespace CmsWeb.Models
                          Pid = p.PeopleId,
                          name = p.Name2,
                          age = p.Age,
-                         campusid = p.CampusId,
+                         campus = p.Campu.Code,
                          spouse = spouse.Name,
                          addr = p.PrimaryAddress ?? "",
                          altname = p.AltName,
@@ -248,7 +248,7 @@ namespace CmsWeb.Models
                          Pid = p.PeopleId,
                          name = p.Name2,
                          age = p.Age,
-                         campusid = p.CampusId,
+                         campus = p.Campu.Code,
                          email = p.EmailAddress,
                          spouse = spouse.Name,
                          addr = p.PrimaryAddress ?? "",
@@ -530,28 +530,16 @@ namespace CmsWeb.Models
             {
                 CurrentDatabase = db;
                 showaltname = CurrentDatabase.Setting("ShowAltNameOnSearchResults");
+                showcampus = CurrentDatabase.Setting("BundleEntryCampusCode");
             }
-            public string Name
-            {
-                get
-                {
-                    string displaycampus = null;
-                    var displayage = (age.HasValue ? $"{Person.AgeDisplay(age, Pid)}" : "");
-                    if(CurrentDatabase.Setting("BundleEntryCampusCode"))
-                        displaycampus = campusid.ToString();
-                    var sep = displayage.HasValue() && displaycampus.HasValue() ? " " : "";
-                    var inparens = $"{displayage}{sep}{displaycampus}";
-                    if (inparens.HasValue())
-                        return displayname + $" ({inparens})";
-                    return displayname;
-                }
-            }
+            public string Name => displayname + (age.HasValue ? $" ({Person.AgeDisplay(age, Pid)})" : "") + (showcampus ? $" {campus}" : "");
 
             internal bool showaltname;
+            internal bool showcampus;
             internal string name;
             internal string altname;
             internal int? age;
-            internal int? campusid;
+            internal string campus;
 
             public int Pid { get; set; }
             internal List<RecentContribution> recent { get; set; }
