@@ -982,6 +982,10 @@ namespace CmsData
 
         public Table<CustomColumn> CustomColumns => GetTable<CustomColumn>();
 
+        public Table<DashboardWidget> DashboardWidgets => GetTable<DashboardWidget>();
+
+        public Table<DashboardWidgetRole> DashboardWidgetRoles => GetTable<DashboardWidgetRole>();
+
         public Table<DecisionType> DecisionTypes => GetTable<DecisionType>();
 
         public Table<DeleteMeetingRun> DeleteMeetingRuns => GetTable<DeleteMeetingRun>();

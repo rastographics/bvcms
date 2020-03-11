@@ -858,6 +858,8 @@
     <Compile Include="Areas\Search\Models\RegistrationSearch\RegistrationSearchModel.cs" />
     <Compile Include="Areas\Search\Models\SavedQuery\SavedQueryInfo.cs" />
     <Compile Include="Areas\Search\Models\SavedQuery\SavedQueryModel.cs" />
+    <Compile Include="Areas\Setup\Controllers\DashboardWidgetController.cs" />
+    <Compile Include="Areas\Setup\Models\DashboardWiget.cs" />
     <Compile Include="Areas\Setup\Models\RoleModel.cs" />
     <Compile Include="Areas\Setup\Models\Pushpay\RecurringManagment.cs" />
     <Compile Include="Areas\Setup\Controllers\GatewayController.cs" />
@@ -1891,6 +1893,8 @@
     <Content Include="Areas\Org\Views\Org\DisplayTemplates\ESpaceEventId.cshtml" />
     <Content Include="Areas\Org\Views\Org\Other\eSpaceResults.cshtml" />
     <Content Include="Areas\Manage\Views\Batch\RetrieveBatchData.cshtml" />
+    <Content Include="Areas\Setup\Views\DashboardWidget\Index.cshtml" />
+    <Content Include="Areas\Setup\Views\DashboardWidget\Manage.cshtml" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
