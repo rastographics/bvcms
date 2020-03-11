@@ -441,7 +441,7 @@ p { font-size: 11px; }
                 var colwidth = (doc.Right - doc.Left - gutter) / NumberOfColumns;
 
                 var t = (NumberOfColumns == 2)
-                ? new PdfPTable(new[] { 10f, 24f, 10f })
+                ? new PdfPTable(new[] { 12f, 24f, 12f })
                 : new PdfPTable(new[] { 15f, 25f, 15f, 15f, 30f })
                 {
                     WidthPercentage = 100
@@ -745,7 +745,7 @@ p { font-size: 11px; }
                 {
                     t = new PdfPTable((NumberOfColumns == 1)
                         ? new[] { 15f, 25f, 15f, 15f, 30f }
-                        : new[] { 10f, 24f, 10f });
+                        : new[] { 12f, 24f, 12f });
 
                     t.WidthPercentage = 100;
                     t.DefaultCell.Border = Rectangle.NO_BORDER;
