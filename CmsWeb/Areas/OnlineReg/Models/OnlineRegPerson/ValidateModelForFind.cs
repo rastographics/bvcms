@@ -240,7 +240,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         private void ValidateEmail()
         {
-            if (!EmailAddress.HasValue() || !Util.ValidEmail(EmailAddress))
+            if (!EmailAddress.HasValue() || !Util.ValidEmail(EmailAddress.Trim()))
             {
                 if (person == null)
                 {
