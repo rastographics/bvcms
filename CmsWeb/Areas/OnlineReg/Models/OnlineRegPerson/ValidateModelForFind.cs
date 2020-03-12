@@ -248,7 +248,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                         "Please specify a valid email address.");
                     Log("InvalidEmail");
                 }
-                else if (!Util.ValidEmail(person.EmailAddress))
+                else if (!Util.ValidEmail(person.EmailAddress.Trim()))
                 {
                     modelState.AddModelError(Parent.GetNameFor(mm => mm.List[Index].EmailAddress),
                         "No valid email address needed for confirmation on record");
