@@ -4,7 +4,10 @@
 [SQL]: https://www.microsoft.com/en-us/sql-server/sql-server-editions-express
 [PR]: PullRequestGuidelines.md
 
-BVCMS Developer Quick Start Guide
+[![CodeFactor](https://www.codefactor.io/repository/github/bvcms/bvcms/badge)](https://www.codefactor.io/repository/github/bvcms/bvcms)
+[![codecov](https://codecov.io/gh/bvcms/bvcms/branch/develop/graph/badge.svg)](https://codecov.io/gh/bvcms/bvcms)
+
+Developer Quick Start Guide
 ---
 
 Copyright (c) 2008-2019 Bellevue Baptist Church 

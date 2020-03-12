@@ -51,6 +51,7 @@
             el.onkeydown = function (event) {
                 if (13 == event.keyCode || 10 == event.keyCode) {
                     event.preventDefault();
+                    return false;
                 }
             };
             el.onkeyup = function (event) {
@@ -74,6 +75,7 @@
                     if (valid) {
                         document.getElementById('finish').click();
                     }
+                    return false;
                 } else if ('Backspace' === event.key) {
                     var prev;
                     passcodes.forEach(function (e) {
