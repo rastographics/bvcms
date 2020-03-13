@@ -1,231 +1,177 @@
-using System; 
+using System;
+using System.ComponentModel;
 using System.Data.Linq;
 using System.Data.Linq.Mapping;
-using System.Data;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Linq;
-using System.Linq.Expressions;
-using System.ComponentModel;
-using CmsData.Infrastructure;
 
 namespace CmsData
 {
-	[Table(Name="dbo.Roles")]
-	public partial class Role : INotifyPropertyChanging, INotifyPropertyChanged
-	{
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-	#region Private Fields
-		
-		private string _RoleName;
-		
-		private int _RoleId;
-		
-		private bool? _Hardwired;
-		
-		private int? _Priority;
-		
-   		
-   		private EntitySet<DashboardWidgetRole> _DashboardWidgetRoles;
-		
-   		private EntitySet<UserRole> _UserRoles;
-		
-    	
-	#endregion
-	
-    #region Extensibility Method Definitions
-    partial void OnLoaded();
-    partial void OnValidate(System.Data.Linq.ChangeAction action);
-    partial void OnCreated();
-		
-		partial void OnRoleNameChanging(string value);
-		partial void OnRoleNameChanged();
-		
-		partial void OnRoleIdChanging(int value);
-		partial void OnRoleIdChanged();
-		
-		partial void OnHardwiredChanging(bool? value);
-		partial void OnHardwiredChanged();
-		
-		partial void OnPriorityChanging(int? value);
-		partial void OnPriorityChanged();
-		
-    #endregion
-		public Role()
-		{
-			
-			this._DashboardWidgetRoles = new EntitySet<DashboardWidgetRole>(new Action< DashboardWidgetRole>(this.attach_DashboardWidgetRoles), new Action< DashboardWidgetRole>(this.detach_DashboardWidgetRoles)); 
-			
-			this._UserRoles = new EntitySet<UserRole>(new Action< UserRole>(this.attach_UserRoles), new Action< UserRole>(this.detach_UserRoles)); 
-			
-			
-			OnCreated();
-		}
+    [Table(Name = "dbo.Roles")]
+    public partial class Role : INotifyPropertyChanging, INotifyPropertyChanged
+    {
+        private static PropertyChangingEventArgs emptyChangingEventArgs => new PropertyChangingEventArgs("");
 
-		
-    #region Columns
-		
-		[Column(Name="RoleName", UpdateCheck=UpdateCheck.Never, Storage="_RoleName", DbType="nvarchar(50)")]
-		public string RoleName
-		{
-			get { return this._RoleName; }
+        #region Private Fields
 
-			set
-			{
-				if (this._RoleName != value)
-				{
-				
-                    this.OnRoleNameChanging(value);
-					this.SendPropertyChanging();
-					this._RoleName = value;
-					this.SendPropertyChanged("RoleName");
-					this.OnRoleNameChanged();
-				}
+        private string _RoleName;
 
-			}
+        private int _RoleId;
 
-		}
+        private bool? _Hardwired;
 
-		
-		[Column(Name="RoleId", UpdateCheck=UpdateCheck.Never, Storage="_RoleId", AutoSync=AutoSync.OnInsert, DbType="int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
-		public int RoleId
-		{
-			get { return this._RoleId; }
+        private int? _Priority;
 
-			set
-			{
-				if (this._RoleId != value)
-				{
-				
-                    this.OnRoleIdChanging(value);
-					this.SendPropertyChanging();
-					this._RoleId = value;
-					this.SendPropertyChanged("RoleId");
-					this.OnRoleIdChanged();
-				}
+        private EntitySet<UserRole> _UserRoles;
 
-			}
+        #endregion
 
-		}
+        #region Extensibility Method Definitions
 
-		
-		[Column(Name="hardwired", UpdateCheck=UpdateCheck.Never, Storage="_Hardwired", DbType="bit")]
-		public bool? Hardwired
-		{
-			get { return this._Hardwired; }
+        partial void OnLoaded();
+        partial void OnValidate(System.Data.Linq.ChangeAction action);
+        partial void OnCreated();
 
-			set
-			{
-				if (this._Hardwired != value)
-				{
-				
-                    this.OnHardwiredChanging(value);
-					this.SendPropertyChanging();
-					this._Hardwired = value;
-					this.SendPropertyChanged("Hardwired");
-					this.OnHardwiredChanged();
-				}
+        partial void OnRoleNameChanging(string value);
+        partial void OnRoleNameChanged();
 
-			}
+        partial void OnRoleIdChanging(int value);
+        partial void OnRoleIdChanged();
 
-		}
+        partial void OnHardwiredChanging(bool? value);
+        partial void OnHardwiredChanged();
 
-		
-		[Column(Name="Priority", UpdateCheck=UpdateCheck.Never, Storage="_Priority", DbType="int")]
-		public int? Priority
-		{
-			get { return this._Priority; }
+        partial void OnPriorityChanging(int? value);
+        partial void OnPriorityChanged();
 
-			set
-			{
-				if (this._Priority != value)
-				{
-				
-                    this.OnPriorityChanging(value);
-					this.SendPropertyChanging();
-					this._Priority = value;
-					this.SendPropertyChanged("Priority");
-					this.OnPriorityChanged();
-				}
+        #endregion
 
-			}
+        public Role()
+        {
+            _UserRoles = new EntitySet<UserRole>(new Action<UserRole>(attach_UserRoles), new Action<UserRole>(detach_UserRoles));
 
-		}
+            OnCreated();
+        }
 
-		
-    #endregion
-        
-    #region Foreign Key Tables
-   		
-   		[Association(Name="FK__Dashboard__RoleI__6478B84A", Storage="_DashboardWidgetRoles", OtherKey="RoleId")]
-   		public EntitySet<DashboardWidgetRole> DashboardWidgetRoles
-   		{
-   		    get { return this._DashboardWidgetRoles; }
+        #region Columns
 
-			set	{ this._DashboardWidgetRoles.Assign(value); }
+        [Column(Name = "RoleName", UpdateCheck = UpdateCheck.Never, Storage = "_RoleName", DbType = "nvarchar(50)")]
+        public string RoleName
+        {
+            get => _RoleName;
 
-   		}
+            set
+            {
+                if (_RoleName != value)
+                {
+                    OnRoleNameChanging(value);
+                    SendPropertyChanging();
+                    _RoleName = value;
+                    SendPropertyChanged("RoleName");
+                    OnRoleNameChanged();
+                }
+            }
+        }
 
-		
-   		[Association(Name="FK_UserRole_Roles", Storage="_UserRoles", OtherKey="RoleId")]
-   		public EntitySet<UserRole> UserRoles
-   		{
-   		    get { return this._UserRoles; }
+        [Column(Name = "RoleId", UpdateCheck = UpdateCheck.Never, Storage = "_RoleId", AutoSync = AutoSync.OnInsert, DbType = "int NOT NULL IDENTITY", IsPrimaryKey = true, IsDbGenerated = true)]
+        public int RoleId
+        {
+            get => _RoleId;
 
-			set	{ this._UserRoles.Assign(value); }
+            set
+            {
+                if (_RoleId != value)
+                {
+                    OnRoleIdChanging(value);
+                    SendPropertyChanging();
+                    _RoleId = value;
+                    SendPropertyChanged("RoleId");
+                    OnRoleIdChanged();
+                }
+            }
+        }
 
-   		}
+        [Column(Name = "hardwired", UpdateCheck = UpdateCheck.Never, Storage = "_Hardwired", DbType = "bit")]
+        public bool? Hardwired
+        {
+            get => _Hardwired;
 
-		
-	#endregion
-	
-	#region Foreign Keys
-    	
-	#endregion
-	
-		public event PropertyChangingEventHandler PropertyChanging;
-		protected virtual void SendPropertyChanging()
-		{
-			if ((this.PropertyChanging != null))
-				this.PropertyChanging(this, emptyChangingEventArgs);
-		}
+            set
+            {
+                if (_Hardwired != value)
+                {
+                    OnHardwiredChanging(value);
+                    SendPropertyChanging();
+                    _Hardwired = value;
+                    SendPropertyChanged("Hardwired");
+                    OnHardwiredChanged();
+                }
+            }
+        }
 
-		public event PropertyChangedEventHandler PropertyChanged;
-		protected virtual void SendPropertyChanged(String propertyName)
-		{
-			if ((this.PropertyChanged != null))
-				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-		}
+        [Column(Name = "Priority", UpdateCheck = UpdateCheck.Never, Storage = "_Priority", DbType = "int")]
+        public int? Priority
+        {
+            get => _Priority;
 
-   		
-		private void attach_DashboardWidgetRoles(DashboardWidgetRole entity)
-		{
-			this.SendPropertyChanging();
-			entity.Role = this;
-		}
+            set
+            {
+                if (_Priority != value)
+                {
+                    OnPriorityChanging(value);
+                    SendPropertyChanging();
+                    _Priority = value;
+                    SendPropertyChanged("Priority");
+                    OnPriorityChanged();
+                }
+            }
+        }
 
-		private void detach_DashboardWidgetRoles(DashboardWidgetRole entity)
-		{
-			this.SendPropertyChanging();
-			entity.Role = null;
-		}
+        #endregion
 
-		
-		private void attach_UserRoles(UserRole entity)
-		{
-			this.SendPropertyChanging();
-			entity.Role = this;
-		}
+        #region Foreign Key Tables
 
-		private void detach_UserRoles(UserRole entity)
-		{
-			this.SendPropertyChanging();
-			entity.Role = null;
-		}
+        [Association(Name = "FK_UserRole_Roles", Storage = "_UserRoles", OtherKey = "RoleId")]
+        public EntitySet<UserRole> UserRoles
+        {
+            get => _UserRoles;
 
-		
-	}
+            set => _UserRoles.Assign(value);
 
+        }
+
+        #endregion
+
+        #region Foreign Keys
+
+        #endregion
+
+        public event PropertyChangingEventHandler PropertyChanging;
+        protected virtual void SendPropertyChanging()
+        {
+            if ((PropertyChanging != null))
+            {
+                PropertyChanging(this, emptyChangingEventArgs);
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected virtual void SendPropertyChanged(string propertyName)
+        {
+            if ((PropertyChanged != null))
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
+
+        private void attach_UserRoles(UserRole entity)
+        {
+            SendPropertyChanging();
+            entity.Role = this;
+        }
+
+        private void detach_UserRoles(UserRole entity)
+        {
+            SendPropertyChanging();
+            entity.Role = null;
+        }
+    }
 }
-

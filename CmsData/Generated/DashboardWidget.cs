@@ -24,11 +24,11 @@ namespace CmsData
 		
 		private string _Description;
 		
-		private int? _HTMLContent;
+		private int? _HTMLContentId;
 		
-		private int? _PythonContent;
+		private int? _PythonContentId;
 		
-		private int? _SQLContent;
+		private int? _SQLContentId;
 		
 		private bool _Enabled;
 		
@@ -40,11 +40,11 @@ namespace CmsData
    		private EntitySet<DashboardWidgetRole> _DashboardWidgetRoles;
 		
     	
-		private EntityRef<Content> _Content;
+		private EntityRef<Content> _HTMLContent;
 		
-		private EntityRef<Content> _Content;
+		private EntityRef<Content> _PythonContent;
 		
-		private EntityRef<Content> _Content;
+		private EntityRef<Content> _SQLContent;
 		
 	#endregion
 	
@@ -87,11 +87,11 @@ namespace CmsData
 			this._DashboardWidgetRoles = new EntitySet<DashboardWidgetRole>(new Action< DashboardWidgetRole>(this.attach_DashboardWidgetRoles), new Action< DashboardWidgetRole>(this.detach_DashboardWidgetRoles)); 
 			
 			
-			this._Content = default(EntityRef<Content>); 
+			this._HTMLContent = default(EntityRef<Content>); 
 			
-			this._Content = default(EntityRef<Content>); 
+			this._PythonContent = default(EntityRef<Content>); 
 			
-			this._Content = default(EntityRef<Content>); 
+			this._SQLContent = default(EntityRef<Content>); 
 			
 			OnCreated();
 		}
@@ -165,24 +165,24 @@ namespace CmsData
 		}
 
 		
-		[Column(Name="HTMLContent", UpdateCheck=UpdateCheck.Never, Storage="_HTMLContent", DbType="int")]
+		[Column(Name="HTMLContentId", UpdateCheck=UpdateCheck.Never, Storage="_HTMLContentId", DbType="int")]
 		[IsForeignKey]
-		public int? HTMLContent
+		public int? HTMLContentId
 		{
-			get { return this._HTMLContent; }
+			get { return this._HTMLContentId; }
 
 			set
 			{
-				if (this._HTMLContent != value)
+				if (this._HTMLContentId != value)
 				{
 				
-					if (this._Content.HasLoadedOrAssignedValue)
+					if (this._HTMLContent.HasLoadedOrAssignedValue)
 						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
 				
                     this.OnHTMLContentChanging(value);
 					this.SendPropertyChanging();
-					this._HTMLContent = value;
-					this.SendPropertyChanged("HTMLContent");
+					this._HTMLContentId = value;
+					this.SendPropertyChanged("HTMLContentId");
 					this.OnHTMLContentChanged();
 				}
 
@@ -190,60 +190,58 @@ namespace CmsData
 
 		}
 
-		
-		[Column(Name="PythonContent", UpdateCheck=UpdateCheck.Never, Storage="_PythonContent", DbType="int")]
-		[IsForeignKey]
-		public int? PythonContent
-		{
-			get { return this._PythonContent; }
 
-			set
-			{
-				if (this._PythonContent != value)
-				{
-				
-					if (this._Content.HasLoadedOrAssignedValue)
-						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
-				
+        [Column(Name = "PythonContentId", UpdateCheck = UpdateCheck.Never, Storage = "_PythonContentId", DbType = "int")]
+        [IsForeignKey]
+        public int? PythonContentId
+        {
+            get { return this._PythonContentId; }
+
+            set
+            {
+                if (this._PythonContentId != value)
+                {
+
+                    if (this._PythonContent.HasLoadedOrAssignedValue)
+                        throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+
                     this.OnPythonContentChanging(value);
-					this.SendPropertyChanging();
-					this._PythonContent = value;
-					this.SendPropertyChanged("PythonContent");
-					this.OnPythonContentChanged();
-				}
+                    this.SendPropertyChanging();
+                    this._PythonContentId = value;
+                    this.SendPropertyChanged("PythonContentId");
+                    this.OnPythonContentChanged();
+                }
 
-			}
+            }
 
-		}
+        }
 
-		
-		[Column(Name="SQLContent", UpdateCheck=UpdateCheck.Never, Storage="_SQLContent", DbType="int")]
-		[IsForeignKey]
-		public int? SQLContent
-		{
-			get { return this._SQLContent; }
+        [Column(Name = "SQLContentId", UpdateCheck = UpdateCheck.Never, Storage = "_SQLContentId", DbType = "int")]
+        [IsForeignKey]
+        public int? SQLContentId
+        {
+            get { return this._SQLContentId; }
 
-			set
-			{
-				if (this._SQLContent != value)
-				{
-				
-					if (this._Content.HasLoadedOrAssignedValue)
-						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
-				
+            set
+            {
+                if (this._SQLContentId != value)
+                {
+
+                    if (this._SQLContent.HasLoadedOrAssignedValue)
+                        throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+
                     this.OnSQLContentChanging(value);
-					this.SendPropertyChanging();
-					this._SQLContent = value;
-					this.SendPropertyChanged("SQLContent");
-					this.OnSQLContentChanged();
-				}
+                    this.SendPropertyChanging();
+                    this._SQLContentId = value;
+                    this.SendPropertyChanged("SQLContentId");
+                    this.OnSQLContentChanged();
+                }
 
-			}
+            }
 
-		}
+        }
 
-		
-		[Column(Name="Enabled", UpdateCheck=UpdateCheck.Never, Storage="_Enabled", DbType="bit NOT NULL")]
+        [Column(Name="Enabled", UpdateCheck=UpdateCheck.Never, Storage="_Enabled", DbType="bit NOT NULL")]
 		public bool Enabled
 		{
 			get { return this._Enabled; }
@@ -327,135 +325,121 @@ namespace CmsData
 	
 	#region Foreign Keys
     	
-		[Association(Name="FK__Dashboard__HTMLC__5CD79682", Storage="_Content", ThisKey="HTMLContent", IsForeignKey=true)]
-		public Content Content
+		[Association(Name= "FK_Dashboard_HTMLContent", Storage="_HTMLContent", ThisKey="HTMLContentId", IsForeignKey=true)]
+		public Content HTMLContent
 		{
-			get { return this._Content.Entity; }
+			get { return this._HTMLContent.Entity; }
 
 			set
 			{
-				Content previousValue = this._Content.Entity;
+				Content previousValue = this._HTMLContent.Entity;
 				if (((previousValue != value) 
-							|| (this._Content.HasLoadedOrAssignedValue == false)))
+							|| (this._HTMLContent.HasLoadedOrAssignedValue == false)))
 				{
 					this.SendPropertyChanging();
 					if (previousValue != null)
 					{
-						this._Content.Entity = null;
-						previousValue.DashboardWidgets.Remove(this);
+						this._HTMLContent.Entity = null;
 					}
 
-					this._Content.Entity = value;
+					this._HTMLContent.Entity = value;
 					if (value != null)
 					{
-						value.DashboardWidgets.Add(this);
-						
-						this._HTMLContent = value.Id;
-						
+						this._HTMLContentId = value.Id;
 					}
 
 					else
 					{
 						
-						this._HTMLContent = default(int?);
+						this._HTMLContentId = default(int?);
 						
 					}
 
-					this.SendPropertyChanged("Content");
+					this.SendPropertyChanged("HTMLContent");
 				}
 
 			}
 
 		}
 
-		
-		[Association(Name="FK__Dashboard__Pytho__5DCBBABB", Storage="_Content", ThisKey="PythonContent", IsForeignKey=true)]
-		public Content Content
-		{
-			get { return this._Content.Entity; }
 
-			set
-			{
-				Content previousValue = this._Content.Entity;
-				if (((previousValue != value) 
-							|| (this._Content.HasLoadedOrAssignedValue == false)))
-				{
-					this.SendPropertyChanging();
-					if (previousValue != null)
-					{
-						this._Content.Entity = null;
-						previousValue.DashboardWidgets.Remove(this);
-					}
+        [Association(Name = "FK_Dashboard_PythonContent", Storage = "_PythonContent", ThisKey = "PythonContentId", IsForeignKey = true)]
+        public Content PythonContent
+        {
+            get { return this._PythonContent.Entity; }
 
-					this._Content.Entity = value;
-					if (value != null)
-					{
-						value.DashboardWidgets.Add(this);
-						
-						this._PythonContent = value.Id;
-						
-					}
+            set
+            {
+                Content previousValue = this._PythonContent.Entity;
+                if (((previousValue != value)
+                            || (this._PythonContent.HasLoadedOrAssignedValue == false)))
+                {
+                    this.SendPropertyChanging();
+                    if (previousValue != null)
+                    {
+                        this._PythonContent.Entity = null;
+                    }
 
-					else
-					{
-						
-						this._PythonContent = default(int?);
-						
-					}
+                    this._PythonContent.Entity = value;
+                    if (value != null)
+                    {
+                        this._PythonContentId = value.Id;
+                    }
 
-					this.SendPropertyChanged("Content");
-				}
+                    else
+                    {
 
-			}
+                        this._PythonContentId = default(int?);
 
-		}
+                    }
 
-		
-		[Association(Name="FK__Dashboard__SQLCo__5EBFDEF4", Storage="_Content", ThisKey="SQLContent", IsForeignKey=true)]
-		public Content Content
-		{
-			get { return this._Content.Entity; }
+                    this.SendPropertyChanged("PythonContent");
+                }
 
-			set
-			{
-				Content previousValue = this._Content.Entity;
-				if (((previousValue != value) 
-							|| (this._Content.HasLoadedOrAssignedValue == false)))
-				{
-					this.SendPropertyChanging();
-					if (previousValue != null)
-					{
-						this._Content.Entity = null;
-						previousValue.DashboardWidgets.Remove(this);
-					}
+            }
 
-					this._Content.Entity = value;
-					if (value != null)
-					{
-						value.DashboardWidgets.Add(this);
-						
-						this._SQLContent = value.Id;
-						
-					}
+        }
 
-					else
-					{
-						
-						this._SQLContent = default(int?);
-						
-					}
 
-					this.SendPropertyChanged("Content");
-				}
+        [Association(Name = "FK_Dashboard_SQLContent", Storage = "_SQLContent", ThisKey = "SQLContentId", IsForeignKey = true)]
+        public Content SQLContent
+        {
+            get { return this._SQLContent.Entity; }
 
-			}
+            set
+            {
+                Content previousValue = this._SQLContent.Entity;
+                if (((previousValue != value)
+                            || (this._SQLContent.HasLoadedOrAssignedValue == false)))
+                {
+                    this.SendPropertyChanging();
+                    if (previousValue != null)
+                    {
+                        this._SQLContent.Entity = null;
+                    }
 
-		}
+                    this._SQLContent.Entity = value;
+                    if (value != null)
+                    {
+                        this._SQLContentId = value.Id;
+                    }
 
-		
-	#endregion
-	
-		public event PropertyChangingEventHandler PropertyChanging;
+                    else
+                    {
+
+                        this._SQLContentId = default(int?);
+
+                    }
+
+                    this.SendPropertyChanged("SQLContent");
+                }
+
+            }
+
+        }
+        #endregion
+
+        public event PropertyChangingEventHandler PropertyChanging;
 		protected virtual void SendPropertyChanging()
 		{
 			if ((this.PropertyChanging != null))

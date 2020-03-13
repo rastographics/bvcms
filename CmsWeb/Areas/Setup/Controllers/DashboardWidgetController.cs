@@ -10,12 +10,10 @@ using UtilityExtensions;
 namespace CmsWeb.Areas.Setup.Controllers
 {
     [Authorize(Roles = "Admin")]
-    [RouteArea("Setup", AreaPrefix = "DashboardWidgets"), Route("{action}/{id?}")]
+    [RouteArea("Setup", AreaPrefix = "HomeWidgets"), Route("{action=index}/{id?}")]
     public class DashboardWidgetController : CmsStaffController
     {
-        public DashboardWidgetController(IRequestManager requestManager) : base(requestManager)
-        {
-        }
+        public DashboardWidgetController(IRequestManager requestManager) : base(requestManager) { }
         
         public ActionResult Index()
         {
@@ -24,22 +22,9 @@ namespace CmsWeb.Areas.Setup.Controllers
             return View(r);
         }
         
-        [Route("~/Dashboards/{id}")]
         public ActionResult Manage(string id)
         {
-            var model = new RoleModel(CurrentDatabase);
-
-            var role = CurrentDatabase.Roles.SingleOrDefault(m => m.RoleId == id.ToInt());
-            if (role == null)
-            {
-                TempData["error"] = "Invalid role";
-                return Content("/Error/");
-            }
-            else
-            {
-                ViewBag.Settings = model.SettingsForRole(role);
-                return View(role);
-            }
+            return View();
         }
     }
 }

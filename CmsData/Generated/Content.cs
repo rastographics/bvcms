@@ -48,13 +48,6 @@ namespace CmsData
 		
 		private bool? _Snippet;
 		
-   		
-   		private EntitySet<DashboardWidget> _DashboardWidgets;
-		
-   		private EntitySet<DashboardWidget> _DashboardWidgets;
-		
-   		private EntitySet<DashboardWidget> _DashboardWidgets;
-		
    		private EntitySet<ContentKeyWord> _ContentKeyWords;
 		
     	
@@ -113,13 +106,6 @@ namespace CmsData
     #endregion
 		public Content()
 		{
-			
-			this._DashboardWidgets = new EntitySet<DashboardWidget>(new Action< DashboardWidget>(this.attach_DashboardWidgets), new Action< DashboardWidget>(this.detach_DashboardWidgets)); 
-			
-			this._DashboardWidgets = new EntitySet<DashboardWidget>(new Action< DashboardWidget>(this.attach_DashboardWidgets), new Action< DashboardWidget>(this.detach_DashboardWidgets)); 
-			
-			this._DashboardWidgets = new EntitySet<DashboardWidget>(new Action< DashboardWidget>(this.attach_DashboardWidgets), new Action< DashboardWidget>(this.detach_DashboardWidgets)); 
-			
 			this._ContentKeyWords = new EntitySet<ContentKeyWord>(new Action< ContentKeyWord>(this.attach_ContentKeyWords), new Action< ContentKeyWord>(this.detach_ContentKeyWords)); 
 			
 			
@@ -463,36 +449,6 @@ namespace CmsData
         
     #region Foreign Key Tables
    		
-   		[Association(Name="FK__Dashboard__HTMLC__5CD79682", Storage="_DashboardWidgets", OtherKey="HTMLContent")]
-   		public EntitySet<DashboardWidget> DashboardWidgets
-   		{
-   		    get { return this._DashboardWidgets; }
-
-			set	{ this._DashboardWidgets.Assign(value); }
-
-   		}
-
-		
-   		[Association(Name="FK__Dashboard__Pytho__5DCBBABB", Storage="_DashboardWidgets", OtherKey="PythonContent")]
-   		public EntitySet<DashboardWidget> DashboardWidgets
-   		{
-   		    get { return this._DashboardWidgets; }
-
-			set	{ this._DashboardWidgets.Assign(value); }
-
-   		}
-
-		
-   		[Association(Name="FK__Dashboard__SQLCo__5EBFDEF4", Storage="_DashboardWidgets", OtherKey="SQLContent")]
-   		public EntitySet<DashboardWidget> DashboardWidgets
-   		{
-   		    get { return this._DashboardWidgets; }
-
-			set	{ this._DashboardWidgets.Assign(value); }
-
-   		}
-
-		
    		[Association(Name="FK_ContentKeyWords_Content", Storage="_ContentKeyWords", OtherKey="Id")]
    		public EntitySet<ContentKeyWord> ContentKeyWords
    		{
@@ -522,47 +478,7 @@ namespace CmsData
 			if ((this.PropertyChanged != null))
 				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
 		}
-
-   		
-		private void attach_DashboardWidgets(DashboardWidget entity)
-		{
-			this.SendPropertyChanging();
-			entity.Content = this;
-		}
-
-		private void detach_DashboardWidgets(DashboardWidget entity)
-		{
-			this.SendPropertyChanging();
-			entity.Content = null;
-		}
-
-		
-		private void attach_DashboardWidgets(DashboardWidget entity)
-		{
-			this.SendPropertyChanging();
-			entity.Content = this;
-		}
-
-		private void detach_DashboardWidgets(DashboardWidget entity)
-		{
-			this.SendPropertyChanging();
-			entity.Content = null;
-		}
-
-		
-		private void attach_DashboardWidgets(DashboardWidget entity)
-		{
-			this.SendPropertyChanging();
-			entity.Content = this;
-		}
-
-		private void detach_DashboardWidgets(DashboardWidget entity)
-		{
-			this.SendPropertyChanging();
-			entity.Content = null;
-		}
-
-		
+        
 		private void attach_ContentKeyWords(ContentKeyWord entity)
 		{
 			this.SendPropertyChanging();

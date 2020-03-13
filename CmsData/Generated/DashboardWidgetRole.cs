@@ -1,223 +1,204 @@
-using System; 
+using CmsData.Infrastructure;
+using System;
+using System.ComponentModel;
 using System.Data.Linq;
 using System.Data.Linq.Mapping;
-using System.Data;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Linq;
-using System.Linq.Expressions;
-using System.ComponentModel;
-using CmsData.Infrastructure;
 
 namespace CmsData
 {
-	[Table(Name="dbo.DashboardWidgetRoles")]
-	public partial class DashboardWidgetRole : INotifyPropertyChanging, INotifyPropertyChanged
-	{
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-	#region Private Fields
-		
-		private int _WidgetId;
-		
-		private int _RoleId;
-		
-   		
-    	
-		private EntityRef<Role> _Role;
-		
-		private EntityRef<DashboardWidget> _DashboardWidget;
-		
-	#endregion
-	
-    #region Extensibility Method Definitions
-    partial void OnLoaded();
-    partial void OnValidate(System.Data.Linq.ChangeAction action);
-    partial void OnCreated();
-		
-		partial void OnWidgetIdChanging(int value);
-		partial void OnWidgetIdChanged();
-		
-		partial void OnRoleIdChanging(int value);
-		partial void OnRoleIdChanged();
-		
-    #endregion
-		public DashboardWidgetRole()
-		{
-			
-			
-			this._Role = default(EntityRef<Role>); 
-			
-			this._DashboardWidget = default(EntityRef<DashboardWidget>); 
-			
-			OnCreated();
-		}
+    [Table(Name = "dbo.DashboardWidgetRoles")]
+    public partial class DashboardWidgetRole : INotifyPropertyChanging, INotifyPropertyChanged
+    {
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
 
-		
-    #region Columns
-		
-		[Column(Name="WidgetId", UpdateCheck=UpdateCheck.Never, Storage="_WidgetId", DbType="int NOT NULL")]
-		[IsForeignKey]
-		public int WidgetId
-		{
-			get { return this._WidgetId; }
+        #region Private Fields
 
-			set
-			{
-				if (this._WidgetId != value)
-				{
-				
-					if (this._DashboardWidget.HasLoadedOrAssignedValue)
-						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
-				
-                    this.OnWidgetIdChanging(value);
-					this.SendPropertyChanging();
-					this._WidgetId = value;
-					this.SendPropertyChanged("WidgetId");
-					this.OnWidgetIdChanged();
-				}
+        private int _WidgetId;
 
-			}
+        private int _RoleId;
 
-		}
 
-		
-		[Column(Name="RoleId", UpdateCheck=UpdateCheck.Never, Storage="_RoleId", DbType="int NOT NULL")]
-		[IsForeignKey]
-		public int RoleId
-		{
-			get { return this._RoleId; }
 
-			set
-			{
-				if (this._RoleId != value)
-				{
-				
-					if (this._Role.HasLoadedOrAssignedValue)
-						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
-				
-                    this.OnRoleIdChanging(value);
-					this.SendPropertyChanging();
-					this._RoleId = value;
-					this.SendPropertyChanged("RoleId");
-					this.OnRoleIdChanged();
-				}
+        private EntityRef<Role> _Role;
 
-			}
+        private EntityRef<DashboardWidget> _DashboardWidget;
 
-		}
+        #endregion
 
-		
-    #endregion
-        
-    #region Foreign Key Tables
-   		
-	#endregion
-	
-	#region Foreign Keys
-    	
-		[Association(Name="FK__Dashboard__RoleI__6478B84A", Storage="_Role", ThisKey="RoleId", IsForeignKey=true)]
-		public Role Role
-		{
-			get { return this._Role.Entity; }
+        #region Extensibility Method Definitions
+        partial void OnLoaded();
+        partial void OnValidate(System.Data.Linq.ChangeAction action);
+        partial void OnCreated();
 
-			set
-			{
-				Role previousValue = this._Role.Entity;
-				if (((previousValue != value) 
-							|| (this._Role.HasLoadedOrAssignedValue == false)))
-				{
-					this.SendPropertyChanging();
-					if (previousValue != null)
-					{
-						this._Role.Entity = null;
-						previousValue.DashboardWidgetRoles.Remove(this);
-					}
+        partial void OnWidgetIdChanging(int value);
+        partial void OnWidgetIdChanged();
 
-					this._Role.Entity = value;
-					if (value != null)
-					{
-						value.DashboardWidgetRoles.Add(this);
-						
-						this._RoleId = value.RoleId;
-						
-					}
+        partial void OnRoleIdChanging(int value);
+        partial void OnRoleIdChanged();
 
-					else
-					{
-						
-						this._RoleId = default(int);
-						
-					}
+        #endregion
+        public DashboardWidgetRole()
+        {
+            _Role = default(EntityRef<Role>);
 
-					this.SendPropertyChanged("Role");
-				}
+            _DashboardWidget = default(EntityRef<DashboardWidget>);
 
-			}
+            OnCreated();
+        }
 
-		}
 
-		
-		[Association(Name="FK__Dashboard__Widge__63849411", Storage="_DashboardWidget", ThisKey="WidgetId", IsForeignKey=true)]
-		public DashboardWidget DashboardWidget
-		{
-			get { return this._DashboardWidget.Entity; }
+        #region Columns
 
-			set
-			{
-				DashboardWidget previousValue = this._DashboardWidget.Entity;
-				if (((previousValue != value) 
-							|| (this._DashboardWidget.HasLoadedOrAssignedValue == false)))
-				{
-					this.SendPropertyChanging();
-					if (previousValue != null)
-					{
-						this._DashboardWidget.Entity = null;
-						previousValue.DashboardWidgetRoles.Remove(this);
-					}
+        [Column(Name = "WidgetId", UpdateCheck = UpdateCheck.Never, Storage = "_WidgetId", DbType = "int NOT NULL", IsPrimaryKey = true)]
+        [IsForeignKey]
+        public int WidgetId
+        {
+            get => _WidgetId;
 
-					this._DashboardWidget.Entity = value;
-					if (value != null)
-					{
-						value.DashboardWidgetRoles.Add(this);
-						
-						this._WidgetId = value.Id;
-						
-					}
+            set
+            {
+                if (_WidgetId != value)
+                {
 
-					else
-					{
-						
-						this._WidgetId = default(int);
-						
-					}
+                    if (_DashboardWidget.HasLoadedOrAssignedValue)
+                        throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
 
-					this.SendPropertyChanged("DashboardWidget");
-				}
+                    OnWidgetIdChanging(value);
+                    SendPropertyChanging();
+                    _WidgetId = value;
+                    SendPropertyChanged("WidgetId");
+                    OnWidgetIdChanged();
+                }
 
-			}
+            }
 
-		}
+        }
 
-		
-	#endregion
-	
-		public event PropertyChangingEventHandler PropertyChanging;
-		protected virtual void SendPropertyChanging()
-		{
-			if ((this.PropertyChanging != null))
-				this.PropertyChanging(this, emptyChangingEventArgs);
-		}
 
-		public event PropertyChangedEventHandler PropertyChanged;
-		protected virtual void SendPropertyChanged(String propertyName)
-		{
-			if ((this.PropertyChanged != null))
-				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-		}
+        [Column(Name = "RoleId", UpdateCheck = UpdateCheck.Never, Storage = "_RoleId", DbType = "int NOT NULL", IsPrimaryKey = true)]
+        [IsForeignKey]
+        public int RoleId
+        {
+            get => _RoleId;
 
-   		
-	}
+            set
+            {
+                if (_RoleId != value)
+                {
+
+                    if (_Role.HasLoadedOrAssignedValue)
+                        throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+
+                    OnRoleIdChanging(value);
+                    SendPropertyChanging();
+                    _RoleId = value;
+                    SendPropertyChanged("RoleId");
+                    OnRoleIdChanged();
+                }
+
+            }
+
+        }
+
+
+        #endregion
+
+        #region Foreign Key Tables
+
+        #endregion
+
+        #region Foreign Keys
+
+        [Association(Name = "FK_WidgetRole_Roles", Storage = "_Role", ThisKey = "RoleId", IsForeignKey = true)]
+        public Role Role
+        {
+            get => _Role.Entity;
+
+            set
+            {
+                Role previousValue = _Role.Entity;
+                if (((previousValue != value)
+                            || (_Role.HasLoadedOrAssignedValue == false)))
+                {
+                    SendPropertyChanging();
+                    if (previousValue != null)
+                    {
+                        _Role.Entity = null;
+                    }
+
+                    _Role.Entity = value;
+                    if (value != null)
+                    {
+                        _RoleId = value.RoleId;
+                    }
+
+                    else
+                    {
+                        _RoleId = default(int);
+                    }
+
+                    SendPropertyChanged("Role");
+                }
+
+            }
+
+        }
+
+
+        [Association(Name = "FK_WidgetRole_Widgets", Storage = "_DashboardWidget", ThisKey = "WidgetId", IsForeignKey = true)]
+        public DashboardWidget DashboardWidget
+        {
+            get => _DashboardWidget.Entity;
+
+            set
+            {
+                DashboardWidget previousValue = _DashboardWidget.Entity;
+                if (((previousValue != value)
+                            || (_DashboardWidget.HasLoadedOrAssignedValue == false)))
+                {
+                    SendPropertyChanging();
+                    if (previousValue != null)
+                    {
+                        _DashboardWidget.Entity = null;
+                    }
+
+                    _DashboardWidget.Entity = value;
+                    if (value != null)
+                    {
+                        _WidgetId = value.Id;
+                    }
+
+                    else
+                    {
+                        _WidgetId = default(int);
+                    }
+
+                    SendPropertyChanged("DashboardWidget");
+                }
+
+            }
+
+        }
+
+
+        #endregion
+
+        public event PropertyChangingEventHandler PropertyChanging;
+        protected virtual void SendPropertyChanging()
+        {
+            if ((PropertyChanging != null))
+                PropertyChanging(this, emptyChangingEventArgs);
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected virtual void SendPropertyChanged(String propertyName)
+        {
+            if ((PropertyChanged != null))
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+
+    }
 
 }
 
