@@ -11,7 +11,7 @@
     <title>Database Not Found</title>
     <%=ViewExtensions2.GoogleFonts() %>
     <%=ViewExtensions2.FontAwesome() %>
-    <link href="<%=Request.Url.GetLeftPart(UriPartial.Authority)%>/Content/touchpoint/css/error.css" rel="stylesheet" />
+    <link href="https://<%=Request.Url.Host%>/Content/touchpoint/css/error.css" rel="stylesheet" />
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
         <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
