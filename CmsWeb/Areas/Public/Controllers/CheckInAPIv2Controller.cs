@@ -331,7 +331,8 @@ namespace CmsWeb.Areas.Public.Controllers
             Models.CheckInAPIv2.Person person = JsonConvert.DeserializeObject<Models.CheckInAPIv2.Person>(message.data);    // new data
             person.clean();
 
-            CmsData.Person p = CurrentDatabase.Copy().LoadPersonById(person.id);   // existing data
+            var NewContext = CurrentDatabase.Copy();
+            CmsData.Person p = NewContext.LoadPersonById(person.id);   // existing data
 
 			if( p == null ) {
 				return Message.createErrorReturn( "Person not found", Message.API_ERROR_PERSON_NOT_FOUND );
@@ -340,6 +341,7 @@ namespace CmsWeb.Areas.Public.Controllers
             person.fillPerson(p);
             BasicPersonInfo m = new BasicPersonInfo() { Id = person.id };
             p.CopyProperties2(m);
+
             m.CellPhone = new CellPhoneInfo()
             {
                 Number = person.mobilePhone,
@@ -361,10 +363,21 @@ namespace CmsWeb.Areas.Public.Controllers
             m.UpdatePerson(CurrentDatabase);
             DbUtil.LogPersonActivity($"Update Basic Info for: {m.person.Name}", m.Id, m.person.Name);
 
-            CmsData.Family f = CurrentDatabase.Families.First( fam => fam.FamilyId == p.FamilyId );
-			person.fillFamily( f );
+            CmsData.Family f = NewContext.Families.First( fam => fam.FamilyId == p.FamilyId );
+            p.SetRecReg().MedicalDescription = person.allergies;
+            p.SetRecReg().Emcontact = person.emergencyName;
+            p.SetRecReg().Emphone = person.emergencyPhone.Truncate(50);
 
-			CurrentDatabase.SubmitChanges();
+            var fsb = new List<ChangeDetail>();
+            f.UpdateValue(fsb, "AddressLineOne", person.address);
+            f.UpdateValue(fsb, "AddressLineTwo", person.address2);
+            f.UpdateValue(fsb, "CityName", person.city);
+            f.UpdateValue(fsb, "StateCode", person.state);
+            f.UpdateValue(fsb, "ZipCode", person.zipCode);
+            f.UpdateValue(fsb, "CountryName", person.country);
+            f.LogChanges(NewContext, fsb, p.PeopleId, Util.UserPeopleId ?? 0);
+            person.fillFamily(f);
+            NewContext.SubmitChanges();
 
             AddEditPersonResults results = new AddEditPersonResults {
                 familyID = f.FamilyId,
