@@ -836,7 +836,7 @@ namespace CmsWeb.Areas.Search.Models
                 p.Add("@MeetingDate2", meetingDate2);
             }
             if (content.Contains("@userid", ignoreCase: true))
-                p.Add("@userid", Util.UserId);
+                p.Add("@userid", CurrentDatabase.UserId);
             return p;
         }
 

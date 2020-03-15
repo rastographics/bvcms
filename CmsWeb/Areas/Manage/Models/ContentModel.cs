@@ -114,7 +114,7 @@ namespace CmsWeb.Models
             public bool shared { get; set; }
             public bool isUnlayer { get; set; }
 
-            public bool Owner => ownerID == Util.UserId;
+            public bool Owner => ownerID == DbUtil.Db.UserId;
             public bool Shared => !Owner && shared;
             public bool Other => !Shared && roleID != 0;
         }

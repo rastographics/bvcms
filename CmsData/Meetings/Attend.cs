@@ -80,7 +80,7 @@ namespace CmsData
 					MeetingDate = i.MeetingDate,
 					AttendanceFlag = false,
 					CreatedDate = Util.Now,
-					CreatedBy = Util.UserId1,
+					CreatedBy = Db.UserId1,
 					AttendanceTypeId = null,
 					BFCAttendance = null,
 					OtherAttends = 0,

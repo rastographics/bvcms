@@ -35,6 +35,7 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
 
         private static int? BatchProcessAbundantLife(CsvReader csv, DateTime date, int? fundid)
         {
+            var db = DbUtil.Db;
             BundleHeader bh = null;
             csv.MissingFieldAction = MissingFieldAction.ReplaceByEmpty;
 
@@ -63,13 +64,13 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
 
                 var bd = new BundleDetail
                 {
-                    CreatedBy = Util.UserId,
+                    CreatedBy = db.UserId,
                     CreatedDate = DateTime.Now
                 };
 
                 bd.Contribution = new Contribution
                 {
-                    CreatedBy = Util.UserId,
+                    CreatedBy = db.UserId,
                     CreatedDate = DateTime.Now,
                     ContributionDate = date,
                     FundId = fid,

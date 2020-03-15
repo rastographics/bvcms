@@ -55,7 +55,7 @@ namespace CmsData
             {
                 if (!userId.HasValue || userId == 0)
                 {
-                    userId = Util.UserId;
+                    userId = db.UserId;
                 }
 
                 if (userId == 0)

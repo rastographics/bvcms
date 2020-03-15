@@ -20,6 +20,7 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
 
         public static int? RunImport(CsvReader csv, DateTime date, int? fundid)
         {
+            var db = DbUtil.Db;
             var prevbundle = -1;
             var curbundle = 0;
             BundleHeader bh = null;
@@ -31,17 +32,17 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
             {
                 var bd = new BundleDetail
                 {
-                    CreatedBy = Util.UserId,
+                    CreatedBy = db.UserId,
                     CreatedDate = DateTime.Now
                 };
-                var qf = from f in DbUtil.Db.ContributionFunds
+                var qf = from f in db.ContributionFunds
                          where f.FundStatusId == 1
                          orderby f.FundId
                          select f.FundId;
 
                 bd.Contribution = new Contribution
                 {
-                    CreatedBy = Util.UserId,
+                    CreatedBy = db.UserId,
                     CreatedDate = DateTime.Now,
                     ContributionDate = date,
                     FundId = fundid ?? qf.First(),
@@ -91,7 +92,7 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
                 }
 
                 var eac = Util.Encrypt(rt + "|" + ac);
-                var q = from kc in DbUtil.Db.CardIdentifiers
+                var q = from kc in db.CardIdentifiers
                         where kc.Id == eac
                         select kc.PeopleId;
                 var pid = q.SingleOrDefault();

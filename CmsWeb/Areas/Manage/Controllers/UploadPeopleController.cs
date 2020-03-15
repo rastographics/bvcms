@@ -33,6 +33,7 @@ namespace CmsWeb.Areas.Manage.Controllers
         public ActionResult Index(HttpPostedFileBase file, bool noupdate)
         {
             var host = CurrentDatabase.Host;
+            var userId = CurrentDatabase.UserId;
             var pid = Util.UserPeopleId;
 
             var package = new ExcelPackage(file.InputStream);
@@ -43,12 +44,12 @@ namespace CmsWeb.Areas.Manage.Controllers
                 {
                     using (var testdb = CMSDataContext.Create(host))
                     {
-                        var testrun = ProcessImport(testdb, noupdate, host, pid, package, true);
+                        var testrun = ProcessImport(testdb, noupdate, host, pid, userId, package, true);
                     }
 
                     using (var realdb = CMSDataContext.Create(host))
                     {
-                        var realrun = ProcessImport(realdb, noupdate, host, pid, package, false);
+                        var realrun = ProcessImport(realdb, noupdate, host, pid, userId, package, false);
                     }
                 }
                 catch (Exception ex)
@@ -71,13 +72,13 @@ namespace CmsWeb.Areas.Manage.Controllers
             return Redirect("/UploadExcelIps/Progress");
         }
 
-        private UploadPeopleRun ProcessImport(CMSDataContext db, bool noupdate, string host, int? pid, ExcelPackage package, bool testing)
+        private UploadPeopleRun ProcessImport(CMSDataContext db, bool noupdate, string host, int? pid, int userId, ExcelPackage package, bool testing)
         {
             var rt = new UploadPeopleRun { Started = DateTime.Now, Count = 0, Processed = 0 };
             db.UploadPeopleRuns.InsertOnSubmit(rt);
             db.SubmitChanges();
 
-            var upload = new UploadPeopleModel(db, host, pid ?? 0, noupdate, testing);
+            var upload = new UploadPeopleModel(db, host, pid ?? 0, userId, noupdate, testing);
             upload.DoUpload(package);
 
             return rt;

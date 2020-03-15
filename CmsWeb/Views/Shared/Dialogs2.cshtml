@@ -1,7 +1,7 @@
 ﻿@{
     var tutorialFile = Server.MapPath(".") + "/Content/Tutorials/" + Util.Helpfile + ".cshtml";
 }
-@if (ViewBag.CurrentDatabase.Setting("ShowTutorialFileNames"))
+@if (ViewExtensions2.CurrentDatabase.Setting("ShowTutorialFileNames"))
 {
     <br />
     <b>Menus:</b>

@@ -41,19 +41,21 @@ namespace CmsWeb.Areas.Main.Models
 
         public List<ContentModel.SavedDraft> FetchDrafts()
         {
-            var currentRoleIds = DbUtil.Db.CurrentRoleIds();
+            var db = DbUtil.Db;
+            var userId = db.UserId;
+            var currentRoleIds = db.CurrentRoleIds();
             return drafts ?? (drafts =
-                   (from c in DbUtil.Db.Contents
+                   (from c in db.Contents
                     where c.TypeID == ContentTypeCode.TypeSavedDraft || c.TypeID == ContentTypeCode.TypeUnlayerSavedDraft
-                    let u = DbUtil.Db.Users.First(vv => vv.UserId == c.OwnerID)
-                    let r = DbUtil.Db.Roles.FirstOrDefault(vv => vv.RoleId == c.RoleID)
-                    let isshared = (from tt in DbUtil.Db.Tags
+                    let u = db.Users.First(vv => vv.UserId == c.OwnerID)
+                    let r = db.Roles.FirstOrDefault(vv => vv.RoleId == c.RoleID)
+                    let isshared = (from tt in db.Tags
                                     where tt.Name == "SharedDrafts"
                                     where tt.PersonOwner.Users.Any(uu => uu.UserId == c.OwnerID)
                                     where tt.PersonTags.Any(vv => vv.PeopleId == Util.UserPeopleId)
                                     select tt.Id).Any()
-                    where c.RoleID == 0 || c.OwnerID == Util.UserId || currentRoleIds.Contains(c.RoleID)
-                    orderby (c.OwnerID == Util.UserId ? 1 : 0) descending, c.Name
+                    where c.RoleID == 0 || c.OwnerID == userId || currentRoleIds.Contains(c.RoleID)
+                    orderby (c.OwnerID == userId ? 1 : 0) descending, c.Name
                     select new ContentModel.SavedDraft()
                     {
                         created = c.DateCreated,

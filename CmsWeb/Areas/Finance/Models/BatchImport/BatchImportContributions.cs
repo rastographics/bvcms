@@ -19,7 +19,8 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
 
         public static BundleHeader GetBundleHeader(DateTime date, DateTime now, int? btid = null)
         {
-            var opentype = DbUtil.Db.Roles.Any(rr => rr.RoleName == "FinanceDataEntry")
+            var db = DbUtil.Db;
+            var opentype = db.Roles.Any(rr => rr.RoleName == "FinanceDataEntry")
                 ? BundleStatusCode.OpenForDataEntry
                 : BundleStatusCode.Open;
             var bh = new BundleHeader
@@ -27,11 +28,11 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
                 BundleHeaderTypeId = BundleTypeCode.PreprintedEnvelope,
                 BundleStatusId = opentype,
                 ContributionDate = date,
-                CreatedBy = Util.UserId,
+                CreatedBy = db.UserId,
                 CreatedDate = now,
-                FundId = DbUtil.Db.Setting("DefaultFundId", "1").ToInt()
+                FundId = db.Setting("DefaultFundId", "1").ToInt()
             };
-            DbUtil.Db.BundleHeaders.InsertOnSubmit(bh);
+            db.BundleHeaders.InsertOnSubmit(bh);
             bh.BundleHeaderTypeId = btid ?? BundleTypeCode.ChecksAndCash;
             return bh;
         }
@@ -90,14 +91,15 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
 
         public static BundleDetail NewBundleDetail(DateTime date, int fundid, string amount)
         {
+            var userId = DbUtil.Db.UserId;
             var bd = new BundleDetail
             {
-                CreatedBy = Util.UserId,
+                CreatedBy = userId,
                 CreatedDate = DateTime.Now
             };
             bd.Contribution = new Contribution
             {
-                CreatedBy = Util.UserId,
+                CreatedBy = userId,
                 CreatedDate = DateTime.Now,
                 ContributionDate = date,
                 FundId = fundid,

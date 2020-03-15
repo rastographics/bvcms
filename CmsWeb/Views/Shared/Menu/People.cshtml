@@ -1,5 +1,5 @@
 ﻿@{
-  CMSDataContext Db = ViewBag.CurrentDatabase;
+  CMSDataContext Db = ViewExtensions2.CurrentDatabase;
   var menuaddpeople = Db.Setting("MenuAddPeople", true) || Util.IsDebug();
 }
 <li class="dropdown dropdown-large">
