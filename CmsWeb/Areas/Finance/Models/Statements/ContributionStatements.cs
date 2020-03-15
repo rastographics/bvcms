@@ -441,8 +441,8 @@ p { font-size: 11px; }
                 var colwidth = (doc.Right - doc.Left - gutter) / NumberOfColumns;
 
                 var t = (NumberOfColumns == 2)
-                ? new PdfPTable(new[] { 15f, 24f, 15f })
-                : new PdfPTable(new[] { 15f, 25f, 15f, 15f, 30f })
+                ? new PdfPTable(new[] { 18f, 24f, 15f })
+                : new PdfPTable(new[] { 18f, 25f, 15f, 15f, 30f })
                 {
                     WidthPercentage = 100
                 };
@@ -613,7 +613,7 @@ p { font-size: 11px; }
                 if (giftsinkind.Count > 0)
                 {
                     t = new PdfPTable((NumberOfColumns == 1)
-                        ? new[] { 15f, 25f, 15f, 15f, 30f }
+                        ? new[] { 18f, 25f, 15f, 15f, 30f }
                         : new[] { 12f, 18f, 20f });
 
                     t.WidthPercentage = 100;
@@ -744,8 +744,8 @@ p { font-size: 11px; }
                 if (nontaxitems.Count > 0)
                 {
                     t = new PdfPTable((NumberOfColumns == 1)
-                        ? new[] { 15f, 25f, 15f, 15f, 30f }
-                        : new[] { 15f, 24f, 15f });
+                        ? new[] { 18f, 25f, 15f, 15f, 30f }
+                        : new[] { 18f, 24f, 15f });
 
                     t.WidthPercentage = 100;
                     t.DefaultCell.Border = Rectangle.NO_BORDER;
