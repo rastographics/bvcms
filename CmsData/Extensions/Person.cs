@@ -927,7 +927,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
                                  string firstname, string nickname, string lastname, string dob, int marriedCode,
                                  int gender, int originId, int? entryPointId, bool testing = false)
         {
-            var p = new Person { CreatedDate = Util.Now, CreatedBy = Util.UserId };
+            var p = new Person { CreatedDate = Util.Now, CreatedBy = db.UserId };
             db.People.InsertOnSubmit(p);
             p.PositionInFamilyId = position;
             p.AddressTypeId = 10;
@@ -1933,7 +1933,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
                 {
                     BundleHeaderTypeId = typecode.Value,
                     BundleStatusId = BundleStatusCode.Open,
-                    CreatedBy = Util.UserId1,
+                    CreatedBy = db.UserId1,
                     ContributionDate = d,
                     CreatedDate = now,
                     FundId = db.Setting("DefaultFundId", "1").ToInt(),
@@ -2325,7 +2325,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
             var f = new Family
             {
                 CreatedDate = Util.Now,
-                CreatedBy = Util.UserId1,
+                CreatedBy = db.UserId1,
                 AddressLineOne = PrimaryAddress,
                 AddressLineTwo = PrimaryAddress2,
                 CityName = PrimaryCity,
@@ -2368,7 +2368,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
                     FamilyId = FamilyId,
                     RelatedFamilyId = p2.FamilyId,
                     FamilyRelationshipDesc = "",
-                    CreatedBy = Util.UserId1,
+                    CreatedBy = db.UserId1,
                     CreatedDate = Util.Now,
                 };
                 db.RelatedFamilies.InsertOnSubmit(rf);

@@ -52,7 +52,7 @@ namespace CmsWeb.Models
                     //var tt = new TemporaryToken
                     //{
                     //    Id = Guid.NewGuid(),
-                    //    CreatedBy = Util.UserId1,
+                    //    CreatedBy = CurrentDatabase.UserId1,
                     //    CreatedOn = Util.Now,
                     //};
                     //DbUtil.Db.TemporaryTokens.InsertOnSubmit(tt);

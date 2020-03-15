@@ -460,7 +460,7 @@ namespace CmsWeb.Areas.Org.Controllers
                 newMtg = new Meeting
                 {
                     CreatedDate = Util.Now,
-                    CreatedBy = Util.UserId1,
+                    CreatedBy = CurrentDatabase.UserId1,
                     OrganizationId = orgid,
                     GroupMeetingFlag = false,
                     Location = organization.Location,

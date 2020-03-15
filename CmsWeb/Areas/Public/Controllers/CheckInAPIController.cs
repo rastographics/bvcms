@@ -560,7 +560,7 @@ namespace CmsWeb.Areas.Public.Controllers
                 p = new Person
                 {
                     CreatedDate = Util.Now,
-                    CreatedBy = Util.UserId,
+                    CreatedBy = CurrentDatabase.UserId,
                     MemberStatusId = MemberStatusCode.JustAdded,
                     AddressTypeId = 10,
                     OriginId = OriginCode.Visit,

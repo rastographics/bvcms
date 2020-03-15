@@ -16,11 +16,12 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
 
         private static int? BatchProcessOakbrookChurch(CsvReader csv, DateTime date, int? fundid)
         {
+            var db = DbUtil.Db;
             var cols = csv.GetFieldHeaders();
 
             BundleHeader bh = null;
 
-            var qf = from f in DbUtil.Db.ContributionFunds
+            var qf = from f in db.ContributionFunds
                      where f.FundStatusId == 1
                      orderby f.FundId
                      select f.FundId;
@@ -44,13 +45,13 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
 
                 var bd = new BundleDetail
                 {
-                    CreatedBy = Util.UserId,
+                    CreatedBy = db.UserId,
                     CreatedDate = DateTime.Now,
                 };
 
                 bd.Contribution = new Contribution
                 {
-                    CreatedBy = Util.UserId,
+                    CreatedBy = db.UserId,
                     CreatedDate = DateTime.Now,
                     ContributionDate = date,
                     FundId = fundid ?? qf.First(),
@@ -67,7 +68,7 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
 
                 bd.Contribution.CheckNo = ck;
                 var eac = Util.Encrypt(rt + "|" + ac);
-                var q = from kc in DbUtil.Db.CardIdentifiers
+                var q = from kc in db.CardIdentifiers
                         where kc.Id == eac
                         select kc.PeopleId;
                 var pid = q.SingleOrDefault();

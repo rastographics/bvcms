@@ -22,7 +22,7 @@ namespace CmsWeb.Areas.People.Controllers
             var c = new Contact
             {
                 CreatedDate = Util.Now,
-                CreatedBy = Util.UserId1,
+                CreatedBy = CurrentDatabase.UserId1,
                 ContactDate = Util.Now.Date
             };
 
@@ -62,7 +62,7 @@ namespace CmsWeb.Areas.People.Controllers
             var c = new Contact
             {
                 CreatedDate = Util.Now,
-                CreatedBy = Util.UserId1,
+                CreatedBy = CurrentDatabase.UserId1,
                 ContactDate = Util.Now.Date
             };
 

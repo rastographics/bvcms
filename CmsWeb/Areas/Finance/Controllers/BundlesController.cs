@@ -36,7 +36,7 @@ namespace CmsWeb.Areas.Finance.Controllers
                 BundleStatusId = BundleStatusCode.Open,
                 ChurchId = 1,
                 ContributionDate = dt,
-                CreatedBy = Util.UserId1,
+                CreatedBy = CurrentDatabase.UserId1,
                 CreatedDate = Util.Now,
                 RecordStatus = false,
                 FundId = CurrentDatabase.Setting("DefaultFundId", "1").ToInt(),

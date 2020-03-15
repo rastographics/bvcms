@@ -144,7 +144,7 @@ namespace CmsData
                 var mru = (List<MostRecentItem>)Util.GetFromSession(STR_MostRecentOrgs, null);
                 if (mru == null)
                 {
-                    mru = (from i in Db.MostRecentItems(Util.UserId)
+                    mru = (from i in Db.MostRecentItems(Db.UserId)
                            where i.Type == "org"
                            select new MostRecentItem() { Id = i.Id.Value, Name = i.Name }).ToList();
                     HttpContextFactory.Current.Session[STR_MostRecentOrgs] = mru;
@@ -160,7 +160,7 @@ namespace CmsData
                 var mru = (List<MostRecentItem>)Util.GetFromSession(STR_MostRecentPeople, null);
                 if (mru == null)
                 {
-                    mru = (from i in Db.MostRecentItems(Util.UserId)
+                    mru = (from i in Db.MostRecentItems(Db.UserId)
                            where i.Type == "per"
                            select new MostRecentItem() { Id = i.Id.Value, Name = i.Name }).ToList();
                     HttpContextFactory.Current.Session[STR_MostRecentPeople] = mru;

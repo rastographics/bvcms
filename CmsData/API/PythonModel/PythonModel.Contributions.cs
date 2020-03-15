@@ -53,12 +53,12 @@ namespace CmsData
         {
             var bd = new BundleDetail
             {
-                CreatedBy = Util.UserId,
+                CreatedBy = db.UserId,
                 CreatedDate = DateTime.Now
             };
             bd.Contribution = new Contribution
             {
-                CreatedBy = Util.UserId,
+                CreatedBy = db.UserId,
                 CreatedDate = DateTime.Now,
                 ContributionDate = date,
                 FundId = fundid,
