@@ -16,9 +16,12 @@ namespace CmsWeb.Areas.Search.Controllers
         }
 
         [HttpPost, Route("SearchAdd2/Dialog/{type}/{typeid?}")]
-        public ActionResult Dialog(string type, string typeid, bool displaySkipSearch = true)
+        public ActionResult Dialog(string type, string typeid, bool displaySkipSearch = true, bool fuzzy = true)
         {
-            var m = new SearchAddModel(CurrentDatabase, type, typeid, displaySkipSearch);
+            var m = new SearchAddModel(CurrentDatabase, type, typeid, displaySkipSearch)
+            {
+                Fuzzy = fuzzy
+            };
             return View("SearchPerson", m);
         }
 
@@ -127,7 +130,7 @@ namespace CmsWeb.Areas.Search.Controllers
             }
 
             m.AddExisting(id);
-            if (m.OnlyOne)
+            if (m.OnlyOne && !m.Fuzzy)
             {
                 return CommitAdd(m);
             }
