@@ -1,13 +1,14 @@
-using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data.Common;
-using System.Data.SqlClient;
-using System.Linq;
-using System.Text.RegularExpressions;
 using CmsData.API;
 using Dapper;
 using IronPython.Runtime;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Text.RegularExpressions;
+using Newtonsoft.Json;
 using UtilityExtensions;
 
 namespace CmsData
@@ -278,6 +279,28 @@ namespace CmsData
 ]";
         }
 
+        public string QuerySqlJsonArray(string sql)
+        {
+            using (var rd = db.Connection.ExecuteReader(sql))
+            {
+                var sb = new StringBuilder();
+                var w = new JsonTextWriter(new StringWriter(sb));
+                w.Formatting = Formatting.Indented;
+                w.WriteStartArray();
+                while (rd.Read())
+                {
+                    w.WriteStartArray();
+                    for (var i = 0; i < rd.FieldCount; i++)
+                    {
+                        var value = rd.GetValue(i);
+                        w.WriteValue(value);
+                    }
+                    w.WriteEndArray();
+                }
+                w.WriteEndArray();
+                return sb.ToString();
+            }
+        }
 
         /// <summary>
         /// Function takes a sql script and then places the results into an array.
