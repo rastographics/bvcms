@@ -109,7 +109,7 @@ namespace CmsWeb.Models
                         break;
                     case "Campus":
                         q = from c in q
-                            orderby c.Campu.Code, c.ContributionDate descending
+                            orderby c.Person.Campu.Code, c.ContributionDate descending
                             select c;
                         break;
                     case "Name":
@@ -148,7 +148,7 @@ namespace CmsWeb.Models
                         break;
                     case "Campus":
                         q = from c in q
-                            orderby c.Campu.Code descending, c.ContributionDate descending
+                            orderby c.Person.Campu.Code descending, c.ContributionDate descending
                             select c;
                         break;
                     case "Name":
