@@ -1,17 +1,86 @@
-﻿@{
-    Layout = null;
+﻿@model IEnumerable<CmsData.DashboardWidget>
+@{
+    Layout = ViewExtensions2.TouchPointLayout();
+    ViewBag.Title = "Homepage Widgets";
+    ViewBag.PageHeader = "Homepage Widgets";
 }
+@section head{
+    @ViewExtensions2.Sortable()
+    @ViewExtensions2.BootstrapToggleCss()
+    <style type="text/css">
+        .draggable-mirror {
+            background: rgba(255,255,255,0.5);
+            width: 95%;
+            outline: -webkit-focus-ring-color auto 1px;
+            cursor: move;
+            cursor: -webkit-grabbing;
+            opacity: 0.7;
+        }
 
-<!DOCTYPE html>
+            .draggable-mirror td:last-child {
+                visibility: hidden;
+            }
 
-<html>
-<head>
-    <meta name="viewport" content="width=device-width" />
-    <title></title>
-</head>
-<body>
-    <div>
-    
+        .handle {
+            cursor: move;
+        }
+    </style>
+}
+@using (Html.BeginForm("SaveOrder", "HomeWidgets"))
+{
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="box box-responsive">
+                <div class="box-title-btn">
+                    <div class="box-tools">
+                        <a href="/HomeWidgets/New" class="btn btn-default btn-block"><i class="fa fa-plus-circle"></i> New</a> <button type="submit" class="btn btn-success">Save</button>
+                    </div>
+                </div>
+                <div class="box-content">
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th style="width:200px;">Widget Name</th>
+                                    <th>Description</th>
+                                    <th style="width: 50px;text-align:center;">Enabled</th>
+                                    <th style="width: 50px;text-align:center;">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody class="sortable">
+                                @foreach (var item in Model)
+                                {
+                                    <tr class="widget dropzone">
+                                        <td style="width: 150px;">@item.Name</td>
+                                        <td>@item.Description</td>
+                                        <td>
+                                            <input type="checkbox" id="Widget@item.Id" name="Widget@item.Id" data-toggle="toggle" data-on="Enable" data-off="Disable" data-width="100" checked="@(item.Enabled)">
+                                        </td>
+                                        <td style="width: 180px;text-align:center;">
+                                            <i class="handle fa fa-bars"></i>
+                                            <input type="hidden" name="widgets[]" value="@item.Id" />
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="visible-xs-block">
+                        <a href="/HomeWidgets/New" class="btn btn-default btn-block"><i class="fa fa-plus-circle"></i> New</a>
+                        <button type="submit" class="btn btn-success btn-block">Save</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-</body>
-</html>
+}
+@section scripts
+{
+    @ViewExtensions2.BootstrapToggle()
+    <script type="text/javascript">
+        var sortable = new Sortable.default(document.querySelectorAll('.sortable'), {
+            draggable: '.widget',
+            handle: '.handle'
+        });
+    </script>
+}

@@ -1,17 +1,72 @@
-﻿@{
-    Layout = null;
+﻿@model CmsWeb.Areas.Setup.Models.DashboardWidgetModel
+@{
+    Layout = ViewExtensions2.TouchPointLayout();
+    ViewBag.Title = "Homepage Widgets";
+    ViewBag.PageHeader = "Homepage Widgets";
 }
-
-<!DOCTYPE html>
-
-<html>
-<head>
-    <meta name="viewport" content="width=device-width" />
-    <title></title>
-</head>
-<body>
-    <div>
-    
+<div class="row">
+    <div class="col-sm-12 col-md-12 col-lg-10">
+        <div class="box box-responsive">
+            <div class="box-title-btn">
+                <div class="box-tools">
+                    <a class="btn btn-default" href="/HomeWidgets"><i class="fa fa-arrow-circle-left"></i> Back to List</a>
+                </div>
+            </div>
+            <div class="box-content">
+                <form id="widgetform">
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <label for="Name" class="control-label">Name</label>
+                        </div>
+                        <div class="col-sm-9">
+                            @Html.EditorFor(m => m.Widget.Name)
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <label for="Description" class="control-label">Description</label>
+                        </div>
+                        <div class="col-sm-9">
+                            @Html.EditorFor(m => m.Widget.Description)
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <label for="Roles" class="control-label">Roles visible</label>
+                        </div>
+                        <div class="col-sm-9">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <label for="HTMLContentId" class="control-label">View (HTML)</label>
+                        </div>
+                        <div class="col-sm-9">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <label for="PythonContentId" class="control-label">Python Code</label>
+                        </div>
+                        <div class="col-sm-9">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <label for="SQLContentId" class="control-label">Data (SQL)</label>
+                        </div>
+                        <div class="col-sm-9">
+                        </div>
+                    </div>
+                    <div class="hidden-xs">
+                        <a href="/HomeWidgets" class="btn btn-default displayedit">Cancel</a> <a href="/HomeWidgets/Update/@Model.Widget.Id" class="btn btn-primary displayedit">Save</a>
+                    </div>
+                    <div class="visible-xs-block">
+                        <a href="/HomeWidgets/Update/@Model.Widget.Id" class="btn btn-primary displayedit btn-block">Save</a>
+                        <a href="/HomeWidgets" class="btn btn-default displayedit btn-block">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
-</body>
-</html>
+</div>

@@ -18,13 +18,21 @@ namespace CmsWeb.Areas.Setup.Controllers
         public ActionResult Index()
         {
             var widgets = CurrentDatabase.DashboardWidgets.ToList();
-            var r = CmsData.User.AllRoles(CurrentDatabase);
-            return View(r);
+            return View(widgets);
         }
         
+        [Route("~/HomeWidgets/{id}")]
         public ActionResult Manage(string id)
         {
-            return View();
+            try
+            {
+                var model = new DashboardWidgetModel(id, CurrentDatabase);
+                return View(model);
+            }
+            catch
+            {
+                return Content("Invalid widget");
+            }
         }
     }
 }
