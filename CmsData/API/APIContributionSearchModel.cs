@@ -123,7 +123,7 @@ namespace CmsData.API
                          ContributionType = contributionType,
                          ContributionTypeId = c.ContributionTypeId,
                          Fund = c.ContributionFund.FundName,
-                         CampusCode = c.Campu.Code,
+                         CampusCode = c.Person.Campu.Code,
                          BundleType = bd.BundleHeader.BundleHeaderType.Description,
                          NonTaxDed =
                              c.ContributionTypeId == ContributionTypeCode.NonTaxDed ||
