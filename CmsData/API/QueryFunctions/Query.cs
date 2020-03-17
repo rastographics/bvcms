@@ -281,7 +281,7 @@ namespace CmsData
 
         public string QuerySqlJsonArray(string sql)
         {
-            using (var rd = db.Connection.ExecuteReader(sql))
+            using (var rd = GetReadonlyConnection().ExecuteReader(sql))
             {
                 var sb = new StringBuilder();
                 var w = new JsonTextWriter(new StringWriter(sb));
