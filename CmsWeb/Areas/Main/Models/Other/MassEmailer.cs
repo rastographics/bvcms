@@ -15,6 +15,7 @@ namespace CmsWeb.Areas.Main.Models
     {
         public int Count { get; set; }
 
+
         public int TagId { get; set; }
         public int? OrgId { get; set; }
         public bool wantParents { get; set; }
@@ -82,6 +83,7 @@ namespace CmsWeb.Areas.Main.Models
         }
 
         public string Host { get; set; }
+        public bool FromEmailTemplates { get; set; }
 
         public MassEmailer()
         {
