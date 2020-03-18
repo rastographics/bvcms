@@ -1180,6 +1180,10 @@
     <Resource Include="Classes\OnlineRegSummaryText\Details2.xml">
       <SubType>Designer</SubType>
     </Resource>
+    <Content Include="Migrations\20200224_Add_CreatedDate_OrgMemberDocuments_Column.sql" />
+    <Content Include="Migrations\20200318_alter_GetTotalContributionsDonorFund_func.sql" />
+    <Content Include="Migrations\20200318_alter_ContributionSearch_func.sql" />
+    <Content Include="Migrations\20200224_Create_OrgTemporaryDocuments_Table.sql" />
     <Content Include="QueryBuilder\CompareMap.xml">
       <SubType>Designer</SubType>
     </Content>

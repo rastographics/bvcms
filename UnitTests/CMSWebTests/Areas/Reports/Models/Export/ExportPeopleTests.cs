@@ -59,7 +59,7 @@ namespace CmsWeb.Models.Tests
 
                 DateTime exportStartDt = Util.Now.AddDays(-180);
                 DateTime exportEndDt = Util.Now.AddDays(180);
-                DataTable tableResult = _exportPeople.ExcelDonorTotals(exportStartDt, exportEndDt, campusid, pledges, nontaxdeductible, online, includeUnclosed, tagid, fundids, false);
+                DataTable tableResult = _exportPeople.ExcelDonorTotals(exportStartDt, exportEndDt, campusid, pledges, nontaxdeductible, online, includeUnclosed, tagid, fundids);
                 var dbContributionsQry = db.Contributions
                     .Where(x => !ContributionTypeCode.ReturnedReversedTypes.Contains(x.ContributionTypeId) && !ContributionTypeCode.Pledge.Equals(x.ContributionTypeId))
                     .Where(x => ContributionStatusCode.Recorded.Equals(x.ContributionStatusId))
