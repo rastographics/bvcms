@@ -1,5 +1,8 @@
 ﻿@using UtilityExtensions
 @model CmsWeb.Models.ContributionSearchModel
+@{
+    var ContributionsCampusColumn = Model.CurrentDatabase.Setting("ContributionsCampusColumn");
+}
 <div id="results">
     <div class="stat-panel-container">
         <div class="stat-panel-inner-container">
@@ -29,6 +32,10 @@
                     <th class="text-right"><a class="sortable" href="#">Amount</a> </th>
                     <th><a class="sortable" href="#">Type</a> </th>
                     <th><a class="sortable" href="#">Fund</a> </th>
+                    @if (ContributionsCampusColumn)
+                    {
+                        <th><a class="sortable" href="#">Campus</a> </th>
+                    }
                     <th>Check #</th>
                     <th>Notes</th>
                     <th colspan="2">Actions</th>
@@ -62,6 +69,10 @@
                             }
                         </td>
                         <td>@c.Fund</td>
+                        @if (ContributionsCampusColumn)
+                        {
+                            <td>@c.CampusCode</td>
+                        }
                         <td>@c.CheckNo</td>
                         <td>@c.Description</td>
                         <td class="action">

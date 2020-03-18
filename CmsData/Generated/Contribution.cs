@@ -65,6 +65,7 @@ namespace CmsData
 
         private EntitySet<ContributionTag> _ContributionTags;
 
+		private EntityRef<Campu> _Campu;
         private EntityRef<ContributionFund> _ContributionFund;
 
         private EntityRef<ContributionStatus> _ContributionStatus;
@@ -163,6 +164,7 @@ namespace CmsData
 
             _ContributionTags = new EntitySet<ContributionTag>(new Action<ContributionTag>(attach_ContributionTags), new Action<ContributionTag>(detach_ContributionTags));
 
+			_Campu = default(EntityRef<Campu>); 
             _ContributionFund = default(EntityRef<ContributionFund>);
 
             _ContributionStatus = default(EntityRef<ContributionStatus>);
@@ -577,6 +579,8 @@ namespace CmsData
             {
                 if (_CampusId != value)
                 {
+					if (_Campu.HasLoadedOrAssignedValue)
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
                     OnCampusIdChanging(value);
                     SendPropertyChanging();
                     _CampusId = value;
@@ -665,7 +669,37 @@ namespace CmsData
         #endregion
 
         #region Foreign Keys
+		[Association(Name="FK_Contribution_Campus", Storage="_Campu", ThisKey="CampusId", IsForeignKey=true)]
+		public Campu Campu
+		{
+			get { return _Campu.Entity; }
 
+			set
+			{
+				Campu previousValue = _Campu.Entity;
+				if (((previousValue != value) 
+							|| (_Campu.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if (previousValue != null)
+					{
+						_Campu.Entity = null;
+						previousValue.Contributions.Remove(this);
+					}
+					_Campu.Entity = value;
+					if (value != null)
+					{
+						value.Contributions.Add(this);
+						_CampusId = value.Id;
+					}
+					else
+					{
+						_CampusId = default(int?);
+					}
+					this.SendPropertyChanged("Campu");
+				}
+			}
+		}
         [Association(Name = "FK_Contribution_ContributionFund", Storage = "_ContributionFund", ThisKey = "FundId", IsForeignKey = true)]
         public ContributionFund ContributionFund
         {

@@ -1182,6 +1182,8 @@
     </Resource>
     <Content Include="Migrations\20200224_Add_CreatedDate_OrgMemberDocuments_Column.sql" />
     <Content Include="Migrations\20200224_Create_OrgTemporaryDocuments_Table.sql" />
+    <Content Include="Migrations\20200312_AddSettingMetaData_ContributionsCampusColumn.sql" />
+    <Content Include="Migrations\20200312_Add_FK_Contribution_Campus.sql" />
     <Content Include="Migrations\20200311_AddSettingMetaData_BundleEntryCampusCode.sql" />
     <Content Include="QueryBuilder\CompareMap.xml">
       <SubType>Designer</SubType>
