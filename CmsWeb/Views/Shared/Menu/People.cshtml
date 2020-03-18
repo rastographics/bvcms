@@ -8,7 +8,7 @@
     <li class="col-sm-6">
       <ul>
         <li class="dropdown-header dropdown-sub-header">Find People</li>
-        <li><a href="#" data-toggle="modal" data-target="#search-box">Quick Search</a></li>
+        <li><a href="#" data-toggle="modal" data-target="#search-box-search-person">Quick Search</a></li>
         @Helper.LiAnchorLink("Basic Search", "/PeopleSearch")
         <li class="dropdown-header dropdown-sub-header">Search Builder Query</li>
           @Helper.LiAnchorLink("New Search", "/NewQuery")
@@ -27,7 +27,7 @@
         @Helper.LiAnchorLink("Tasks", "/TaskSearch")
         @if (menuaddpeople)
         {
-            <li><a href="/SearchAdd2/Dialog/Fuzzy" class="searchadd">Add Person</a></li>
+            <li><a href="/SearchAdd2/Dialog/Menu" class="searchadd">Add Person</a></li>
         }
         @Helper.LiAnchorLink("Add Person", "https://docs.touchpointsoftware.com/SearchAdd/AddPeopleContext.html", !menuaddpeople, "_blank")
         @{

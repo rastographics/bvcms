@@ -1,4 +1,5 @@
 ﻿using CmsData;
+using System;
 using System.Linq;
 using UtilityExtensions;
 
@@ -21,7 +22,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                     }
                     else
                     {
-                        var list = CurrentDatabase.FindPerson(FirstName, LastName, birthday, EmailAddress, Phone.GetDigits()).ToList();
+                        var list = CurrentDatabase.FindPerson(FirstName, LastName, SqlDate(birthday), EmailAddress, Phone.GetDigits()).ToList();
                         count = list.Count;
                         if (count == 1)
                         {
@@ -41,6 +42,19 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
                 return _person;
             }
+        }
+
+        private DateTime? SqlDate(DateTime? birthday)
+        {
+            if (birthday.HasValue)
+            {
+                var d = birthday.Value;
+                if (d.Year < 1900)
+                {
+                    birthday = new DateTime(1900 + (d.Year % 100), d.Month, d.Day);
+                }
+            }
+            return birthday;
         }
     }
 }

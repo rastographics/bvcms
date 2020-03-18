@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace CmsWeb {
+namespace CmsWeb.Properties {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace CmsWeb {
         public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("CmsWeb.Resource1", typeof(Resource1).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("CmsWeb.Properties.Resource1", typeof(Resource1).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -280,6 +280,59 @@ namespace CmsWeb {
         public static string ContributionStatementNotice {
             get {
                 return ResourceManager.GetString("ContributionStatementNotice", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &lt;!DOCTYPE html&gt;
+        ///&lt;html&gt;
+        ///&lt;head&gt;
+        ///    &lt;style type=&quot;text/css&quot;&gt;
+        ///        * {
+        ///            margin: 0;
+        ///            padding: 0;
+        ///            text-indent: 0;
+        ///            font-family: Arial;
+        ///            font-size: 11pt;
+        ///        }
+        ///
+        ///        thead {
+        ///            display: table-header-group;
+        ///        }
+        ///
+        ///        tfoot {
+        ///            display: table-header-group;
+        ///        }
+        ///
+        ///        table,
+        ///        tbody {
+        ///            page-break-inside: auto;
+        ///        }
+        ///
+        ///        tr {
+        ///            page-break-inside: avoid !imp [rest of string was truncated]&quot;;.
+        /// </summary>
+        public static string ContributionStatementTemplate {
+            get {
+                return ResourceManager.GetString("ContributionStatementTemplate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &lt;!DOCTYPE html&gt;
+        ///&lt;html&gt;
+        ///&lt;head&gt;
+        ///    &lt;meta charset=&quot;utf-8&quot; /&gt;
+        ///    &lt;title&gt;&lt;/title&gt;
+        ///&lt;/head&gt;
+        ///&lt;body&gt;
+        ///
+        ///&lt;/body&gt;
+        ///&lt;/html&gt;.
+        /// </summary>
+        public static string ContributionStatementTemplateBody {
+            get {
+                return ResourceManager.GetString("ContributionStatementTemplateBody", resourceCulture);
             }
         }
         
@@ -583,15 +636,10 @@ namespace CmsWeb {
         /// <summary>
         ///   Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot; ?&gt;
         ///&lt;DefaultSettings&gt;
-        ///    &lt;setting name=&quot;DisableHomePage&quot; value=&quot;true&quot; /&gt;
-        ///    &lt;setting name=&quot;DisablePersonLinks&quot; value=&quot;true&quot; /&gt;
-        ///    &lt;setting name=&quot;HideEmailDetails&quot; value=&quot;true&quot; /&gt;
-        ///    &lt;setting name=&quot;HideExtraValueEdit&quot; value=&quot;true&quot; /&gt;
-        ///    &lt;setting name=&quot;HideGuestsOrgMembers&quot; value=&quot;true&quot; /&gt;
-        ///    &lt;setting name=&quot;HideInactiveOrgMembers&quot; value=&quot;true&quot; /&gt;
-        ///    &lt;setting name=&quot;HidePendingOrgMembers&quot; value=&quot;true&quot; /&gt;
-        ///    &lt;setting name=&quot;HideMinistryTab&quot; value=&quot;true&quot; /&gt;
-        ///    [rest of string was truncated]&quot;;.
+        ///    &lt;Location name=&quot;Involvement&quot;&gt;
+        ///        &lt;setting name=&quot;CanEditCGInfoEVs&quot; value=&quot;false&quot; friendly=&quot;Org Extra Values&quot; true=&quot;Allow&quot; false=&quot;Disallow&quot; tooltip=&quot;Allows user to edit existing extra values on an extra value tab&quot; /&gt;
+        ///        &lt;setting name=&quot;DisablePersonLinks&quot; value=&quot;false&quot; friendly=&quot;Person Links&quot; true=&quot;Enable&quot; false=&quot;Disable&quot; tooltip=&quot;Enable/Disable hyperlinking to a person&apos;s profile (in orgs)&quot; reverse=&quot;true&quot;/&gt;
+        ///        &lt;setting name=&quot;Edit [rest of string was truncated]&quot;;.
         /// </summary>
         public static string RoleSettingDefaults {
             get {

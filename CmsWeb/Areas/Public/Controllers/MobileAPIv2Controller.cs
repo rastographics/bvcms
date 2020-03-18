@@ -944,8 +944,10 @@ namespace CmsWeb.Areas.Public.Controllers
             var pledges = APIContribution.Pledges(CurrentDatabase, ci, ToDate, null).ToList();
             var giftsinkind = APIContribution.GiftsInKind(CurrentDatabase, ci, FromDate, ToDate, null).ToList();
             var nontaxitems = APIContribution.NonTaxItems(CurrentDatabase, ci, FromDate, ToDate, null).ToList();
-            summary[$"{year}"].Load(contributions, pledges, giftsinkind, nontaxitems);
-
+            if (summary.ContainsKey($"{year}"))
+            {
+                summary[$"{year}"].Load(peopleId, contributions, pledges, giftsinkind, nontaxitems);
+            }
             MobileMessage response = new MobileMessage();
             response.data = SerializeJSON(summary, message.version);
             response.setNoError();

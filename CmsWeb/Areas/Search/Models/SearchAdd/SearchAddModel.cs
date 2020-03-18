@@ -33,6 +33,7 @@ namespace CmsWeb.Areas.Search.Models
             base.Init();
             PendingList = new List<PendingPersonModel>();
             DisplaySkipSearch = true;
+            Fuzzy = true;
         }
 
         public SearchAddModel(CMSDataContext db, string context, string contextid, bool displaySkipSearch = true) : this(db)

@@ -2,6 +2,7 @@ using CmsData;
 using CmsData.API;
 using CmsWeb.Areas.Manage.Models;
 using CmsWeb.Membership;
+using CmsWeb.Properties;
 using Elmah;
 using ImageData;
 using System;

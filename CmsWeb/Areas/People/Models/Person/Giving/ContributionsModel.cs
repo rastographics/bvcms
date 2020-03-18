@@ -116,7 +116,7 @@ namespace CmsWeb.Areas.People.Models
             GivingEndDate = DateTime.Now;
             var Year1 = Year;
             if (!GivingYears.Any(p => p == Year))
-                Year1 = "YearToDate";
+                Year1 = CurrentDatabase.Setting("ContributionFilterDefault", "YearToDate");
 
             switch (Year1.Replace(" ", ""))
             {
@@ -141,7 +141,7 @@ namespace CmsWeb.Areas.People.Models
         private IQueryable<Contribution> GetContributionRecords()
         {
             var currentUser = CurrentDatabase.CurrentUserPerson;
-            var isFinanceUser = Roles.GetRolesForUser().Contains("Finance");
+            var isFinanceUser = CurrentDatabase.CurrentRoles().Contains("Finance");
             var isCurrentUser = currentUser.PeopleId == Person.PeopleId;
             var isSpouse = currentUser.PeopleId == Person.SpouseId;
             var isFamilyMember = currentUser.FamilyId == Person.FamilyId;
@@ -192,10 +192,14 @@ namespace CmsWeb.Areas.People.Models
             return withSort;
         }
 
-        public IEnumerable<SelectListItem> GivingYearsList()
+        public IEnumerable<SelectListItem> GivingYearsList(bool overrideSelection = false)
         {
             SetGivingYears(ApplyFilter(GetContributionRecords()));
-            return GivingYears.Select(i => new SelectListItem { Text = i, Selected = Year == i });
+            if (overrideSelection)
+            {
+                return GivingYears.Select(i => new SelectListItem { Text = i, Selected = Year == i });
+            }
+            return GivingYears.Select(i => new SelectListItem { Text = i, Selected = CurrentDatabase.Setting("ContributionFilterDefault", "YearToDate") == i.Replace(" ", "") });
         }
 
         public List<GivingSummary> GetGivingSummary()

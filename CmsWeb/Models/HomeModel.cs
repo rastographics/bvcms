@@ -400,8 +400,10 @@ namespace CmsWeb.Models
         {
             string first, last;
             string text = sr.Query;
+            bool addContext = sr.Context == "add"; 
             var qp = DbUtil.Db.People.AsQueryable();
-            var qo = from o in DbUtil.Db.Organizations
+            var qo = addContext ? DbUtil.Db.Organizations.AsQueryable() : null;
+            if (!addContext) qo = from o in DbUtil.Db.Organizations
                      where o.OrganizationStatusId == CmsData.Codes.OrgStatusCode.Active
                      select o;
             if (Util2.OrgLeadersOnly)
@@ -426,7 +428,7 @@ namespace CmsWeb.Models
 
                 if (phone.HasValue())
                 {
-                    var id = last.ToInt();
+                    var id = text.ToInt();
                     qp = from p in qp
                          where
                              p.PeopleId == id
@@ -434,17 +436,17 @@ namespace CmsWeb.Models
                              || p.Family.HomePhone.Contains(phone)
                              || p.WorkPhone.Contains(phone)
                          select p;
-                    qo = from o in qo
+                    if (!addContext) qo = from o in qo
                          where o.OrganizationId == id
                          select o;
                 }
                 else
                 {
-                    var id = last.ToInt();
+                    var id = text.ToInt();
                     qp = from p in qp
                          where p.PeopleId == id
                          select p;
-                    qo = from o in qo
+                    if (!addContext) qo = from o in qo
                          where o.OrganizationId == id
                          select o;
                 }
@@ -539,19 +541,10 @@ namespace CmsWeb.Models
                     rp = rp2.Union(rp1).Take(6);
                 }
 
-                qo = from o in qo
+                if (!addContext) qo = from o in qo
                      where o.OrganizationName.Contains(text) || o.LeaderName.Contains(text)
                      select o;
             }
-
-            var ro = from o in qo
-                     orderby o.OrganizationName
-                     select new SearchInfo22()
-                     {
-                         url = $"/Org/{o.OrganizationId}",
-                         line2 = o.Division.Name,
-                         nonPersonName = o.OrganizationName,
-                     };
 
             var list = new List<SearchInfo22>();
             list.AddRange(rp);
@@ -559,6 +552,17 @@ namespace CmsWeb.Models
             {
                 list[list.Count - 1].addmargin = true;
             }
+
+            if (addContext) return list;
+
+            var ro = from o in qo
+                orderby o.OrganizationName
+                select new SearchInfo22()
+                {
+                    url = $"/Org/{o.OrganizationId}",
+                    line2 = o.Division.Name,
+                    nonPersonName = o.OrganizationName,
+                };
 
             var roTake = ro.Take(4).ToList();
             list.AddRange(roTake);
@@ -575,6 +579,7 @@ namespace CmsWeb.Models
                 new SearchInfo22() { url = "/Query", nonPersonName = "Last Search" },
                 new SearchInfo22() { url = "/SavedQueryList", nonPersonName = "Saved Searches" },
             });
+
             return list;
         }
 

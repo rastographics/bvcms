@@ -37,7 +37,7 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
             CmsData.Person person = cacheSet.getPerson(peopleID);
 
             // Create label type list
-            if (groups.Count > 0 && hasAttends())
+            if (groups.Count > 0 && hasAttends(cacheSet))
             {
                 // TODO: Client size option for age cutoff for Name Tag.  Server will override and will send it to the client and disable field
                 if ((person.Age ?? 0) < cacheSet.nameTagAge)
@@ -135,13 +135,17 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
             return false;
         }
 
-        private bool hasAttends()
+        private bool hasAttends(AttendanceCacheSet cacheSet)
         {
             foreach (AttendanceGroup group in groups)
             {
                 if (group.present)
                 {
-                    return true;
+                    Organization org = cacheSet.getOrganization(group.groupID);
+                    if (org != null && org.NumCheckInLabels != 0)
+                    {
+                        return true;
+                    }
                 }
             }
 

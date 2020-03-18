@@ -77,7 +77,7 @@ namespace UtilityExtensions
         public static string GetConnectionStringForDatabase(string db, int? timeout = null)
         {
             var cs = ConnectionStringSettings;
-            var cb = new SqlConnectionStringBuilder(cs.ConnectionString ?? "Data Source=(local);Integrated Security=True");
+            var cb = new SqlConnectionStringBuilder(cs?.ConnectionString ?? "Data Source=(local);Integrated Security=True");
             if (timeout.HasValue)
             {
                 cb.ConnectTimeout = timeout.Value;

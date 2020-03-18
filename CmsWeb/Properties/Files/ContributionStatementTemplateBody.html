@@ -1,0 +1,181 @@
+﻿<script id="options">
+    {
+        "combinedTaxSummary": true
+    }
+</script>
+<p style="font-weight:bold;margin-bottom: 20pt;">
+    Period: {{FmtDate fromDate}} - {{FmtDate toDate}}
+</p>
+{{#ifGT pledges.Count 0}}
+<table style="width:100%">
+    <thead>
+        <tr><th colspan="5">Pledge Summary as of {{FmtDate toDate}}</th></tr>
+        <tr>
+            <th class="header">Fund</th>
+            <th class="header right">Pledge</th>
+            <th class="header right">Prior Years</th>
+            <th class="header right">Current Year</th>
+            <th class="header right">Balance</th>
+        </tr>
+    </thead>
+    <tbody>
+        {{#each pledges}}
+        <tr>
+            <td>{{FundName}}</td>
+            <td class="right" style="padding-right:10pt">{{FmtMoney Pledged}}</td>
+            <td class="right" style="padding-right:10pt">{{FmtMoney PriorYearsTotal}}</td>
+            <td class="right" style="padding-right:10pt">{{FmtMoney CurrentYearTotal}}</td>
+            <td class="right" style="padding-right:10pt">{{FmtMoney Balance}}</td>
+        </tr>
+        {{/each}}
+    </tbody>
+</table>
+{{/ifGT}}
+
+<div><b>Contributions Summary</b></div>
+
+{{#ifGT taxSummary.Count 0}}
+<table style="width:50%">
+    <thead>
+        <tr>
+            <th class="header">
+                Tax Deductible Summary by Fund
+            </th>
+            <th class="header right">Amount</th>
+        </tr>
+    </thead>
+    <tbody>
+        {{#each taxSummary}}
+        <tr>
+            <td>{{FundName}}</td>
+            <td class="right" style="padding-right:10pt">{{FmtMoney ContributionAmount}}</td>
+        </tr>
+        {{/each}}
+        <tr>
+            <td class="subtotal">
+                Tax Deductible Total
+            </td>
+            <td class="subtotal right" style="padding-right:10pt">{{FmtMoney taxSummary.Total}}</td>
+        </tr>
+    </tbody>
+</table>
+{{/ifGT}}
+
+{{#ifGT nontaxSummary.Count 0}}
+<table style="width:50%">
+    <thead>
+        <tr>
+            <th class="header">Non-Tax Deductible Summary by Fund</th>
+            <th class="header right">Amount</th>
+        </tr>
+    </thead>
+    <tbody>
+        {{#each nontaxSummary}}
+        <tr>
+            <td>{{FundName}}</td>
+            <td class="right" style="padding-right:10pt">{{FmtMoney ContributionAmount}}</td>
+        </tr>
+        {{/each}}
+        <tr>
+            <td class="subtotal">Non-Tax Deductible Total</td>
+            <td class="subtotal right" style="padding-right:10pt">{{FmtMoney nontaxSummary.Total}}</td>
+        </tr>
+    </tbody>
+</table>
+{{/ifGT}}
+
+{{#ifGT contributions.Count 0}}
+<table style="width:50%">
+    <thead>
+        <tr>
+            <th>Total Contributions For Period</th>
+            <th class="right" style="padding-right:10pt">{{FmtMoney totalGiven}}</th>
+        </tr>
+    </thead>
+    <tbody></tbody>
+</table>
+
+<table style="width:100%">
+    <thead>
+        <tr><th colspan="5">Tax Deductible Contributions</th></tr>
+        <tr>
+            <th class="header" style="width:60pt">Date</th>
+            <th class="header">Fund</th>
+            <th class="header" style="width:1pt">Amount</th>
+            <th class="header">Type</th>
+            <th class="header">Detail</th>
+        </tr>
+    </thead>
+    <tbody>
+        {{#each contributions}}
+        <tr>
+            <td class="right" style="padding-right:10pt">{{FmtDate ContributionDate}}</td>
+            <td>{{FundName}}</td>
+            <td class="right" style="padding-right:10pt">{{FmtMoney ContributionAmount}}</td>
+            <td>{{BundleType}}</td>
+            {{#if CheckNo}}
+            <td>{{CheckNo}}</td>
+            {{else}}
+            <td>{{Description}}</td>
+            {{/if}}
+        </tr>
+        {{/each}}
+    </tbody>
+</table>
+{{/ifGT}}
+
+{{#ifGT nontaxitems.Count 0}}
+<table style="width:100%">
+    <thead>
+        <tr><th colspan="5">Non-Tax Deductible Contributions</th></tr>
+        <tr>
+            <th class="header" style="width:60pt">Date</th>
+            <th class="header">Fund</th>
+            <th class="header" style="width:1pt">Amount</th>
+            <th class="header">Type</th>
+            <th class="header">Detail</th>
+        </tr>
+    </thead>
+    <tbody>
+        {{#each nontaxitems}}
+        <tr>
+            <td class="right" style="padding-right:10pt">{{FmtDate ContributionDate}}</td>
+            <td>{{FundName}}</td>
+            <td class="right" style="padding-right:10pt">{{FmtMoney ContributionAmount}}</td>
+            <td>{{BundleType}}</td>
+            {{#if CheckNo}}
+            <td>{{CheckNo}}</td>
+            {{else}}
+            <td>{{Description}}</td>
+            {{/if}}
+        </tr>
+        {{/each}}
+    </tbody>
+</table>
+{{/ifGT}}
+
+{{#ifGT giftsinkind.Count 0}}
+<table style="width:100%">
+    <thead>
+        <tr><th colspan="5">Gift-in-kind Contributions</th></tr>
+        <tr>
+            <th class="header" style="width:60pt">Date</th>
+            <th class="header">Fund</th>
+            <th class="header" style="width:1pt">Amount</th>
+            <th class="header">Type</th>
+            <th class="header">Detail</th>
+        </tr>
+    </thead>
+    <tbody>
+        {{#each giftsinkind}}
+        <tr>
+            <td class="right" style="padding-right:10pt">{{FmtDate ContributionDate}}</td>
+            <td>{{FundName}}</td>
+            <td class="right" style="padding-right:10pt">{{FmtMoney ContributionAmount}}</td>
+            <td>{{BundleType}}</td>
+            <td>{{CheckNo}} {{Description}}</td>
+        </tr>
+        {{/each}}
+    </tbody>
+</table>
+{{/ifGT}}

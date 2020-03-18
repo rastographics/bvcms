@@ -140,7 +140,7 @@
                         <a href="#" class="btn btn-default" data-dismiss="modal">Cancel</a>
                     </div>
                     <div class="pull-right">
-                        <a id="searchadvanced" href="/SearchAdd2/Dialog/Fuzzy" class="btn btn-primary searchadd" title="add new">Basic Search</a>
+                        <a id="searchbasic" href="/SearchAdd2/Dialog/@Model.AddContext/@Model.PrimaryKeyForContextType?fuzzy=true" class="btn btn-primary searchadd" title="add new">Basic Search</a>
                         @Html.HiddenFor(m => m.DisplaySkipSearch)
                         @if (Model.DisplaySkipSearch && Model.CanAdd)
                         {
@@ -164,7 +164,7 @@ else
                             <div class="input-group input-group-lg">
                                 <span class="input-group-addon"><i class="fa fa-search fa-fw"></i></span>
                                 <div id="search-add-component">
-                                    <search-add v-on:display-results="updateResults(results, context)" :target="'#search-box'" :context="'add'"></search-add>
+                                    <search-add v-on:display-results="updateAddResults(results, context)" :target="'#search-box-search-add'" :context="'add'" :placeholder="'People to add...'"></search-add>
                                 </div>
                             </div>
                         </div>
@@ -190,7 +190,7 @@ else
                     <a href="#" class="btn btn-default" data-dismiss="modal">Cancel</a>
                 </div>
                 <div class="pull-right">
-                    <a id="searchadvanced" href="/SearchAdd2/Dialog/Menu" class="btn btn-primary searchadd" title="add new">Advanced Search</a>
+                    <a id="searchadvanced" href="/SearchAdd2/Dialog/@Model.AddContext/@Model.PrimaryKeyForContextType?fuzzy=false" class="btn btn-primary searchadd" title="add new">Advanced Search</a>
                     @Html.HiddenFor(m => m.DisplaySkipSearch)
                     @if (Model.DisplaySkipSearch && Model.CanAdd)
                     {
@@ -201,5 +201,5 @@ else
         </div>
     </div>
 }
-<script src="/Content/touchpoint/js/update-modal-results.js" type="text/javascript"></script>
+<script src="/Content/touchpoint/js/update-add-modal-results.js" type="text/javascript"></script>
 <script src="/Content/touchpoint/js/vue-search-add.js" type="text/javascript"></script>

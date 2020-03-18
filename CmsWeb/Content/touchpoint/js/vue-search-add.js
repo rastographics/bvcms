@@ -1,7 +1,7 @@
 Vue.component("search-add", {
-    props: ["target", "context"],
+    props: ["target", "context", "placeholder"],
     template:
-        "<input v-on:keyup='searchInput($event)' v-model='searchVal' type='text' class='form-control search-box-input mousetrap' placeholder='People or organizations...'>",
+        "<input v-on:keyup='searchInput($event)' v-model='searchVal' type='text' class='form-control search-box-input mousetrap' :placeholder='placeholder'>",
     data() {
         return {
             selectedIndex: null,
@@ -48,7 +48,7 @@ Vue.component("search-add", {
                     });
 
                 // call prefetch
-                self.prefetch();
+                if (self.context !== "add") self.prefetch();
             });
 
         Mousetrap.bind("/",
@@ -139,7 +139,7 @@ Vue.component("search-add", {
                         }
                     });
                 } else {
-                    this.prefetch();
+                    if (this.context !== "add") this.prefetch();
                 }
             }
         }, 400)
