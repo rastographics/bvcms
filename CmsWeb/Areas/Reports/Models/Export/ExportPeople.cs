@@ -171,7 +171,6 @@ namespace CmsWeb.Models
                             p.EmailAddress
                         };
                 return q.ToDataTable();
-
             }
             else
             {
