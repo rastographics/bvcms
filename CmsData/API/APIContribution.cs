@@ -445,6 +445,7 @@ namespace CmsData.API
         public decimal ContributionAmount { get; set; }
         public string BundleType { get; set; }
         public string Fund { get; set; }
+        public string CampusCode { get; set; }
         public string Description { get; set; }
         public string CheckNo { get; set; }
         public int BundleId { get; set; }
