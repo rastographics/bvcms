@@ -7,7 +7,8 @@ ALTER FUNCTION [dbo].[GetTotalContributionsDonorFund]
 	@includeUnclosed BIT,
 	@tagid INT,
 	@fundids VARCHAR(MAX),
-	@includePledges BIT
+	@includePledges BIT, 
+	@online INT
 )
 RETURNS TABLE 
 AS
@@ -30,7 +31,7 @@ RETURN
 		FundName,
 		ContributionStatusId,
 		ContributionTypeId
-	FROM dbo.GetContributionsDetails(@fd, @td, @campusid, @includePledges, @nontaxded, NULL, @includeUnclosed, @tagid, @fundids) c2
+	FROM dbo.GetContributionsDetails(@fd, @td, @campusid, @includePledges, @nontaxded, @online, @includeUnclosed, @tagid, @fundids) c2
 	GROUP BY CreditGiverId, HeadName, SpouseId, SpouseName, SpouseId, c2.FundId, FundName, ContributionStatusId, ContributionTypeId
 	) tt 
 	LEFT JOIN dbo.People p ON p.PeopleId = tt.CreditGiverId

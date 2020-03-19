@@ -79,13 +79,13 @@ namespace CmsWeb.Models
                     }, commandType: CommandType.StoredProcedure);
                     return CurrentDatabase.Connection.ExecuteReader(cd).ToExcel("LedgerIncome.xlsx");
                 case "donorfundtotals":
-                    return _exportPeople.ExcelDonorFundTotals(Dt1, Dt2, fundid, campusid, IncludePledges, nontaxdeductible, IncUnclosedBundles, tagid, fundIds)                          
+                    return _exportPeople.ExcelDonorFundTotals(Dt1, Dt2, fundid, campusid, IncludePledges, nontaxdeductible, IncUnclosedBundles, tagid, fundIds, Online)                          
                         .ToExcel("DonorFundTotals.xlsx");
                 case "donortotals":
                     return _exportPeople.ExcelDonorTotals(Dt1, Dt2, campusid, IncludePledges, nontaxdeductible, Online, IncUnclosedBundles, tagid, fundIds)
                         .ToExcel("DonorTotals.xlsx");
                 case "donordetails":
-                    return _exportPeople.DonorDetails(Dt1, Dt2, fundid, campusid, IncludePledges, nontaxdeductible, IncUnclosedBundles, tagid, fundIds)
+                    return _exportPeople.DonorDetails(Dt1, Dt2, fundid, campusid, IncludePledges, nontaxdeductible, IncUnclosedBundles, tagid, fundIds, Online)
                         .ToExcel("DonorDetails.xlsx");
             }
             return null;
