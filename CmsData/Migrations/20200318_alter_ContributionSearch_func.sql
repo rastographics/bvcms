@@ -19,7 +19,7 @@ ALTER FUNCTION [dbo].[ContributionSearch]
 	,@PeopleId INT
 	,@ActiveTagFilter INT
 	,@fundids VARCHAR(MAX)
-	,@IncludePledges BIT
+	,@IncludePledges BIT = 0
 
 )
 RETURNS 
