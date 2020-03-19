@@ -229,7 +229,7 @@ namespace CmsWeb.Areas.Manage.Controllers
             }
 
             AccountModel.SetUserInfo(cmsdb, cmsidb, username);
-            if (Util.UserId == 0)
+            if (cmsdb.UserId == 0)
             {
                 return false;
             }

@@ -1,4 +1,5 @@
 ﻿using CmsData;
+using CmsData.API;
 using CmsData.Codes;
 using CmsWeb.Lifecycle;
 using CmsWeb.Models;
@@ -58,7 +59,7 @@ namespace CmsWeb.Controllers.Api
                     throw new Exception($"Contribution already reversed: {id}");
                 }
 
-                var r = ContributionSearchModel.CreateContributionRecord(c);
+                var r = new ContributionSearchModel(CurrentDatabase, new APIContributionSearchModel(CurrentDatabase)).CreateContributionRecord(c);
                 c.ContributionStatusId = ContributionStatusCode.Reversed;
                 r.ContributionTypeId = ContributionTypeCode.Reversed;
                 r.ContributionDesc = "Reversed Contribution from API: Id = " + c.ContributionId;

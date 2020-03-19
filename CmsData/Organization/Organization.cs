@@ -179,7 +179,7 @@ namespace CmsData
             {
                 SecurityTypeId = SecurityTypeId,
                 CreatedDate = Util.Now,
-                CreatedBy = Util.UserId1,
+                CreatedBy = db.UserId1,
                 LeaderMemberTypeId = LeaderMemberTypeId,
                 OrganizationName = OrganizationName + " (copy)",
                 OrganizationStatusId = OrganizationStatusId,
@@ -392,7 +392,7 @@ namespace CmsData
                 OrganizationName = organization,
                 SecurityTypeId = 0,
                 CreatedDate = Util.Now,
-                CreatedBy = Util.UserId1,
+                CreatedBy = db.UserId1,
                 OrganizationStatusId = 30,
             };
             division.Organizations.Add(o);
@@ -408,7 +408,7 @@ namespace CmsData
                 OrganizationName = organization.Truncate(100),
                 SecurityTypeId = 0,
                 CreatedDate = Util.Now,
-                CreatedBy = Util.UserId1,
+                CreatedBy = db.UserId1,
                 OrganizationStatusId = 30,
                 DivisionId = divid,
             };

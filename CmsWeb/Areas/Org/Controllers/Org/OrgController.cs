@@ -158,7 +158,7 @@ namespace CmsWeb.Areas.Org.Controllers
             var c = new Contact
             {
                 CreatedDate = Util.Now,
-                CreatedBy = Util.UserId1,
+                CreatedBy = CurrentDatabase.UserId1,
                 ContactDate = Util.Now.Date,
                 OrganizationId = o.OrganizationId
             };

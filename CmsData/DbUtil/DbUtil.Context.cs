@@ -68,6 +68,7 @@ namespace CmsData
                 return _LogFile;
             }
         }
+
         public override void SubmitChanges(ConflictMode failureMode)
         {
             if (ObjectTrackingEnabled == true)
@@ -636,7 +637,7 @@ This search uses multiple steps which cannot be duplicated in a single query.
                 name = Util.SessionId;
             }
 
-            var tag = FetchOrCreateTag(name, Util.UserPeopleId ?? Util.UserId1, TagTypeId);
+            var tag = FetchOrCreateTag(name, Util.UserPeopleId ?? UserId1, TagTypeId);
             ExecuteCommand("delete TagPerson where Id = {0}", tag.Id);
             var qpids = q.Select(pp => pp.PeopleId);
             var cmd = GetCommand(qpids);
@@ -662,7 +663,7 @@ This search uses multiple steps which cannot be duplicated in a single query.
 
         public Tag NewTemporaryTag()
         {
-            var tag = FetchOrCreateTag(Util.SessionId, Util.UserPeopleId ?? Util.UserId1, NextTagId);
+            var tag = FetchOrCreateTag(Util.SessionId, Util.UserPeopleId ?? UserId1, NextTagId);
             Debug.Assert(NextTagId != 10, "got a 10");
             ExecuteCommand("delete TagPerson where Id = {0}", tag.Id);
             return tag;
@@ -709,7 +710,7 @@ This search uses multiple steps which cannot be duplicated in a single query.
 
         public int PopulateSpecialTag(IQueryable<Person> q, string tagname, int tagTypeId)
         {
-            var tag = FetchOrCreateTag(tagname, Util.UserPeopleId ?? Util.UserId1, tagTypeId);
+            var tag = FetchOrCreateTag(tagname, Util.UserPeopleId ?? UserId1, tagTypeId);
             TagPeople.DeleteAllOnSubmit(tag.PersonTags);
             tag.Created = Util.Now;
             SubmitChanges();
@@ -719,7 +720,7 @@ This search uses multiple steps which cannot be duplicated in a single query.
 
         public void DePopulateSpecialTag(IQueryable<Person> q, int TagTypeId)
         {
-            var tag = FetchOrCreateTag(Util.SessionId, Util.UserPeopleId ?? Util.UserId1, TagTypeId);
+            var tag = FetchOrCreateTag(Util.SessionId, Util.UserPeopleId ?? UserId1, TagTypeId);
             TagPeople.DeleteAllOnSubmit(tag.PersonTags);
             SubmitChanges();
         }
@@ -805,7 +806,7 @@ This search uses multiple steps which cannot be duplicated in a single query.
             if (username.HasValue())
             {
                 var q = from u in Users
-                        where u.UserId == Util.UserId || u.Username == username
+                        where u.UserId == UserId || u.Username == username
                         select new
                         {
                             u,
@@ -866,7 +867,7 @@ This search uses multiple steps which cannot be duplicated in a single query.
             return _roleids;
         }
 
-        public Person CurrentUserPerson => Users.Where(u => u.UserId == Util.UserId).Select(u => u.Person).SingleOrDefault();
+        public Person CurrentUserPerson => Users.Where(u => u.UserId == UserId).Select(u => u.Person).SingleOrDefault();
         public Tag OrgLeadersOnlyTag2()
         {
             return FetchOrCreateTag(Util.SessionId, Util.UserPeopleId, DbUtil.TagTypeId_OrgLeadersOnly);
@@ -1120,7 +1121,7 @@ This search uses multiple steps which cannot be duplicated in a single query.
         public string RecordAttendance(
             int? orgId, int? peopleId, DateTime meetingDate, bool present, string location)
         {
-            var r = RecordAttendance(orgId, peopleId, meetingDate, present, location, Util.UserId1);
+            var r = RecordAttendance(orgId, peopleId, meetingDate, present, location, UserId1);
             var s = r.GetResult<RecordAttendInfo>().First();
             return s.ret;
         }
@@ -1177,7 +1178,7 @@ This search uses multiple steps which cannot be duplicated in a single query.
             }
             else
             {
-                p = new Preference { UserId = Util.UserId1, PreferenceX = pref, ValueX = value.ToString() };
+                p = new Preference { UserId = UserId1, PreferenceX = pref, ValueX = value.ToString() };
                 Preferences.InsertOnSubmit(p);
             }
             SubmitChanges();

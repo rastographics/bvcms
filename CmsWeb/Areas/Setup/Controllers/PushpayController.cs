@@ -128,7 +128,7 @@ namespace CmsWeb.Areas.Setup.Controllers
             { // Update access token
                 CurrentDatabase.SetSetting(idAccessToken, _at);
                 CurrentDatabase.SubmitChanges();
-                DbUtil.LogActivity($"Edit Setting {idAccessToken} to {_at}", userId: Util.UserId);
+                DbUtil.LogActivity($"Edit Setting {idAccessToken} to {_at}", userId: CurrentDatabase.UserId);
             }
             if (!CurrentDatabase.Settings.Any(s => s.Id == idRefreshToken))
             { //Create refresh token
@@ -141,7 +141,7 @@ namespace CmsWeb.Areas.Setup.Controllers
             { // Update refresh token
                 CurrentDatabase.SetSetting(idRefreshToken, _rt);
                 CurrentDatabase.SubmitChanges();
-                DbUtil.LogActivity($"Edit Setting {idRefreshToken} to {_rt}", userId: Util.UserId);
+                DbUtil.LogActivity($"Edit Setting {idRefreshToken} to {_rt}", userId: CurrentDatabase.UserId);
             }
             return RedirectToAction("Finish");
         }

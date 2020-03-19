@@ -48,7 +48,7 @@ namespace CmsData
                     EnrollmentDate = EnrollmentDate, //Adding Enrollment Date to show on the system after droppíng member.
                     TransactionDate = dropdate,
                     TransactionTypeId = 5, // drop
-                    CreatedBy = Util.UserId1,
+                    CreatedBy = db.UserId1,
                     CreatedDate = Util.Now,
                     Pending = Pending,
                     AttendancePercentage = AttendPct,
@@ -129,7 +129,7 @@ AND a.PeopleId = {2}
                 OrganizationName = orgname,
                 TransactionDate = dropdate,
                 TransactionTypeId = 5, // drop
-                CreatedBy = Util.UserId1,
+                CreatedBy = db.UserId1,
                 CreatedDate = Util.Now,
                 Pending = Pending,
                 AttendancePercentage = AttendPct,
@@ -388,7 +388,7 @@ AND a.PeopleId = {2}
                         EnrollmentDate = enrollmentDate,
                         TransactionTypeId = 1,
                         // join
-                        CreatedBy = Util.UserId1,
+                        CreatedBy = db.UserId1,
                         CreatedDate = Util.Now,
                         Pending = pending,
                         AttendancePercentage = om.AttendPct,
@@ -451,7 +451,7 @@ AND a.PeopleId = {2}
                 EnrollmentDate = enrollmentDate,
                 TransactionTypeId = 1,
                 // join
-                CreatedBy = Util.UserId1,
+                CreatedBy = db.UserId1,
                 CreatedDate = Util.Now,
                 AttendancePercentage = om.AttendPct,
                 SkipInsertTriggerProcessing = true
@@ -498,7 +498,7 @@ AND a.PeopleId = {2}
 
             var ti2 = new Transaction
             {
-                TransactionId = $"{reason} ({Util.UserPeopleId ?? Util.UserId1})",
+                TransactionId = $"{reason} ({Util.UserPeopleId ?? db.UserId1})",
                 Description = Util.PickFirst(pmtDescription, Organization.OrganizationName),
                 TransactionDate = DateTime.Now,
                 OrgId = OrganizationId,
