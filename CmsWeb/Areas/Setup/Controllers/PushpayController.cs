@@ -367,7 +367,7 @@ namespace CmsWeb.Areas.Setup.Controllers
             Payment payment = await _pushpayPayment.GetPayment(paymentToken);
             if (payment == null || _resolver.TransactionAlreadyImported(payment))
             {
-                ViewBag.Message = "Payment not vallid or expired";
+                ViewBag.Message = "Payment not valid or expired";
                 return View("~/Views/Shared/PageError.cshtml");
             }
 
@@ -381,7 +381,7 @@ namespace CmsWeb.Areas.Setup.Controllers
         {
             if (payment == null || _resolver.TransactionAlreadyImported(payment))
             {
-                ViewBag.Message = "Payment not vallid or expired";
+                ViewBag.Message = "Payment not valid or expired";
                 return View("~/Views/Shared/PageError.cshtml");
             }
 
