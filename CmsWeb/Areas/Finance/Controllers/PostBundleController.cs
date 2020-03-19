@@ -119,13 +119,15 @@ namespace CmsWeb.Areas.Finance.Controllers
 
         public ActionResult Names(string term)
         {
-            var n = PostBundleModel.Names(term, 10).ToArray();
+            var m = new PostBundleModel(CurrentDatabase);
+            var n = m.Names(term, 10).ToArray();
             return Json(n, JsonRequestBehavior.AllowGet);
         }
 
         public ActionResult Names2(string term)
         {
-            var n = PostBundleModel.Names2(term, 30).ToArray();
+            var m = new PostBundleModel(CurrentDatabase);
+            var n = m.Names2(term, 30).ToArray();
             return Json(n, JsonRequestBehavior.AllowGet);
         }
 

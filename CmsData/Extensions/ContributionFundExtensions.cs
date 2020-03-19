@@ -8,7 +8,7 @@ namespace CmsData
     {
         public static IQueryable<ContributionFund> ScopedByRoleMembership(this IQueryable<ContributionFund> contributionFunds, CMSDataContext db)
         {
-            return contributionFunds.ScopedByRoleMembership(db, Roles.GetRolesForUser());
+            return contributionFunds.ScopedByRoleMembership(db, db.CurrentRoles());
         }
 
         public static IQueryable<ContributionFund> ScopedByRoleMembership(this IQueryable<ContributionFund> contributionFunds, CMSDataContext db, string[] allowedRoles)

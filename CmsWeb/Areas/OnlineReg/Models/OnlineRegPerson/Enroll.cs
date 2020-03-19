@@ -1,6 +1,7 @@
 using CmsData;
 using CmsData.Codes;
 using CmsData.Registration;
+using CmsWeb.Properties;
 using System;
 using System.Linq;
 using System.Text;

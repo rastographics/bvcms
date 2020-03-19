@@ -3,6 +3,7 @@ using CmsData.Codes;
 using CmsWeb.Areas.Dialog.Models;
 using CmsWeb.Areas.Public.Models;
 using CmsWeb.Areas.Search.Models;
+using CmsWeb.Properties;
 using OpenXmlPowerTools;
 using System;
 using System.Collections.Generic;

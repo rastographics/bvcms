@@ -91,15 +91,26 @@
 .checkin .landing input:focus {
     outline: none;
 }
+.checkin .families .family,
 .checkin .classes .class {
-    margin-bottom: 30px;
+    margin-bottom: 25px;
 }
-.checkin .families .family h4,
+.checkin .families .family > div,
 .checkin .classes .class > div {
     border: 1px solid #e6e6e6;
     background-color: #fff;
     padding: 30px 20px;
+    height: 100px;
+    display: flex;
+    flex-flow: column;
+    justify-content: center;
 }
+
+.checkin .families .family .h4 {
+    color:#003f72;
+    font-weight: 400;
+}
+
 .checkin .portrait-container {
     display: inline-block;
     border-radius: 100%;

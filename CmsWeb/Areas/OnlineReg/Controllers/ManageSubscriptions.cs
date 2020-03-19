@@ -3,6 +3,7 @@ using System.Linq;
 using System.Web.Mvc;
 using CmsData;
 using CmsWeb.Areas.OnlineReg.Models;
+using CmsWeb.Properties;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.OnlineReg.Controllers

@@ -158,9 +158,9 @@ namespace CmsWeb.Controllers
         }
 
         [HttpPost, Route("~/FastSearch")]
-        public ActionResult FastSearch(string q)
+        public ActionResult FastSearch(SearchRequest sr)
         {
-            var qq = HomeModel.FastSearch(q).ToArray();
+            var qq = HomeModel.FastSearch(sr).ToArray();
             return Content(JsonConvert.SerializeObject(qq));
         }
 

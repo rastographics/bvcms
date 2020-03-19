@@ -20,6 +20,7 @@ namespace CmsData
 
         private bool? _Hardwired;
 
+   		private EntitySet<Contribution> _Contributions;
         private EntitySet<Organization> _Organizations;
 
         private EntitySet<Person> _People;
@@ -50,6 +51,7 @@ namespace CmsData
 
         public Campu()
         {
+			_Contributions = new EntitySet<Contribution>(new Action< Contribution>(attach_Contributions), new Action< Contribution>(detach_Contributions)); 
             _Organizations = new EntitySet<Organization>(new Action<Organization>(attach_Organizations), new Action<Organization>(detach_Organizations));
 
             _People = new EntitySet<Person>(new Action<Person>(attach_People), new Action<Person>(detach_People));
@@ -136,7 +138,13 @@ namespace CmsData
         #endregion
 
         #region Foreign Key Tables
+   		[Association(Name="FK_Contribution_Campus", Storage="_Contributions", OtherKey="CampusId")]
+   		public EntitySet<Contribution> Contributions
+   		{
+   		    get { return _Contributions; }
 
+			set	{ _Contributions.Assign(value); }
+   		}
         [Association(Name = "FK_Organizations_Campus", Storage = "_Organizations", OtherKey = "CampusId")]
         public EntitySet<Organization> Organizations
            {
@@ -182,10 +190,20 @@ namespace CmsData
         public event PropertyChangedEventHandler PropertyChanged;
         protected virtual void SendPropertyChanged(string propertyName)
         {
-            if ((PropertyChanged != null))
+			if ((PropertyChanged != null))
+			{
+				PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			}
+		}
+		private void attach_Contributions(Contribution entity)
             {
-                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			SendPropertyChanging();
+			entity.Campu = this;
             }
+		private void detach_Contributions(Contribution entity)
+		{
+			SendPropertyChanging();
+			entity.Campu = null;
         }
 
         private void attach_Organizations(Organization entity)

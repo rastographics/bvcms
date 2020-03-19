@@ -5,6 +5,7 @@ using System.Web.Mvc;
 using CmsData;
 using CmsData.Codes;
 using CmsWeb.Areas.Manage.Models.Involvement;
+using CmsWeb.Properties;
 
 namespace CmsWeb.Areas.Manage.Controllers
 {

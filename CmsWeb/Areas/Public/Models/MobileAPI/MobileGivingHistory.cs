@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace CmsWeb.MobileAPI
 {
@@ -21,11 +22,8 @@ namespace CmsWeb.MobileAPI
 		public void updateEntries( int thisYear, List<MobileGivingEntry> entries )
 		{
 			this.thisYear = thisYear;
-			this.entries.AddRange( entries );
-
-			foreach( MobileGivingEntry entry in entries ) {
-				yearToDateTotal += entry.amount;
-			}
+            this.entries.AddRange(entries);
+            yearToDateTotal = entries.Sum(e => e.amount);
 		}
 	}
 }
