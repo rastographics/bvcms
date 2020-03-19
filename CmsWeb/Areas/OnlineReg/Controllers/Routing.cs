@@ -21,13 +21,13 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             if ((int)GatewayTypes.Pushpay == GatewayId && m.ProcessType == PaymentProcessTypes.OneTimeGiving)
             {
                 Session["PaymentProcessType"] = PaymentProcessTypes.OneTimeGiving;
-                return Redirect($"/Pushpay/OneTime/{pid}/{m.Orgid}");
+                return Redirect($"/Pushpay/OneTime/{pid}");
             }
 
             if ((int)GatewayTypes.Pushpay == GatewayId && m.ProcessType == PaymentProcessTypes.RecurringGiving)
             {
                 Session["PaymentProcessType"] = PaymentProcessTypes.RecurringGiving;
-                return Redirect($"/Pushpay/RecurringManagment/{pid}/{m.Orgid}");
+                return Redirect($"/Pushpay/RecurringManagment/{pid}");
             }
 
             var link = RouteExistingRegistration(m, pid);
