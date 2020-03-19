@@ -123,7 +123,7 @@ namespace CmsWeb.Models
 
             if (CurrentDatabase.Setting("UseLabelNameForDonorDetails"))
             {
-                var q = from c in GetValidContributionDetails(startdt, enddt, campusid, pledges, nontaxdeductible, includeUnclosed, tagid, fundids)
+                var q = from c in GetValidContributionDetails(startdt, enddt, campusid, pledges, nontaxdeductible, includeUnclosed, tagid, fundids, online)
                         join p in CurrentDatabase.People on c.CreditGiverId equals p.PeopleId
                         let mainFellowship = CurrentDatabase.Organizations.SingleOrDefault(oo => oo.OrganizationId == p.BibleFellowshipClassId).OrganizationName
                         let head1 = CurrentDatabase.People.Single(hh => hh.PeopleId == p.Family.HeadOfHouseholdId)
@@ -174,7 +174,7 @@ namespace CmsWeb.Models
             }
             else
             {
-                var q = from c in GetValidContributionDetails(startdt, enddt, campusid, pledges, nontaxdeductible, includeUnclosed, tagid, fundids)
+                var q = from c in GetValidContributionDetails(startdt, enddt, campusid, pledges, nontaxdeductible, includeUnclosed, tagid, fundids, online)
                         join p in CurrentDatabase.People on c.CreditGiverId equals p.PeopleId
                         let mainFellowship = CurrentDatabase.Organizations.SingleOrDefault(oo => oo.OrganizationId == p.BibleFellowshipClassId).OrganizationName
                         let spouse = CurrentDatabase.People.SingleOrDefault(sp => sp.PeopleId == p.SpouseId)
@@ -275,9 +275,9 @@ namespace CmsWeb.Models
             return report;
         }
         public DataTable ExcelDonorFundTotals(DateTime startdt, DateTime enddt,
-            int fundid, int campusid, bool pledges, bool? nontaxdeductible, bool includeUnclosed, int? tagid, string fundids)
+            int fundid, int campusid, bool pledges, bool? nontaxdeductible, bool includeUnclosed, int? tagid, string fundids, int online)
         {
-            var q2 = from r in CurrentDatabase.GetTotalContributionsDonorFund(startdt, enddt, campusid, nontaxdeductible, includeUnclosed, tagid, fundids, pledges)
+            var q2 = from r in CurrentDatabase.GetTotalContributionsDonorFund(startdt, enddt, campusid, nontaxdeductible, includeUnclosed, tagid, fundids, pledges, online)
                      where ContributionStatusCode.Recorded.Equals(r.ContributionStatusId)
                      where !ContributionTypeCode.ReturnedReversedTypes.Contains(r.ContributionTypeId)
                      group r by new

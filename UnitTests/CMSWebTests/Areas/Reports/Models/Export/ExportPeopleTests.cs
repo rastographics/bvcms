@@ -16,14 +16,14 @@ namespace CmsWeb.Models.Tests
     public class ExportPeopleTests
     {
         [Theory]
-        [InlineData(0, false, true, true, null, null)]
-        [InlineData(0, false, true, false, null, null)]
-        [InlineData(0, false, false, true, null, null)]
-        [InlineData(0, false, false, false, null, null)]
-        [InlineData(0, false, null, true, null, null)]
-        [InlineData(0, false, null, false, null, null)]
+        [InlineData(0, false, true, true, null, null, 1)]
+        [InlineData(0, false, true, false, null, null, 0)]
+        [InlineData(0, false, false, true, null, null, 1)]
+        [InlineData(0, false, false, false, null, null, 0)]
+        [InlineData(0, false, null, true, null, null, 1)]
+        [InlineData(0, false, null, false, null, null, 0)]
         public void DonorDetails_Should_Not_Bring_Reversed_or_Returned_contributions(
-            int campusid, bool pledges, bool? nontaxdeductible, bool includeUnclosed, int? tagid, string fundids)
+            int campusid, bool pledges, bool? nontaxdeductible, bool includeUnclosed, int? tagid, string fundids, int online)
         {
             using (var db = CMSDataContext.Create(Util.Host))
             {
@@ -31,7 +31,7 @@ namespace CmsWeb.Models.Tests
                 var _exportPeople = new ExportPeople(db);
                 DateTime exportStartDt = Util.Now.AddDays(-180);
                 DateTime exportEndDt = Util.Now.AddDays(180);
-                var tableResult = _exportPeople.GetValidContributionDetails(exportStartDt, exportEndDt, campusid, pledges, nontaxdeductible, includeUnclosed, tagid, fundids);
+                var tableResult = _exportPeople.GetValidContributionDetails(exportStartDt, exportEndDt, campusid, pledges, nontaxdeductible, includeUnclosed, tagid, fundids, online);
                 var rc = tableResult.Where(row => ContributionTypeCode.ReturnedReversedTypes.Contains(row.ContributionTypeId));
                 rc.Count().ShouldBe(0);
 
