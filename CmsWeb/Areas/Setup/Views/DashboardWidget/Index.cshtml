@@ -33,7 +33,7 @@
             <div class="box box-responsive">
                 <div class="box-title-btn">
                     <div class="box-tools">
-                        <a href="/HomeWidgets/New" class="btn btn-default btn-block"><i class="fa fa-plus-circle"></i> New</a> <button type="submit" class="btn btn-success">Save</button>
+                        <a href="/HomeWidgets/New" class="btn btn-success"><i class="fa fa-plus-circle"></i> Add Widget</a>
                     </div>
                 </div>
                 <div class="box-content">
@@ -51,7 +51,7 @@
                                 @foreach (var item in Model)
                                 {
                                     <tr class="widget dropzone">
-                                        <td style="width: 150px;">@item.Name</td>
+                                        <td style="width: 150px;"><a href="/HomeWidgets/@item.Id">@item.Name</a></td>
                                         <td>@item.Description</td>
                                         <td>
                                             <input type="checkbox" id="Widget@item.Id" name="Widget@item.Id" data-toggle="toggle" data-on="Enable" data-off="Disable" data-width="100" checked="@(item.Enabled)">
@@ -66,8 +66,7 @@
                         </table>
                     </div>
                     <div class="visible-xs-block">
-                        <a href="/HomeWidgets/New" class="btn btn-default btn-block"><i class="fa fa-plus-circle"></i> New</a>
-                        <button type="submit" class="btn btn-success btn-block">Save</button>
+                        <a href="/HomeWidgets/New" class="btn btn-success btn-block"><i class="fa fa-plus-circle"></i> Add Widget</a>
                     </div>
                 </div>
             </div>

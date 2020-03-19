@@ -4,22 +4,34 @@
     ViewBag.Title = "Homepage Widgets";
     ViewBag.PageHeader = "Homepage Widgets";
 }
+@section head{
+    <style type="text/css">
+        .form-group .control-label {
+            display: none;
+        }
+        .widget-preview .box.loading {
+            opacity: 0.5;
+        }
+    </style>
+}
 <div class="row">
-    <div class="col-sm-12 col-md-12 col-lg-10">
-        <div class="box box-responsive">
-            <div class="box-title-btn">
-                <div class="box-tools">
-                    <a class="btn btn-default" href="/HomeWidgets"><i class="fa fa-arrow-circle-left"></i> Back to List</a>
+    <div class="col-sm-8 col-md-8 col-lg-9">
+        @using (Html.BeginForm("Update", "DashboardWidget", FormMethod.Post, new { id = "widgetform" }))
+        {
+            <div class="box box-responsive">
+                <div class="box-title-btn">
+                    <div class="box-tools">
+                        <a class="btn btn-default" href="/HomeWidgets"><i class="fa fa-arrow-circle-left"></i> Back to List</a>
+                        <button type="submit" class="btn btn-primary">Save</button>
+                    </div>
                 </div>
-            </div>
-            <div class="box-content">
-                <form id="widgetform">
+                <div class="box-content">
                     <div class="row">
                         <div class="col-sm-3">
                             <label for="Name" class="control-label">Name</label>
                         </div>
                         <div class="col-sm-9">
-                            @Html.EditorFor(m => m.Widget.Name)
+                            @Html.EditorFor(m => m.Name, new { required = true })
                         </div>
                     </div>
                     <div class="row">
@@ -27,7 +39,7 @@
                             <label for="Description" class="control-label">Description</label>
                         </div>
                         <div class="col-sm-9">
-                            @Html.EditorFor(m => m.Widget.Description)
+                            @Html.EditorFor(m => m.Description)
                         </div>
                     </div>
                     <div class="row">
@@ -35,20 +47,29 @@
                             <label for="Roles" class="control-label">Roles visible</label>
                         </div>
                         <div class="col-sm-9">
+                            <div class="form-group">
+                                @Html.DropDownList("Roles", Model.UnassignedRoles(), new { @class = "form-control" })
+                            </div>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-sm-3">
-                            <label for="HTMLContentId" class="control-label">View (HTML)</label>
+                            <label for="HTMLContentId" class="control-label">View (Text)</label>
                         </div>
                         <div class="col-sm-9">
+                            <div class="form-group">
+                                @Html.DropDownList("HTMLContentId", Model.HtmlContents(), new { @class = "form-control" })
+                            </div>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-sm-3">
-                            <label for="PythonContentId" class="control-label">Python Code</label>
+                            <label for="PythonContentId" class="control-label">Code (Python)</label>
                         </div>
                         <div class="col-sm-9">
+                            <div class="form-group">
+                                @Html.DropDownList("PythonContentId", Model.PythonContents(), new { @class = "form-control" })
+                            </div>
                         </div>
                     </div>
                     <div class="row">
@@ -56,17 +77,45 @@
                             <label for="SQLContentId" class="control-label">Data (SQL)</label>
                         </div>
                         <div class="col-sm-9">
+                            <div class="form-group">
+                                @Html.DropDownList("SQLContentId", Model.SQLContents(), new { @class = "form-control" })
+                            </div>
                         </div>
                     </div>
-                    <div class="hidden-xs">
-                        <a href="/HomeWidgets" class="btn btn-default displayedit">Cancel</a> <a href="/HomeWidgets/Update/@Model.Widget.Id" class="btn btn-primary displayedit">Save</a>
-                    </div>
                     <div class="visible-xs-block">
-                        <a href="/HomeWidgets/Update/@Model.Widget.Id" class="btn btn-primary displayedit btn-block">Save</a>
-                        <a href="/HomeWidgets" class="btn btn-default displayedit btn-block">Cancel</a>
+                        <button type="submit" class="btn btn-primary btn-block">Save</button>
+                        <a href="/HomeWidgets" class="btn btn-default btn-block">Cancel</a>
                     </div>
-                </form>
+                    @Html.Hidden("Id", Model.Id.ToString())
+                </div>
+            </div>
+        }
+    </div>
+    @if (Model.Id != 0)
+    {
+        <div class="col-sm-4 col-md-4 col-lg-3 widget-preview">
+            <span class="h4">Widget Preview</span> <a href="#" class="load-preview" data-url="/HomeWidgets/Embed/@Model.Id.ToString()">Load preview</a>
+            <div class="box">
             </div>
         </div>
-    </div>
+    }
 </div>
+
+@section scripts
+{
+<script>
+    $(function () {
+        $('.load-preview').click(function (e) {
+            e.preventDefault();
+            $(this).text('Refresh');
+            var url = $(this).data('url');
+            var el = $('.widget-preview .box');
+            el.addClass('loading');
+            $.get(url, function (data) {
+                el.replaceWith(data);
+                el.removeClass('loading');
+            });
+        });
+    });
+</script>
+}

@@ -1,11 +1,11 @@
-﻿using CmsData;
-using CmsWeb.Lifecycle;
+﻿using CmsWeb.Lifecycle;
 using System.Linq;
 using System.Web.Mvc;
 using CmsWeb.Areas.Setup.Models;
+using CmsData;
+using UtilityExtensions;
 using System.Collections.Generic;
 using System;
-using UtilityExtensions;
 
 namespace CmsWeb.Areas.Setup.Controllers
 {
@@ -20,14 +20,83 @@ namespace CmsWeb.Areas.Setup.Controllers
             var widgets = CurrentDatabase.DashboardWidgets.ToList();
             return View(widgets);
         }
-        
-        [Route("~/HomeWidgets/{id}")]
+
+        [HttpGet, Route("~/HomeWidgets/{id}")]
         public ActionResult Manage(string id)
         {
             try
             {
                 var model = new DashboardWidgetModel(id, CurrentDatabase);
                 return View(model);
+            }
+            catch
+            {
+                return Content("Invalid widget");
+            }
+        }
+
+        [HttpPost]
+        public ActionResult Update(DashboardWidgetModel m)
+        {
+            m.UpdateModel();
+            CurrentDatabase.SubmitChanges();
+
+            return Redirect("/HomeWidgets");
+        }
+
+        [HttpPost]
+        public ActionResult Delete(int id)
+        {
+            var widget = CurrentDatabase.DashboardWidgets.SingleOrDefault(w => w.Id == id);
+            if (widget == null)
+            {
+                return new EmptyResult();
+            }
+
+            if (widget.System)
+            {
+                return Content("This widget can't be deleted. Try disabling it instead.");
+            }
+
+            CurrentDatabase.DashboardWidgets.DeleteOnSubmit(widget);
+            CurrentDatabase.SubmitChanges();
+            return Content("success");
+        }
+
+        [HttpPost]
+        public ActionResult Reorder(List<int> widgets)
+        {
+            try
+            {
+                DashboardWidgetModel.UpdateWidgetOrder(CurrentDatabase, widgets);
+                return RedirectToAction("Index");
+            }
+            catch (Exception ex)
+            {
+                return Content("error: " + ex.ToString());
+            }
+        }
+
+        [HttpPost]
+        public ActionResult Toggle(int id, bool status)
+        {
+            var widget = CurrentDatabase.DashboardWidgets.SingleOrDefault(w => w.Id == id);
+            if (widget == null)
+            {
+                return new EmptyResult();
+            }
+            widget.Enabled = status;
+            CurrentDatabase.SubmitChanges();
+            return Content("success");
+        }
+
+        public ActionResult Embed(string id)
+        {
+            try
+            {
+                var widget = new DashboardWidgetModel(id, CurrentDatabase);
+                string html = widget.Generate();
+                return Content(html, "text/html");
             }
             catch
             {
