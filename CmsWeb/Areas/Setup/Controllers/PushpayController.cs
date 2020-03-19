@@ -24,8 +24,12 @@ namespace CmsWeb.Areas.Setup.Controllers
         private PushpayConnection _pushpay;
         private PushpayPayment _pushpayPayment;
         private PushpayResolver _resolver;
+
         private string _givingLink;
-        private string _merchantHandle;
+        private string _defaultMerchantHandle;
+        private string _state;
+        private string _ru;
+        private bool isTesting;
 
         public PushpayController(IRequestManager requestManager) : base(requestManager)
         {
@@ -38,7 +42,7 @@ namespace CmsWeb.Areas.Setup.Controllers
             {
                 Console.WriteLine(e.Message);
             }
-            
+
 
             _pushpay = new PushpayConnection(
                 CurrentDatabase.GetSetting("PushPayAccessToken", ""),
@@ -50,11 +54,18 @@ namespace CmsWeb.Areas.Setup.Controllers
                 Configuration.Current.OAuth2TokenEndpoint,
                 Configuration.Current.TouchpointAuthServer,
                 Configuration.Current.OAuth2AuthorizeEndpoint);
+
             _pushpayPayment = new PushpayPayment(_pushpay, CurrentDatabase, processType);
             _resolver = new PushpayResolver(_pushpay, CurrentDatabase);
+            _defaultMerchantHandle = _pushpayPayment._merchantHandle;
+            _givingLink = Configuration.Current.PushpayGivingLinkBase;
+            _state = CurrentDatabase.Host;
 
-            _merchantHandle = _pushpayPayment._merchantHandle;
-            _givingLink = $"{Configuration.Current.PushpayGivingLinkBase}/{_merchantHandle}";
+            isTesting = MultipleGatewayUtils.GatewayTesting(CurrentDatabase, processType);
+            if (isTesting)
+                _ru = "touchpointest";
+            else
+                _ru = Configuration.Current.PushpayRU;
         }
 
         /// <summary>
@@ -78,7 +89,7 @@ namespace CmsWeb.Areas.Setup.Controllers
                 + "&response_type=code"
                 + "&redirect_uri=" + Configuration.Current.TouchpointAuthServer
                 + "&scope=" + Configuration.Current.PushpayScope
-                + "&state=" + CurrentDatabase.Host; //Get  xsrf_token:tenantID
+                + "&state=" + _state; //Get  xsrf_token:tenantID
 
             return Redirect(redirectUrl);
         }
@@ -103,6 +114,22 @@ namespace CmsWeb.Areas.Setup.Controllers
                 return Redirect(redirectUrl + "?_at=" + at.access_token + "&_rt=" + at.refresh_token);
             }
             return Redirect("~/Home/Index");
+        }
+
+        [AllowAnonymous, Route("~/Pushpay/CompletePayment")]
+        public ActionResult CompletePayment(string paymentToken, string sr)
+        {
+            string redirectUrl = "~/Home/Index";
+#if DEBUG
+            redirectUrl = $"http://{Configuration.Current.TenantHostDev}/Pushpay/ProcessPayment?paymentToken={paymentToken}&sr={sr}";
+#else
+            if (!string.IsNullOrEmpty(sr)&&!string.IsNullOrEmpty(paymentToken))
+            {
+                var state = sr.Split('_')[1];
+                redirectUrl = $"https://{state}.{Configuration.Current.OrgBaseDomain}/Pushpay/ProcessPayment?paymentToken={paymentToken}&sr={sr}";
+            }
+#endif
+            return Redirect(redirectUrl);
         }
 
         [Route("~/Pushpay/Save")]
@@ -153,37 +180,44 @@ namespace CmsWeb.Areas.Setup.Controllers
             return View();
         }
 
-        [Route("~/Pushpay/OneTime/{PeopleId:int}/{OrgId:int}")]
-        public ActionResult OneTime(int PeopleId, int OrgId)
+        [Route("~/Pushpay/OneTime/{PeopleId:int}")]
+        public ActionResult OneTime(int PeopleId)
         {
+            var oid = CmsData.API.APIContribution.OneTimeGiftOrgId(CurrentDatabase);
+            if (oid == null)
+                return View("OnePageGiving/NotConfigured");
+
+            SetGivingLink(oid.Value);
             string mobile = CurrentDatabase.People.SingleOrDefault(p => p.PeopleId == PeopleId).CellPhone;
-            return Redirect($"{_givingLink}?ru={_merchantHandle}&sr=Org_{OrgId}&rcv=false&r=no&up={mobile}");
+            return Redirect($"{_givingLink}?ru={_ru}&sr=ot_{_state}_{PeopleId}&rcv=false&r=no&up={mobile}");
         }
 
-        [Route("~/Pushpay/OnePage")]
-        public ActionResult OnePage()
+        [Route("~/Pushpay/OnePage/{OrgId:int}")]
+        public ActionResult OnePage(int OrgId)
         {
+            SetGivingLink(OrgId);
             return Redirect($"{_givingLink}?rcv=false");
         }
 
-        [Route("~/Pushpay/NewRecurringGiving/{PeopleId:int}/{OrgId:int}")]
-        public ActionResult NewRecurringGiving(int PeopleId, int OrgId)
+        [Route("~/Pushpay/RecurringManagment/{PeopleId:int}")]
+        public async Task<ActionResult> RecurringManagment(int PeopleId)
         {
-            string mobile = CurrentDatabase.People.SingleOrDefault(p => p.PeopleId == PeopleId).CellPhone;
-            return Redirect($"{_givingLink}?ru={_merchantHandle}&sr=Org_{OrgId}&r=monthly&up={mobile}");
-        }
+            var oid = (from o in CurrentDatabase.Organizations
+                       where o.RegistrationTypeId == RegistrationTypeCode.ManageGiving
+                       select o.OrganizationId).FirstOrDefault();
 
-        [Route("~/Pushpay/RecurringManagment/{PeopleId:int}/{OrgId:int}")]
-        public async Task<ActionResult> RecurringManagment(int PeopleId, int OrgId)
-        {
+            if (oid <= 0)
+                return View("OnePageGiving/NotConfigured");
+
             ViewBag.PeopleId = PeopleId;
-            ViewBag.OrgId = OrgId;
-            string payerKey = _resolver.ResolvePayerKey(PeopleId);
+            ViewBag.OrgId = oid;
+
+            string payerKey = PushpayResolver.ResolvePayerKey(CurrentDatabase, PeopleId);
             IEnumerable<RecurringPayment> rpList = await _pushpayPayment.GetRecurringPaymentsForAPayer(payerKey);
             if (rpList == null || rpList.Count() == 0)
             {
                 string mobile = CurrentDatabase.People.SingleOrDefault(p => p.PeopleId == PeopleId).CellPhone;
-                return NewRecurringGiving(PeopleId, OrgId);
+                return NewRecurringGiving(PeopleId, oid);
             }
             List<RecurringManagment> model = new List<RecurringManagment>();
             foreach (var item in rpList)
@@ -201,6 +235,14 @@ namespace CmsWeb.Areas.Setup.Controllers
             return View(model);
         }
 
+        [Route("~/Pushpay/NewRecurringGiving/{PeopleId:int}/{OrgId:int}")]
+        public ActionResult NewRecurringGiving(int PeopleId, int OrgId)
+        {
+            SetGivingLink(OrgId);
+            string mobile = CurrentDatabase.People.SingleOrDefault(p => p.PeopleId == PeopleId).CellPhone;
+            return Redirect($"{_givingLink}?ru={_ru}&sr=rp_{_state}_{PeopleId}&r=monthly&up={mobile}");
+        }
+
         [Route("~/Pushpay/Registration/{DatumId:int}")]
         public async Task<ActionResult> Registration(int DatumId)
         {
@@ -208,13 +250,15 @@ namespace CmsWeb.Areas.Setup.Controllers
             decimal? Amount = 0;
             string mobile = string.Empty;
             string fundName = string.Empty;
+            string merchantHandle = string.Empty;
             RegistrationDatum datum = CurrentDatabase.RegistrationDatas.SingleOrDefault(d => d.Id == DatumId);
             if (datum != null)
             {
                 m = Util.DeSerialize<OnlineRegModel>(datum.Data);
                 Amount = m.PayAmount() + (m.donation ?? 0);
                 mobile = CurrentDatabase.People.SingleOrDefault(p => p.PeopleId == m.UserPeopleId)?.CellPhone;
-                fundName = await _resolver.GetOrgFund(m.List.FirstOrDefault().setting.PushpayFundName);                
+                fundName = await _resolver.GetOrgFund(m.List.FirstOrDefault().setting.PushpayFundName);
+                SetGivingLink(m.List.FirstOrDefault().org.OrganizationId);
                 //Needs to redirect in case cupons are enable.
             }
             else
@@ -223,44 +267,45 @@ namespace CmsWeb.Areas.Setup.Controllers
                 CurrentDatabase.LogActivity($"No datum founded with id: {DatumId}");
                 return View("~/Views/Shared/PageError.cshtml");
             }
-            return Redirect($"{_givingLink}?ru={_merchantHandle}&sr=dat_{DatumId}&rcv=false&r=no&up={mobile}&a={Amount}&fnd={fundName}&al=true&fndv=lock");
-        }        
-
-        [Route("~/Pushpay/PayAmtDue/{transactionId:int}/{amtdue:decimal}")]
-        public ActionResult PayAmtDue(int transactionId, decimal amtdue)
-        {            
-            return Redirect($"{_givingLink}?ru={_merchantHandle}&sr=payamtdue_{transactionId}&rcv=false&r=no&a={amtdue}&fndv=lock");
+            return Redirect($"{_givingLink}?ru={_ru}&sr=re_{_state}_{DatumId}&rcv=false&r=no&up={mobile}&a={Amount}&fnd={fundName}&al=true&fndv=lock");
         }
 
-        [Route("~/Pushpay/CompletePayment")]
-        public async Task<ActionResult> CompletePayment(string paymentToken, string sr)
-        {           
+        [Route("~/Pushpay/PayAmtDue/{transactionId:int}/{amtdue:decimal}/{OrgId:int}")]
+        public ActionResult PayAmtDue(int transactionId, decimal amtdue, int OrgId)
+        {
+            SetGivingLink(OrgId);
+            return Redirect($"{_givingLink}?ru={_ru}&sr=pd_{_state}_{transactionId}&rcv=false&r=no&a={amtdue}&fndv=lock");
+        }
+
+        [Route("~/Pushpay/ProcessPayment")]
+        public async Task<ActionResult> ProcessPayment(string paymentToken, string sr)
+        {
             try
             {
-                if (sr.Substring(0, 3) == "Org")
+                var reference = sr.Split('_')[0];
+                int refId = Int32.Parse(sr.Split('_')[2]);
+                Payment payment;
+                switch (reference)
                 {
-                    Payment payment = await _pushpayPayment.GetPayment(paymentToken);
-                    if (payment == null)
-                    {
-                        RecurringPayment recurringPayment = await _pushpayPayment.GetRecurringPayment(paymentToken);                   
+                    case "ot":
+                        var oid = CmsData.API.APIContribution.OneTimeGiftOrgId(CurrentDatabase);
+                        if (oid == null)
+                            return View("OnePageGiving/NotConfigured");
+
+                        return await OneTimeProcess(paymentToken, oid.Value);
+
+                    case "rp":
+                        RecurringPayment recurringPayment = await _pushpayPayment.GetRecurringPayment(paymentToken);
                         return RecurringProcess(recurringPayment);
-                    }                   
-                  
-                    return await OneTimeProcess(payment, Int32.Parse(sr.Substring(4)));                    
-                }
 
-                if (sr.Substring(0, 3) == "dat")
-                {
-                    return await RegistrationProcess(paymentToken, Int32.Parse(sr.Substring(4)));
-                }
+                    case "re":
+                        return await RegistrationProcess(paymentToken, refId);
 
-                if (sr.Substring(0, 9) == "payamtdue")
-                {
-                    Payment payment = await _pushpayPayment.GetPayment(paymentToken);
-                    return PayAmtDueProcess(payment, Int32.Parse(sr.Substring(10)));
+                    case "pd":
+                        payment = await _pushpayPayment.GetPayment(paymentToken);
+                        return PayAmtDueProcess(payment, refId);
                 }
-
-                throw new Exception("Registration Type is not supported for Pushpay");
+                throw new Exception("sr reference is not correct");
             }
             catch (Exception ex)
             {
@@ -270,9 +315,9 @@ namespace CmsWeb.Areas.Setup.Controllers
             }
         }
 
-
-        private async Task<ActionResult> OneTimeProcess(Payment payment, int orgId)
+        private async Task<ActionResult> OneTimeProcess(string paymentToken, int orgId)
         {
+            Payment payment = await _pushpayPayment.GetPayment(paymentToken);
             if (payment != null && !_resolver.TransactionAlreadyImported(payment))
             {
                 // determine the batch to put the payment in
@@ -286,19 +331,20 @@ namespace CmsWeb.Areas.Setup.Controllers
                     // create a new bundle for each payment not part of a PushPay batch or settlement
                     bundle = _resolver.CreateBundle(payment.CreatedOn.ToLocalTime(), payment.Amount.Amount, null, null, payment.TransactionId, BundleReferenceIdTypeCode.PushPayStandaloneTransaction);
                 }
-                int? PersonId = _resolver.ResolvePersonId(payment.Payer);
                 ContributionFund fund = _resolver.ResolveFund(payment.Fund);
-                Contribution contribution = _resolver.ResolvePayment(payment, fund, PersonId, bundle);
-                Transaction transaction = _resolver.ResolveTransaction(payment, PersonId.Value, orgId, "Online Giving");
+                int? pid = _resolver.ResolvePersonId(payment.Payer);
+                Contribution contribution = _resolver.ResolvePayment(payment, fund, pid, bundle);
+                Transaction transaction = _resolver.ResolveTransaction(payment, pid.Value, orgId, "Online Giving");
             }
             ViewBag.Message = "Thank you, your transaction is complete for Online Giving.";
             return View();
         }
 
         private ActionResult RecurringProcess(RecurringPayment recurringPayment)
-        {            
+        {
             if (recurringPayment?.Schedule != null)
             {
+                _resolver.ResolvePersonId(recurringPayment.Payer);
                 ViewBag.Message = "Thanks for set up your recurring giving.";
                 return View();
             }
@@ -319,14 +365,26 @@ namespace CmsWeb.Areas.Setup.Controllers
             PaymentForm pf = PaymentForm.CreatePaymentForm(m);
 
             Payment payment = await _pushpayPayment.GetPayment(paymentToken);
-            m.transactionId = CreateTransaction(payment, pf);
+            if (payment == null || _resolver.TransactionAlreadyImported(payment))
+            {
+                ViewBag.Message = "Payment not valid or expired";
+                return View("~/Views/Shared/PageError.cshtml");
+            }
 
+            m.transactionId = CreateTransaction(payment, pf);
             m.UpdateDatum();
+
             return Redirect($"/OnlineReg/ProcessExternalPayment/dat_{datumId}");
         }
 
         private ActionResult PayAmtDueProcess(Payment payment, int transactionId)
         {
+            if (payment == null || _resolver.TransactionAlreadyImported(payment))
+            {
+                ViewBag.Message = "Payment not valid or expired";
+                return View("~/Views/Shared/PageError.cshtml");
+            }
+
             Transaction ti = CurrentDatabase.Transactions.Where(p => p.Id == transactionId).FirstOrDefault();
             PaymentForm pf = PaymentForm.CreatePaymentFormForBalanceDue(CurrentDatabase, ti, payment.Amount.Amount, payment.Payer.emailAddress);
             int tranId = CreateTransaction(payment, pf);
@@ -350,7 +408,7 @@ namespace CmsWeb.Areas.Setup.Controllers
             ti.TransactionId = payment.TransactionId;
             ti.Name = person.Name;
             ti.First = person.FirstName;
-            ti.MiddleInitial = person.MiddleName[0].ToString();
+            ti.MiddleInitial = !string.IsNullOrEmpty(person.MiddleName) ? person.MiddleName[0].ToString() : null;
             ti.Last = person.LastName;
             ti.Suffix = person.SuffixCode;
             ti.Donate = pf.Donate;
@@ -387,97 +445,20 @@ namespace CmsWeb.Areas.Setup.Controllers
             return ti.Id;
         }
 
-        private int CreateFakeTransaction(OnlineRegModel m, decimal? amount = null)
+        private void SetGivingLink(int orgId)
         {
-            PaymentForm pf = PaymentForm.CreatePaymentForm(m);
-            if (!amount.HasValue)
-            {
-                amount = pf.AmtToPay;
-            }
+            var merchantHandle = GetMerchantHandle(orgId);
 
-            decimal? amtdue = null;
-            if (pf.Amtdue > 0)
-            {
-                amtdue = pf.Amtdue - (amount ?? 0);
-            }
+            if (string.IsNullOrEmpty(merchantHandle))
+                merchantHandle = _defaultMerchantHandle;
 
-            var ti = new Transaction
-            {
-                First = "Oscar",
-                MiddleInitial = "D",
-                Last = "Baez",
-                Suffix = "db",
-                Donate = pf.Donate,
-                Regfees = pf.AmtToPay,
-                Amt = amount,
-                Amtdue = amtdue,
-                Emails = "dahnbaez@gmail.com",
-                Testing = true,
-                Description = pf.Description,
-                OrgId = pf.OrgId,
-                Url = pf.URL,
-                TransactionGateway = OnlineRegModel.GetTransactionGateway(CurrentDatabase, pf.ProcessType)?.GatewayAccountName,
-                Address = "Street1",
-                Address2 = "123",
-                City = "My City",
-                State = "My State",
-                Country = "My Country",
-                Zip = "03600",
-                DatumId = pf.DatumId,
-                Phone = "5547946830",
-                OriginalId = pf.OriginalId,
-                Financeonly = pf.FinanceOnly,
-                TransactionDate = Util.Now,
-                PaymentType = "C",
-                LastFourCC = "1234",
-                LastFourACH = "",
-                Approved = true
-            };
-
-            CurrentDatabase.Transactions.InsertOnSubmit(ti);
-            CurrentDatabase.SubmitChanges();
-
-            if (pf.OriginalId == null) // first transaction
-            {
-                ti.OriginalId = ti.Id;
-            }
-            ti.TransactionId = $"(fakePushpay){ti.Id}";
-
-            CurrentDatabase.SubmitChanges();
-
-            return ti.Id;
+            _givingLink += merchantHandle;
         }
 
-        private void SetHeaders2(int id)
+        private string GetMerchantHandle(int orgId)
         {
-            var org = CurrentDatabase.LoadOrganizationById(id);
-            var shell = "";
-            var settings = HttpContext.Items["RegSettings"] as Dictionary<int, Settings>;
-            if ((settings == null || !settings.ContainsKey(id)) && org != null)
-            {
-                var setting = CurrentDatabase.CreateRegistrationSettings(id);
-                shell = CurrentDatabase.ContentOfTypeHtml(setting.ShellBs)?.Body;
-            }
-            if (!shell.HasValue() && settings != null && settings.ContainsKey(id))
-                shell = CurrentDatabase.ContentOfTypeHtml(settings[id].ShellBs)?.Body;
-            if (!shell.HasValue())
-            {
-                shell = CurrentDatabase.ContentOfTypeHtml("ShellDefaultBs")?.Body;
-                if (!shell.HasValue())
-                    shell = CurrentDatabase.ContentOfTypeHtml("DefaultShellBs")?.Body;
-            }
-            if (shell != null && shell.HasValue())
-            {
-                shell = shell.Replace("{title}", ViewBag.Title);
-                var re = new Regex(@"(.*<!--FORM START-->\s*).*(<!--FORM END-->.*)", RegexOptions.Singleline);
-                var t = re.Match(shell).Groups[1].Value.Replace("<!--FORM CSS-->", ViewExtensions2.Bootstrap3Css());
-                ViewBag.hasshell = true;
-                ViewBag.top = t;
-                var b = re.Match(shell).Groups[2].Value;
-                ViewBag.bottom = b;
-            }
-            else
-                ViewBag.hasshell = false;
+            var regSettingsXml = CurrentDatabase.Organizations.FirstOrDefault(o => o.OrganizationId == orgId).RegSettingXml;
+            return Util.DeSerialize<Settings>(regSettingsXml).PushpayMerchantName;
         }
     }
 }

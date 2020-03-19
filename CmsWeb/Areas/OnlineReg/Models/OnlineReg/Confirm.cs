@@ -54,6 +54,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                      where t.TransactionDate > DateTime.Now.AddMinutes(-20)
                      where t.First == List[0].FirstName
                      where t.Last == List[0].LastName
+                     where t.TransactionGateway != "pushpay"
                      select t).FirstOrDefault();
             }
 
