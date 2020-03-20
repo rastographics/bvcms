@@ -1,5 +1,4 @@
-﻿@using CmsWeb.Controllers
-@using CmsWeb.Models
+﻿@using CmsWeb.Models
 @{
     CMSDataContext Db = ViewExtensions2.CurrentDatabase;
     var admin = User.IsInRole("Admin");
@@ -179,7 +178,7 @@
             </li>
         }
     }
-    if ((finance || managetrans || financeadmin) && DbUtil.Db.Setting("ShowSyncBatchDatesOption"))
+    if ((finance || managetrans || financeadmin) && ViewExtensions2.CurrentDatabase.Setting("ShowSyncBatchDatesOption"))
     {
         @Helper.LiAnchorLink("Retrieve Batch Data", "/Batch/RetrieveBatchData")
     }

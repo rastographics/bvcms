@@ -20,6 +20,7 @@
   var opens = Model.queue.EmailResponses.Count();
   var notOpened = Model.CountOfNotOpenedRecipients;
   var failed = Model.CountOfFailedRecipients;
+  var userPeopleId = ViewExtensions2.CurrentDatabase.UserPeopleId;
   decimal percentage = 0;
   if (all > 0)
   {
@@ -191,7 +192,7 @@
                 <a href="/EmailView/@Model.Id"><i class="fa fa-search"></i>&nbsp;&nbsp;View Email</a>
               </li>
             }
-            @if (User.IsInRole("Admin") || User.IsInRole("Finance") || User.IsInRole("ManageEmails") || Model.queue.QueuedBy == Util.UserPeopleId)
+            @if (User.IsInRole("Admin") || User.IsInRole("Finance") || User.IsInRole("ManageEmails") || Model.queue.QueuedBy == userPeopleId)
             {
               <li>
               @if (Model.queue.PublicX == true)
@@ -320,7 +321,7 @@
             <a href="/EmailView/@Model.Id"><i class="fa fa-search"></i>&nbsp;&nbsp;View Email</a>
           </li>
         }
-        else if (User.IsInRole("Admin") || Model.queue.QueuedBy == Util.UserPeopleId)
+        else if (User.IsInRole("Admin") || Model.queue.QueuedBy == userPeopleId)
         {
           <li>
             <a href="/Manage/Emails/MakePublic/@Model.queue.Id"><i class="fa fa-globe"></i>&nbsp;&nbsp;Make Public</a>

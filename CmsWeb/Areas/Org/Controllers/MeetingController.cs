@@ -41,7 +41,7 @@ namespace CmsWeb.Areas.Org.Controllers
 
             if (Util2.OrgLeadersOnly)
             {
-                var oids = CurrentDatabase.GetLeaderOrgIds(Util.UserPeopleId);
+                var oids = CurrentDatabase.GetLeaderOrgIds(CurrentDatabase.UserPeopleId);
                 if (!oids.Contains(m.org.OrganizationId))
                 {
                     return NotAllowed("You must be a leader of this organization", m.org.OrganizationName);
@@ -89,7 +89,7 @@ namespace CmsWeb.Areas.Org.Controllers
             if (Util2.OrgLeadersOnly
                 && !CurrentDatabase.OrganizationMembers.Any(om =>
                     om.OrganizationId == m.meeting.OrganizationId
-                    && om.PeopleId == Util.UserPeopleId
+                    && om.PeopleId == CurrentDatabase.UserPeopleId
                     && om.MemberType.AttendanceTypeId == AttendTypeCode.Leader))
             {
                 return RedirectShowError("You must be a leader of this organization to have access to this page");
@@ -249,7 +249,7 @@ namespace CmsWeb.Areas.Org.Controllers
             if (Util2.OrgLeadersOnly
                 && !CurrentDatabase.OrganizationMembers.Any(om =>
                     om.OrganizationId == m.meeting.OrganizationId
-                    && om.PeopleId == Util.UserPeopleId
+                    && om.PeopleId == CurrentDatabase.UserPeopleId
                     && om.MemberType.AttendanceTypeId == AttendTypeCode.Leader))
             {
                 return RedirectShowError("You must be a leader of this organization to have access to this page");
@@ -678,7 +678,7 @@ namespace CmsWeb.Areas.Org.Controllers
             if (Util2.OrgLeadersOnly
                 && !CurrentDatabase.OrganizationMembers.Any(om =>
                     om.OrganizationId == m.meeting.OrganizationId
-                    && om.PeopleId == Util.UserPeopleId
+                    && om.PeopleId == CurrentDatabase.UserPeopleId
                     && om.MemberType.AttendanceTypeId == AttendTypeCode.Leader))
             {
                 return RedirectShowError("You must be a leader of this organization to have access to this page");

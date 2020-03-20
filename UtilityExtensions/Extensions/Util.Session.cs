@@ -18,14 +18,6 @@ namespace UtilityExtensions
             }
         }
 
-        private const string STR_UserId = "UserId";
-        public static int UserId
-        {
-            get => GetFromSession(STR_UserId).ToInt();
-
-            set => SetValueInSession(STR_UserId, value);
-        }
-
         public static void SetValueInSession(string name, object value)
         {
             if (HttpContextFactory.Current != null)
@@ -87,17 +79,6 @@ namespace UtilityExtensions
         {
             get => GetFromSession(STR_UserFirstName) as string;
             set => SetValueInSession(STR_UserFirstName, value);
-        }
-
-        private const string STR_UserPeopleId = "UserPeopleId";
-        public static int? UserPeopleId
-        {
-            get
-            {
-                var v = GetFromSession(STR_UserPeopleId);
-                return v?.ToInt();
-            }
-            set => SetValueInSession(STR_UserPeopleId, value);
         }
 
         private const string UserThumbPictureSessionKey = "UserThumbPictureUrl";

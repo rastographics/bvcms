@@ -101,7 +101,7 @@ namespace CmsWeb.Areas.People.Models
             var oids = new int[0];
             if (Util2.OrgLeadersOnly)
             {
-                oids = CurrentDatabase.GetLeaderOrgIds(Util.UserPeopleId);
+                oids = CurrentDatabase.GetLeaderOrgIds(CurrentDatabase.UserPeopleId);
             }
 
             var roles = CurrentDatabase.CurrentRoles();

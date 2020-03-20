@@ -137,11 +137,11 @@ namespace CmsWeb.Areas.Org.Controllers
         {
             if (chkd)
             {
-                Person.Tag(CurrentDatabase, pid, qid.ToString(), Util.UserPeopleId, DbUtil.TagTypeId_OrgMembers);
+                Person.Tag(CurrentDatabase, pid, qid.ToString(), CurrentDatabase.UserPeopleId, DbUtil.TagTypeId_OrgMembers);
             }
             else
             {
-                Person.UnTag(CurrentDatabase, pid, qid.ToString(), Util.UserPeopleId, DbUtil.TagTypeId_OrgMembers);
+                Person.UnTag(CurrentDatabase, pid, qid.ToString(), CurrentDatabase.UserPeopleId, DbUtil.TagTypeId_OrgMembers);
             }
 
             CurrentDatabase.SubmitChanges();
@@ -157,11 +157,11 @@ namespace CmsWeb.Areas.Org.Controllers
                 {
                     if (chkd)
                     {
-                        Person.Tag(CurrentDatabase, pid, qid.ToString(), Util.UserPeopleId, DbUtil.TagTypeId_OrgMembers);
+                        Person.Tag(CurrentDatabase, pid, qid.ToString(), CurrentDatabase.UserPeopleId, DbUtil.TagTypeId_OrgMembers);
                     }
                     else
                     {
-                        Person.UnTag(CurrentDatabase, pid, qid.ToString(), Util.UserPeopleId, DbUtil.TagTypeId_OrgMembers);
+                        Person.UnTag(CurrentDatabase, pid, qid.ToString(), CurrentDatabase.UserPeopleId, DbUtil.TagTypeId_OrgMembers);
                     }
                 }
 

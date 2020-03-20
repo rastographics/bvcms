@@ -357,7 +357,7 @@ namespace CmsWeb.Areas.Public.Controllers
             }
 
             p.LogChanges(CurrentDatabase, psb);
-            p.Family.LogChanges(CurrentDatabase, fsb, p.PeopleId, Util.UserPeopleId ?? 0);
+            p.Family.LogChanges(CurrentDatabase, fsb, p.PeopleId, CurrentDatabase.UserPeopleId ?? 0);
             CurrentDatabase.SubmitChanges();
             if (CurrentDatabase.Setting("NotifyCheckinChanges", "true").ToBool() && (psb.Count > 0 || fsb.Count > 0))
             {
@@ -604,7 +604,7 @@ namespace CmsWeb.Areas.Public.Controllers
             p.SmallId = Image.NewImageFromBits(bits, 120, 120, CurrentImageDatabase).Id;
             p.MediumId = Image.NewImageFromBits(bits, 320, 400, CurrentImageDatabase).Id;
             p.LargeId = Image.NewImageFromBits(bits, CurrentImageDatabase).Id;
-            person.LogPictureUpload(CurrentDatabase, Util.UserPeopleId ?? 1);
+            person.LogPictureUpload(CurrentDatabase, CurrentDatabase.UserPeopleId ?? 1);
             CurrentDatabase.SubmitChanges();
             return Content("done");
         }

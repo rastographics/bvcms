@@ -78,12 +78,12 @@ namespace CmsData
 
             if (deletes.Count > 0)
             {
-                db.LogActivity($"Remove Roles {string.Join(",", deletes.Select(rr => rr.RoleName))} from user {Username}", pid: PeopleId, uid: Util.UserPeopleId);
+                db.LogActivity($"Remove Roles {string.Join(",", deletes.Select(rr => rr.RoleName))} from user {Username}", pid: PeopleId, uid: db.UserPeopleId);
             }
 
             if (addlist.Count > 0)
             {
-                db.LogActivity($"Add Roles {string.Join(",", addlist)} to user {Username}", pid: PeopleId, uid: Util.UserPeopleId);
+                db.LogActivity($"Add Roles {string.Join(",", addlist)} to user {Username}", pid: PeopleId, uid: db.UserPeopleId);
             }
         }
 

@@ -233,7 +233,7 @@ namespace CmsWeb.Models
         public List<CodeValueItem> Tags()
         {
             var t = CurrentDatabase.TagCurrent();
-            var tags = cv.UserTags(Util.UserPeopleId);
+            var tags = cv.UserTags(CurrentDatabase.UserPeopleId);
             return tags;
         }
         public string GetShareIds()

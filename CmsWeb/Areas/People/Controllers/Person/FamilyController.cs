@@ -14,7 +14,7 @@ namespace CmsWeb.Areas.People.Controllers
         {
             var m = new FamilyModel(CurrentDatabase, id);
             int personFamilyId = CurrentDatabase.People.Where(x => x.PeopleId == id).Select(x => x.FamilyId).FirstOrDefault();
-            int adminFamilyId = CurrentDatabase.People.Where(x => x.PeopleId == Util.UserPeopleId).Select(x => x.FamilyId).FirstOrDefault();
+            int adminFamilyId = CurrentDatabase.People.Where(x => x.PeopleId == CurrentDatabase.UserPeopleId).Select(x => x.FamilyId).FirstOrDefault();
 
             ViewBag.HideDeceasedFromFamily = HideDeceasedFromFamily(personFamilyId == adminFamilyId);
             return View("Family/Members", m);

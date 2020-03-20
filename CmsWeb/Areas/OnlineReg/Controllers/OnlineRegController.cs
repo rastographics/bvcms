@@ -143,10 +143,10 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 
             if (m.Orgid == Util.CreateAccountCode)
             {
-                DbUtil.LogActivity("OnlineReg CreateAccount Existing", peopleid: Util.UserPeopleId, datumId: m.DatumId);
-                return Content("/Person2/" + Util.UserPeopleId); // they already have an account, so take them to their page
+                DbUtil.LogActivity("OnlineReg CreateAccount Existing", peopleid: CurrentDatabase.UserPeopleId, datumId: m.DatumId);
+                return Content("/Person2/" + CurrentDatabase.UserPeopleId); // they already have an account, so take them to their page
             }
-            m.UserPeopleId = Util.UserPeopleId;
+            m.UserPeopleId = CurrentDatabase.UserPeopleId;
             var route = RouteSpecialLogin(m);
             if (route != null)
             {
@@ -597,7 +597,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 m.URL = CurrentDatabase.ServerLink($"/OnlineReg/{id}/Giving/{goerid}");
             }
 
-            var currentUserId = Util.UserPeopleId;
+            var currentUserId = CurrentDatabase.UserPeopleId;
             if (currentUserId != null && currentUserId == goerid)
             {
                 return View("Giving/Goer", m);

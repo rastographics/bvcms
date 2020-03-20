@@ -384,7 +384,7 @@ namespace CmsWeb.Areas.Search.Models
         }
         public IEnumerable<SelectListItem> TagData(int? userpeopleid = null)
         {
-            var q = new CodeValueModel().UserTags(userpeopleid ?? Util.UserPeopleId).ToList();
+            var q = new CodeValueModel().UserTags(userpeopleid ?? CurrentDatabase.UserPeopleId).ToList();
             return ToIdValueSelectList(q);
         }
 
@@ -394,7 +394,8 @@ namespace CmsWeb.Areas.Search.Models
         }
         public IEnumerable<SelectListItem> StatusFlags()
         {
-            var q = from s in CodeValueModel.StatusFlags() 
+            var statusFlags = new CodeValueModel().StatusFlags();
+            var q = from s in statusFlags 
                     select new SelectListItem
                     {
                         Value = $"{s.Code}:{s.Value}",

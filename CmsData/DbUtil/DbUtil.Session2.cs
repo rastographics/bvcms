@@ -31,12 +31,9 @@ namespace CmsData
         public string Host { get; set; }
 
         private const string STR_UserId = "UserId";
-        public int UserId
-        {
-            //TODO: we're only going to fall back to Util.UserId while we transition to the new session provider so users don't get forced to log out
-            get => GetSessionValue(STR_UserId).ToInt2() ?? SetSessionValue(STR_UserId, Util.UserId);
-            set => SetSessionValue(STR_UserId, value);
-        }
+        public int UserId => GetSessionValue(STR_UserId).ToInt2() ?? SetSessionValue(STR_UserId, CurrentUser?.UserId ?? 0);
+
+        public int? UserPeopleId => CurrentUser?.PeopleId;
 
         public int UserId1 => UserId == 0 ? 1 : UserId;
 

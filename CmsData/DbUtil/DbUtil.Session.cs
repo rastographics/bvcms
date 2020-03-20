@@ -74,7 +74,7 @@ namespace CmsData
         {
             get
             {
-                var pid = Util.UserPeopleId;
+                var pid = Db.UserPeopleId;
                 var a = CurrentTag.Split('!');
                 if (a.Length > 1)
                 {

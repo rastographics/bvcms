@@ -31,7 +31,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                     return Redirect($"/OnlineReg/{id}" + Request.Url.Query);
                 }
 
-                var pid = Util.UserPeopleId;
+                var pid = CurrentDatabase.UserPeopleId;
                 if (pid.HasValue)
                     PrePopulate(m, pid.Value);
 
@@ -144,7 +144,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 
             m.ProcessType = pf.ProcessType;
 
-            var pid = Util.UserPeopleId;
+            var pid = CurrentDatabase.UserPeopleId;
             if (pid.HasValue)
                 PrePopulate(m, pid.Value);
 

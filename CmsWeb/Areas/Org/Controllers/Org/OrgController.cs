@@ -32,10 +32,10 @@ namespace CmsWeb.Areas.Org.Controllers
 
             if (Util2.OrgLeadersOnly)
             {
-                var oids = CurrentDatabase.GetLeaderOrgIds(Util.UserPeopleId);
+                var oids = CurrentDatabase.GetLeaderOrgIds(CurrentDatabase.UserPeopleId);
                 if (!oids.Contains(m.Org.OrganizationId))
                     return NotAllowed("You must be a leader of this organization", m.Org.OrganizationName);
-                var sgleader = CurrentDatabase.SmallGroupLeader(id, Util.UserPeopleId);
+                var sgleader = CurrentDatabase.SmallGroupLeader(id, CurrentDatabase.UserPeopleId);
                 if (sgleader.HasValue())
                     m.SgFilter = sgleader;
             }
@@ -166,7 +166,7 @@ namespace CmsWeb.Areas.Org.Controllers
             CurrentDatabase.Contacts.InsertOnSubmit(c);
             CurrentDatabase.SubmitChanges();
 
-            c.contactsMakers.Add(new Contactor { PeopleId = Util.UserPeopleId.Value });
+            c.contactsMakers.Add(new Contactor { PeopleId = CurrentDatabase.UserPeopleId.Value });
             CurrentDatabase.SubmitChanges();
 
             var defaultRole = CurrentDatabase.Setting("Contacts-DefaultRole", null);
