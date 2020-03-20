@@ -29,7 +29,7 @@ namespace CmsData
 
         public string[] Roles
         {
-            get { return UserRoles.Select(ur => ur.Role.RoleName).ToArray(); }
+            get { return UserRoles?.Select(ur => ur.Role.RoleName)?.ToArray() ?? new string[] { }; }
         }
 
         public static List<Role> AllRoles(CMSDataContext Db)

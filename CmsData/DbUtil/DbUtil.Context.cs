@@ -782,16 +782,7 @@ This search uses multiple steps which cannot be duplicated in a single query.
         private User _currentuser;
         public User CurrentUser
         {
-            get
-            {
-                if (_currentuser != null)
-                {
-                    return _currentuser;
-                }
-
-                GetCurrentUser();
-                return _currentuser;
-            }
+            get => _currentuser ?? GetCurrentUser();
 
             set
             {
@@ -800,29 +791,28 @@ This search uses multiple steps which cannot be duplicated in a single query.
             }
         }
 
-        private void GetCurrentUser()
+        private User GetCurrentUser()
         {
             var username = GetUserNameFromHttpContext();
             if (username.HasValue())
             {
                 var q = from u in Users
-                        where u.UserId == UserId || u.Username == username
+                        where u.Username == username
                         select new
                         {
-                            u,
+                            user = u,
                             roleids = u.UserRoles.Select(uu => uu.RoleId).ToArray(),
                             roles = u.UserRoles.Select(uu => uu.Role.RoleName).ToArray(),
                         };
                 var i = q.FirstOrDefault();
-                if (i == null)
+                if (i != null)
                 {
-                    return;
+                    _roles = i.roles;
+                    _roleids = i.roleids;
+                    CurrentUser = i.user;
                 }
-
-                _roles = i.roles;
-                _roleids = i.roleids;
-                CurrentUser = i.u;
             }
+            return _currentuser;
         }
 
         private string GetUserNameFromHttpContext()
