@@ -41,5 +41,17 @@ namespace CmsDataTests.Finance
                 pp.ShouldBe(result);
             }
         }
+
+        [Fact]        
+        public void Should_Return_RegistrationProcessType()
+        {
+            using (var db = CMSDataContext.Create(DatabaseFixture.Host))
+            {
+                var randomDescription = DatabaseTestBase.RandomString();
+                var paymentProcessType = MultipleGatewayUtils.ProcessByTransactionDescription(db, randomDescription);
+                var pp = (int)paymentProcessType;
+                pp.ShouldBe(3);
+            }
+        }
     }
 }
