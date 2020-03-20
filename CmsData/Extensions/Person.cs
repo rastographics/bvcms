@@ -299,7 +299,7 @@ namespace CmsData
                     return BirthYear;
                 }
 
-                if (db.CurrentUser.InRole(db.Setting("NoBirthYearRole", "")))
+                if (HttpContextFactory.Current?.User?.IsInRole(db.Setting("NoBirthYearRole", "")) ?? false)
                 {
                     return null;
                 }
@@ -1333,7 +1333,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
                             Family.HeadOfHouseholdSpouseId
                         })
                         .Contains(db.UserPeopleId);
-                    canUserSeeEmails = sameperson || ishead || db.CurrentUser.InRole("Access");
+                    canUserSeeEmails = sameperson || ishead || HttpContextFactory.Current.User.IsInRole("Access");
                 }
                 return canUserSeeEmails.Value;
             }

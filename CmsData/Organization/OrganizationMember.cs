@@ -659,7 +659,7 @@ AND a.PeopleId = {2}
                 return false;
             }
 
-            if (db.CurrentUser.InAnyRole("Admin", "ManageVolunteers"))
+            if (db.CurrentUser?.InAnyRole("Admin", "ManageVolunteers") ?? false)
             {
                 return true;
             }
