@@ -157,6 +157,8 @@
 }
 @helper AdminList1(bool admin, bool design, bool managetrans, bool edit, bool manageemails, bool finance, bool developer, bool financeadmin)
 {
+    CMSDataContext Db = ViewBag.CurrentDatabase;
+    var newHomePageEnabled = Db.Setting("EnableCustomHomepage");
     if (admin || finance || managetrans)
     {
         <li class="dropdown-header dropdown-sub-header">Batch Actions</li>
@@ -189,7 +191,10 @@
     }
     @Helper.LiAnchorLink("Lookup Codes", "/Lookups/", admin || finance)
     @Helper.LiAnchorLink("Payment Gateways", "/Gateway/", admin)
-    @Helper.LiAnchorLink("Homepage Widgets", "/HomeWidgets/", admin)
+    if (newHomePageEnabled)
+    {
+        @Helper.LiAnchorLink("Homepage Widgets", "/HomeWidgets/", admin)
+    }
     @Helper.LiAnchorLink("Promotion", "/PromotionSetup/", admin)
     @Helper.LiAnchorLink("Pushpay", "/Pushpay/", admin)
     @Helper.LiAnchorLink("Settings", "/Settings/", admin)

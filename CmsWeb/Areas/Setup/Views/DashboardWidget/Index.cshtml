@@ -16,17 +16,15 @@
             cursor: -webkit-grabbing;
             opacity: 0.7;
         }
-
-            .draggable-mirror td:last-child {
-                visibility: hidden;
-            }
-
+        .draggable-mirror td:last-child {
+            visibility: hidden;
+        }
         .handle {
             cursor: move;
         }
     </style>
 }
-@using (Html.BeginForm("SaveOrder", "HomeWidgets"))
+@using (Html.BeginForm("SaveOrder", "HomeWidgets", FormMethod.Post, new { @id = "widgetorder" }))
 {
     <div class="row">
         <div class="col-lg-12">
@@ -41,10 +39,10 @@
                         <table class="table table-striped">
                             <thead>
                                 <tr>
-                                    <th style="width:200px;">Widget Name</th>
+                                    <th style="width:200px;">Widget</th>
                                     <th>Description</th>
-                                    <th style="width: 50px;text-align:center;">Enabled</th>
-                                    <th style="width: 50px;text-align:center;">Actions</th>
+                                    <th style="width: 50px;text-align:center;">Status</th>
+                                    <th style="width: 50px;text-align:center;">Reorder</th>
                                 </tr>
                             </thead>
                             <tbody class="sortable">
@@ -54,7 +52,7 @@
                                         <td style="width: 150px;"><a href="/HomeWidgets/@item.Id">@item.Name</a></td>
                                         <td>@item.Description</td>
                                         <td>
-                                            <input type="checkbox" id="Widget@item.Id" name="Widget@item.Id" data-toggle="toggle" data-on="Enable" data-off="Disable" data-width="100" checked="@(item.Enabled)">
+                                            <input type="checkbox" name="status-@item.Id" class="toggle-status" data-id="@item.Id" data-toggle="toggle" data-on="Enabled" data-off="Disabled" data-width="100" checked="@(item.Enabled)">
                                         </td>
                                         <td style="width: 180px;text-align:center;">
                                             <i class="handle fa fa-bars"></i>
@@ -80,6 +78,38 @@
         var sortable = new Sortable.default(document.querySelectorAll('.sortable'), {
             draggable: '.widget',
             handle: '.handle'
+        });
+
+        sortable.on('sortable:stop', function () {
+            setTimeout(function () {
+                var data = $('#widgetorder').serializeArray();
+                $.post("/HomeWidgets/Reorder/", data, function (ret) {
+                    if (ret.includes('error')) {
+                        snackbar('Error updating widget order', 'error');
+                    } else {
+                        snackbar(ret, 'success');
+                    }
+                }).fail(function () {
+                    snackbar('Error updating widget order', 'error');
+                });
+            }, 400);
+        });
+
+        $('.toggle-status').change(function () {
+            var id = $(this).data('id');
+            var status = $(this).is(":checked");
+            $.post("/HomeWidgets/Toggle/", {
+                id: id,
+                status: status
+            }, function (ret) {
+                if (ret.includes('error')) {
+                    snackbar('Error updating widget', 'error');
+                } else {
+                    snackbar(ret, 'success');
+                }
+            }).fail(function () {
+                snackbar('Error updating widget', 'error');
+            });
         });
     </script>
 }

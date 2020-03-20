@@ -17,7 +17,7 @@ namespace CmsWeb.Areas.Setup.Controllers
         
         public ActionResult Index()
         {
-            var widgets = CurrentDatabase.DashboardWidgets.ToList();
+            var widgets = CurrentDatabase.DashboardWidgets.OrderBy(w => w.Order).ToList();
             return View(widgets);
         }
 
@@ -69,7 +69,7 @@ namespace CmsWeb.Areas.Setup.Controllers
             try
             {
                 DashboardWidgetModel.UpdateWidgetOrder(CurrentDatabase, widgets);
-                return RedirectToAction("Index");
+                return Content("Widget order has been updated");
             }
             catch (Exception ex)
             {
@@ -87,7 +87,7 @@ namespace CmsWeb.Areas.Setup.Controllers
             }
             widget.Enabled = status;
             CurrentDatabase.SubmitChanges();
-            return Content("success");
+            return Content(widget.Name + " has been " + (widget.Enabled ? "enabled" : "disabled"));
         }
 
         public ActionResult Embed(string id)
@@ -100,7 +100,7 @@ namespace CmsWeb.Areas.Setup.Controllers
             }
             catch
             {
-                return Content("Invalid widget");
+                return Content("Error loading widget");
             }
         }
     }
