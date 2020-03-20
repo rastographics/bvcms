@@ -112,6 +112,7 @@ namespace CmsWeb.Models
             var nontax = nontaxdeductible is null ? null : nontaxdeductible?.ToInt();
             var q = from c in CurrentDatabase.GetContributionsDetails(startdt, enddt, campusid, pledges, nontax, online, includeUnclosed, tagid, fundids)
                     where !ContributionTypeCode.ReturnedReversedTypes.Contains(c.ContributionTypeId)
+                    where ContributionStatusCode.Recorded.Equals(c.ContributionStatusId)
                     select c;
             return q;
         }
@@ -152,7 +153,7 @@ namespace CmsWeb.Models
                             MemberStatus = p.MemberStatus.Description,
                             p.JoinDate,
                             Amount = c.Amount ?? 0m,
-                            Pledge = c.PledgeAmount ?? 0m,
+                            Pledge = c.PledgeAmount,
                             c.CheckNo,
                             c.ContributionDesc,
                             c.FundId,
@@ -191,7 +192,7 @@ namespace CmsWeb.Models
                             MemberStatus = p.MemberStatus.Description,
                             p.JoinDate,
                             Amount = c.Amount ?? 0m,
-                            Pledge = c.PledgeAmount ?? 0m,
+                            Pledge = c.PledgeAmount ,
                             c.CheckNo,
                             c.ContributionDesc,
                             c.FundId,
@@ -298,7 +299,7 @@ namespace CmsWeb.Models
                          GiverId = rr.Key.CreditGiverId,
                          Count = rr.Key.Count ?? 0,
                          Amount = rr.Sum(x => x.Amount) ?? 0m,
-                         Pledged = rr.Key.PledgeAmount ?? 0m,
+                         Pledged = rr.Key.PledgeAmount,
                          Name = rr.Key.HeadName,
                          SpouseName = rr.Key.SpouseName ?? "",
                          rr.Key.FundName,
