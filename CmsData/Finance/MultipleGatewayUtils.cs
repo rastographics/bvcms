@@ -103,9 +103,9 @@ namespace CmsData
 
             switch (RegistrationTypeId)
             {
-                case null:
                 case 8:
                     return PaymentProcessTypes.OneTimeGiving;
+                case null:
                 default:
                     return PaymentProcessTypes.OnlineRegistration;
             }
