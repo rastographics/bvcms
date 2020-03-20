@@ -20,6 +20,7 @@ using Country = CmsWeb.Areas.Public.Models.CheckInAPIv2.Country;
 using Family = CmsWeb.Areas.Public.Models.CheckInAPIv2.Family;
 using Gender = CmsWeb.Areas.Public.Models.CheckInAPIv2.Gender;
 using MaritalStatus = CmsWeb.Areas.Public.Models.CheckInAPIv2.MaritalStatus;
+using CmsWeb.Areas.People.Models;
 
 namespace CmsWeb.Areas.Public.Controllers
 {
@@ -326,21 +327,57 @@ namespace CmsWeb.Areas.Public.Controllers
 			}
 
 			Message message = Message.createFromString( data );
-			Models.CheckInAPIv2.Person person = JsonConvert.DeserializeObject<Models.CheckInAPIv2.Person>( message.data );
-			person.clean();
 
-			CmsData.Person p = CurrentDatabase.LoadPersonById( person.id );
+            Models.CheckInAPIv2.Person person = JsonConvert.DeserializeObject<Models.CheckInAPIv2.Person>(message.data);    // new data
+            person.clean();
+
+            var NewContext = CurrentDatabase.Copy();
+            CmsData.Person p = NewContext.LoadPersonById(person.id);   // existing data
 
 			if( p == null ) {
 				return Message.createErrorReturn( "Person not found", Message.API_ERROR_PERSON_NOT_FOUND );
 			}
 
-			CmsData.Family f = CurrentDatabase.Families.First( fam => fam.FamilyId == p.FamilyId );
+            person.fillPerson(p);
+            BasicPersonInfo m = new BasicPersonInfo() { Id = person.id };
+            p.CopyProperties2(m);
 
-			person.fillPerson( p );
-			person.fillFamily( f );
+            m.CellPhone = new CellPhoneInfo()
+            {
+                Number = person.mobilePhone,
+                ReceiveText = p.ReceiveSMS
+            };
+            m.Gender = new Code.CodeInfo(p.GenderId, p.Gender.Description);
+            m.MaritalStatus = new Code.CodeInfo(p.MaritalStatusId, p.MaritalStatus.Description);
+            m.EmailAddress = new EmailInfo()
+            {
+                Address = p.EmailAddress,
+                Send = p.SendEmailAddress1.GetValueOrDefault(true)
+            };
+            m.EmailAddress2 = new EmailInfo()
+            {
+                Address = p.EmailAddress2,
+                Send = p.SendEmailAddress2.GetValueOrDefault(true)
+            };
 
-			CurrentDatabase.SubmitChanges();
+            m.UpdatePerson(CurrentDatabase);
+            DbUtil.LogPersonActivity($"Update Basic Info for: {m.person.Name}", m.Id, m.person.Name);
+
+            CmsData.Family f = NewContext.Families.First( fam => fam.FamilyId == p.FamilyId );
+            p.SetRecReg().MedicalDescription = person.allergies;
+            p.SetRecReg().Emcontact = person.emergencyName;
+            p.SetRecReg().Emphone = person.emergencyPhone.Truncate(50);
+
+            var fsb = new List<ChangeDetail>();
+            f.UpdateValue(fsb, "AddressLineOne", person.address);
+            f.UpdateValue(fsb, "AddressLineTwo", person.address2);
+            f.UpdateValue(fsb, "CityName", person.city);
+            f.UpdateValue(fsb, "StateCode", person.state);
+            f.UpdateValue(fsb, "ZipCode", person.zipCode);
+            f.UpdateValue(fsb, "CountryName", person.country);
+            f.LogChanges(NewContext, fsb, p.PeopleId, Util.UserPeopleId ?? 0);
+            person.fillFamily(f);
+            NewContext.SubmitChanges();
 
             AddEditPersonResults results = new AddEditPersonResults {
                 familyID = f.FamilyId,
