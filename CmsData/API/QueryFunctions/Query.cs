@@ -235,7 +235,7 @@ namespace CmsData
         private void ApplyStandardParameters(string sql, DynamicParameters parameters)
         {
             if (sql.Contains("@UserPeopleId"))
-                parameters.Add("@UserPeopleId", data.PeopleId ?? Util.UserPeopleId);
+                parameters.Add("@UserPeopleId", data.PeopleId ?? db.UserPeopleId);
             if (sql.Contains("@CurrentOrgId"))
                 parameters.Add("@CurrentOrgId", data.OrgId ?? db.CurrentSessionOrgId);
 

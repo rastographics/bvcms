@@ -498,7 +498,7 @@ AND a.PeopleId = {2}
 
             var ti2 = new Transaction
             {
-                TransactionId = $"{reason} ({Util.UserPeopleId ?? db.UserId1})",
+                TransactionId = $"{reason} ({db.UserPeopleId ?? db.UserId1})",
                 Description = Util.PickFirst(pmtDescription, Organization.OrganizationName),
                 TransactionDate = DateTime.Now,
                 OrgId = OrganizationId,
@@ -512,7 +512,7 @@ AND a.PeopleId = {2}
                 Emails = Person.EmailAddress,
                 State = Person.PrimaryState,
                 Zip = Person.PrimaryZip,
-                LoginPeopleId = Util.UserPeopleId,
+                LoginPeopleId = db.UserPeopleId,
                 Approved = true,
                 Amt = payment,
                 //Amtdue = (amount ?? payment) - payment,
@@ -659,13 +659,12 @@ AND a.PeopleId = {2}
                 return false;
             }
 
-            if (HttpContextFactory.Current.User.IsInRole("Admin") ||
-                HttpContextFactory.Current.User.IsInRole("ManageVolunteers"))
+            if (db.CurrentUser.InAnyRole("Admin", "ManageVolunteers"))
             {
                 return true;
             }
 
-            var leaderorgs = db.GetLeaderOrgIds(Util.UserPeopleId);
+            var leaderorgs = db.GetLeaderOrgIds(db.UserPeopleId);
             if (leaderorgs == null)
             {
                 return false;

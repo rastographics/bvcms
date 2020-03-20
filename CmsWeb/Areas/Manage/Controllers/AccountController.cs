@@ -338,7 +338,7 @@ namespace CmsWeb.Areas.Manage.Controllers
             {
                 if (!CMSRoleProvider.provider.IsUserInRole(user.Username, "Access"))
                 {
-                    return RedirectTo("/Person2/" + Util.UserPeopleId);
+                    return RedirectTo("/Person2/" + CurrentDatabase.UserPeopleId);
                 }
             }
 
@@ -437,7 +437,7 @@ namespace CmsWeb.Areas.Manage.Controllers
         [MyRequireHttps]
         public ActionResult LogOff()
         {
-            CurrentDatabase.DeleteSpecialTags(Util.UserPeopleId);
+            CurrentDatabase.DeleteSpecialTags(CurrentDatabase.UserPeopleId);
             FormsAuthentication.SignOut();
             Session.Abandon();
             return Redirect("/");

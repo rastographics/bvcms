@@ -637,7 +637,7 @@ This search uses multiple steps which cannot be duplicated in a single query.
                 name = Util.SessionId;
             }
 
-            var tag = FetchOrCreateTag(name, Util.UserPeopleId ?? UserId1, TagTypeId);
+            var tag = FetchOrCreateTag(name, UserPeopleId ?? UserId1, TagTypeId);
             ExecuteCommand("delete TagPerson where Id = {0}", tag.Id);
             var qpids = q.Select(pp => pp.PeopleId);
             var cmd = GetCommand(qpids);
@@ -663,7 +663,7 @@ This search uses multiple steps which cannot be duplicated in a single query.
 
         public Tag NewTemporaryTag()
         {
-            var tag = FetchOrCreateTag(Util.SessionId, Util.UserPeopleId ?? UserId1, NextTagId);
+            var tag = FetchOrCreateTag(Util.SessionId, UserPeopleId ?? UserId1, NextTagId);
             Debug.Assert(NextTagId != 10, "got a 10");
             ExecuteCommand("delete TagPerson where Id = {0}", tag.Id);
             return tag;
@@ -710,7 +710,7 @@ This search uses multiple steps which cannot be duplicated in a single query.
 
         public int PopulateSpecialTag(IQueryable<Person> q, string tagname, int tagTypeId)
         {
-            var tag = FetchOrCreateTag(tagname, Util.UserPeopleId ?? UserId1, tagTypeId);
+            var tag = FetchOrCreateTag(tagname, UserPeopleId ?? UserId1, tagTypeId);
             TagPeople.DeleteAllOnSubmit(tag.PersonTags);
             tag.Created = Util.Now;
             SubmitChanges();
@@ -720,7 +720,7 @@ This search uses multiple steps which cannot be duplicated in a single query.
 
         public void DePopulateSpecialTag(IQueryable<Person> q, int TagTypeId)
         {
-            var tag = FetchOrCreateTag(Util.SessionId, Util.UserPeopleId ?? UserId1, TagTypeId);
+            var tag = FetchOrCreateTag(Util.SessionId, UserPeopleId ?? UserId1, TagTypeId);
             TagPeople.DeleteAllOnSubmit(tag.PersonTags);
             SubmitChanges();
         }
@@ -870,7 +870,7 @@ This search uses multiple steps which cannot be duplicated in a single query.
         public Person CurrentUserPerson => Users.Where(u => u.UserId == UserId).Select(u => u.Person).SingleOrDefault();
         public Tag OrgLeadersOnlyTag2()
         {
-            return FetchOrCreateTag(Util.SessionId, Util.UserPeopleId, DbUtil.TagTypeId_OrgLeadersOnly);
+            return FetchOrCreateTag(Util.SessionId, UserPeopleId, DbUtil.TagTypeId_OrgLeadersOnly);
         }
 
         public Tag FetchOrCreateTag(string tagname, int? ownerId, int tagtypeid)
@@ -936,10 +936,10 @@ This search uses multiple steps which cannot be duplicated in a single query.
 
         public void SetOrgLeadersOnly()
         {
-            var me = Util.UserPeopleId;
+            var me = UserPeopleId;
             var dt = Util.Now.AddYears(-3);
 
-            var oids = GetLeaderOrgIds(Util.UserPeopleId);
+            var oids = GetLeaderOrgIds(UserPeopleId);
             // current members of one of my orgs I lead
             var q = from p in People
                     where p.OrganizationMembers.Any(m => oids.Contains(m.OrganizationId))
@@ -1498,7 +1498,7 @@ This search uses multiple steps which cannot be duplicated in a single query.
         {
             return OrgPeople(oid, GroupSelectCode.Member, first, last, sgfilter, false,
                 Util2.CurrentTagName, Util2.CurrentTagOwnerId, filterchecked,
-                filtertag, null, Util.UserPeopleId);
+                filtertag, null, UserPeopleId);
         }
 
         public IQueryable<View.OrgPerson> OrgPeople(
@@ -1514,7 +1514,7 @@ This search uses multiple steps which cannot be duplicated in a single query.
         {
             return OrgPeople(oid, grouptype, first, last, sgfilter, showhidden,
                 Util2.CurrentTagName, Util2.CurrentTagOwnerId, filterchecked,
-                filtertag, null, Util.UserPeopleId);
+                filtertag, null, UserPeopleId);
         }
 
         public OrganizationMember LoadOrgMember(int PeopleId, string OrgName, bool orgmustexist)

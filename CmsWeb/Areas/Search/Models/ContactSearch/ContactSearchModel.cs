@@ -52,10 +52,10 @@ namespace CmsWeb.Areas.Search.Models
                     where (c.LimitToRole ?? "") == "" || roles.Contains(c.LimitToRole) || managePrivateContacts
                     select c;
 
-            if (ppl != null && Util.UserPeopleId != null)
+            if (ppl != null && CurrentDatabase.UserPeopleId != null)
             {
                 q = from c in q
-                    where c.contactsMakers.Any(cm => cm.PeopleId == Util.UserPeopleId.Value)
+                    where c.contactsMakers.Any(cm => cm.PeopleId == CurrentDatabase.UserPeopleId.Value)
                     select c;
             }
 

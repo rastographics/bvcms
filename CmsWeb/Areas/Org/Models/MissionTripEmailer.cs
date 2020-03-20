@@ -188,7 +188,7 @@ namespace CmsWeb.Areas.Org.Models
         public string TestSend()
         {
             var db = DbUtil.Db;
-            var p = db.LoadPersonById(Util.UserPeopleId.Value);
+            var p = db.LoadPersonById(db.UserPeopleId.Value);
             try
             {
                 db.CopySession();

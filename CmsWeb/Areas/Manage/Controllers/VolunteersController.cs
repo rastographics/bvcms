@@ -159,7 +159,7 @@ namespace CmsWeb.Areas.Manage.Controllers
         [HttpGet, Route("Request/{mid:int}/{limit:int}")]
         public new ActionResult Request(int mid, int limit)
         {
-            var vs = new VolunteerRequestModel(mid, Util.UserPeopleId.Value) { limit = limit };
+            var vs = new VolunteerRequestModel(mid, CurrentDatabase.UserPeopleId.Value) { limit = limit };
             vs.ComposeMessage();
             return View(vs);
         }
@@ -169,7 +169,7 @@ namespace CmsWeb.Areas.Manage.Controllers
         {
             var time = new DateTime(ticks); // ticks here is meeting time
             var mid = CurrentDatabase.CreateMeeting(oid, time);
-            var vs = new VolunteerRequestModel(mid, Util.UserPeopleId.Value) { limit = limit };
+            var vs = new VolunteerRequestModel(mid, CurrentDatabase.UserPeopleId.Value) { limit = limit };
             vs.ComposeMessage();
             return View("Request", vs);
         }
@@ -178,7 +178,7 @@ namespace CmsWeb.Areas.Manage.Controllers
         [ValidateInput(false)]
         public new ActionResult Request(long ticks, int mid, int limit, int[] pids, string subject, string message, int? additional)
         {
-            var m = new VolunteerRequestModel(mid, Util.UserPeopleId.Value, ticks)
+            var m = new VolunteerRequestModel(mid, CurrentDatabase.UserPeopleId.Value, ticks)
             { subject = subject, message = message, pids = pids, limit = limit };
 
             if (pids == null || pids.Length == 0)

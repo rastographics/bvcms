@@ -78,13 +78,14 @@ namespace CmsWeb.Models
         private IQueryable<EmailQueue> emails;
         private IQueryable<EmailQueue> FetchEmails()
         {
+            var db = DbUtil.Db;
             if (emails != null)
                 return emails;
             var sndr = sender;
             if (sndr == null)
-                sndr = DbUtil.Db.LoadPersonById(Util.UserPeopleId.Value);
+                sndr = db.LoadPersonById(db.UserPeopleId.Value);
             emails
-               = from t in DbUtil.Db.EmailQueues
+               = from t in db.EmailQueues
                  where t.Sent >= startdt || startdt == null
                  where subject == null || t.Subject.Contains(subject)
                  where body == null || t.Body.Contains(body)
@@ -101,12 +102,11 @@ namespace CmsWeb.Models
                 emails = emails.Where(t => t.Sent < edt);
             emails = FilterOutFinanceOnly(emails);
 
-            var roles = new [] { "Admin", "ManageEmails", "Finance" };
-            if (DbUtil.Db.CurrentUser.Roles.Any(uu => roles.Contains(uu)))
+            if (db.CurrentUser.InAnyRole("Admin", "ManageEmails", "Finance"))
                 return emails;
 
             // show only user's emails sent or received
-            var u = DbUtil.Db.LoadPersonById(Util.UserPeopleId ?? 0);
+            var u = db.LoadPersonById(db.UserPeopleId ?? 0);
             emails = from t in emails
                      where t.FromAddr == u.EmailAddress
                            || t.QueuedBy == u.PeopleId

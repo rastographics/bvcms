@@ -172,7 +172,7 @@ $@"{{
             ""name"": ""{Util.UserFullName}"",
             ""email"": ""{Util.UserEmail}""
         }},
-        ""requester_id"": {Util.UserPeopleId},
+        ""requester_id"": {CurrentDatabase.UserPeopleId},
         ""subject"": ""{subject}"",
         ""comment"": {{ ""body"": ""{escapedbody}"" }},
         ""external_id"": {id},

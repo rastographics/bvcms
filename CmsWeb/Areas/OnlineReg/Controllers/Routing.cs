@@ -85,11 +85,11 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                     if (m.registerLinkType.StartsWith("registerlink") || m.registerLinkType == "masterlink" || User.Identity.IsAuthenticated)
                     {
                         TempData["token"] = m.registertag;
-                        TempData["PeopleId"] = m.UserPeopleId ?? Util.UserPeopleId;
+                        TempData["PeopleId"] = m.UserPeopleId ?? CurrentDatabase.UserPeopleId;
                     }
                 return $"/OnlineReg/RegisterLinkMaster/{m.Orgid}";
             }
-            TempData["PeopleId"] = m.UserPeopleId ?? Util.UserPeopleId;
+            TempData["PeopleId"] = m.UserPeopleId ?? CurrentDatabase.UserPeopleId;
             if (m.ManagingSubscriptions())
                 return $"/OnlineReg/ManageSubscriptions/{m.masterorgid}";
             if (m.ManageGiving())
@@ -106,7 +106,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         {
             if (m.SupportMissionTrip)
                 return null;
-            var existingRegistration = m.GetExistingRegistration(pid ?? Util.UserPeopleId ?? 0);
+            var existingRegistration = m.GetExistingRegistration(pid ?? CurrentDatabase.UserPeopleId ?? 0);
             if (existingRegistration == null)
                 return null;
             m.Log("Existing");
@@ -116,20 +116,20 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 
         private ActionResult RouteSpecialLogin(OnlineRegModel m)
         {
-            if (Util.UserPeopleId == null)
-                throw new Exception("Util.UserPeopleId is null on login");
+            if (CurrentDatabase.UserPeopleId == null)
+                throw new Exception("CurrentDatabase.UserPeopleId is null on login");
 
             var link = RouteExistingRegistration(m);
             if(link.HasValue())
                 return Redirect(link);
 
             m.CreateAnonymousList();
-            m.UserPeopleId = Util.UserPeopleId;
+            m.UserPeopleId = CurrentDatabase.UserPeopleId;
 
             if (m.OnlineGiving())
             {
                 m.Log("Login OnlineGiving");
-                return RegisterFamilyMember(Util.UserPeopleId.Value, m);
+                return RegisterFamilyMember(CurrentDatabase.UserPeopleId.Value, m);
             }
 
             link = RouteManageGivingSubscriptionsPledgeVolunteer(m);

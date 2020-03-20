@@ -310,7 +310,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 ProcessType = PaymentProcessTypes.OnlineRegistration
             };
 
-            if (pi.PeopleId == Util.UserPeopleId) // Is this the logged in user?
+            if (pi.PeopleId == db.UserPeopleId) // Is this the logged in user?
             {
                 pf.CreditCard = pi.MaskedCard;
                 pf.Expires = pi.Expires;

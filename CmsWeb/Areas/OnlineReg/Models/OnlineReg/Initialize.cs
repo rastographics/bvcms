@@ -122,13 +122,13 @@ namespace CmsWeb.Areas.OnlineReg.Models
             // handle if they are already logged in
             else if (HttpContextFactory.Current.User.Identity.IsAuthenticated)
             {
-                pid = Util.UserPeopleId ?? 0;
+                pid = CurrentDatabase.UserPeopleId ?? 0;
             }
 
             if (pid > 0)
             {
                 UserPeopleId = pid;
-                //                Util.UserPeopleId = pid;
+                //                CurrentDatabase.UserPeopleId = pid;
             }
             return pid;
         }

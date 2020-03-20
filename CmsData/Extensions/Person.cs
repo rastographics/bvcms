@@ -273,12 +273,13 @@ namespace CmsData
         {
             get
             {
+                var db = DbUtil.Db;
                 if (Util.Host == null || HttpContextFactory.Current == null)
                 {
                     return BirthYear;
                 }
 
-                if (Util.UserPeopleId == PeopleId)
+                if (db.UserPeopleId == PeopleId)
                 {
                     return BirthYear;
                 }
@@ -288,7 +289,7 @@ namespace CmsData
                     return BirthYear;
                 }
 
-                if (Age <= DbUtil.Db.Setting("NoBirthYearOverAge", "18").ToInt())
+                if (Age <= db.Setting("NoBirthYearOverAge", "18").ToInt())
                 {
                     return BirthYear;
                 }
@@ -298,7 +299,7 @@ namespace CmsData
                     return BirthYear;
                 }
 
-                if (HttpContextFactory.Current.User.IsInRole(DbUtil.Db.Setting("NoBirthYearRole", "")))
+                if (db.CurrentUser.InRole(db.Setting("NoBirthYearRole", "")))
                 {
                     return null;
                 }
@@ -314,7 +315,9 @@ namespace CmsData
                 return age;
             }
 
-            if (Util.UserPeopleId == peopleid)
+            var db = DbUtil.Db;
+
+            if (db.UserPeopleId == peopleid)
             {
                 return age;
             }
@@ -324,12 +327,12 @@ namespace CmsData
                 return age;
             }
 
-            if (age <= DbUtil.Db.Setting("NoBirthYearOverAge", "18").ToInt())
+            if (age <= db.Setting("NoBirthYearOverAge", "18").ToInt())
             {
                 return age;
             }
 
-            if (HttpContextFactory.Current.User.IsInRole(DbUtil.Db.Setting("NoBirthYearRole", "")))
+            if (HttpContextFactory.Current.User.IsInRole(db.Setting("NoBirthYearRole", "")))
             {
                 return null;
             }
@@ -344,7 +347,9 @@ namespace CmsData
                 return age;
             }
 
-            if (Util.UserPeopleId == peopleid)
+            var db = DbUtil.Db;
+
+            if (db.UserPeopleId == peopleid)
             {
                 return age;
             }
@@ -354,12 +359,12 @@ namespace CmsData
                 return age;
             }
 
-            if (age.ToInt2() <= DbUtil.Db.Setting("NoBirthYearOverAge", "18").ToInt())
+            if (age.ToInt2() <= db.Setting("NoBirthYearOverAge", "18").ToInt())
             {
                 return age;
             }
 
-            if (HttpContextFactory.Current.User.IsInRole(DbUtil.Db.Setting("NoBirthYearRole", "")))
+            if (HttpContextFactory.Current.User.IsInRole(db.Setting("NoBirthYearRole", "")))
             {
                 return null;
             }
@@ -374,7 +379,9 @@ namespace CmsData
                 return y;
             }
 
-            if (Util.UserPeopleId == peopleid)
+            var db = DbUtil.Db;
+
+            if (db.UserPeopleId == peopleid)
             {
                 return y;
             }
@@ -384,12 +391,12 @@ namespace CmsData
                 return y;
             }
 
-            if (age <= DbUtil.Db.Setting("NoBirthYearOverAge", "18").ToInt())
+            if (age <= db.Setting("NoBirthYearOverAge", "18").ToInt())
             {
                 return y;
             }
 
-            if (HttpContextFactory.Current.User.IsInRole(DbUtil.Db.Setting("NoBirthYearRole", "")))
+            if (HttpContextFactory.Current.User.IsInRole(db.Setting("NoBirthYearRole", "")))
             {
                 return null;
             }
@@ -1030,8 +1037,8 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
                 return p;
             }
 
-            if (Util.UserPeopleId.HasValue
-                && Util.UserPeopleId.Value != db.NewPeopleManagerId
+            if (db.UserPeopleId.HasValue
+                && db.UserPeopleId.Value != db.NewPeopleManagerId
                 && HttpContextFactory.Current.User.IsInRole("Access")
                 && !HttpContextFactory.Current.User.IsInRole("OrgMembersOnly")
                 && !HttpContextFactory.Current.User.IsInRole("OrgLeadersOnly"))
@@ -1204,11 +1211,12 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
         {
             get
             {
+                var UserPeopleId = DbUtil.Db.UserPeopleId;
                 if (!canUserEditFamilyAddress.HasValue)
                 {
                     canUserEditFamilyAddress = CanUserEditAll
-                                               || Util.UserPeopleId == Family.HeadOfHouseholdId
-                                               || Util.UserPeopleId == Family.HeadOfHouseholdSpouseId;
+                                               || UserPeopleId == Family.HeadOfHouseholdId
+                                               || UserPeopleId == Family.HeadOfHouseholdSpouseId;
                 }
 
                 return canUserEditFamilyAddress.Value;
@@ -1221,13 +1229,15 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
         {
             get
             {
+                var db = DbUtil.Db;
+                var UserPeopleId = db.UserPeopleId;
                 if (CanUserEditAll)
                 {
-                    if (DbUtil.Db.Setting("EnforceEditCampusRole", "false").ToBool())
+                    if (db.Setting("EnforceEditCampusRole", "false").ToBool())
                     {
-                        return ((HttpContextFactory.Current.User.IsInRole("EditCampus")) ||
-                                Util.UserPeopleId == Family.HeadOfHouseholdId
-                                || Util.UserPeopleId == Family.HeadOfHouseholdSpouseId);
+                        return HttpContextFactory.Current.User.IsInRole("EditCampus")
+                                || UserPeopleId == Family.HeadOfHouseholdId
+                                || UserPeopleId == Family.HeadOfHouseholdSpouseId;
                     }
                     else
                     {
@@ -1238,10 +1248,10 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
                 if (!canUserEditCampus.HasValue)
                 {
                     canUserEditCampus = CanUserEditFamilyAddress &&
-                                        DbUtil.Db.Setting("MyDataCanEditCampus", "false").ToBool();
+                                        db.Setting("MyDataCanEditCampus", "false").ToBool();
                 }
 
-                if (DbUtil.Db.Setting("EnforceEditCampusRole", "false").ToBool())
+                if (db.Setting("EnforceEditCampusRole", "false").ToBool())
                 {
                     canUserEditCampus = (canUserEditCampus.Value) || (HttpContextFactory.Current.User.IsInRole("EditCampus"));
                 }
@@ -1259,7 +1269,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
                 if (!canUserEditBasic.HasValue)
                 {
                     canUserEditBasic = CanUserEditFamilyAddress
-                                       || Util.UserPeopleId == PeopleId;
+                                       || DbUtil.Db.UserPeopleId == PeopleId;
                 }
 
                 return canUserEditBasic.Value;
@@ -1275,7 +1285,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
                 if (!canUserSee.HasValue)
                 {
                     canUserSee = CanUserEditBasic
-                                 || Family.People.Any(m => m.PeopleId == Util.UserPeopleId);
+                                 || Family.People.Any(m => m.PeopleId == DbUtil.Db.UserPeopleId);
                 }
 
                 return canUserSee.Value;
@@ -1290,16 +1300,17 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
             {
                 if (!canUserSeeGiving.HasValue)
                 {
-                    var sameperson = Util.UserPeopleId == PeopleId;
+                    var db = DbUtil.Db;
+                    var sameperson = db.UserPeopleId == PeopleId;
                     var infinance = (HttpContextFactory.Current.User.IsInRole("Finance") && !HttpContextFactory.Current.User.IsInRole("FundManager"))
                                     && ((string)HttpContextFactory.Current.Session["testnofinance"]) != "true";
-                    var isMyDataUserSetting = Util.IsMyDataUser && DbUtil.Db.Setting("HideGivingTabMyDataUsers", "false").ToBool();
+                    var isMyDataUserSetting = Util.IsMyDataUser && db.Setting("HideGivingTabMyDataUsers", "false").ToBool();
                     var ishead = (new int?[]
                         {
                             Family.HeadOfHouseholdId,
                             Family.HeadOfHouseholdSpouseId
                         })
-                        .Contains(Util.UserPeopleId);
+                        .Contains(db.UserPeopleId);
                     canUserSeeGiving = !isMyDataUserSetting && (sameperson || infinance || ishead);
                 }
                 return canUserSeeGiving.Value;
@@ -1314,14 +1325,15 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
             {
                 if (!canUserSeeEmails.HasValue)
                 {
-                    var sameperson = Util.UserPeopleId == PeopleId;
+                    var db = DbUtil.Db;
+                    var sameperson = db.UserPeopleId == PeopleId;
                     var ishead = (new int?[]
                         {
                             Family.HeadOfHouseholdId,
                             Family.HeadOfHouseholdSpouseId
                         })
-                        .Contains(Util.UserPeopleId);
-                    canUserSeeEmails = sameperson || ishead || HttpContextFactory.Current.User.IsInRole("Access");
+                        .Contains(db.UserPeopleId);
+                    canUserSeeEmails = sameperson || ishead || db.CurrentUser.InRole("Access");
                 }
                 return canUserSeeEmails.Value;
             }
@@ -1432,7 +1444,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
         {
             if (psbDefault != null)
             {
-                LogChanges(db, psbDefault, Util.UserPeopleId ?? 0);
+                LogChanges(db, psbDefault, db.UserPeopleId ?? 0);
             }
         }
 
@@ -1446,7 +1458,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
 
         public void LogChanges(CMSDataContext db, List<ChangeDetail> changes)
         {
-            LogChanges(db, changes, Util.UserPeopleId ?? 0);
+            LogChanges(db, changes, db.UserPeopleId ?? 0);
         }
 
         public void LogChanges(CMSDataContext db, List<ChangeDetail> changes, int userPeopleId)
@@ -2198,7 +2210,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
         public void UpdatePosition(CMSDataContext db, int value)
         {
             this.UpdateValue("PositionInFamilyId", value);
-            LogChanges(db, Util.UserPeopleId.Value);
+            LogChanges(db, db.UserPeopleId.Value);
             db.SubmitChanges();
         }
 
@@ -2211,7 +2223,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
             }
 
             this.UpdateValue("CampusId", campusid);
-            LogChanges(db, Util.UserPeopleId.Value);
+            LogChanges(db, db.UserPeopleId.Value);
             db.SubmitChanges();
         }
 
@@ -2231,7 +2243,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
             p.SmallId = Image.NewImageFromBits(bits, 120, 120, idb).Id;
             p.MediumId = Image.NewImageFromBits(bits, 320, 400, idb).Id;
             p.LargeId = Image.NewImageFromBits(bits, idb).Id;
-            LogPictureUpload(db, Util.UserPeopleId ?? 1);
+            LogPictureUpload(db, db.UserPeopleId ?? 1);
             db.SubmitChanges();
         }
 
@@ -2380,7 +2392,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
         public bool CanViewStatementFor(CMSDataContext db, int id)
         {
             // todo: improve performance
-            bool canview = Util.UserPeopleId == id || (HttpContextFactory.Current.User.IsInRole("Finance") && !HttpContextFactory.Current.User.IsInRole("FundManager"));
+            bool canview = db.UserPeopleId == id || (HttpContextFactory.Current.User.IsInRole("Finance") && !HttpContextFactory.Current.User.IsInRole("FundManager"));
 
             if (!canview)
             {
@@ -2540,7 +2552,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
             get
             {
                 var fam = HttpContextFactory.Current?.Items["FamilyFromMyDataPage"] as Family;
-                return fam?.IsHeadOfHouseold(Util.UserPeopleId) == true;
+                return fam?.IsHeadOfHouseold(DbUtil.Db.UserPeopleId) == true;
             }
         }
     }

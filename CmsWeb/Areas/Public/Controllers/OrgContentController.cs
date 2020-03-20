@@ -24,12 +24,12 @@ namespace CmsWeb.Areas.Public
                 return Content("<h2>Not an Organization</h2>");
             }
 
-            if (!Util.UserPeopleId.HasValue)
+            if (!CurrentDatabase.UserPeopleId.HasValue)
             {
                 return Redirect("/OrgContent/Login/" + id);
             }
 
-            if (o.TryRunPython(CurrentDatabase, pid ?? Util.UserPeopleId.Value))
+            if (o.TryRunPython(CurrentDatabase, pid ?? CurrentDatabase.UserPeopleId.Value))
             {
                 return View("ScriptResults", o);
             }
@@ -77,7 +77,7 @@ namespace CmsWeb.Areas.Public
         public ActionResult Edit(int id)
         {
             var o = OrgContentInfo.Get(CurrentDatabase, id);
-            if (o == null || o.Inactive || !Util.UserPeopleId.HasValue || !o.CanEdit)
+            if (o == null || o.Inactive || !CurrentDatabase.UserPeopleId.HasValue || !o.CanEdit)
             {
                 return Redirect("/OrgContent/" + id);
             }

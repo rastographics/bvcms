@@ -452,9 +452,6 @@ namespace CmsWeb.Models
 
             if (i.u != null)
             {
-                cmsdb.UserId = i.u.UserId;
-                Util.UserPeopleId = i.u.PeopleId;
-
                 Util.UserThumbPictureBgPosition = "top";
                 if (i.u.Person?.Picture != null)
                 {
@@ -479,7 +476,7 @@ namespace CmsWeb.Models
             Util.ActivePerson = i.u.Name;
             if (deleteSpecialTags)
             {
-                cmsdb.DeleteSpecialTags(Util.UserPeopleId);
+                cmsdb.DeleteSpecialTags(cmsdb.UserPeopleId);
             }
             return i.u;
         }
@@ -488,9 +485,9 @@ namespace CmsWeb.Models
         {
             if (!Roles.IsUserInRole(name, "Access") && !Roles.IsUserInRole(name, "OrgMembersOnly"))
             {
-                if (Util.UserPeopleId > 0)
+                if (db.UserPeopleId > 0)
                 {
-                    return $"/Person2/{Util.UserPeopleId}";
+                    return $"/Person2/{db.UserPeopleId}";
                 }
 
                 if (name.HasValue())

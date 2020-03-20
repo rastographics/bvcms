@@ -53,6 +53,8 @@ namespace CmsWeb.Areas.Reports.Models
             public string NameParent2 { get; set; }
         }
 
+        private static CMSDataContext Db => DbUtil.Db;
+
         public RollsheetModel() { }
         // This gets current org members
         public static IEnumerable<PersonMemberInfo> FetchOrgMembers(int orgid, int[] groups)
@@ -63,7 +65,7 @@ namespace CmsWeb.Areas.Reports.Models
             }
 
             var tagownerid = Util2.CurrentTagOwnerId;
-            var q = from om in DbUtil.Db.OrganizationMembers
+            var q = from om in Db.OrganizationMembers
                     where om.OrganizationId == orgid
                     where om.OrgMemMemTags.Any(mt => groups.Contains(mt.MemberTagId)) || (groups[0] == 0)
                     where !groups.Contains(-1) || (groups.Contains(-1) && om.OrgMemMemTags.Count() == 0)
@@ -114,7 +116,7 @@ namespace CmsWeb.Areas.Reports.Models
             IEnumerable<PersonMemberInfo> q = null;
             if (CurrentMembers)
             {
-                q = from m in DbUtil.Db.OrganizationMembers
+                q = from m in Db.OrganizationMembers
                     where m.OrganizationId == OrganizationId
                     let p = m.Person
                     let enrolled = m.EnrollmentDate
@@ -149,7 +151,7 @@ namespace CmsWeb.Areas.Reports.Models
             }
             else
             {
-                q = from m in DbUtil.Db.OrgMembersAsOfDate(OrganizationId, MeetingDate)
+                q = from m in Db.OrgMembersAsOfDate(OrganizationId, MeetingDate)
                     orderby m.LastName, m.FamilyId, m.PreferredName
                     select new PersonMemberInfo
                     {
@@ -189,7 +191,7 @@ namespace CmsWeb.Areas.Reports.Models
 
         public static IEnumerable<PersonVisitorInfo> FetchVisitors(int orgid, DateTime MeetingDate, bool NoCurrentMembers, bool UseAltNames = false)
         {
-            var q = from p in DbUtil.Db.OrgVisitorsAsOfDate(orgid, MeetingDate, NoCurrentMembers)
+            var q = from p in Db.OrgVisitorsAsOfDate(orgid, MeetingDate, NoCurrentMembers)
                     orderby p.LastName, p.FamilyId, p.PreferredName
                     select new PersonVisitorInfo()
                     {
@@ -217,8 +219,8 @@ namespace CmsWeb.Areas.Reports.Models
         }
         public static IEnumerable<Person> FetchVisitorPeople(int orgid, DateTime meetingDate, bool noCurrentMembers)
         {
-            var q = from vp in DbUtil.Db.OrgVisitorsAsOfDate(orgid, meetingDate, noCurrentMembers)
-                    join p in DbUtil.Db.People on vp.PeopleId equals p.PeopleId into peeps
+            var q = from vp in Db.OrgVisitorsAsOfDate(orgid, meetingDate, noCurrentMembers)
+                    join p in Db.People on vp.PeopleId equals p.PeopleId into peeps
                     from p in peeps
                     orderby p.LastName, p.FamilyId, p.PreferredName
                     select p;
@@ -231,9 +233,9 @@ namespace CmsWeb.Areas.Reports.Models
         {
             string subgroupIds = "";
             bool includeLeaderless = false;
-            var userPersonId = Util.UserPeopleId.GetValueOrDefault();
+            var userPersonId = Db.UserPeopleId.GetValueOrDefault();
             //get array of subgroupIds for the groups that this user is a leader of
-            var subgroups = (from mt in DbUtil.Db.OrgMemMemTags
+            var subgroups = (from mt in Db.OrgMemMemTags
                              where mt.PeopleId == userPersonId
                              where mt.OrgId == orgId
                              where mt.IsLeader == true
@@ -242,11 +244,11 @@ namespace CmsWeb.Areas.Reports.Models
             {
                 subgroupIds = string.Join(",", subgroups);
                 //if current user is the OrgLeader, include all members NOT in a subgroup
-                var o = DbUtil.Db.LoadOrganizationById(orgId);
+                var o = Db.LoadOrganizationById(orgId);
                 includeLeaderless = userPersonId == o.LeaderId;
             }
 
-            var q = DbUtil.Db.RollListFilteredBySubgroups(meetingId, meetingDate, orgId, currentMembers, fromMobile, subgroupIds, includeLeaderless);
+            var q = Db.RollListFilteredBySubgroups(meetingId, meetingDate, orgId, currentMembers, fromMobile, subgroupIds, includeLeaderless);
 
             if (sortByName)
             {
@@ -285,7 +287,7 @@ namespace CmsWeb.Areas.Reports.Models
         public static List<AttendInfo> RollList(int? meetingId, int orgId, DateTime meetingDate,
             bool sortByName = false, bool currentMembers = false, bool fromMobile = false, bool registeredOnly = false)
         {
-            var q = DbUtil.Db.RollList(meetingId, meetingDate, orgId, currentMembers, fromMobile);
+            var q = Db.RollList(meetingId, meetingDate, orgId, currentMembers, fromMobile);
 
             if (sortByName)
             {
@@ -331,7 +333,7 @@ namespace CmsWeb.Areas.Reports.Models
         public static List<AttendInfo> RollListHighlight(int? meetingId, int orgId, DateTime meetingDate,
             bool sortByName = false, bool currentMembers = false, string highlight = null, bool registeredOnly = false)
         {
-            var q = from p in DbUtil.Db.RollListHighlight(meetingId, meetingDate, orgId, currentMembers, highlight)
+            var q = from p in Db.RollListHighlight(meetingId, meetingDate, orgId, currentMembers, highlight)
                     select p;
 
             if (sortByName)

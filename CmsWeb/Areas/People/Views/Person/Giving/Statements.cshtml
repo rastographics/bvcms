@@ -12,7 +12,7 @@
         source = "/Person2/InlineCodes/"
     };
     var finance = User.IsInRole("Finance") && ((string)Session["testnofinance"]) != "true";
-    string statements = null; ContributionStatements.CustomStatementsList(DbUtil.Db);
+    string statements = null; ContributionStatements.CustomStatementsList(ViewExtensions2.CurrentDatabase);
 }
 <form class="ajax" method="post" data-init="Editable" data-init2="ExtraEditable">
     <h4>Statements</h4>
@@ -27,7 +27,7 @@
                             <th class="text-right">Amount</th>
                         </tr>
                     </thead>
-                    @foreach (var year in ContributionsModel.Statements(DbUtil.Db, Model.PeopleId))
+                    @foreach (var year in ContributionsModel.Statements(ViewExtensions2.CurrentDatabase, Model.PeopleId))
                     {
                         TotalAmount += year.Amount;
                         TotalCount += year.Count;

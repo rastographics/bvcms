@@ -114,7 +114,7 @@ namespace CmsWeb
             NoCheckRole = NoCheckRole ||
                           (filterContext.RouteData.Values["Controller"].ToString() == "Email" && CurrentDatabase.Setting("UX-AllowMyDataUserEmails")) ||
                           (filterContext.RouteData.Values["Controller"].ToString() == "OrgMemberDialog" && filterContext.RouteData.Values["Action"].ToString() == "Drop"
-                            && CurrentDatabase.Setting("UX-AllowMyDataUserLeaveOrg") && Util.UserPeopleId.ToString() == filterContext.RequestContext?.HttpContext?.Request?.Params["PeopleId"]);
+                            && CurrentDatabase.Setting("UX-AllowMyDataUserLeaveOrg") && CurrentDatabase.UserPeopleId.ToString() == filterContext.RequestContext?.HttpContext?.Request?.Params["PeopleId"]);
 
             if (!User.Identity.IsAuthenticated)
             {
@@ -149,7 +149,7 @@ namespace CmsWeb
             {
                 Util2.OrgLeadersOnly = true;
                 CurrentDatabase.SetOrgLeadersOnly();
-                filterContext.Result = Redirect($"/Person2/{Util.UserPeopleId}");
+                filterContext.Result = Redirect($"/Person2/{CurrentDatabase.UserPeopleId}");
             }
             else if (orgleaderonly && Util2.OrgLeadersOnly == false)
             {
@@ -159,7 +159,7 @@ namespace CmsWeb
 
             if (contr == "Home" && act == "Index" && RoleChecker.HasSetting(SettingName.DisableHomePage, false))
             {
-                filterContext.Result = Redirect($"/Person2/{Util.UserPeopleId}");
+                filterContext.Result = Redirect($"/Person2/{CurrentDatabase.UserPeopleId}");
             }
 
             base.OnActionExecuting(filterContext);

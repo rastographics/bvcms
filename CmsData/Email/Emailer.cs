@@ -5,7 +5,6 @@ using UtilityExtensions;
 using System.Linq;
 using System.Collections.Generic;
 using System.Configuration;
-using System.Net;
 using System.Net.Mime;
 using System.Text.RegularExpressions;
 using System.Security.Cryptography;
@@ -16,7 +15,6 @@ using Elmah;
 using HtmlAgilityPack;
 using SendGrid;
 using SendGrid.Helpers.Mail;
-using MContent = SendGrid.Helpers.Mail.Content;
 
 namespace CmsData
 {
@@ -65,7 +63,7 @@ namespace CmsData
                 FromName = fromaddress.DisplayName,
                 Subject = subject,
                 Body = body,
-                QueuedBy = Util.UserPeopleId,
+                QueuedBy = UserPeopleId,
                 Transactional = true,
                 FinanceOnly = true
             };
@@ -93,7 +91,7 @@ namespace CmsData
                 FromName = fromAddress.DisplayName,
                 Subject = subject,
                 Body = body,
-                QueuedBy = Util.UserPeopleId,
+                QueuedBy = UserPeopleId,
                 Redacted = redacted,
                 Transactional = true
             };
@@ -296,7 +294,7 @@ namespace CmsData
 
         public EmailQueue CreateQueue(MailAddress From, string subject, string body, DateTime? schedule, int tagId, bool publicViewable, bool? ccParents = null, string cclist = null)
         {
-            return CreateQueue(Util.UserPeopleId, From, subject, body, schedule, tagId, publicViewable, ccParents: ccParents, cclist: cclist);
+            return CreateQueue(UserPeopleId, From, subject, body, schedule, tagId, publicViewable, ccParents: ccParents, cclist: cclist);
         }
 
         public EmailQueue CreateQueueForOrg(MailAddress from, string subject, string body, DateTime? schedule, int orgid, bool publicViewable, string cclist = null)
@@ -309,7 +307,7 @@ namespace CmsData
                 Subject = subject,
                 Body = body,
                 SendWhen = schedule,
-                QueuedBy = Util.UserPeopleId,
+                QueuedBy = UserPeopleId,
                 Transactional = false,
                 PublicX = publicViewable,
                 SendFromOrgId = orgid,
