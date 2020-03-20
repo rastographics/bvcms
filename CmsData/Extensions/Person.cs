@@ -1302,8 +1302,9 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
                 {
                     var db = DbUtil.Db;
                     var sameperson = db.UserPeopleId == PeopleId;
-                    var infinance = (HttpContextFactory.Current.User.IsInRole("Finance") && !HttpContextFactory.Current.User.IsInRole("FundManager"))
-                                    && ((string)HttpContextFactory.Current.Session["testnofinance"]) != "true";
+                    var infinance = (HttpContextFactory.Current.User.IsInRole("Finance")
+                        && !HttpContextFactory.Current.User.IsInRole("FundManager"))
+                        && !Util.TestNoFinance;
                     var isMyDataUserSetting = Util.IsMyDataUser && db.Setting("HideGivingTabMyDataUsers", "false").ToBool();
                     var ishead = (new int?[]
                         {

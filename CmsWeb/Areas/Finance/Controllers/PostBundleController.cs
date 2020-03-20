@@ -44,15 +44,9 @@ namespace CmsWeb.Areas.Finance.Controllers
             }
 
             m.fund = m.Bundle.FundId ?? 1;
-            if (Request["images"] != null)
-            {
-                ViewData[SHOW_CHECK_IMAGES] = Request["images"] == "1";
-            }
-            else
-            {
-                ViewData[SHOW_CHECK_IMAGES] = Session[SHOW_CHECK_IMAGES];
-            }
-            Session[SHOW_CHECK_IMAGES] = ViewData[SHOW_CHECK_IMAGES];
+            ViewData[SHOW_CHECK_IMAGES] = 
+            Util.ShowCheckImages = 
+            (Request["images"] == "1" || Util.ShowCheckImages);
             return View(m);
         }
 

@@ -347,7 +347,6 @@ namespace CmsWeb.Areas.Main.Controllers
 
             if (Util.SessionTimedOut())
             {
-                Session["massemailer"] = m;
                 return Content("timeout");
             }
 
@@ -514,7 +513,6 @@ namespace CmsWeb.Areas.Main.Controllers
 
             if (Util.SessionTimedOut())
             {
-                Session["massemailer"] = m;
                 return Content("timeout");
             }
 

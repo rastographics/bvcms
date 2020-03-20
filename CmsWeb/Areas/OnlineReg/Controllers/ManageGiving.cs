@@ -53,7 +53,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 
             SetCampusAndDefaultFunds(campus, funds, orgId.ToInt());
 
-            funds = Session["DefaultFunds"]?.ToString();
+            funds = Util.DefaultFunds;
 
             if (td != null)
             {
@@ -83,8 +83,8 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 ot.Used = true;
                 CurrentDatabase.SubmitChanges();
             }
-            Session["CreditCardOnFile"] = m.CreditCard;
-            Session["ExpiresOnFile"] = m.Expires;
+            Util.CreditCardOnFile = m.CreditCard;
+            Util.ExpiresOnFile = m.Expires;
             if (!m.testing)
                 m.testing = testing ?? false;
             SetHeaders(m.orgid);
@@ -220,11 +220,11 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         {
             if (!string.IsNullOrWhiteSpace(campus))
             {
-                Session[$"Campus-{orgId}"] = campus;
+                RequestManager.SessionProvider.Add($"Campus-{orgId}", campus);
             }
             if (!string.IsNullOrWhiteSpace(funds))
             {
-                Session["DefaultFunds"] = funds;
+                Util.DefaultFunds = funds;
             }
         }
     }

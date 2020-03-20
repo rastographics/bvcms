@@ -778,7 +778,6 @@ This search uses multiple steps which cannot be duplicated in a single query.
             return null;
         }
 
-        private bool _isFinanceUser = false;
         private User _currentuser;
         public User CurrentUser
         {
@@ -787,7 +786,6 @@ This search uses multiple steps which cannot be duplicated in a single query.
             set
             {
                 _currentuser = value;
-                _isFinanceUser = _roles?.Contains("Finance") ?? _currentuser?.InRole("Finance") ?? false;
             }
         }
 

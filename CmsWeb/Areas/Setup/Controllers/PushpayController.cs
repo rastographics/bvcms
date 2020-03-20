@@ -36,7 +36,7 @@ namespace CmsWeb.Areas.Setup.Controllers
             PaymentProcessTypes processType = PaymentProcessTypes.OneTimeGiving;
             try
             {
-                processType = (PaymentProcessTypes)requestManager.CurrentHttpContext.Session["PaymentProcessType"];
+                processType = (PaymentProcessTypes)int.Parse(requestManager.SessionProvider.Get<string>("PaymentProcessType"));
             }
             catch (Exception e)
             {

@@ -9,7 +9,7 @@
     var sendsms = User.IsInRole("SendSms");
     var manageResources = User.IsInRole("ManageResources") && Db.Setting("Resources-Enabled");
     var design = User.IsInRole("Design");
-    var finance = User.IsInRole("Finance") && ((string)Session["testnofinance"]) != "true";
+    var finance = User.IsInRole("Finance") && !Util.TestNoFinance;
     var financeadmin = User.IsInRole("FinanceAdmin");
     var financedataentry = User.IsInRole("FinanceDataEntry");
     var financeviewonly = User.IsInRole("FinanceViewOnly");

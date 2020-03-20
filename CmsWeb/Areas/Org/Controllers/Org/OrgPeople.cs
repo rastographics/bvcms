@@ -29,7 +29,7 @@ namespace CmsWeb.Areas.Org.Controllers
             }
 
             ViewBag.OrgMemberContext = true;
-            ViewBag.orgname = Session["ActiveOrganization"];
+            ViewBag.orgname = Util.ActiveOrganization;
             return PartialView(m);
         }
 

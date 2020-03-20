@@ -52,7 +52,7 @@ namespace CmsWeb.Areas.Org.Controllers
             ViewBag.model = m;
             ViewBag.selectmode = 0;
             InitExportToolbar(m);
-            Session["ActiveOrganization"] = m.Org.OrganizationName;
+            Util.ActiveOrganization = m.Org.OrganizationName;
             return View(m);
         }
 
@@ -74,8 +74,8 @@ namespace CmsWeb.Areas.Org.Controllers
             var err = org.PurgeOrg(CurrentDatabase);
             if(err.HasValue())
                 return Content($"error, {err}");
-            DbUtil.LogActivity($"Delete Org {Session["ActiveOrganization"]}");
-            Session.Remove("ActiveOrganization");
+            DbUtil.LogActivity($"Delete Org {Util.ActiveOrganization}");
+            Util.ActiveOrganization = null;
             return Content("ok");
         }
 

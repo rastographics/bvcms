@@ -99,7 +99,7 @@ namespace CmsData
 
         public void CopySession()
         {
-            if (HttpContextFactory.Current != null && HttpContextFactory.Current.Session != null)
+            if (HttpContextFactory.Current != null && CurrentSessionId != null)
             {
                 CurrentPeopleId = Util2.CurrentPeopleId;
                 CurrentTagOwnerId = Util2.CurrentTagOwnerId;

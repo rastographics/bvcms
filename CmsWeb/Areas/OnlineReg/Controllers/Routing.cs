@@ -20,13 +20,13 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 
             if ((int)GatewayTypes.Pushpay == GatewayId && m.ProcessType == PaymentProcessTypes.OneTimeGiving)
             {
-                Session["PaymentProcessType"] = PaymentProcessTypes.OneTimeGiving;
+                RequestManager.SessionProvider.Add("PaymentProcessType", PaymentProcessTypes.OneTimeGiving.ToInt().ToString());
                 return Redirect($"/Pushpay/OneTime/{pid}");
             }
 
             if ((int)GatewayTypes.Pushpay == GatewayId && m.ProcessType == PaymentProcessTypes.RecurringGiving)
             {
-                Session["PaymentProcessType"] = PaymentProcessTypes.RecurringGiving;
+                RequestManager.SessionProvider.Add("PaymentProcessType", PaymentProcessTypes.RecurringGiving.ToInt().ToString());
                 return Redirect($"/Pushpay/RecurringManagment/{pid}");
             }
 

@@ -43,17 +43,8 @@ namespace UtilityExtensions
 
         public static string Helpfile
         {
-            get
-            {
-                var tag = "MainPage";
-                if (HttpContextFactory.Current.Session[STR_Helpfile] != null)
-                {
-                    tag = HttpContextFactory.Current.Session[STR_Helpfile].ToString();
-                }
-
-                return tag;
-            }
-            set => HttpContextFactory.Current.Session[STR_Helpfile] = value;
+            get => GetFromSession(STR_Helpfile, "MainPage");
+            set => SetValueInSession(STR_Helpfile, value);
         }
 
         public static string AppRoot
@@ -75,14 +66,11 @@ namespace UtilityExtensions
             get
             {
                 var version = "?";
-                if (HttpContextFactory.Current != null)
+                if (HttpContextFactory.Current?.Application != null)
                 {
-                    if (HttpContextFactory.Current.Session != null)
+                    if (HttpContextFactory.Current.Application[STR_Version] != null)
                     {
-                        if (HttpContextFactory.Current.Session[STR_Version] != null)
-                        {
-                            version = HttpContextFactory.Current.Session[STR_Version].ToString();
-                        }
+                        version = HttpContextFactory.Current.Application[STR_Version].ToString();
                     }
                 }
 
@@ -90,9 +78,9 @@ namespace UtilityExtensions
             }
             set
             {
-                if (HttpContextFactory.Current != null)
+                if (HttpContextFactory.Current?.Application != null)
                 {
-                    HttpContextFactory.Current.Session[STR_Version] = value;
+                    HttpContextFactory.Current.Application[STR_Version] = value;
                 }
             }
         }
@@ -184,40 +172,8 @@ namespace UtilityExtensions
 
         public static bool SmtpDebug
         {
-            get
-            {
-                bool? deb = false;
-                if (HttpContextFactory.Current != null)
-                {
-                    if (HttpContextFactory.Current.Session != null)
-                    {
-                        if (HttpContextFactory.Current.Session[STR_SMTPDEBUG] != null)
-                        {
-                            deb = (bool)HttpContextFactory.Current.Session[STR_SMTPDEBUG];
-                        }
-                    }
-                }
-                else
-                {
-                    var localDataStoreSlot = Thread.GetNamedDataSlot(STR_SMTPDEBUG);
-                    deb = (bool?)Thread.GetData(localDataStoreSlot);
-                }
-                return deb ?? false;
-            }
-            set
-            {
-                if (HttpContextFactory.Current != null)
-                {
-                    if (HttpContextFactory.Current.Session != null)
-                    {
-                        HttpContextFactory.Current.Session[STR_SMTPDEBUG] = value;
-                    }
-                }
-                else
-                {
-                    Thread.SetData(Thread.GetNamedDataSlot(STR_SMTPDEBUG), value);
-                }
-            }
+            get => GetFromSession(STR_SMTPDEBUG, false);
+            set => SetValueInSession(STR_SMTPDEBUG, value);
         }
 
         public static int TrialDbOffset => Host != "trialdb" ? 0 : (ConfigurationManager.AppSettings["TrialDbOffset"] ?? "0").ToInt();
@@ -386,7 +342,7 @@ namespace UtilityExtensions
                 if (HttpContextFactory.Current.Session.IsNewSession)
                 {
                     string sessionCookie = HttpContextFactory.Current.Request.Headers["Cookie"];
-                    if ((sessionCookie != null) && (sessionCookie.IndexOf("ASP.NET_SessionId") >= 0))
+                    if ((sessionCookie != null) && (sessionCookie.IndexOf("_sess") >= 0))
                     {
                         return true;
                     }

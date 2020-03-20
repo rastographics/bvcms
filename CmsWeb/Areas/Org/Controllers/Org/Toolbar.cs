@@ -15,7 +15,7 @@ namespace CmsWeb.Areas.Org.Controllers
                 return Redirect("/");
             }
 
-            Session["OrgCopySettings"] = id;
+            Util.OrgCopySettings = id;
             return Redirect("/OrgSearch/");
         }
 
