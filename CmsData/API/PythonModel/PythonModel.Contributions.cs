@@ -100,14 +100,10 @@ namespace CmsData
         /// </summary>
         public int ResolveFundId(string fundName)
         {
-            ContributionFund fund = null;
-            if (fundName.AllDigits())
+            var fund = ResolveFund(fundName);
+            if (fund == null && fundName.AllDigits())
             {
                 fund = db.ContributionFunds.SingleOrDefault(f => f.FundId == Convert.ToInt32(fundName));
-            }
-            if (fund == null)
-            {
-                fund = ResolveFund(fundName);
             }
             return fund.IsNotNull() ? fund.FundId : FirstFundId();
         }
