@@ -201,7 +201,6 @@ namespace CmsWeb.Areas.Manage.Controllers
             return body;
         }
 
-
         [HttpPost]
         public ActionResult ContentUpdate(int id, string name, string title, string body, bool? snippet, int? roleid, string contentKeyWords, string stayaftersave = null)
         {
