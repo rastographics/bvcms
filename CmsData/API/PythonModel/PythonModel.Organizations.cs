@@ -43,7 +43,7 @@ namespace CmsData
                 {
                     OrganizationName = name,
                     CreatedDate = Util.Now,
-                    CreatedBy = Util.UserId1,
+                    CreatedBy = db2.UserId1,
                     OrganizationStatusId = 30,
                     DivisionId = div.Id,
                 };
@@ -70,7 +70,7 @@ namespace CmsData
                 {
                     OrganizationName = name,
                     CreatedDate = Util.Now,
-                    CreatedBy = Util.UserId1,
+                    CreatedBy = db2.UserId1,
                     EntryPointId = org.EntryPointId,
                     OrganizationTypeId = org.OrganizationTypeId,
                     CampusId = org.CampusId,

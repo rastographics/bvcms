@@ -107,7 +107,7 @@ namespace CmsData
                     OrganizationId = OrgId,
                     MeetingDate = dt,
                     CreatedDate = Util.Now,
-                    CreatedBy = Util.UserId1,
+                    CreatedBy = Db.UserId1,
                     GroupMeetingFlag = false,
                     AttendCreditId = acr ?? 1,
                     NoAutoAbsents = noautoabsents ?? !Db.Setting("AttendanceAutoAbsents")

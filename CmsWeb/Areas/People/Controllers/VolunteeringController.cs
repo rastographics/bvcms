@@ -60,7 +60,7 @@ namespace CmsWeb.Areas.People.Controllers
 
             var f = new VolunteerForm
             {
-                UploaderId = Util.UserId1,
+                UploaderId = CurrentDatabase.UserId1,
                 PeopleId = vol.Volunteer.PeopleId,
                 Name = name.Truncate(100),
                 AppDate = Util.Now,

@@ -41,7 +41,7 @@ namespace CmsWeb
         {
             base.OnActionExecuting(filterContext);
             Util.Helpfile = $"_{filterContext.ActionDescriptor.ControllerDescriptor.ControllerName}_{filterContext.ActionDescriptor.ActionName}";
-            CurrentDatabase.UpdateLastActivity(Util.UserId);
+            CurrentDatabase.UpdateLastActivity(CurrentDatabase.UserId);
             if (AccountController.TryImpersonate(CurrentDatabase, CurrentImageDatabase) || filterContext.ActionParameters.Values.Equals("/Pushpay/true"))
             {
                 var returnUrl = Request.QueryString["returnUrl"];
@@ -164,11 +164,11 @@ namespace CmsWeb
 
             base.OnActionExecuting(filterContext);
             Util.Helpfile = $"_{filterContext.ActionDescriptor.ControllerDescriptor.ControllerName}_{filterContext.ActionDescriptor.ActionName}";
-            if (Util.UserId == 0 && User.Identity.IsAuthenticated)
+            if (CurrentDatabase.UserId == 0 && User.Identity.IsAuthenticated)
             {
                 AccountModel.SetUserInfo(CurrentDatabase, CurrentImageDatabase, User.Identity.Name);
             }
-            CurrentDatabase.UpdateLastActivity(Util.UserId);
+            CurrentDatabase.UpdateLastActivity(CurrentDatabase.UserId);
             HttpContext.Response.Headers.Add("X-Robots-Tag", "noindex");
             HttpContext.Response.Headers.Add("X-Robots-Tag", "unavailable after: 1 Jan 2017 01:00:00 CST");
         }
@@ -261,7 +261,7 @@ namespace CmsWeb
             }
             base.OnActionExecuting(filterContext);
             Util.Helpfile = $"_{filterContext.ActionDescriptor.ControllerDescriptor.ControllerName}_{filterContext.ActionDescriptor.ActionName}";
-            CurrentDatabase.UpdateLastActivity(Util.UserId);
+            CurrentDatabase.UpdateLastActivity(CurrentDatabase.UserId);
         }
         public ViewResult Message(string text)
         {

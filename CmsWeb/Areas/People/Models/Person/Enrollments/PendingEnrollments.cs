@@ -97,7 +97,7 @@ namespace CmsWeb.Areas.People.Models
         public IQueryable<InvolvementCurrent> DefineModelList(bool useOrgFilter)
         {
             var roles = DbUtil.Db.CurrentRoles();
-            return from om in DbUtil.Db.InvolvementCurrent(PeopleId, Util.UserId)
+            return from om in DbUtil.Db.InvolvementCurrent(PeopleId, CurrentDatabase.UserId)
                    where om.Pending.Value
                    where om.LimitToRole == null || roles.Contains(om.LimitToRole)
                    where (!useOrgFilter || !OrgTypesFilter.Any() || OrgTypesFilter.Contains(om.OrgType))

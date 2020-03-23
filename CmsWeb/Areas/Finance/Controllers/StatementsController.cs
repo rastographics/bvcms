@@ -27,7 +27,7 @@ namespace CmsWeb.Areas.Finance.Controllers
         [Route("~/Statements")]
         public ActionResult Index()
         {
-            var userId = Util.UserId;
+            var userId = CurrentDatabase.UserId;
             var r = CurrentDatabase.ContributionsRuns.OrderByDescending(mm => mm.Id).FirstOrDefault();
             if (r != null && r.Running == 1 && r.UserId == userId && DateTime.Now.Subtract(r.Started ?? DateTime.MinValue).TotalMinutes < 1)
             {
@@ -70,7 +70,7 @@ namespace CmsWeb.Areas.Finance.Controllers
                 Count = contributors.Count,
                 Processed = 0,
                 UUId = Guid.NewGuid(),
-                UserId = Util.UserId,
+                UserId = CurrentDatabase.UserId,
             };
             CurrentDatabase.ContributionsRuns.InsertOnSubmit(statementsRun);
             CurrentDatabase.SubmitChanges();

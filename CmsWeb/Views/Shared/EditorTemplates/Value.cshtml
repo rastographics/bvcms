@@ -1,5 +1,5 @@
 ﻿@model CmsWeb.Models.ExtraValues.Value
-@if (Model.UserCanView(ViewBag.CurrentDatabase))
+@if (Model.UserCanView(ViewExtensions2.CurrentDatabase))
 {
   <tr>
     @if (Model.Type == "Header")

@@ -29,7 +29,7 @@ namespace CmsWeb.Areas.Dialog.Controllers
         {
             var org = CurrentDatabase.LoadOrganizationById(id);
             m.org.CreatedDate = Util.Now;
-            m.org.CreatedBy = Util.UserId1;
+            m.org.CreatedBy = CurrentDatabase.UserId1;
             m.org.EntryPointId = org.EntryPointId;
             m.org.OrganizationTypeId = org.OrganizationTypeId;
             if (m.org.CampusId == 0)

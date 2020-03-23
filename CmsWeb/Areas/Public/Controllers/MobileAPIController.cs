@@ -351,14 +351,14 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
         private MobileSettings getUserInfo()
         {
             var roles = from r in CurrentDatabase.UserRoles
-                        where r.UserId == Util.UserId
+                        where r.UserId == CurrentDatabase.UserId
                         orderby r.Role.RoleName
                         select r.Role.RoleName;
 
             MobileSettings ms = new MobileSettings
             {
                 peopleID = Util.UserPeopleId ?? 0,
-                userID = Util.UserId,
+                userID = CurrentDatabase.UserId,
                 userName = Util.UserFullName,
                 roles = roles.ToList()
             };
@@ -1645,7 +1645,7 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
             var p = new Person
             {
                 CreatedDate = Util.Now,
-                CreatedBy = Util.UserId,
+                CreatedBy = CurrentDatabase.UserId,
 
                 MemberStatusId = MemberStatusCode.JustAdded,
                 AddressTypeId = 10,
