@@ -171,7 +171,36 @@ namespace CmsWeb.Models
                             FamilyName = famname,
                             p.EmailAddress
                         };
-                return q.ToDataTable();
+                return pledges ? q.ToDataTable() : (from r in q
+                                                    select new
+                                                    {
+                                                        r.FamilyId,
+                                                        r.Date,
+                                                        r.GiverId,
+                                                        r.CreditGiverId,
+                                                        r.HeadName,
+                                                        r.SpouseName,
+                                                        r.MainFellowship,
+                                                        r.MemberStatus,
+                                                        r.JoinDate,
+                                                        r.Amount,
+                                                        r.CheckNo,
+                                                        r.ContributionDesc,
+                                                        r.FundId,
+                                                        r.FundName,
+                                                        r.BundleHeaderId,
+                                                        r.BundleType,
+                                                        r.BundleStatus,
+                                                        r.Addr,
+                                                        r.Addr2,
+                                                        r.City,
+                                                        r.ST,
+                                                        r.Zip,
+                                                        r.FirstName,
+                                                        r.LastName,
+                                                        r.FamilyName,
+                                                        r.EmailAddress
+                                                    }).ToDataTable();
             }
             else
             {
@@ -203,7 +232,30 @@ namespace CmsWeb.Models
                             p.FullAddress,
                             p.EmailAddress
                         };
-                return q.ToDataTable();
+
+                return pledges ? q.ToDataTable() : (from r in q
+                                                    select new
+                                                    {
+                                                        r.FamilyId,
+                                                        r.Date,
+                                                        r.GiverId,
+                                                        r.CreditGiverId,
+                                                        r.HeadName,
+                                                        r.SpouseName,
+                                                        r.MainFellowship,
+                                                        r.MemberStatus,
+                                                        r.JoinDate,
+                                                        r.Amount,
+                                                        r.CheckNo,
+                                                        r.ContributionDesc,
+                                                        r.FundId,
+                                                        r.FundName,
+                                                        r.BundleHeaderId,
+                                                        r.BundleType,
+                                                        r.BundleStatus,
+                                                        r.FullAddress,
+                                                        r.EmailAddress
+                                                    }).ToDataTable();
             }
         }
 
@@ -308,7 +360,21 @@ namespace CmsWeb.Models
                          rr.Key.MemberStatus,
                          rr.Key.JoinDate
                      };
-            return q2.ToDataTable();
+            return pledges ? q2.ToDataTable() : (from r in q2
+                                                 select new
+                                                 {
+                                                     r.GiverId,
+                                                     r.Count,
+                                                     r.Amount,
+                                                     r.Pledged,
+                                                     r.Name,
+                                                     r.SpouseName,
+                                                     r.FundName,
+                                                     r.FundId,
+                                                     r.MainFellowship,
+                                                     r.MemberStatus,
+                                                     r.JoinDate
+                                                 }).ToDataTable();
         }
 
         public static EpplusResult FetchExcelListFamilyMembers(Guid qid)
