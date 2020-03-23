@@ -375,7 +375,7 @@ namespace CmsWeb.Areas.Public.Controllers
             f.UpdateValue(fsb, "StateCode", person.state);
             f.UpdateValue(fsb, "ZipCode", person.zipCode);
             f.UpdateValue(fsb, "CountryName", person.country);
-            f.LogChanges(NewContext, fsb, p.PeopleId, Util.UserPeopleId ?? 0);
+            f.LogChanges(NewContext, fsb, p.PeopleId, CurrentDatabase.UserPeopleId ?? 0);
             person.fillFamily(f);
             NewContext.SubmitChanges();
 

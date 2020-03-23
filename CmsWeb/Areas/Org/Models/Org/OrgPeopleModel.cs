@@ -75,7 +75,7 @@ namespace CmsWeb.Areas.Org.Models
 
         private Tag orgTag;
         public Tag OrgTag => orgTag ??
-                             (orgTag = Db.FetchOrCreateTag(QueryId.ToString(), Util.UserPeopleId, DbUtil.TagTypeId_OrgMembers));
+                             (orgTag = Db.FetchOrCreateTag(QueryId.ToString(), CurrentDatabase.UserPeopleId, DbUtil.TagTypeId_OrgMembers));
 
         private List<int> currentList;
 

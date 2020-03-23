@@ -1,0 +1,120 @@
+﻿using CmsData;
+using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using UtilityExtensions;
+using UtilityExtensions.Session;
+
+namespace CMSShared.Session
+{
+    public class CmsSessionProvider : ISessionProvider
+    {
+        private CMSDataContext db { get; set; }
+        private Dictionary<string, string> LocalCache { get; set; }
+        public string CurrentSessionId { get; set; } = HttpContextFactory.Current?.Session?.SessionID;
+        public IEnumerable<string> Keys => LocalCache.Keys;
+
+        public CmsSessionProvider()
+        {
+            db = CMSDataContext.Create(HttpContextFactory.Current);
+            InitCache();
+        }
+
+        public CmsSessionProvider(CMSDataContext context)
+        {
+            db = context;
+            InitCache();
+        }
+
+        private void InitCache()
+        {
+            LocalCache = db.SessionValues.Where(v => v.SessionId == CurrentSessionId).ToDictionary(v => v.Name, v => v.Value);
+        }
+
+        public void Add<T>(string name, T value) where T : class
+        {
+            FetchOrCreateSessionValue(name, CreateString(value));
+        }
+
+        public void Clear()
+        {
+            db.SessionValues.DeleteAllOnSubmit(db.SessionValues.Where(v => v.SessionId == CurrentSessionId));
+            db.SubmitChanges();
+            LocalCache.Clear();
+        }
+
+        public void Delete(string name)
+        {
+            FetchOrCreateSessionValue(name, null);
+        }
+
+        public T Get<T>(string name) where T : class => Get<T>(name, null);
+        public T Get<T>(string name, T defaultValue) where T : class
+        {
+            var value = defaultValue;
+            if (CurrentSessionId != null)
+            {
+                var sv = FetchSessionValue(name);
+                if (sv != null)
+                {
+                    value = JsonConvert.DeserializeObject<T>(sv.Value);
+                }
+            }
+            return value ?? defaultValue;
+        }
+
+        private string CreateString<T>(T value) where T : class
+        {
+            string strValue = null;
+            if (value != null)
+            {
+                strValue = JsonConvert.SerializeObject(value);
+            }
+            return strValue;
+        }
+
+        private SessionValue FetchSessionValue(string key)
+        {
+            if (LocalCache.ContainsKey(key))
+            {
+                return new SessionValue { Name = key, Value = LocalCache[key] };
+            }
+            var sv = db.SessionValues.FirstOrDefault(v => v.SessionId == CurrentSessionId && v.Name == key);
+            if (sv != null)
+            {
+                LocalCache[key] = sv.Value;
+            }
+            return sv;
+        }
+
+        private SessionValue FetchOrCreateSessionValue(string key, string value)
+        {
+            var sv = FetchSessionValue(key);
+            if (sv == null && value != null && CurrentSessionId != null)
+            {
+                sv = new SessionValue
+                {
+                    Name = key,
+                    SessionId = CurrentSessionId,
+                    CreatedDate = DateTime.UtcNow
+                };
+                db.SessionValues.InsertOnSubmit(sv);
+            }
+            if (sv != null)
+            {
+                if (value == null)
+                {
+                    db.SessionValues.DeleteOnSubmit(sv);
+                }
+                else
+                {
+                    LocalCache[key] = value;
+                    sv.Value = value;
+                }
+                db.SubmitChanges();
+            }
+            return sv;
+        }
+    }
+}

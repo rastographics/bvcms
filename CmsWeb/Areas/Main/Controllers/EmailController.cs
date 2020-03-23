@@ -89,7 +89,7 @@ namespace CmsWeb.Areas.Main.Controllers
             {
                 if (templateID != 0 || (!personid.HasValue && !orgid.HasValue))
                 {
-                    return Redirect($"/Person2/{Util.UserPeopleId}");
+                    return Redirect($"/Person2/{CurrentDatabase.UserPeopleId}");
                 }
             }
 
@@ -347,7 +347,6 @@ namespace CmsWeb.Areas.Main.Controllers
 
             if (Util.SessionTimedOut())
             {
-                Session["massemailer"] = m;
                 return Content("timeout");
             }
 
@@ -514,7 +513,6 @@ namespace CmsWeb.Areas.Main.Controllers
 
             if (Util.SessionTimedOut())
             {
-                Session["massemailer"] = m;
                 return Content("timeout");
             }
 
@@ -525,7 +523,7 @@ namespace CmsWeb.Areas.Main.Controllers
 
             m.FromName = m.EmailFroms().First(ef => ef.Value == m.FromAddress).Text;
             var from = Util.FirstAddress(m.FromAddress, m.FromName);
-            var p = CurrentDatabase.LoadPersonById(Util.UserPeopleId ?? 0);
+            var p = CurrentDatabase.LoadPersonById(CurrentDatabase.UserPeopleId ?? 0);
 
             try
             {
@@ -648,7 +646,7 @@ namespace CmsWeb.Areas.Main.Controllers
         private void ValidateEmailReplacementCodes(CMSDataContext db, string emailText, MailAddress fromAddress)
         {
             var er = new EmailReplacements(db, emailText, fromAddress);
-            er.DoReplacements(db, db.LoadPersonById(Util.UserPeopleId ?? 0));
+            er.DoReplacements(db, db.LoadPersonById(CurrentDatabase.UserPeopleId ?? 0));
         }
     }
 }

@@ -64,7 +64,7 @@ namespace CmsWeb.Models
         public SelectList Tags()
         {
             var cv = new CodeValueModel();
-            var tg = cv.UserTags(Util.UserPeopleId);
+            var tg = cv.UserTags(DbUtil.Db.UserPeopleId);
             tg = tg.Select(tt => new CodeValueItem { Value = $"tag: {tt.Id}:{tt.Value}" }).ToList();
             var q = from e in DbUtil.Db.PeopleExtras
                     where e.StrValue != null
@@ -129,6 +129,7 @@ namespace CmsWeb.Models
         public void Run(ModelStateDictionary model)
         {
             modelState = model;
+            var db = DbUtil.Db;
             var q = People();
             if (q == null)
             {
@@ -150,7 +151,7 @@ namespace CmsWeb.Models
                 foreach (var f in q.Select(p => p.Family))
                 {
                     f.BadAddressFlag = NewValue.ToBool();
-                    DbUtil.Db.SubmitChanges();
+                    db.SubmitChanges();
                 }
                 return;
             }
@@ -174,7 +175,7 @@ namespace CmsWeb.Models
                         break;
                     case "Baptism Date":
                         p.UpdateValue("BaptismDate", NewValue.ToDate());
-                        p.LogChanges(DbUtil.Db, Util.UserPeopleId ?? 1);
+                        p.LogChanges(db, db.UserPeopleId ?? 1);
                         break;
                     case "Campus":
                         TrackChange(Field, p.CampusId, NewValue);
@@ -201,7 +202,7 @@ namespace CmsWeb.Models
                         p.DoNotMailFlag = NewValue.ToBool();
                         break;
                     case "Drop All Enrollments":
-                        p.DropMemberships(DbUtil.Db);
+                        p.DropMemberships(db);
                         break;
                     case "Drop Date":
                         TrackChange(Field, p.DropDate, NewValue);
@@ -268,7 +269,7 @@ namespace CmsWeb.Models
                             p.UpdateValue(psb, "StateCode", null);
                             p.UpdateValue(psb, "ZipCode", null);
                             p.UpdateValue(psb, "ResCodeId", null);
-                            p.LogChanges(DbUtil.Db, psb);
+                            p.LogChanges(db, psb);
                         }
                         else
                         {
@@ -280,7 +281,7 @@ namespace CmsWeb.Models
                             f.UpdateValue(fsb, "StateCode", null);
                             f.UpdateValue(fsb, "ZipCode", null);
                             f.UpdateValue(fsb, "ResCodeId", null);
-                            f.LogChanges(DbUtil.Db, fsb, p.PeopleId);
+                            f.LogChanges(db, fsb, p.PeopleId);
                         }
                         break;
                     case "School":
@@ -304,7 +305,7 @@ namespace CmsWeb.Models
                         p.NewMemberClassDate = NewValue.ToDate();
                         break;
                     case "New OrgLeadersOnly":
-                        DbUtil.Db.FetchOrCreateTag("NewOrgLeadersOnly", p.PeopleId, DbUtil.TagTypeId_System);
+                        db.FetchOrCreateTag("NewOrgLeadersOnly", p.PeopleId, DbUtil.TagTypeId_System);
                         break;
                 }
                 if (!model.IsValid)
@@ -316,16 +317,16 @@ namespace CmsWeb.Models
                 {
                     var c = new ChangeLog
                     {
-                        UserPeopleId = Util.UserPeopleId.GetValueOrDefault(),
+                        UserPeopleId = db.UserPeopleId.GetValueOrDefault(),
                         PeopleId = p.PeopleId,
                         Field = Field,
                         Created = Util.Now
                     };
-                    DbUtil.Db.ChangeLogs.InsertOnSubmit(c);
+                    db.ChangeLogs.InsertOnSubmit(c);
                     c.ChangeDetails.AddRange(psb);
                 }
 
-                DbUtil.Db.SubmitChanges();
+                db.SubmitChanges();
                 psb = new List<ChangeDetail>();
             }
         }

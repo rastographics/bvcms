@@ -150,7 +150,7 @@ namespace CmsData
                 return;
             foreach (var org in q)
                 org.PurgeOrg(db);
-            HttpContextFactory.Current.Session.Remove("ActiveOrganization");
+            Util.ActiveOrganization = null;
             db.LogActivity($"Python DeleteOrg {name}, {program}, {division}");
         }
 

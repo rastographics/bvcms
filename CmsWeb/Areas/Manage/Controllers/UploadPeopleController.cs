@@ -34,7 +34,7 @@ namespace CmsWeb.Areas.Manage.Controllers
         {
             var host = CurrentDatabase.Host;
             var userId = CurrentDatabase.UserId;
-            var pid = Util.UserPeopleId;
+            var pid = CurrentDatabase.UserPeopleId;
 
             var package = new ExcelPackage(file.InputStream);
 

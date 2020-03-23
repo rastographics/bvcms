@@ -1,5 +1,4 @@
-﻿@using CmsData
-@using CmsWeb.Areas.Dialog.Models
+﻿@using CmsWeb.Areas.Dialog.Models
 @using UtilityExtensions
 @model CmsWeb.Areas.People.Models.RegistrationsModel
 @{
@@ -97,7 +96,7 @@
                         {
                             <a href="/OnlineReg/@g.Id/Giving/@Model.PeopleId" class="btn btn-default btn-sm">Funding Page</a>
                         }
-                        @if (Util.UserPeopleId == Model.PeopleId || User.IsInRole("Admin"))
+                        @if (ViewExtensions2.CurrentDatabase.UserPeopleId == Model.PeopleId || User.IsInRole("Admin"))
                         {
                             <a href="/MissionTripEmail2/@g.Id/@Model.PeopleId" class="btn btn-default btn-sm"><i class="fa fa-envelope-o"></i> Email Supporters</a>
                         }

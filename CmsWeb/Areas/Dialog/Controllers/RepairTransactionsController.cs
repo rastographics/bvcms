@@ -2,6 +2,7 @@
 using CmsWeb.Areas.Dialog.Models;
 using CmsWeb.Lifecycle;
 using System.Web.Mvc;
+using UtilityExtensions;
 
 namespace CmsWeb.Areas.Dialog.Controllers
 {
@@ -26,7 +27,7 @@ namespace CmsWeb.Areas.Dialog.Controllers
 
             if (!model.Started.HasValue)
             {
-                DbUtil.LogActivity($"Repair Transactions for {Session["ActiveOrganization"]}");
+                DbUtil.LogActivity($"Repair Transactions for {Util.ActiveOrganization}");
                 model.Process(CurrentDatabase);
             }
             return View(model);

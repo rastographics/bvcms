@@ -159,11 +159,7 @@ namespace CmsWeb.Areas.People.Models
 		}
 		public IEnumerable<string> VolOpportunities()
 		{
-			return CodeValueModel.VolunteerOpportunities();
-			//      var q = (from c in DbUtil.Db.VolInterestInterestCodes
-			//where c.PeopleId == vol.PeopleId
-			//               group c by c.VolInterestCode.Org into g
-			//               select g.Key);
+			return new CodeValueModel().VolunteerOpportunities();
 		}
 
 	    public SelectList Statuses()

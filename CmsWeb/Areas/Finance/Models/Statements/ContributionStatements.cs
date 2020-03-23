@@ -122,11 +122,11 @@ namespace CmsWeb.Areas.Finance.Models.Report
                     {
                         fromDate = FromDate,
                         toDate = toDate,
-                        header = header,
-                        notice = notice,
+                        header = "",
+                        notice = "",
                         now = DateTime.Now,
                         body = "",
-                        footer = footer,
+                        footer = "",
                         contributor = contributor,
                         envelopeNumber = Convert.ToString(Person.GetExtraValue(db, contributor.PeopleId, "EnvelopeNumber")?.IntValue),
                         contributions = new ListOfNormalContributions(contributions),
@@ -137,7 +137,10 @@ namespace CmsWeb.Areas.Finance.Models.Report
                         nontaxSummary = nontaxSummary,
                         totalGiven = taxSummary.Total + nontaxSummary.Total
                     };
+                    data.header = db.RenderTemplate(header, data);
+                    data.notice = db.RenderTemplate(notice, data);
                     data.body = db.RenderTemplate(bodyHtml, data);
+                    data.footer = db.RenderTemplate(footer, data);
                     var htmlDocument = db.RenderTemplate(html, data);
                     document.Objects.Add(new ObjectSettings {
                         CountPages = true,

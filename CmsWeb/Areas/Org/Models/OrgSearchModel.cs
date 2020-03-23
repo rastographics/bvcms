@@ -199,7 +199,7 @@ namespace CmsWeb.Areas.Search.Models
             var q = FetchOrgs();
             if (Util2.OrgLeadersOnly)
             {
-                var oids = CurrentDatabase.GetLeaderOrgIds(Util.UserPeopleId);
+                var oids = CurrentDatabase.GetLeaderOrgIds(CurrentDatabase.UserPeopleId);
                 q = q.Where(oo => oids.Contains(oo.OrganizationId));
             }
             return CurrentDatabase.CurrOrgMembers(string.Join(",", q.OrderBy(mm => mm.OrganizationName).Select(mm => mm.OrganizationId)))

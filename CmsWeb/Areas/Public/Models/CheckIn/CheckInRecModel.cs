@@ -46,19 +46,14 @@ namespace CmsWeb.Models
             }
             else
             {
-                var guid = (Guid?)(HttpContextFactory.Current.Session["checkinguid"]);
+                Guid? guid = null;
+                if (Guid.TryParse(Util.GetFromSession<string>("checkinguid"), out Guid g))
+                {
+                    guid = g;
+                }
                 if (!guid.HasValue)
                 {
-                    //var tt = new TemporaryToken
-                    //{
-                    //    Id = Guid.NewGuid(),
-                    //    CreatedBy = CurrentDatabase.UserId1,
-                    //    CreatedOn = Util.Now,
-                    //};
-                    //DbUtil.Db.TemporaryTokens.InsertOnSubmit(tt);
-                    //DbUtil.Db.SubmitChanges();
-                    //guid = tt.Id;
-                    HttpContextFactory.Current.Session["checkinguid"] = guid;
+                    Util.SetValueInSession("checkinguid", guid);
                 }
                 this.guid = guid.ToString();
             }

@@ -37,10 +37,10 @@ namespace CmsData
                 WhoId = newpersonid,
                 StatusId = TaskStatusCode.Active,
             };
-            if (Util.UserPeopleId.HasValue && Util.UserPeopleId.Value != newPeopleManagerId)
+            if (Db.UserPeopleId.HasValue && Db.UserPeopleId.Value != newPeopleManagerId)
             {
-                task.CoOwnerId = Util.UserPeopleId.Value;
-                task.CoListId = GetRequiredTaskList(Db, "InBox", Util.UserPeopleId.Value).Id;
+                task.CoOwnerId = Db.UserPeopleId.Value;
+                task.CoListId = GetRequiredTaskList(Db, "InBox", Db.UserPeopleId.Value).Id;
             }
             Db.Tasks.InsertOnSubmit(task);
             Db.SubmitChanges();
@@ -50,8 +50,8 @@ namespace CmsData
             var p = Db.LoadPersonById(pid);
             var t = new Task
             {
-                ListId = GetRequiredTaskList(Db, "InBox", Util.UserPeopleId.Value).Id,
-                OwnerId = Util.UserPeopleId.Value,
+                ListId = GetRequiredTaskList(Db, "InBox", Db.UserPeopleId.Value).Id,
+                OwnerId = Db.UserPeopleId.Value,
                 Description = "Please Contact",
                 ForceCompleteWContact = true,
                 StatusId = TaskStatusCode.Active,
@@ -70,8 +70,8 @@ namespace CmsData
             {
                 var t = new Task
                 {
-                    ListId = GetRequiredTaskList(Db, "InBox", Util.UserPeopleId.Value).Id,
-                    OwnerId = Util.UserPeopleId.Value,
+                    ListId = GetRequiredTaskList(Db, "InBox", Db.UserPeopleId.Value).Id,
+                    OwnerId = Db.UserPeopleId.Value,
                     Description = "Please Contact",
                     ForceCompleteWContact = true,
                     StatusId = TaskStatusCode.Active,

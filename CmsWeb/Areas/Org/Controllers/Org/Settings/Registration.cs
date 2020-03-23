@@ -64,7 +64,7 @@ namespace CmsWeb.Areas.Org.Controllers
             Response.NoCache();
             CurrentDatabase.SetCurrentOrgId(id);
             var o = CurrentDatabase.LoadOrganizationById(id);
-            Session["orgPickList"] = (o.OrgPickList ?? "").Split(',').Select(oo => oo.ToInt()).ToList();
+            Util.OrgPickList = (o.OrgPickList ?? "").Split(',').Select(oo => oo.ToInt()).ToList();
             return Redirect("/SearchOrgs/" + id);
         }
 
