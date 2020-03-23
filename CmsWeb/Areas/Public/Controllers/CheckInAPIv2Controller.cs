@@ -100,7 +100,7 @@ namespace CmsWeb.Areas.Public.Controllers
 																}).ToList();
 
 			Information information = new Information {
-				userID = Util.UserId,
+				userID = CurrentDatabase.UserId,
 				userName = Util.UserFullName,
 				settings = settings,
 				states = states,
@@ -280,7 +280,7 @@ namespace CmsWeb.Areas.Public.Controllers
 			// Create Person
 			CmsData.Person p = new CmsData.Person {
 				CreatedDate = Util.Now,
-				CreatedBy = Util.UserId,
+				CreatedBy = CurrentDatabase.UserId,
 				MemberStatusId = MemberStatusCode.JustAdded,
 				AddressTypeId = 10,
 				OriginId = OriginCode.Visit,

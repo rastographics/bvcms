@@ -12,21 +12,22 @@ namespace CmsData
     {
         public static int AddContact(Guid qid, int? MakerId = null)
         {
-            var q = DbUtil.Db.PeopleQuery(qid);
+            var db = DbUtil.Db;
+            var q = db.PeopleQuery(qid);
             if (!q.Any())
                 return 0;
             var c = new Contact 
 			{ 
 				ContactDate = DateTime.Now.Date, 
-				CreatedBy = Util.UserId1,
+				CreatedBy = db.UserId1,
 	            CreatedDate = DateTime.Now,
 			};
             foreach (var p in q)
                 c.contactees.Add(new Contactee { PeopleId = p.PeopleId });
             if (MakerId.HasValue)
                 c.contactsMakers.Add(new Contactor {PeopleId = MakerId.Value});
-            DbUtil.Db.Contacts.InsertOnSubmit(c);
-            DbUtil.Db.SubmitChanges();
+            db.Contacts.InsertOnSubmit(c);
+            db.SubmitChanges();
             return c.ContactId;
         }
         public static Contact AddFamilyContact(CMSDataContext db, int familyId, int? makerId = null)
@@ -34,7 +35,7 @@ namespace CmsData
             var c = new Contact 
 			{ 
 				ContactDate = DateTime.Now.Date, 
-				CreatedBy = Util.UserId1,
+				CreatedBy = db.UserId1,
 	            CreatedDate = DateTime.Now,
 			};
             var primaryorchild = new[] {PositionInFamily.PrimaryAdult, PositionInFamily.Child};
@@ -56,7 +57,7 @@ namespace CmsData
             var c = new Contact 
 			{ 
 				ContactDate = date ?? DateTime.Parse("1/1/1900"), 
-				CreatedBy = Util.UserPeopleId ?? Util.UserId1,
+				CreatedBy = Util.UserPeopleId ?? Db.UserId1,
 	            CreatedDate = DateTime.Now,
 				Comments = comments
 			};

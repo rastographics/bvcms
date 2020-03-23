@@ -26,13 +26,13 @@ namespace SharedTestFixtures
             db.SubmitChanges();
         }
 
-        protected static Contribution CreateContributionRecord(Contribution c)
+        protected static Contribution CreateContributionRecord(CMSDataContext db, Contribution c)
         {
             var now = Util.Now;
             var r = new Contribution
             {
                 ContributionStatusId = ContributionStatusCode.Recorded,
-                CreatedBy = Util.UserId1,
+                CreatedBy = db.UserId1,
                 CreatedDate = now,
                 PeopleId = c.PeopleId,
                 ContributionAmount = c.ContributionAmount,
@@ -46,7 +46,7 @@ namespace SharedTestFixtures
         protected void ReturnContribution(CMSDataContext db, int cid)
         {
             var c = db.Contributions.Single(ic => ic.ContributionId == cid);
-            var r = CreateContributionRecord(c);
+            var r = CreateContributionRecord(db, c);
             c.ContributionStatusId = ContributionStatusCode.Returned;
             r.ContributionTypeId = ContributionTypeCode.ReturnedCheck;
             r.ContributionDesc = "Returned Check for Contribution Id = " + c.ContributionId;
@@ -58,7 +58,7 @@ namespace SharedTestFixtures
         protected void ReverseContribution(CMSDataContext db, int cid)
         {
             var c = db.Contributions.Single(ic => ic.ContributionId == cid);
-            var r = CreateContributionRecord(c);
+            var r = CreateContributionRecord(db, c);
             c.ContributionStatusId = ContributionStatusCode.Reversed;
             r.ContributionTypeId = ContributionTypeCode.Reversed;
             r.ContributionDesc = "Reversed Contribution Id = " + c.ContributionId;

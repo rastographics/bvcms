@@ -31,7 +31,7 @@ namespace CmsWeb.Areas.Dialog.Models
             Host = db.Host;
             QueryId = Guid.NewGuid();
             MeetingId = id;
-            UserId = Util.UserId;
+            UserId = db.UserId;
             var i = (from m in db.Meetings
                      where m.MeetingId == id
                      select new

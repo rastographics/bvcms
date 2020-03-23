@@ -234,7 +234,7 @@ namespace CmsWeb.Areas.Main.Controllers
                         : "new draft " + DateTime.Now.FormatDateTm(),
                     TypeID = ContentTypeCode.TypeSavedDraft,
                     RoleID = roleId,
-                    OwnerID = Util.UserId
+                    OwnerID = CurrentDatabase.UserId
                 };
             }
 
@@ -277,7 +277,7 @@ namespace CmsWeb.Areas.Main.Controllers
                     : "new draft " + DateTime.Now.FormatDateTm(),
                 TypeID = content.TypeID,
                 RoleID = content.RoleID,
-                OwnerID = Util.UserId,
+                OwnerID = CurrentDatabase.UserId,
                 Title = content.Title,
                 Body = content.Body,
                 Archived = null,

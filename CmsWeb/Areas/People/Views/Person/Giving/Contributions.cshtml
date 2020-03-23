@@ -2,7 +2,7 @@
 @using CmsData
 @using UtilityExtensions
 @{
-    var DB = DbUtil.Db;
+    var DB = ViewExtensions2.CurrentDatabase;
     var hasOnlineGiving = Util.UserPeopleId == Util2.CurrentPeopleId && DB.Setting("OnlineGiving", true);
     var vaultDisabled = DB.Setting("VaultDisabled");
     var hasRecurringGiving = hasOnlineGiving && MultipleGatewayUtils.GatewayId(DB, PaymentProcessTypes.RecurringGiving).HasValue;

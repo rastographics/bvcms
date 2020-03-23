@@ -89,8 +89,6 @@ namespace UtilityExtensions
             set => SetValueInSession(STR_UserFirstName, value);
         }
 
-        public static int UserId1 => UserId == 0 ? 1 : UserId;
-
         private const string STR_UserPeopleId = "UserPeopleId";
         public static int? UserPeopleId
         {

@@ -135,9 +135,10 @@ foreach ($data in $SQLDataset.tables[0]) {
                     try {
                         Invoke-SqlCommand $connection $_ -ErrorAction Stop
                     } catch { 
+                        Write-Log "Error in $id"
+                        Write-Log $_
                         Write-Error "Error in $id"
                         Write-Error $_
-                        Write-Log "$cmsdbname" "$id" "$_" 
                         break
                     }
                 }

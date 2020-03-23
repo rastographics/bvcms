@@ -54,12 +54,15 @@
         </div>
         @if (Model.IsPushpay)
         {
-            <div class="row">
-                <div class="col-sm-4 col-md-4">
-                    @Html.EditorFor(m => m.PushpayFundName)
-                    @Html.HiddenFor(m => m.IsPushpay)
-                </div>
+        <div class="row">
+            <div class="col-sm-4 col-md-4">
+                @Html.EditorFor(m => m.PushpayFundName)
+                @Html.HiddenFor(m => m.IsPushpay)
             </div>
+            <div class="col-sm-4 col-md-4">
+                @Html.EditorFor(m => m.PushpayMerchantName)
+            </div>
+        </div>
         }
     </div>
     <h4>Org Fees</h4>

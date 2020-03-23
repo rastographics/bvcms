@@ -1,4 +1,5 @@
 ﻿using CmsData;
+using CmsData.API;
 using CmsData.Codes;
 using CmsWeb.Models;
 using SharedTestFixtures;
@@ -16,14 +17,14 @@ namespace CmsWeb.Models.Tests
     public class ExportPeopleTests
     {
         [Theory]
-        [InlineData(0, false, true, true, null, null)]
-        [InlineData(0, false, true, false, null, null)]
-        [InlineData(0, false, false, true, null, null)]
-        [InlineData(0, false, false, false, null, null)]
-        [InlineData(0, false, null, true, null, null)]
-        [InlineData(0, false, null, false, null, null)]
+        [InlineData(0, false, true, true, null, null, 1)]
+        [InlineData(0, false, true, false, null, null, 0)]
+        [InlineData(0, false, false, true, null, null, 1)]
+        [InlineData(0, false, false, false, null, null, 0)]
+        [InlineData(0, false, null, true, null, null, 1)]
+        [InlineData(0, false, null, false, null, null, 0)]
         public void DonorDetails_Should_Not_Bring_Reversed_or_Returned_contributions(
-            int campusid, bool pledges, bool? nontaxdeductible, bool includeUnclosed, int? tagid, string fundids)
+            int campusid, bool pledges, bool? nontaxdeductible, bool includeUnclosed, int? tagid, string fundids, int online)
         {
             using (var db = CMSDataContext.Create(Util.Host))
             {
@@ -31,7 +32,7 @@ namespace CmsWeb.Models.Tests
                 var _exportPeople = new ExportPeople(db);
                 DateTime exportStartDt = Util.Now.AddDays(-180);
                 DateTime exportEndDt = Util.Now.AddDays(180);
-                var tableResult = _exportPeople.GetValidContributionDetails(exportStartDt, exportEndDt, campusid, pledges, nontaxdeductible, includeUnclosed, tagid, fundids);
+                var tableResult = _exportPeople.GetValidContributionDetails(exportStartDt, exportEndDt, campusid, pledges, nontaxdeductible, includeUnclosed, tagid, fundids, online);
                 var rc = tableResult.Where(row => ContributionTypeCode.ReturnedReversedTypes.Contains(row.ContributionTypeId));
                 rc.Count().ShouldBe(0);
 
@@ -59,7 +60,7 @@ namespace CmsWeb.Models.Tests
 
                 DateTime exportStartDt = Util.Now.AddDays(-180);
                 DateTime exportEndDt = Util.Now.AddDays(180);
-                DataTable tableResult = _exportPeople.ExcelDonorTotals(exportStartDt, exportEndDt, campusid, pledges, nontaxdeductible, online, includeUnclosed, tagid, fundids, false);
+                DataTable tableResult = _exportPeople.ExcelDonorTotals(exportStartDt, exportEndDt, campusid, pledges, nontaxdeductible, online, includeUnclosed, tagid, fundids);
                 var dbContributionsQry = db.Contributions
                     .Where(x => !ContributionTypeCode.ReturnedReversedTypes.Contains(x.ContributionTypeId) && !ContributionTypeCode.Pledge.Equals(x.ContributionTypeId))
                     .Where(x => ContributionStatusCode.Recorded.Equals(x.ContributionStatusId))
@@ -103,13 +104,13 @@ namespace CmsWeb.Models.Tests
         }
 
         [Theory]
-        [InlineData(0, 0, false, true, true, null, null)]
-        [InlineData(0, 0, false, true, false, null, null)]
-        [InlineData(0, 0, false, false, true, null, null)]
-        [InlineData(0, 0, false, false, false, null, null)]
-        [InlineData(0, 0, false, null, true, null, null)]
-        [InlineData(0, 0, false, null, false, null, null)]
-        public void ExcelDonorFundTotals_Should_Not_Bring_Reversed_or_Returned_contributions(int fundid, int campusid, bool pledges, bool? nontaxdeductible, bool includeUnclosed, int? tagid, string fundids)
+        [InlineData(0, 0, false, true, true, null, null, 1)]
+        [InlineData(0, 0, false, true, false, null, null, 0)]
+        [InlineData(0, 0, false, false, true, null, null, 1)]
+        [InlineData(0, 0, false, false, false, null, null, 1)]
+        [InlineData(0, 0, false, null, true, null, null, 1)]
+        [InlineData(0, 0, false, null, false, null, null, 1)]
+        public void ExcelDonorFundTotals_Should_Not_Bring_Reversed_or_Returned_contributions(int fundid, int? campusid, bool pledges, bool? nontaxdeductible, bool includeUnclosed, int? tagid, string fundids, int online)
         {
             using (var db = CMSDataContext.Create(Util.Host))
             {
@@ -118,30 +119,115 @@ namespace CmsWeb.Models.Tests
                 DateTime exportStartDt = Util.Now.AddDays(-180);
                 DateTime exportEndDt = Util.Now.AddDays(180);
 
-                DataTable tableResult = _exportPeople.ExcelDonorFundTotals(exportStartDt, exportEndDt, fundid, campusid, pledges, nontaxdeductible, includeUnclosed, tagid, fundids);
-                var dbContributionsQry = db.Contributions
-                    .Where(x => !ContributionTypeCode.ReturnedReversedTypes.Contains(x.ContributionTypeId) && !ContributionTypeCode.Pledge.Equals(x.ContributionTypeId))
-                    .Where(x => ContributionStatusCode.Recorded.Equals(x.ContributionStatusId))
-                    .Where(x => x.ContributionDate >= exportStartDt && x.ContributionDate < exportEndDt)
-                    .Select(x => x);
+                DataTable tableResult = _exportPeople.ExcelDonorFundTotals(exportStartDt, exportEndDt, fundid, (int)campusid, pledges, nontaxdeductible, includeUnclosed, tagid, fundids, online);
 
-                dbContributionsQry = nontaxdeductible.HasValue
-                    ? (nontaxdeductible is true)
-                        ? dbContributionsQry = dbContributionsQry.Where(x => ContributionTypeCode.NonTaxDed.Equals(x.ContributionTypeId)).Select(x => x)
-                        : dbContributionsQry = dbContributionsQry.Where(x => !ContributionTypeCode.NonTaxDed.Equals(x.ContributionTypeId)).Select(x => x)
-                    : dbContributionsQry;
+                var nontax = nontaxdeductible is null ? "Both" : nontaxdeductible == true ? "NonTaxDed" : "";
 
-                if (includeUnclosed is false)
+                IQueryable<Contribution> contributions;
+
+                if (!nontax.HasValue())
                 {
-                    dbContributionsQry = from c in dbContributionsQry
-                                         join bd in db.BundleDetails on c.ContributionId equals bd.ContributionId
-                                         join bh in db.BundleHeaders on bd.BundleHeaderId equals bh.BundleHeaderId
-                                         where bh.BundleStatusId == 0
-                                         select c;
+                    nontax = "TaxDed";
                 }
 
+                contributions = db.Contributions;
+
+                if (!includeUnclosed)
+                {
+                    contributions = from c in contributions
+                                    where c.BundleDetails.Any(dd => dd.BundleHeader.BundleStatusId == BundleStatusCode.Closed)
+                                    select c;
+                }                
+
+                switch (nontax)
+                {
+                    case "TaxDed":
+                        contributions = pledges
+                                        ?
+                                        (from c in contributions
+                                         where !ContributionTypeCode.NonTaxDed.Equals(c.ContributionTypeId)
+                                         select c)
+                                        :
+                                        (from c in contributions
+                                         where !ContributionTypeCode.NonTaxDed.Equals(c.ContributionTypeId)
+                                         where !ContributionTypeCode.Pledge.Equals(c.ContributionTypeId)
+                                         select c);
+                        break;
+                    case "NonTaxDed":
+                        contributions = pledges
+                                        ?
+                                        (from c in contributions
+                                         where ContributionTypeCode.NonTaxDed.Equals(c.ContributionTypeId)
+                                         select c).Concat(from c in contributions where c.ContributionTypeId == ContributionTypeCode.Pledge select c)
+                                        :
+                                        (from c in contributions
+                                         where ContributionTypeCode.NonTaxDed.Equals(c.ContributionTypeId)
+                                         where !ContributionTypeCode.Pledge.Equals(c.ContributionTypeId)
+                                         select c);
+                        break;
+                    case "Both":
+                        contributions = pledges
+                                        ?
+                                        (from c in contributions
+                                         select c)
+                                        :
+                                        (from c in contributions
+                                         where !ContributionTypeCode.Pledge.Equals(c.ContributionTypeId)
+                                         select c);
+                        break;
+                    case "Pledge":
+                        contributions = from c in contributions
+                                        where c.ContributionTypeId == ContributionTypeCode.Pledge
+                                        select c;
+                        break;
+                }
+
+                if (exportStartDt.ToDate().HasValue)
+                {
+                    contributions = from c in contributions
+                                    where c.ContributionDate >= exportStartDt
+                                    select c;
+                }
+
+                if (exportEndDt.ToDate().HasValue)
+                {
+                    contributions = from c in contributions
+                                    where c.ContributionDate < exportEndDt.ToDate().Value.AddDays(1)
+                                    select c;
+                }
+
+                if (online == 1)
+                {
+                    contributions = from c in contributions
+                                    where c.BundleDetails.Any(dd => dd.BundleHeader.BundleHeaderTypeId == BundleTypeCode.Online)
+                                    select c;
+                }
+                else if (online == 0)
+                {
+                    contributions = from c in contributions
+                                    where c.BundleDetails.All(dd => dd.BundleHeader.BundleHeaderTypeId != BundleTypeCode.Online)
+                                    select c;
+                }
+
+                if ((campusid ?? 0) != 0)
+                {
+                    contributions = from c in contributions
+                                    where (c.CampusId ?? c.Person.CampusId) == campusid
+                                    select c;
+                }
+
+                if (fundids.HasValue())
+                {                    
+                    if (fundids  != null)
+                    {
+                        contributions = from c in contributions
+                                        where fundids.Contains(c.FundId.ToString())
+                                        select c;
+                    }
+                }                
+
                 var tableResultTotals = tableResult.AsEnumerable().Sum(row => row.Field<decimal>("Amount"));
-                var totalContributions = dbContributionsQry.Sum(x => x.ContributionAmount) ?? 0;
+                var totalContributions = contributions.Sum(x => x.ContributionAmount) ?? 0; 
                 totalContributions.ToDouble().ShouldBe(tableResultTotals.ToDouble());
 
                 foreach (var b in bundleList)

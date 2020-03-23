@@ -49,7 +49,7 @@ namespace CmsWeb.Areas.Dialog.Models
         public OrgDrop(CMSDataContext db)
         {
             Host = db.Host;
-            UserId = Util.UserId;
+            UserId = CurrentDatabase.UserId;
             CurrentDatabase = db;
         }
         public OrgDrop(CMSDataContext db, Guid id)

@@ -36,7 +36,7 @@ namespace CmsWeb.Areas.People.Controllers
         {
             var task = CurrentDatabase.SetTaskDetails(pk, name, value);
             CurrentDatabase.SubmitChanges();
-            DbUtil.LogActivity($"Edit Task {pk} to {value}", userId: Util.UserId);
+            DbUtil.LogActivity($"Edit Task {pk} to {value}", userId: CurrentDatabase.UserId);
 
             return Json(TaskModel.WithTask(task, CurrentDatabase.Host, CurrentDatabase));
         }

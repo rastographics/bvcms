@@ -452,7 +452,7 @@ namespace CmsWeb.Models
 
             if (i.u != null)
             {
-                Util.UserId = i.u.UserId;
+                cmsdb.UserId = i.u.UserId;
                 Util.UserPeopleId = i.u.PeopleId;
 
                 Util.UserThumbPictureBgPosition = "top";
