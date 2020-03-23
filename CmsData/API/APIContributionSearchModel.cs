@@ -179,7 +179,7 @@ namespace CmsData.API
                                 where c.Source > 0
                                 select c;
             }
-
+                        
             switch (model.TaxNonTax)
             {
                 case "TaxDed":
@@ -187,7 +187,7 @@ namespace CmsData.API
                                     ?
                                     (from c in contributions
                                      where !ContributionTypeCode.NonTaxDed.Equals(c.ContributionTypeId)
-                                     select c).Concat(from c in contributions where c.ContributionTypeId == ContributionTypeCode.Pledge select c)
+                                     select c)
                                     :
                                     (from c in contributions
                                      where !ContributionTypeCode.NonTaxDed.Equals(c.ContributionTypeId)
@@ -199,7 +199,7 @@ namespace CmsData.API
                                     ?
                                     (from c in contributions
                                      where ContributionTypeCode.NonTaxDed.Equals(c.ContributionTypeId)
-                                     select c).Concat(from c in contributions where c.ContributionTypeId == ContributionTypeCode.NonTaxDed select c)
+                                     select c).Concat(from c in contributions where c.ContributionTypeId == ContributionTypeCode.Pledge select c)
                                     :
                                     (from c in contributions
                                      where ContributionTypeCode.NonTaxDed.Equals(c.ContributionTypeId)
@@ -210,7 +210,7 @@ namespace CmsData.API
                     contributions = model.IncludePledges
                                     ? 
                                     (from c in contributions                                     
-                                     select c).Concat(from c in contributions where c.ContributionTypeId != ContributionTypeCode.Pledge select c)
+                                     select c)
                                     :
                                     (from c in contributions
                                      where !ContributionTypeCode.Pledge.Equals(c.ContributionTypeId)
