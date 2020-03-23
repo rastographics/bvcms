@@ -184,6 +184,21 @@ namespace CmsWeb.Models
                                     where t.OriginalId == nameid
                                     select t;
                 }
+                else if (name.All(char.IsDigit))
+                {
+                    if (name.AllDigits())
+                    {
+                        _transactions = from t in _transactions
+                            where t.TransactionId == name || t.OriginalId == nameid || t.Id == nameid
+                            select t;
+                    }
+                    else
+                    {
+                        _transactions = from t in _transactions
+                            where t.Batchref == name || t.TransactionId == name
+                            select t;
+                    }
+                }
                 else
                 {
                     _transactions = from t in _transactions
