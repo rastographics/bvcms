@@ -365,8 +365,7 @@ namespace CmsWeb.Models
                                                  {
                                                      r.GiverId,
                                                      r.Count,
-                                                     r.Amount,
-                                                     r.Pledged,
+                                                     r.Amount,                                                     
                                                      r.Name,
                                                      r.SpouseName,
                                                      r.FundName,
