@@ -94,6 +94,7 @@ RETURN
                 OR p.NickName LIKE ('%' + f.FirstName + '%')
             )
         )
+	OR p.PeopleId = TRY_CONVERT(INT, f.LastName)
     )
 	AND (ISNULL(f.FilterIndividuals, 0) = 0 OR otp.Id IS NOT NULL)
 	AND (ISNULL(f.FilterTag, 0) = 0 OR tp.Id IS NOT NULL)
