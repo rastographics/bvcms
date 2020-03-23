@@ -175,7 +175,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 amtdue = Amtdue - (amount ?? 0);
             }
 
-            // var ss = m.ProcessType;
+            var transactionGateway = OnlineRegModel.GetTransactionGateway(CurrentDatabase, ProcessType)?.GatewayAccountName;
 
             var ti = new Transaction
             {
@@ -192,7 +192,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 Description = Description,
                 OrgId = OrgId,
                 Url = URL,
-                TransactionGateway = OnlineRegModel.GetTransactionGateway(CurrentDatabase, ProcessType)?.GatewayAccountName,
+                TransactionGateway = transactionGateway,
                 Address = Address.Truncate(50),
                 Address2 = Address2.Truncate(50),
                 City = City,
@@ -209,14 +209,16 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 LastFourACH = Type == PaymentType.Ach ? Account.Last(4) : null
             };
 
-            CurrentDatabase.Transactions.InsertOnSubmit(ti);
-            CurrentDatabase.SubmitChanges();
-            if (OriginalId == null) // first transaction
+            var tran = CurrentDatabase.FetchOrCreateTransaction(ti, amount, amtdue, transactionGateway);
+
+            //CurrentDatabase.Transactions.InsertOnSubmit(ti);
+            //CurrentDatabase.SubmitChanges();
+            if (OriginalId == null && tran != null) // first transaction
             {
-                ti.OriginalId = ti.Id;
+                tran.OriginalId = tran.Id;
             }
 
-            return ti;
+            return tran;
         }
 
         public static NameValueCollection RemoveSensitiveInformation(NameValueCollection form)
@@ -475,38 +477,9 @@ namespace CmsWeb.Areas.OnlineReg.Models
         public static Transaction CreateTransaction(CMSDataContext db, Transaction t, decimal? amount)
         {
             var amtdue = t.Amtdue - (amount ?? 0);
-            var ti = new Transaction
-            {
-                Name = t.Name,
-                First = t.First,
-                MiddleInitial = t.MiddleInitial,
-                Last = t.Last,
-                Suffix = t.Suffix,
-                Donate = t.Donate,
-                Amtdue = amtdue,
-                Amt = amount,
-                Emails = Util.FirstAddress(t.Emails).Address,
-                Testing = t.Testing,
-                Description = t.Description,
-                OrgId = t.OrgId,
-                Url = t.Url,
-                Address = t.Address,
-                TransactionGateway = OnlineRegModel.GetTransactionGateway(db)?.GatewayAccountName,
-                City = t.City,
-                State = t.State,
-                Zip = t.Zip,
-                DatumId = t.DatumId,
-                Phone = t.Phone,
-                OriginalId = t.OriginalId ?? t.Id,
-                Financeonly = t.Financeonly,
-                TransactionDate = Util.Now,
-                PaymentType = t.PaymentType,
-                LastFourCC = t.LastFourCC,
-                LastFourACH = t.LastFourACH
-            };
-            db.Transactions.InsertOnSubmit(ti);
-            db.SubmitChanges();
-            return ti;
+            var transactionGateway = OnlineRegModel.GetTransactionGateway(db)?.GatewayAccountName;
+
+            return db.FetchOrCreateTransaction(t, amount, amtdue, transactionGateway);
         }
 
         public object Autocomplete(bool small = false)
@@ -684,10 +657,13 @@ namespace CmsWeb.Areas.OnlineReg.Models
         }
 
         public Transaction ProcessPaymentTransaction(OnlineRegModel m)
-        {
+        {            
             var ti = (m?.Transaction != null)
                 ? CreateTransaction(CurrentDatabase, m.Transaction, AmtToPay)
                 : CreateTransaction();
+
+            if (ti == null)
+                return null;
 
             int? pid = null;
             if (m != null)
@@ -812,6 +788,12 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 }
 
                 var ti = ProcessPaymentTransaction(m);
+
+                if (ti == null)
+                {
+                    modelState.AddModelError("form", "Transaction duplicated");
+                    return RouteModel.ProcessPayment();
+                }
 
                 if (ti.Approved == false)
                 {

@@ -1870,6 +1870,77 @@ This search uses multiple steps which cannot be duplicated in a single query.
             return FetchOrCreateFund(0, Description);
         }
 
+        public Transaction FetchOrCreateTransaction(Transaction t, decimal? amount, decimal? amtdue, string transactionGateway)
+        {
+            var todayNoTime = new DateTime(((DateTime)Util.Now).Year, ((DateTime)Util.Now).Month, ((DateTime)Util.Now).Day);
+
+            var tran = Transactions.FirstOrDefault(x=>
+                x.Name == t.Name && 
+                x.First == t.First &&
+                x.MiddleInitial == t.MiddleInitial &&
+                x.Last == t.Last &&
+                x.Suffix == t.Suffix &&
+                x.Donate == t.Donate &&
+                x.Amtdue == amtdue &&
+                x.Amt == amount &&
+                x.Emails == Util.FirstAddress(t.Emails).Address &&
+                x.Testing == t.Testing &&
+                x.Description == t.Description &&
+                x.OrgId == t.OrgId &&
+                x.Url == t.Url &&
+                x.Address == t.Address &&
+                x.TransactionGateway == transactionGateway &&
+                x.City == t.City &&
+                x.State == t.State &&
+                x.Zip == t.Zip &&
+                x.DatumId == t.DatumId &&
+                x.Phone == t.Phone &&
+                x.OriginalId == (t.OriginalId ?? t.Id) &&
+                x.Financeonly == t.Financeonly &&
+                new DateTime(((DateTime)x.TransactionDate).Year, ((DateTime)x.TransactionDate).Month, ((DateTime)x.TransactionDate).Day) == todayNoTime &&
+                x.PaymentType == t.PaymentType &&
+                x.LastFourCC == t.LastFourCC &&
+                x.LastFourACH == t.LastFourACH
+                );
+
+            if (tran != null)
+                return null;
+
+            var ti = new Transaction
+            {
+                Name = t.Name,
+                First = t.First,
+                MiddleInitial = t.MiddleInitial,
+                Last = t.Last,
+                Suffix = t.Suffix,
+                Donate = t.Donate,
+                Amtdue = amtdue,
+                Amt = amount,
+                Emails = Util.FirstAddress(t.Emails).Address,
+                Testing = t.Testing,
+                Description = t.Description,
+                OrgId = t.OrgId,
+                Url = t.Url,
+                Address = t.Address,
+                TransactionGateway = transactionGateway,
+                City = t.City,
+                State = t.State,
+                Zip = t.Zip,
+                DatumId = t.DatumId,
+                Phone = t.Phone,
+                OriginalId = t.OriginalId ?? t.Id,
+                Financeonly = t.Financeonly,
+                TransactionDate = Util.Now,
+                PaymentType = t.PaymentType,
+                LastFourCC = t.LastFourCC,
+                LastFourACH = t.LastFourACH
+            };
+            Transactions.InsertOnSubmit(ti);
+            SubmitChanges();
+
+            return ti;
+        }
+
         public EntryPoint FetchOrCreateEntryPoint(string type)
         {
             var ep = EntryPoints.SingleOrDefault(pp => pp.Description == type);

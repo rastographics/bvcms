@@ -262,6 +262,16 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             }
 
             var ti = pf.ProcessPaymentTransaction(m);
+
+            if (ti == null)
+            {
+                ModelState.AddModelError("TranId: ", "Transaction duplicated");
+
+                m.List[0].FundItem = fundItem;
+                pf.AmtToPay = amtToPay;
+                return View("OnePageGiving/Index", new OnePageGivingModel() { OnlineRegPersonModel = m.List[0], PaymentForm = pf });
+            }
+
             if ((ti.Approved ?? false) == false)
             {
                 ModelState.AddModelError("TranId", ti.Message);
