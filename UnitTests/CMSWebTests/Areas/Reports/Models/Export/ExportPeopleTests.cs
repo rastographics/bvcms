@@ -130,7 +130,7 @@ namespace CmsWeb.Models.Tests
                     nontax = "TaxDed";
                 }
 
-                contributions = db.Contributions.Join(db.ContributionFunds.ScopedByRoleMembership(db), c => c.FundId, cf => cf.FundId, (c, cf) => c);
+                contributions = db.Contributions;
 
                 if (!includeUnclosed)
                 {
