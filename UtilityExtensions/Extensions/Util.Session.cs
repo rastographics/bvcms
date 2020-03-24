@@ -41,7 +41,7 @@ namespace UtilityExtensions
 
         public static T GetFromSession<T>(string name, T defaultValue = null) where T : class
         {
-            T value = defaultValue;
+            T value;
             var session = GetSessionProvider();
             if (session != null)
             {
