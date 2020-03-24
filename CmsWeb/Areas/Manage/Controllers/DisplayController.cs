@@ -159,7 +159,7 @@ namespace CmsWeb.Areas.Manage.Controllers
                         : "new template",
                     TypeID = ContentTypeCode.TypeUnlayerTemplate,
                     RoleID = roleid,
-                    OwnerID = Util.UserId
+                    OwnerID = CurrentDatabase.UserId
                 };
             }
 

@@ -51,6 +51,7 @@ namespace CmsWeb.Areas.Main.Models
 
         public List<ContentModel.SavedDraft> FetchDrafts()
         {
+            var userId = CurrentDatabase.UserId;
             var currentRoleIds = CurrentDatabase.CurrentRoleIds();
             return drafts ?? (drafts =
                    (from c in CurrentDatabase.Contents
@@ -60,7 +61,7 @@ namespace CmsWeb.Areas.Main.Models
                     let isshared = (from tt in CurrentDatabase.Tags
                                     where tt.Name == "SharedDrafts"
                                     where tt.PersonOwner.Users.Any(uu => uu.UserId == c.OwnerID)
-                                    where tt.PersonTags.Any(vv => vv.PeopleId == db.UserPeopleId)
+                                    where tt.PersonTags.Any(vv => vv.PeopleId == CurrentDatabase.UserPeopleId)
                                     select tt.Id).Any()
                     where c.RoleID == 0 || c.OwnerID == userId || currentRoleIds.Contains(c.RoleID)
                     orderby (c.OwnerID == userId ? 1 : 0) descending, c.Name
