@@ -850,7 +850,7 @@ namespace CmsWeb.Areas.Public.Controllers
                 return response;
             }
 
-            int thisYear = message.argInt;
+            int thisYear = message.version > 8 ? message.argInt : DateTime.Now.Year;
             int lastYear = thisYear - 1;
 
             var q = GetContributionsFor(person);
