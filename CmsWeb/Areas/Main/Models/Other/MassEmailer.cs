@@ -82,6 +82,7 @@ namespace CmsWeb.Areas.Main.Models
         }
 
         public string Host { get; set; }
+        public bool FromEmailTemplates { get; set; }
 
         public MassEmailer()
         {
