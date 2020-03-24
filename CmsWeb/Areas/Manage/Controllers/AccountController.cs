@@ -125,6 +125,7 @@ namespace CmsWeb.Areas.Manage.Controllers
         [Route("~/Abandon")]
         public ActionResult Abandon()
         {
+            RequestManager.SessionProvider.Clear();
             Session.Abandon();
             return Redirect("/");
         }
@@ -439,6 +440,7 @@ namespace CmsWeb.Areas.Manage.Controllers
         {
             CurrentDatabase.DeleteSpecialTags(CurrentDatabase.UserPeopleId);
             FormsAuthentication.SignOut();
+            RequestManager.SessionProvider.Clear();
             Session.Abandon();
             return Redirect("/");
         }

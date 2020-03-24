@@ -274,6 +274,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 pf.Zip = null;
 
             var ret = m.ConfirmTransaction(ti);
+            RequestManager.SessionProvider.Clear();
             switch (ret.Route)
             {
                 case RouteType.ModelAction:

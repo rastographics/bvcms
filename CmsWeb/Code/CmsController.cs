@@ -289,21 +289,6 @@ namespace CmsWeb
     {
         public override void OnActionExecuting(ActionExecutingContext filterContext)
         {
-            if (!Util.IsDebug())
-            {
-                var context = filterContext.HttpContext;
-                if (context.Session != null)
-                {
-                    if (context.Session.IsNewSession)
-                    {
-                        string sessionCookie = context.Request.Headers["Cookie"];
-                        if ((sessionCookie != null) && (sessionCookie.IndexOf("_sess") >= 0))
-                        {
-                            filterContext.Result = new RedirectResult("/Errors/SessionTimeout.htm");
-                        }
-                    }
-                }
-            }
             base.OnActionExecuting(filterContext);
         }
     }

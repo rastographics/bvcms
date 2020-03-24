@@ -335,23 +335,6 @@ namespace UtilityExtensions
             return task.Wait(1000) && task.Result;
         }
 
-        public static bool SessionTimedOut()
-        {
-            if (HttpContextFactory.Current.Session != null)
-            {
-                if (HttpContextFactory.Current.Session.IsNewSession)
-                {
-                    string sessionCookie = HttpContextFactory.Current.Request.Headers["Cookie"];
-                    if ((sessionCookie != null) && (sessionCookie.IndexOf("_sess") >= 0))
-                    {
-                        return true;
-                    }
-                }
-            }
-
-            return false;
-        }
-
         public static string GetIpAddress()
         {
             var context = HttpContextFactory.Current;

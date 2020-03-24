@@ -55,7 +55,7 @@ namespace CMSShared.Session
             var value = defaultValue;
             if (CurrentSessionId != null)
             {
-                var sv = FetchSessionValue(name);
+                var sv = FetchSessionValue(name, out _);
                 if (sv != null)
                 {
                     value = JsonConvert.DeserializeObject<T>(sv.Value);
@@ -74,10 +74,12 @@ namespace CMSShared.Session
             return strValue;
         }
 
-        private SessionValue FetchSessionValue(string key)
+        private SessionValue FetchSessionValue(string key, out bool cached)
         {
+            cached = false;
             if (LocalCache.ContainsKey(key))
             {
+                cached = true;
                 return new SessionValue { Name = key, Value = LocalCache[key] };
             }
             var sv = db.SessionValues.FirstOrDefault(v => v.SessionId == CurrentSessionId && v.Name == key);
@@ -90,7 +92,7 @@ namespace CMSShared.Session
 
         private SessionValue FetchOrCreateSessionValue(string key, string value)
         {
-            var sv = FetchSessionValue(key);
+            var sv = FetchSessionValue(key, out bool cached);
             if (sv == null && value != null && CurrentSessionId != null)
             {
                 sv = new SessionValue
@@ -105,11 +107,16 @@ namespace CMSShared.Session
             {
                 if (value == null)
                 {
-                    db.SessionValues.DeleteOnSubmit(sv);
+                    db.SessionValues.DeleteAllOnSubmit(db.SessionValues.Where(v => v.Name == key && v.SessionId == CurrentSessionId));
+                    LocalCache.Remove(key);
                 }
                 else
                 {
                     LocalCache[key] = value;
+                    if (cached && value != sv.Value)
+                    {
+                        sv = db.SessionValues.FirstOrDefault(v => v.Name == key && v.SessionId == CurrentSessionId);
+                    }
                     sv.Value = value;
                 }
                 db.SubmitChanges();

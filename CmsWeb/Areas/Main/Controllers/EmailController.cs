@@ -29,11 +29,6 @@ namespace CmsWeb.Areas.Main.Controllers
                                   bool? ishtml, bool? ccparents, bool? nodups, int? orgid, int? personid, 
                                   bool? recover, bool? onlyProspects, bool? membersAndProspects, bool? useUnlayer)
         {
-            if (Util.SessionTimedOut())
-            {
-                return Redirect("/Errors/SessionTimeout.htm");
-            }
-
             if (!body.HasValue())
             {
                 body = TempData["body"] as string;
@@ -345,11 +340,6 @@ namespace CmsWeb.Areas.Main.Controllers
                 return Json(new { id = 0, error = "Only Admin can use {createaccount}." });
             }
 
-            if (Util.SessionTimedOut())
-            {
-                return Content("timeout");
-            }
-
             DbUtil.LogActivity("Emailing people");
 
             if (m.EmailFroms().Count(ef => ef.Value == m.FromAddress) == 0)
@@ -509,11 +499,6 @@ namespace CmsWeb.Areas.Main.Controllers
             if (TooLarge(m))
             {
                 return Json(new { error = TooLargeError });
-            }
-
-            if (Util.SessionTimedOut())
-            {
-                return Content("timeout");
             }
 
             if (m.EmailFroms().Count(ef => ef.Value == m.FromAddress) == 0)

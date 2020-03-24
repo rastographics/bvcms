@@ -225,6 +225,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             try
             {
                 OnlineRegModel.LogOutOfOnlineReg();
+                RequestManager.SessionProvider.Clear();
                 var view = m.ConfirmTransaction(transactionId);
                 m.UpdateDatum(completed: true);
                 SetHeaders(m);
@@ -279,6 +280,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             try
             {
                 OnlineRegModel.LogOutOfOnlineReg();
+                RequestManager.SessionProvider.Clear();
                 var view = m.ConfirmTransaction(transactionId);
                 m.UpdateDatum(completed: true);
                 SetHeaders(m);

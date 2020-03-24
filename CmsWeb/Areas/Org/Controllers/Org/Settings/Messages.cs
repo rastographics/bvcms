@@ -61,8 +61,6 @@ namespace CmsWeb.Areas.Org.Controllers
 
         public ActionResult NotifyIds(int id, string field)
         {
-            if (Util.SessionTimedOut())
-                return Content("<script type='text/javascript'>window.onload = function() { parent.location = '/'; }</script>");
             Response.NoCache();
             var t = CurrentDatabase.FetchOrCreateTag(Util.SessionId, CurrentDatabase.UserPeopleId, DbUtil.TagTypeId_AddSelected);
             CurrentDatabase.TagPeople.DeleteAllOnSubmit(t.PersonTags);

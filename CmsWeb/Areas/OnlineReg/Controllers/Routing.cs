@@ -116,27 +116,27 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 
         private ActionResult RouteSpecialLogin(OnlineRegModel m)
         {
-            if (CurrentDatabase.UserPeopleId == null)
-                throw new Exception("CurrentDatabase.UserPeopleId is null on login");
-
+            if (m.UserPeopleId == null)
+            { 
+                throw new Exception("UserPeopleId is null on login");
+            }
             var link = RouteExistingRegistration(m);
-            if(link.HasValue())
+            if (link.HasValue())
+            {
                 return Redirect(link);
-
+            }
             m.CreateAnonymousList();
-            m.UserPeopleId = CurrentDatabase.UserPeopleId;
 
             if (m.OnlineGiving())
             {
                 m.Log("Login OnlineGiving");
-                return RegisterFamilyMember(CurrentDatabase.UserPeopleId.Value, m);
+                return RegisterFamilyMember(m.UserPeopleId.Value, m);
             }
 
             link = RouteManageGivingSubscriptionsPledgeVolunteer(m);
-            if (link.HasValue())
-                return Content(link); // this will be used for a redirect in javascript
-
-            return null;
+            return link.HasValue()
+                ? Content(link) // this will be used for a redirect in javascript
+                : null;
         }
     }
 }

@@ -142,10 +142,10 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 
             if (m.Orgid == Util.CreateAccountCode)
             {
-                DbUtil.LogActivity("OnlineReg CreateAccount Existing", peopleid: CurrentDatabase.UserPeopleId, datumId: m.DatumId);
-                return Content("/Person2/" + CurrentDatabase.UserPeopleId); // they already have an account, so take them to their page
+                DbUtil.LogActivity("OnlineReg CreateAccount Existing", peopleid: ret.User.PeopleId, datumId: m.DatumId);
+                return Content("/Person2/" + ret.User.PeopleId); // they already have an account, so take them to their page
             }
-            m.UserPeopleId = CurrentDatabase.UserPeopleId;
+            m.UserPeopleId = ret.User.PeopleId;
             var route = RouteSpecialLogin(m);
             if (route != null)
             {
@@ -512,6 +512,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         public ActionResult Timeout(string ret)
         {
             FormsAuthentication.SignOut();
+            RequestManager.SessionProvider.Clear();
             Session.Abandon();
             ViewBag.Url = ret;
             return View("Other/Timeout");

@@ -92,7 +92,7 @@ namespace CmsWeb.Lifecycle
             CurrentDatabase = CMSDataContext.Create(CurrentHttpContext);
             CurrentImageDatabase = CMSImageDataContext.Create(CurrentHttpContext);
             SessionProvider = new CmsSessionProvider();
-            CurrentHttpContext.Items?.Add("SessionProvider", SessionProvider);
+            CurrentHttpContext.Items["SessionProvider"] = SessionProvider;
         }
 
         public Elmah.ErrorLog GetErrorLog()

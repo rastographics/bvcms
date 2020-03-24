@@ -519,9 +519,13 @@ namespace CmsWeb.Areas.Search.Controllers
         [Serializable]
         private class OrgSearchInfo
         {
+            public OrgSearchInfo() { }
             public OrgSearchInfo(OrgSearchModel m)
             {
-                this.CopyPropertiesFrom(m);
+                if (m != null)
+                {
+                    this.CopyPropertiesFrom(m);
+                }
             }
 
             public string Name { get; set; }

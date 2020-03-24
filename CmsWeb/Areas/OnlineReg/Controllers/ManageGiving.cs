@@ -188,6 +188,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 
             SetHeaders(m.orgid);
             OnlineRegModel.LogOutOfOnlineReg();
+            RequestManager.SessionProvider.Clear();
 
             m.Log("Confirm");
             return View("ManageGiving/Confirm", m);
@@ -199,6 +200,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             m.Confirm();
             SetHeaders(m.orgid);
             OnlineRegModel.LogOutOfOnlineReg();
+            RequestManager.SessionProvider.Clear();
 
             m.Log("Confirm");
             return View("ManagePledge/Confirm", m);

@@ -397,7 +397,7 @@ Thank you.
             if (Util.OnlineRegLogin)
             {
                 FormsAuthentication.SignOut();
-                HttpContextFactory.Current.Session.Abandon();
+                HttpContextFactory.Current?.Session?.Abandon();
             }
         }
     }

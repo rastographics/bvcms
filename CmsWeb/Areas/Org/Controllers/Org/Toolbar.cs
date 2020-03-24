@@ -10,11 +10,6 @@ namespace CmsWeb.Areas.Org.Controllers
         [Authorize(Roles = "Edit")]
         public ActionResult CopySettings(int id)
         {
-            if (Util.SessionTimedOut())
-            {
-                return Redirect("/");
-            }
-
             Util.OrgCopySettings = id;
             return Redirect("/OrgSearch/");
         }
