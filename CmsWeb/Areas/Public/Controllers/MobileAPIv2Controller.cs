@@ -938,7 +938,7 @@ namespace CmsWeb.Areas.Public.Controllers
                 FamilyPositionId = user.Person.PositionInFamilyId,
                 Joint = user.Person.ContributionOptionsId.GetValueOrDefault(2) == StatementOptionCode.Joint,
                 PeopleId = peopleId,
-                SpouseID = user.Person.SpouseId,
+                SpouseId = user.Person.SpouseId,
             };
             var contributions = APIContribution.Contributions(CurrentDatabase, ci, FromDate, ToDate, null).ToList();
             var pledges = APIContribution.Pledges(CurrentDatabase, ci, ToDate, null).ToList();
