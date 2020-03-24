@@ -199,7 +199,7 @@ namespace CmsWeb.Areas.Search.Models
             {
                 tagname = Util.SessionId; // not specifying an explicit name, so use the session id as a default
             }
-            var tag = Db.FetchOrCreateTag(tagname, Util.UserPeopleId, DbUtil.TagTypeId_Personal);
+            var tag = Db.FetchOrCreateTag(tagname, CurrentDatabase.UserPeopleId, DbUtil.TagTypeId_Personal);
             return TagAll(tag);
         }
 
@@ -242,7 +242,7 @@ namespace CmsWeb.Areas.Search.Models
             {
                 tagname = Util2.CurrentTag; // not specifying an explicit name, so use the current tag name as default
             }
-            var tag = Db.FetchOrCreateTag(tagname, Util.UserPeopleId, DbUtil.TagTypeId_Personal);
+            var tag = Db.FetchOrCreateTag(tagname, CurrentDatabase.UserPeopleId, DbUtil.TagTypeId_Personal);
             return UntagAll(tag);
         }
 

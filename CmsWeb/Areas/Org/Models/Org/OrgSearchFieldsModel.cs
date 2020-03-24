@@ -1,5 +1,6 @@
 ﻿using CmsData;
 using CmsWeb.Areas.Search.Models;
+using CmsWeb.Properties;
 using MoreLinq;
 using System;
 using System.Collections.Generic;

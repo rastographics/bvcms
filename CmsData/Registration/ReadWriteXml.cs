@@ -79,6 +79,7 @@ namespace CmsData.Registration
                         ExtraValueFeeName = e.Element("ExtraValueFeeName")?.Value;
                         AccountingCode = e.Element("AccountingCode")?.Value;
                         PushpayFundName = e.Element("PushpayFundName")?.Value;
+                        PushpayMerchantName = e.Element("PushpayMerchantName")?.Value;
                         IncludeOtherFeesWithDeposit = e.Element("IncludeOtherFeesWithDeposit").ToBool();
                         OtherFeesAddedToOrgFee = e.Element("OtherFeesAddedToOrgFee").ToBool();
                         AskDonation = e.Element("AskDonation").ToBool();
@@ -160,7 +161,7 @@ namespace CmsData.Registration
         {
             var w = new APIWriter(writer);
             w.Attr("id", OrgId);
-            w.AddComment($"{Util.UserPeopleId} {Util.Now:g}");
+            //w.AddComment($"{CurrentDatabase.UserPeopleId} {Util.Now:g}");
 
             w.StartPending("Confirmation")
                 .Add("Subject", Subject)
@@ -190,6 +191,7 @@ namespace CmsData.Registration
                 .Add("ExtraValueFeeName", ExtraValueFeeName)
                 .Add("AccountingCode", AccountingCode)
                 .Add("PushpayFundName", PushpayFundName)
+                .Add("PushpayMerchantName", PushpayMerchantName)
                 .AddIfTrue("ApplyMaxToOtherFees", ApplyMaxToOtherFees)
                 .AddIfTrue("IncludeOtherFeesWithDeposit", IncludeOtherFeesWithDeposit)
                 .AddIfTrue("OtherFeesAddedToOrgFee", OtherFeesAddedToOrgFee)
@@ -288,7 +290,7 @@ namespace CmsData.Registration
             var w = new APIWriter(writer);
             w.Start("Messages");
             w.Attr("id", OrgId);
-            w.AddComment($"{Util.UserPeopleId} {Util.Now:g}");
+            //w.AddComment($"{CurrentDatabase.UserPeopleId} {Util.Now:g}");
 
             if(messages.Confirmation)
                 w.Start("Confirmation")

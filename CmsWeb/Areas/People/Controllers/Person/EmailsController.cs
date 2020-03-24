@@ -84,7 +84,7 @@ namespace CmsWeb.Areas.People.Controllers
                 return Content("no email found");
             }
 
-            var curruser = CurrentDatabase.LoadPersonById(Util.UserPeopleId ?? 0);
+            var curruser = CurrentDatabase.LoadPersonById(CurrentDatabase.UserPeopleId ?? 0);
             if (curruser == null)
             {
                 return Content("no user");

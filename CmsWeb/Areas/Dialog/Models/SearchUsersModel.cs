@@ -76,10 +76,11 @@ namespace CmsWeb.Areas.Dialog.Models
             var n = 0;
             if (!singlemode)
             {
-                var t = DbUtil.Db.FetchOrCreateTag(Util.SessionId, Util.UserPeopleId, DbUtil.TagTypeId_AddSelected);
-                n = t.People(DbUtil.Db).Count();
+                var db = DbUtil.Db;
+                var t = db.FetchOrCreateTag(Util.SessionId, db.UserPeopleId, DbUtil.TagTypeId_AddSelected);
+                n = t.People(db).Count();
                 list = CheckedPeopleList(
-                        from p in t.People(DbUtil.Db)
+                        from p in t.People(db)
                         orderby p.PeopleId == topid ? "0" : "1"
                         select p).ToList();
                 var ids = list.Select(p => p.PeopleId).ToArray();

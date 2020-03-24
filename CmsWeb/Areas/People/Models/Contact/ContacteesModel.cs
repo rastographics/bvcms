@@ -100,17 +100,18 @@ namespace CmsWeb.Areas.People.Models
 
         public int AddTask(int peopleId)
         {
-            if (!Util.UserPeopleId.HasValue)
+            var db = DbUtil.Db;
+            if (!db.UserPeopleId.HasValue)
             {
                 throw new Exception("missing user on AddFollowup Task");
             }
 
-            var uid = Util.UserPeopleId.Value;
+            var uid = db.UserPeopleId.Value;
             var task = new CmsData.Task
             {
                 OwnerId = uid,
                 WhoId = peopleId,
-                ListId = CmsData.Task.GetRequiredTaskList(DbUtil.Db, "InBox", uid).Id,
+                ListId = CmsData.Task.GetRequiredTaskList(db, "InBox", uid).Id,
                 SourceContactId = Contact.ContactId,
                 Description = "Follow up",
                 Notes = Contact.Comments,
@@ -118,8 +119,8 @@ namespace CmsWeb.Areas.People.Models
                 Project = Contact.MinistryId == null ? null : Contact.Ministry.MinistryName,
                 ForceCompleteWContact = true
             };
-            DbUtil.Db.Tasks.InsertOnSubmit(task);
-            DbUtil.Db.SubmitChanges();
+            db.Tasks.InsertOnSubmit(task);
+            db.SubmitChanges();
             return task.Id;
         }
 

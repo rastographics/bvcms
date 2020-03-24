@@ -6,6 +6,8 @@ using System.Web;
 using System.Web.Mvc;
 using Microsoft.AspNet.OData;
 using UtilityExtensions;
+using UtilityExtensions.Session;
+using CMSShared.Session;
 
 namespace CmsWeb.Lifecycle
 {
@@ -46,7 +48,6 @@ namespace CmsWeb.Lifecycle
         public CMSBaseController(IRequestManager requestManager)
         {
             RequestManager = requestManager;
-            ViewBag.CurrentDatabase = requestManager.CurrentDatabase;
         }
     }
 
@@ -70,6 +71,7 @@ namespace CmsWeb.Lifecycle
         IPrincipal CurrentUser { get; }
         CMSDataContext CurrentDatabase { get; }
         CMSImageDataContext CurrentImageDatabase { get; }
+        ISessionProvider SessionProvider { get; }
         Elmah.ErrorLog GetErrorLog();
     }
 
@@ -80,6 +82,7 @@ namespace CmsWeb.Lifecycle
         public HttpContextBase CurrentHttpContext { get; }
         public CMSDataContext CurrentDatabase { get; private set; }
         public CMSImageDataContext CurrentImageDatabase { get; private set; }
+        public ISessionProvider SessionProvider { get; private set; }
 
         public RequestManager()
         {
@@ -88,6 +91,8 @@ namespace CmsWeb.Lifecycle
             CurrentUser = CurrentHttpContext.User;
             CurrentDatabase = CMSDataContext.Create(CurrentHttpContext);
             CurrentImageDatabase = CMSImageDataContext.Create(CurrentHttpContext);
+            SessionProvider = new CmsSessionProvider();
+            CurrentHttpContext.Items["SessionProvider"] = SessionProvider;
         }
 
         public Elmah.ErrorLog GetErrorLog()

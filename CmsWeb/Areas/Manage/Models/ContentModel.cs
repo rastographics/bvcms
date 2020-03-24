@@ -12,7 +12,7 @@ namespace CmsWeb.Models
     public class ContentModel
     {
         private string filter;
-        public string Filter => filter ?? (filter = HttpContextFactory.Current.Session["ContentKeywordFilter"] as string ?? "");
+        public string Filter => filter ?? (filter = Util.ContentKeywordFilter ?? "");
         public ContentModel() { }
         public IQueryable<Content> fetchHTMLFiles()
         {
@@ -95,7 +95,7 @@ namespace CmsWeb.Models
             var list = (from kw in DbUtil.Db.ContentKeyWords
                         orderby kw.Word
                         select kw.Word).Distinct().ToList();
-            var keywordfilter = HttpContextFactory.Current.Session["ContentKeywordFilter"] as string;
+            var keywordfilter = Util.ContentKeywordFilter;
             keywords = list.Select(vv => new SelectListItem() { Text = vv, Value = vv, Selected = vv == keywordfilter }).ToList();
             keywords.Insert(0, new SelectListItem() { Text = "(not specified)", Value = "" });
             return keywords;
@@ -114,7 +114,7 @@ namespace CmsWeb.Models
             public bool shared { get; set; }
             public bool isUnlayer { get; set; }
 
-            public bool Owner => ownerID == Util.UserId;
+            public bool Owner => ownerID == DbUtil.Db.UserId;
             public bool Shared => !Owner && shared;
             public bool Other => !Shared && roleID != 0;
         }

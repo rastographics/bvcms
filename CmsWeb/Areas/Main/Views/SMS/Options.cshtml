@@ -5,7 +5,7 @@
     ViewBag.Title = "SMS Message Options";
     ViewBag.PageHeader = "SMS Message Options";
     Layout = ViewExtensions2.TouchPointLayout();
-    var groups = TwilioHelper.GetAvailableLists(Util.UserId);
+    var groups = TwilioHelper.GetAvailableLists(ViewExtensions2.CurrentDatabase.UserId);
     var count = TwilioHelper.GetSendCount(Model);
 }
 <div class="row">

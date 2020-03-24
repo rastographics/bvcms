@@ -13,6 +13,10 @@ namespace CmsData
 
         private int _Id;
 
+        private int? _UserId;
+
+        private Guid? _UUId;
+
         private DateTime? _Started;
 
         private int? _Count;
@@ -41,6 +45,12 @@ namespace CmsData
 
         partial void OnIdChanging(int value);
         partial void OnIdChanged();
+
+        partial void OnUserIdChanging(int? value);
+        partial void OnUserIdChanged();
+
+        partial void OnUUIdChanging(Guid? value);
+        partial void OnUUIdChanged();
 
         partial void OnStartedChanging(DateTime? value);
         partial void OnStartedChanged();
@@ -92,6 +102,42 @@ namespace CmsData
                     _Id = value;
                     SendPropertyChanged("Id");
                     OnIdChanged();
+                }
+            }
+        }
+
+        [Column(Name = "UserId", UpdateCheck = UpdateCheck.Never, Storage = "_UserId", DbType = "int NULL")]
+        public int? UserId
+        {
+            get => _UserId;
+
+            set
+            {
+                if (_UserId != value)
+                {
+                    OnUserIdChanging(value);
+                    SendPropertyChanging();
+                    _UserId = value;
+                    SendPropertyChanged("UserId");
+                    OnUserIdChanged();
+                }
+            }
+        }
+
+        [Column(Name = "UUId", UpdateCheck = UpdateCheck.Never, Storage = "_UUId", DbType = "UNIQUEIDENTIFIER NULL")]
+        public Guid? UUId
+        {
+            get => _UUId;
+
+            set
+            {
+                if (_UUId != value)
+                {
+                    OnUUIdChanging(value);
+                    SendPropertyChanging();
+                    _UUId = value;
+                    SendPropertyChanged("UUId");
+                    OnUUIdChanged();
                 }
             }
         }
@@ -222,7 +268,7 @@ namespace CmsData
             }
         }
 
-        [Column(Name = "Sets", UpdateCheck = UpdateCheck.Never, Storage = "_Sets", DbType = "nvarchar(50)")]
+        [Column(Name = "Sets", UpdateCheck = UpdateCheck.Never, Storage = "_Sets", DbType = "nvarchar(150)")]
         public string Sets
         {
             get => _Sets;

@@ -11,6 +11,7 @@ using System.Text;
 using System.Net.Mail;
 using CmsData.Codes;
 using Settings = CmsData.Registration.Settings;
+using CmsWeb.Properties;
 
 namespace CmsWeb.Areas.OnlineReg.Models
 {
@@ -332,7 +333,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                     return false;
                 if (LoggedIn) // must not already be logged in
                     return false;
-                if (Util.UserPeopleId > 0)
+                if (CurrentDatabase.UserPeopleId > 0)
                     return false;
                 if (QuestionsOK) // must not already be done with questions
                     return false;

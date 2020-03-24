@@ -209,44 +209,46 @@ namespace CmsWeb.Models
             return o;
         }
 
-        public static IEnumerable<NamesInfo> Names(string q, int limit)
+        public IEnumerable<NamesInfo> Names(string q, int limit)
         {
             var qp = FindNames(q);
 
             var rp = from p in qp
-                     let spouse = DbUtil.Db.People.SingleOrDefault(ss =>
+                     let spouse = CurrentDatabase.People.SingleOrDefault(ss =>
                          ss.PeopleId == p.SpouseId
                          && ss.ContributionOptionsId == StatementOptionCode.Joint
                          && p.ContributionOptionsId == StatementOptionCode.Joint)
                      orderby p.Name2
-                     select new NamesInfo
+                     select new NamesInfo(CurrentDatabase)
                      {
                          Pid = p.PeopleId,
                          name = p.Name2,
                          age = p.Age,
+                         campus = p.Campu.Code,
                          spouse = spouse.Name,
                          addr = p.PrimaryAddress ?? "",
                          altname = p.AltName,
-                         pledgesSummary = PledgesHelper.GetFilteredPledgesSummary(DbUtil.Db, p.PeopleId)
+                         pledgesSummary = PledgesHelper.GetFilteredPledgesSummary(CurrentDatabase, p.PeopleId)
                      };
             return rp.Take(limit);
         }
 
-        public static IEnumerable<NamesInfo> Names2(string q, int limit)
+        public IEnumerable<NamesInfo> Names2(string q, int limit)
         {
             var qp = FindNames(q);
 
             var rp = from p in qp
-                     let spouse = DbUtil.Db.People.SingleOrDefault(ss =>
+                     let spouse = CurrentDatabase.People.SingleOrDefault(ss =>
                          ss.PeopleId == p.SpouseId
                          && ss.ContributionOptionsId == StatementOptionCode.Joint
                          && p.ContributionOptionsId == StatementOptionCode.Joint)
                      orderby p.Name2
-                     select new NamesInfo
+                     select new NamesInfo(CurrentDatabase)
                      {
                          Pid = p.PeopleId,
                          name = p.Name2,
                          age = p.Age,
+                         campus = p.Campu.Code,
                          email = p.EmailAddress,
                          spouse = spouse.Name,
                          addr = p.PrimaryAddress ?? "",
@@ -260,15 +262,15 @@ namespace CmsWeb.Models
                                        DateGiven = c.ContributionDate,
                                        CheckNo = c.CheckNo
                                    }).Take(4).ToList(),
-                         pledgesSummary = PledgesHelper.GetFilteredPledgesSummary(DbUtil.Db, p.PeopleId)
+                         pledgesSummary = PledgesHelper.GetFilteredPledgesSummary(CurrentDatabase, p.PeopleId)
                      };
             return rp.Take(limit);
         }
 
-        private static IQueryable<Person> FindNames(string q)
+        private IQueryable<Person> FindNames(string q)
         {
             string First, Last;
-            var qp = DbUtil.Db.People.AsQueryable();
+            var qp = CurrentDatabase.People.AsQueryable();
             qp = from p in qp
                  where p.DeceasedDate == null
                  select p;
@@ -305,7 +307,7 @@ namespace CmsWeb.Models
             }
             else
             {
-                if (DbUtil.Db.Setting("UseAltnameContains"))
+                if (CurrentDatabase.Setting("UseAltnameContains"))
                 {
                     qp = from p in qp
                          where
@@ -362,7 +364,7 @@ namespace CmsWeb.Models
                 var bd = new BundleDetail
                 {
                     BundleHeaderId = id,
-                    CreatedBy = Util.UserId,
+                    CreatedBy = CurrentDatabase.UserId,
                     CreatedDate = DateTime.Now
                 };
                 int type;
@@ -406,7 +408,7 @@ namespace CmsWeb.Models
 
                 bd.Contribution = new Contribution
                 {
-                    CreatedBy = Util.UserId,
+                    CreatedBy = CurrentDatabase.UserId,
                     CreatedDate = bd.CreatedDate,
                     FundId = fund,
                     PeopleId = pid.ToInt2(),
@@ -523,16 +525,21 @@ namespace CmsWeb.Models
 
         public class NamesInfo
         {
-            public NamesInfo()
+            private CMSDataContext CurrentDatabase;
+            public NamesInfo(CMSDataContext db)
             {
-                showaltname = DbUtil.Db.Setting("ShowAltNameOnSearchResults");
+                CurrentDatabase = db;
+                showaltname = CurrentDatabase.Setting("ShowAltNameOnSearchResults");
+                showcampus = CurrentDatabase.Setting("BundleEntryCampusCode");
             }
-            public string Name => displayname + (age.HasValue ? $" ({Person.AgeDisplay(age, Pid)})" : "");
+            public string Name => displayname + (age.HasValue ? $" ({Person.AgeDisplay(age, Pid)})" : "") + (showcampus ? $" {campus}" : "");
 
             internal bool showaltname;
+            internal bool showcampus;
             internal string name;
             internal string altname;
             internal int? age;
+            internal string campus;
 
             public int Pid { get; set; }
             internal List<RecentContribution> recent { get; set; }

@@ -8,6 +8,7 @@ using System.Data.SqlClient;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text.RegularExpressions;
+using UtilityExtensions;
 
 namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
 {
@@ -25,6 +26,8 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
 		public bool locked = false;
 
 		public readonly List<FamilyMember> members = new List<FamilyMember>();
+
+        public string memberList = "";
 
 		public static Family forID( CMSDataContext dataContext, CMSImageDataContext imageContext, int familyID, int campus, DateTime date, bool returnPictureUrls = false)
 		{
@@ -113,14 +116,8 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
 			} else {
 				string first = "";
 				string last = "";
-				string[] parts = search.Split( ' ' );
 
-				if( parts.Length == 1 ) {
-					last = parts[0];
-				} else if( parts.Length > 1 ) {
-					first = parts[0];
-					last = parts[1];
-				}
+                Util.NameSplit(search, out first, out last);
 
 				qFamilies = @"SELECT TOP 50
 										family.FamilyId AS id,
@@ -171,6 +168,7 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
 		private void loadMembers( CMSDataContext cmsdb, CMSImageDataContext cmsidb, int campus, DateTime date, bool returnPictureUrls )
 		{
 			members.AddRange( FamilyMember.forFamilyID( cmsdb, cmsidb, id, campus, date, returnPictureUrls ) );
+            memberList = string.Join(", ", members.Where(m => m.name != name).Select(x => x.firstName));
 		}
 
 		private void loadPicture( CMSDataContext cmsdb, CMSImageDataContext cmsidb )

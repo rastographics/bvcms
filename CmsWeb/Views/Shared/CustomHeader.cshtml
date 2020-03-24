@@ -1,5 +1,5 @@
 ﻿@{
-    CMSDataContext Db = ViewBag.CurrentDatabase;
+    CMSDataContext Db = ViewExtensions2.CurrentDatabase;
     var oldheader = Db.Setting("UseOldHeader", "false").ToBool() ? Db.Content("Header", "") : "";
     var customheader = Db.Content("CustomHeader", @"");
 }

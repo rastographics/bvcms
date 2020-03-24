@@ -90,7 +90,7 @@ namespace CmsWeb.Areas.Finance.Controllers
                 {
                     FundName = "new fund",
                     FundId = id,
-                    CreatedBy = Util.UserId1,
+                    CreatedBy = CurrentDatabase.UserId1,
                     CreatedDate = Util.Now,
                     FundStatusId = 1,
                     FundTypeId = 1,

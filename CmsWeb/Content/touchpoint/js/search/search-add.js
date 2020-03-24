@@ -64,7 +64,7 @@ $(function () {
     });
 
     $('#empty-dialog').on('shown.bs.modal', function () {
-        $("#search-add #Name").focus();
+        $("#search-add-component input").focus();
     });
 
     $('body').on('keydown', '#search-add input', function (ev) {

@@ -16,6 +16,7 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
 
         private static int? BatchProcessBankOfNorthGeorgia(string text, DateTime date, int? fundid)
         {
+            var db = DbUtil.Db;
             BundleHeader bh = null;
             var sr = new StringReader(text);
             var line = "";
@@ -49,17 +50,17 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
 
                 var bd = new BundleDetail
                 {
-                    CreatedBy = Util.UserId,
+                    CreatedBy = db.UserId,
                     CreatedDate = DateTime.Now,
                 };
-                var qf = from f in DbUtil.Db.ContributionFunds
+                var qf = from f in db.ContributionFunds
                          where f.FundStatusId == 1
                          orderby f.FundId
                          select f.FundId;
 
                 bd.Contribution = new Contribution
                 {
-                    CreatedBy = Util.UserId,
+                    CreatedBy = db.UserId,
                     CreatedDate = DateTime.Now,
                     ContributionDate = date,
                     FundId = fundid ?? qf.First(),
@@ -75,7 +76,7 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
 
                 bd.Contribution.CheckNo = ck;
                 var eac = Util.Encrypt(rt + "|" + ac);
-                var q = from kc in DbUtil.Db.CardIdentifiers
+                var q = from kc in db.CardIdentifiers
                         where kc.Id == eac
                         select kc.PeopleId;
                 var pid = q.SingleOrDefault();

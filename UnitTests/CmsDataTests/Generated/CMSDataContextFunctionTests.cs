@@ -87,7 +87,7 @@ namespace CmsDataTests
             using (var db = CMSDataContext.Create(Util.Host))
             {
                 // Cleaning Contribution garbage from previous tests
-                db.ExecuteCommand("delete from BundleDetail; delete from BundleHeader; delete from Contribution;");
+                db.ExecuteCommand("DELETE FROM dbo.BundleDetail; DELETE FROM dbo.BundleHeader; DELETE FROM dbo.ContributionTag; DELETE FROM dbo.Contribution;");
 
                 var family = new Family();
                 db.Families.InsertOnSubmit(family);

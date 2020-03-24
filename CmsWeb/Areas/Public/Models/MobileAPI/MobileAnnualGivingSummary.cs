@@ -1,4 +1,5 @@
 ﻿using CmsData.View;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UtilityExtensions;
@@ -19,6 +20,7 @@ namespace CmsWeb.MobileAPI
         public string count { get; set; }
         public int loaded { get; set; }
         public string title { get; set; }
+        public string statement { get; set; }
         public string total { get; set; }
         public List<AnnualSummary> summary { get; set; }
         public AnnualGivingDetails details { get; set; }
@@ -29,8 +31,9 @@ namespace CmsWeb.MobileAPI
             title = $"{y}";
         }
 
-        public void Load(List<NormalContribution> contributions, List<UnitPledgeSummary> pledges, List<GiftsInKind> giftsinkind, List<NonTaxContribution> nontaxitems)
+        public void Load(int peopleId, List<NormalContribution> contributions, List<UnitPledgeSummary> pledges, List<GiftsInKind> giftsinkind, List<NonTaxContribution> nontaxitems)
         {
+            statement = $"/Person2/ContributionStatement/{peopleId}/{title}-01-01/{title}-12-31";
             var empty = contributions.Count == 0;
             loaded = 1;
             count = contributions.Count.ToString();
@@ -138,6 +141,7 @@ namespace CmsWeb.MobileAPI
         public string count { get; set; }
         public string pledge { get; set; }
         public string total { get; set; }
+        public List<FundSummary> funds { get; set; }
         public int showAsPledge { get; set; }
 
         public AnnualSummary() { } //for deserializing in tests
@@ -147,6 +151,7 @@ namespace CmsWeb.MobileAPI
             var empty = contributions.Count == 0;
             count = contributions.Count.ToString();
             comment = empty ? "No items found" : "";
+            funds = FundTotals(contributions);
             pledge = ((decimal)0).ToMoney();
             total = contributions.Sum(c => c.ContributionAmount ?? 0).ToMoney();
             showAsPledge = 0;
@@ -158,6 +163,7 @@ namespace CmsWeb.MobileAPI
             var empty = pledges.Count == 0;
             count = pledges.Count.ToString();
             comment = empty ? "No items found" : "";
+            funds = FundTotals(pledges);
             pledge = pledges.Sum(c => c.Pledged ?? 0).ToMoney();
             total = pledges.Sum(c => c.Given ?? 0).ToMoney();
             showAsPledge = 1;
@@ -169,6 +175,7 @@ namespace CmsWeb.MobileAPI
             var empty = contributions.Count == 0;
             count = contributions.Count.ToString();
             comment = empty ? "No items found" : "";
+            funds = FundTotals(contributions);
             pledge = ((decimal)0).ToMoney();
             total = contributions.Sum(c => c.ContributionAmount ?? 0).ToMoney();
             showAsPledge = 0;
@@ -180,9 +187,61 @@ namespace CmsWeb.MobileAPI
             var empty = contributions.Count == 0;
             count = contributions.Count.ToString();
             comment = empty ? "No items found" : "";
+            funds = FundTotals(contributions);
             pledge = ((decimal)0).ToMoney();
             total = contributions.Sum(c => c.ContributionAmount ?? 0).ToMoney();
             showAsPledge = 0;
         }
+
+        private List<FundSummary> FundTotals(List<NormalContribution> contributions)
+        {
+            var dict = new Dictionary<string, string>();
+            foreach (var fund in contributions.Select(m => m.FundName).Distinct())
+            {
+                dict[fund] = contributions.Where(c => c.FundName == fund).Sum(c => c.ContributionAmount ?? 0).ToMoney();
+            }
+            return dict.ToList().Select(v => new FundSummary { name = v.Key, given = v.Value }).ToList();
+        }
+
+        private List<FundSummary> FundTotals(List<NonTaxContribution> contributions)
+        {
+            var dict = new Dictionary<string, string>();
+            foreach (var fund in contributions.Select(m => m.FundName).Distinct())
+            {
+                dict[fund] = contributions.Where(c => c.FundName == fund).Sum(c => c.ContributionAmount ?? 0).ToMoney();
+            }
+            return dict.ToList().Select(v => new FundSummary { name = v.Key, given = v.Value }).ToList();
+        }
+
+        private List<FundSummary> FundTotals(List<GiftsInKind> contributions)
+        {
+            var dict = new Dictionary<string, string>();
+            foreach (var fund in contributions.Select(m => m.FundName).Distinct())
+            {
+                dict[fund] = contributions.Where(c => c.FundName == fund).Sum(c => c.ContributionAmount ?? 0).ToMoney();
+            }
+            return dict.ToList().Select(v => new FundSummary { name = v.Key, given = v.Value }).ToList();
+        }
+
+        private List<FundSummary> FundTotals(List<UnitPledgeSummary> pledges)
+        {
+            var dict = new Dictionary<string, (string, string)>();
+            foreach (var fund in pledges.Select(m => m.FundName).Distinct())
+            {
+                var g = pledges.Where(c => c.FundName == fund);
+                dict[fund] = (
+                    g.Sum(c => c.Given ?? 0).ToMoney(),
+                    g.Sum(c => c.Pledged ?? 0).ToMoney()
+                );
+            }
+            return dict.ToList().Select(v => new FundSummary { name = v.Key, given = v.Value.Item1, pledge = v.Value.Item2 }).ToList();
+        }
+    }
+
+    public class FundSummary
+    {
+        public string name { get; set; }
+        public string pledge { get; set; }
+        public string given { get; set; }
     }
 }

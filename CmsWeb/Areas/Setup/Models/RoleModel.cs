@@ -6,6 +6,7 @@ using CmsData.Classes.RoleChecker;
 using System.Xml.Linq;
 using System.Xml.XPath;
 using System.IO;
+using CmsWeb.Properties;
 
 namespace CmsWeb.Areas.Setup.Models
 {

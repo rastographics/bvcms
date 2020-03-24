@@ -39,7 +39,7 @@ namespace CmsData.Classes.Twilio
 
             list.Created = DateTime.Now;
             list.SendAt = DateTime.Now;
-            list.SenderID = Util.UserPeopleId ?? 1;
+            list.SenderID = db.UserPeopleId ?? 1;
             list.SendGroupID = iSendGroupID;
             list.Title = sTitle;
             list.Message = sMessage;

@@ -79,6 +79,11 @@ namespace CmsWeb.Areas.People.Controllers
         [HttpGet, Route("ContributionStatement/{id:int}/{fr:datetime}/{to:datetime}")]
         public ActionResult ContributionStatement(int id, DateTime fr, DateTime to, string custom = null)
         {
+            if (id == 0 && CurrentDatabase.UserPeopleId.HasValue)
+            { 
+                id = CurrentDatabase.UserPeopleId.Value;
+            }
+
             if (!CurrentDatabase.CurrentUserPerson.CanViewStatementFor(CurrentDatabase, id))
             {
                 return Content("No permission to view statement");
@@ -291,7 +296,7 @@ namespace CmsWeb.Areas.People.Controllers
                 var otl = new OneTimeLink
                 {
                     Id = Guid.NewGuid(),
-                    Querystring = Util.UserPeopleId.ToString(),
+                    Querystring = CurrentDatabase.UserPeopleId.ToString(),
                     Expires = DateTime.Now.AddMinutes(expirationWindow)
                 };
                 CurrentDatabase.OneTimeLinks.InsertOnSubmit(otl);

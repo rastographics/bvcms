@@ -54,6 +54,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                      where t.TransactionDate > DateTime.Now.AddMinutes(-20)
                      where t.First == List[0].FirstName
                      where t.Last == List[0].LastName
+                     where t.TransactionGateway != "pushpay"
                      select t).FirstOrDefault();
             }
 
@@ -393,11 +394,10 @@ Thank you.
         }
         public static void LogOutOfOnlineReg()
         {
-            var session = HttpContextFactory.Current.Session;
-            if ((bool?)session["OnlineRegLogin"] == true)
+            if (Util.OnlineRegLogin)
             {
                 FormsAuthentication.SignOut();
-                session.Abandon();
+                HttpContextFactory.Current?.Session?.Abandon();
             }
         }
     }

@@ -15,10 +15,12 @@ using CmsWeb.Areas.Manage.Controllers;
 using CmsWeb.Areas.Reports.Controllers;
 using CmsWeb.Constants;
 using CmsWeb.Models;
+using CmsWeb.Properties;
 using Dapper;
 using MoreLinq;
 using Newtonsoft.Json;
 using UtilityExtensions;
+using Settings = CmsData.Registration.Settings;
 
 namespace CmsWeb.Areas.Search.Models
 {
@@ -197,7 +199,7 @@ namespace CmsWeb.Areas.Search.Models
             var q = FetchOrgs();
             if (Util2.OrgLeadersOnly)
             {
-                var oids = CurrentDatabase.GetLeaderOrgIds(Util.UserPeopleId);
+                var oids = CurrentDatabase.GetLeaderOrgIds(CurrentDatabase.UserPeopleId);
                 q = q.Where(oo => oids.Contains(oo.OrganizationId));
             }
             return CurrentDatabase.CurrOrgMembers(string.Join(",", q.OrderBy(mm => mm.OrganizationName).Select(mm => mm.OrganizationId)))
@@ -834,7 +836,7 @@ namespace CmsWeb.Areas.Search.Models
                 p.Add("@MeetingDate2", meetingDate2);
             }
             if (content.Contains("@userid", ignoreCase: true))
-                p.Add("@userid", Util.UserId);
+                p.Add("@userid", CurrentDatabase.UserId);
             return p;
         }
 

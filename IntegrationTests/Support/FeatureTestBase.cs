@@ -363,6 +363,7 @@ namespace IntegrationTests.Support
             string location = url.StartsWith("http") ? url : "http://" + url;
             Console.WriteLine("Opening: {0}", location);
             driver.Navigate().GoToUrl(location);
+            WaitFor((d) => d.Url.Contains(url));
         }
 
         /// <summary>

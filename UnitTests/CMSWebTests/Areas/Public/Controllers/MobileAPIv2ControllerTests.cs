@@ -18,7 +18,6 @@ using UtilityExtensions;
 
 namespace CmsWeb.Areas.Public.ControllersTests
 {
-    [TestClass()]
     [Collection(Collections.Database)]
     public class MobileAPIv2ControllerTests : ControllerTestBase
     {
@@ -56,9 +55,9 @@ namespace CmsWeb.Areas.Public.ControllersTests
         }
 
         [Theory]
-        [InlineData(0, "0", "No items found", "$0.00", "0")]
-        [InlineData(3.33, "1", "", "$3.33", "1")]
-        public void FetchGivingSummaryTest(decimal contribution, string count, string comment, string total, string contribCount)
+        [InlineData(0, "0", "No items found", "$0.00", "$0.00", "0", 1)]
+        [InlineData(3.33, "1", "", "$3.33", "$13.32", "1", 2)]
+        public void FetchGivingSummaryTest(decimal contribution, string count, string comment, string total, string prevTotal, string contribCount, int yearCount)
         {
             var username = RandomString();
             var password = RandomString();
@@ -69,21 +68,12 @@ namespace CmsWeb.Areas.Public.ControllersTests
             CMSMembershipProvider.SetCurrentProvider(membershipProvider);
             CMSRoleProvider.SetCurrentProvider(roleProvider);
             requestManager.CurrentHttpContext.Request.Headers["Authorization"] = BasicAuthenticationString(username, password);
-            var year = DateTime.Now.Year;
+            var Now = DateTime.Now;
+            var year = Now.Year;
             if (contribution > 0)
             {
-                var c = new Contribution()
-                {
-                    PeopleId = user.PeopleId,
-                    ContributionAmount = contribution,
-                    ContributionDate = new DateTime(year, 7, 2),
-                    ContributionStatusId = ContributionStatusCode.Recorded,
-                    ContributionTypeId = ContributionTypeCode.Online,
-                    CreatedDate = DateTime.Now,
-                    FundId = 1
-                };
-                db.Contributions.InsertOnSubmit(c);
-                db.SubmitChanges();
+                GenerateContribution(contribution, user, Now);
+                GenerateContribution(contribution * 4m, user, Now.AddYears(-1));
             }
             var controller = new MobileAPIv2Controller(requestManager);
             var message = new MobileMessage
@@ -96,7 +86,7 @@ namespace CmsWeb.Areas.Public.ControllersTests
             result.count.ShouldBe(1);
             result.error.ShouldBe(0);
             var summary = JsonConvert.DeserializeObject<MobileGivingSummary>(result.data);
-            summary.Count.ShouldBe(1);
+            summary.Count.ShouldBe(yearCount);
             var current = summary[$"{year}"];
             current.ShouldNotBeNull();
             current.title.ShouldBe($"{year}");
@@ -108,6 +98,66 @@ namespace CmsWeb.Areas.Public.ControllersTests
             current.summary[0].comment.ShouldBe(comment);
             current.summary[0].count.ShouldBe(contribCount);
             current.summary[0].showAsPledge.ShouldBe(0);
+            if (contribution > 0)
+            {
+                current.summary[0].funds[0].name.ShouldBe("General Operation");
+                current.summary[0].funds[0].given.ShouldBe(total);
+            }
+            message = new MobileMessage
+            {
+                argInt = Now.Year - 1
+            };
+            data = message.ToString();
+            result = controller.FetchGivingSummary(data) as MobileMessage;
+            result.ShouldNotBeNull();
+            result.count.ShouldBe(1);
+            result.error.ShouldBe(0);
+            summary = JsonConvert.DeserializeObject<MobileGivingSummary>(result.data);
+            summary.Count.ShouldBe(yearCount);
+            if (contribution > 0)
+            {
+                var previous = summary[$"{year - 1}"];
+                previous.ShouldNotBeNull();
+                previous.title.ShouldBe($"{year - 1}");
+                previous.comment.ShouldBe(comment);
+                previous.count.ShouldBe(count);
+                previous.loaded.ShouldBe(1);
+                previous.total.ShouldBe(prevTotal);
+                previous.summary[0].title.ShouldBe("Contributions");
+                previous.summary[0].comment.ShouldBe(comment);
+                previous.summary[0].count.ShouldBe(contribCount);
+                previous.summary[0].showAsPledge.ShouldBe(0);
+                previous.summary[0].funds[0].name.ShouldBe("General Operation");
+                previous.summary[0].funds[0].given.ShouldBe(prevTotal);
+            }
+        }
+
+        private void GenerateContribution(decimal contribution, User user, DateTime date)
+        {
+            var c = new Contribution
+            {
+                PeopleId = user.PeopleId,
+                ContributionAmount = contribution,
+                ContributionDate = date.Date,
+                ContributionStatusId = ContributionStatusCode.Recorded,
+                ContributionTypeId = ContributionTypeCode.Online,
+                CreatedDate = date,
+                FundId = 1
+            };
+            db.Contributions.InsertOnSubmit(c);
+            var bundle = new BundleHeader
+            {
+                BundleHeaderTypeId = 2,
+                BundleStatusId = 0,
+                ChurchId = 1,
+                ContributionDate = date,
+                CreatedDate = date,
+                DepositDate = date,
+                ModifiedDate = date,
+            };
+            db.BundleHeaders.InsertOnSubmit(bundle);
+            db.BundleDetails.InsertOnSubmit(new BundleDetail { Contribution = c, BundleHeader = bundle, CreatedDate = date });
+            db.SubmitChanges();
         }
 
         [Fact]

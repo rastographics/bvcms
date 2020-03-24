@@ -102,7 +102,7 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
                         foreach (AttendanceGroup group in attendance.groups)
                         {
                             Organization org = cacheSet.getOrganization(group.groupID);
-                            if (org != null && org.NoSecurityLabel != true && org.NumCheckInLabels > 0 && group.present)
+                            if (org != null && org.NoSecurityLabel != true && group.present)
                             {
                                 needsSecurityLabel = true;
                             }

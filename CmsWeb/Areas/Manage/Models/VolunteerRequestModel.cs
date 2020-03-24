@@ -3,6 +3,7 @@ using CmsData.Codes;
 using CmsData.Registration;
 using CmsData.View;
 using CmsWeb.Areas.Main.Models;
+using CmsWeb.Properties;
 using Elmah;
 using System;
 using System.Collections.Generic;
@@ -11,6 +12,7 @@ using System.Web;
 using System.Web.Hosting;
 using System.Web.Mvc;
 using UtilityExtensions;
+using Settings = CmsData.Registration.Settings;
 
 namespace CmsWeb.Areas.OnlineReg.Models
 {
@@ -199,9 +201,10 @@ Sorry, I cannot be there.</a>";
 
         public void SendEmails(int? additional)
         {
-            var tag = DbUtil.Db.FetchOrCreateTag(Util.SessionId, Util.UserPeopleId, DbUtil.Db.NextTagId);
-            DbUtil.Db.ExecuteCommand("delete TagPerson where Id = {0}", tag.Id);
-            DbUtil.Db.TagAll(pids, tag);
+            var db = DbUtil.Db;
+            var tag = db.FetchOrCreateTag(Util.SessionId, db.UserPeopleId, db.NextTagId);
+            db.ExecuteCommand("delete TagPerson where Id = {0}", tag.Id);
+            db.TagAll(pids, tag);
             var dt = new DateTime(ticks);
 
             foreach (var id in pids)
@@ -216,17 +219,17 @@ Sorry, I cannot be there.</a>";
                 meeting.VolRequests.Add(vr);
             }
 
-            var qb = DbUtil.Db.ScratchPadCondition();
+            var qb = db.ScratchPadCondition();
             qb.Reset();
             qb.AddNewClause(QueryType.HasMyTag, CompareType.Equal, $"{tag.Id},temp");
-            meeting.AddEditExtra(DbUtil.Db, "TotalVolunteersNeeded", ((additional ?? 0) + limit).ToString());
-            qb.Save(DbUtil.Db);
+            meeting.AddEditExtra(db, "TotalVolunteersNeeded", ((additional ?? 0) + limit).ToString());
+            qb.Save(db);
 
-            var rurl = DbUtil.Db.ServerLink($"/OnlineReg/VolRequestReport/{meeting.MeetingId}/{person.PeopleId}/{dt.Ticks}");
+            var rurl = db.ServerLink($"/OnlineReg/VolRequestReport/{meeting.MeetingId}/{person.PeopleId}/{dt.Ticks}");
             var reportlink = $@"<a href=""{rurl}"">Volunteer Request Status Report</a>";
-            var list = DbUtil.Db.PeopleFromPidString(org.NotifyIds).ToList();
+            var list = db.PeopleFromPidString(org.NotifyIds).ToList();
             //list.Insert(0, person);
-            DbUtil.Db.Email(person.FromEmail, list,
+            db.Email(person.FromEmail, list,
                 "Volunteer Commitment for " + org.OrganizationName,
                 $@"
 <p>{person.Name} has requested volunteers on {meeting.MeetingDate:MMM d} for {meeting.MeetingDate:h:mm tt}.</p>
@@ -253,11 +256,11 @@ Sorry, I cannot be there.</a>";
             {
                 try
                 {
-                    var db = CMSDataContext.Create(host);
+                    var newdb = CMSDataContext.Create(host);
                     // set these again inside thread local storage
                     Util.UserEmail = useremail;
                     Util.IsInRoleEmailTest = isinroleemailtest;
-                    db.SendPeopleEmail(eqid);
+                    newdb.SendPeopleEmail(eqid);
                 }
                 catch (Exception ex)
                 {
@@ -265,7 +268,7 @@ Sorry, I cannot be there.</a>";
                     var errorLog = ErrorLog.GetDefault(null);
                     errorLog.Log(new Error(ex2));
 
-                    var db = CMSDataContext.Create(host);
+                    var newdb = CMSDataContext.Create(host);
                     // set these again inside thread local storage
                     Util.UserEmail = useremail;
                     Util.IsInRoleEmailTest = isinroleemailtest;

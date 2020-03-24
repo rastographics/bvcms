@@ -6,6 +6,7 @@ using CmsWeb.Models;
 using System;
 using System.Configuration;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -26,8 +27,9 @@ namespace CmsWeb.Areas.Finance.Controllers
         [Route("~/Statements")]
         public ActionResult Index()
         {
+            var userId = CurrentDatabase.UserId;
             var r = CurrentDatabase.ContributionsRuns.OrderByDescending(mm => mm.Id).FirstOrDefault();
-            if (r != null && r.Running == 1 && DateTime.Now.Subtract(r.Started ?? DateTime.MinValue).TotalMinutes < 1)
+            if (r != null && r.Running == 1 && r.UserId == userId && DateTime.Now.Subtract(r.Started ?? DateTime.MinValue).TotalMinutes < 1)
             {
                 return Redirect("/Statements/Progress");
             }
@@ -44,42 +46,59 @@ namespace CmsWeb.Areas.Finance.Controllers
                 return Content("<h3>Must have a Startdate and Enddate</h3>");
             }
 
-            var runningtotals = new ContributionsRun
-            {
-                Started = DateTime.Now,
-                Count = 0,
-                Processed = 0
-            };
-            //var db = Db;
-            var cs = Models.Report.ContributionStatements.GetStatementSpecification(CurrentDatabase, customstatement);
+            var spec = ContributionStatementsExtract.GetStatementSpecification(CurrentDatabase, customstatement);
 
             if (!startswith.HasValue())
             {
                 startswith = null;
             }
-
-            if (exportcontributors)
-            {
-                var noaddressok = !CurrentDatabase.Setting("RequireAddressOnStatement", true);
-                const bool useMinAmt = true;
-                if (tagid == 0)
-                {
-                    tagid = null;
-                }
-
-                var qc = APIContribution.Contributors(CurrentDatabase, fromDate.Value, endDate.Value, 0, 0, 0, cs.Funds, noaddressok, useMinAmt, startswith, sort, tagid: tagid, excludeelectronic: excludeelectronic);
-                return ExcelExportModel.ToDataTable(qc.ToList()).ToExcel("Contributors.xlsx");
-            }
-            CurrentDatabase.ContributionsRuns.InsertOnSubmit(runningtotals);
-            CurrentDatabase.SubmitChanges();
-            var cul = CurrentDatabase.Setting("Culture", "en-US");
-            var host = CurrentDatabase.Host;
-
-            var output = Output(host);
+            var noaddressok = !CurrentDatabase.Setting("RequireAddressOnStatement", true);
+            const bool useMinAmt = true;
             if (tagid == 0)
             {
                 tagid = null;
             }
+            var qc = APIContribution.Contributors(CurrentDatabase, fromDate.Value, endDate.Value, 0, 0, 0, spec.Funds, noaddressok, useMinAmt, startswith, sort, tagid: tagid, excludeelectronic: excludeelectronic);
+            var contributors = qc.ToList();
+            if (exportcontributors)
+            {
+                return ExcelExportModel.ToDataTable(contributors).ToExcel("Contributors.xlsx");
+            }
+            var statementsRun = new ContributionsRun
+            {
+                Started = DateTime.Now,
+                Count = contributors.Count,
+                Processed = 0,
+                UUId = Guid.NewGuid(),
+                UserId = CurrentDatabase.UserId,
+            };
+            CurrentDatabase.ContributionsRuns.InsertOnSubmit(statementsRun);
+            CurrentDatabase.SubmitChanges();
+            var cul = CurrentDatabase.Setting("Culture", "en-US");
+            var host = CurrentDatabase.Host;
+            var id = $"{statementsRun.UUId:n}";
+
+            var output = Output(host, id);
+            if (tagid == 0)
+            {
+                tagid = null;
+            }
+
+            var showCheckNo = CurrentDatabase.Setting("RequireCheckNoOnStatement");
+            var showNotes = CurrentDatabase.Setting("RequireNotesOnStatement");
+            var statements = new ContributionStatements
+            {
+                UUId = Guid.Parse(id),
+                FromDate = fromDate.Value,
+                ToDate = endDate.Value,
+                typ = 3,
+                //TODO: once we switch to entirely html-based statement templates we won't need to check for these options
+                NumberOfColumns = showCheckNo || showNotes ? 1 : 2,
+                ShowCheckNo = showCheckNo,
+                ShowNotes = showNotes,
+            };
+            // Must do this before entering the background worker because it relies on the Application context
+            statements.GetConverter();
 
             var elmah = Elmah.ErrorLog.GetDefault(System.Web.HttpContext.Current);
             HostingEnvironment.QueueBackgroundWorkItem(ct =>
@@ -88,15 +107,23 @@ namespace CmsWeb.Areas.Finance.Controllers
                 Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture(cul);
                 try
                 {
-                    var m = new ContributionStatementsExtract(host, fromDate.Value, endDate.Value, output, startswith, sort, tagid, excludeelectronic);
-                    m.DoWork(cs);
+                    var m = new ContributionStatementsExtract(host, fromDate.Value, endDate.Value, output, startswith, sort, tagid, excludeelectronic)
+                    {
+                        id = id
+                    };
+                    m.DoWork(statements, spec, contributors);
                 }
                 catch (Exception e)
                 {
                     elmah.Log(new Elmah.Error(e));
+                    var db = CMSDataContext.Create(host);
+                    var run = db.ContributionsRuns.Single(c => c.UUId == Guid.Parse(id));
+                    run.Error = e.Message;
+                    run.Completed = DateTime.Now;
+                    db.SubmitChanges();
                 }
             });
-            return Redirect("/Statements/Progress");
+            return Redirect($"/Statements/Progress/{id}");
         }
 
         public ActionResult SomeTaskCompleted(string result)
@@ -106,22 +133,23 @@ namespace CmsWeb.Areas.Finance.Controllers
 
         //TODO: This filename is too predictable and can cause one request to be blocked by another
         //      Create a more unique filename and add it to the contributionsrun that is creating this file to be downloaded later
-        private static string Output(string host)
+        private static string Output(string host, string id)
         {
-            var output = Environment.ExpandEnvironmentVariables(ConfigurationManager.AppSettings["SharedFolder"]);
-            output = output + $"/Statements/contributions_{host}.pdf";
+            var path = Path.Combine(Environment.ExpandEnvironmentVariables(ConfigurationManager.AppSettings["SharedFolder"]), "Statements");
+            Directory.CreateDirectory(path);
+            var output = Path.Combine(path, $"contributions_{host}_{id}.pdf");
             return output;
         }
 
-
-        [HttpGet]
-        public ActionResult Progress()
+        [HttpGet, Route("~/Statements/Progress/{id?}")]
+        public ActionResult Progress(string id)
         {
-            var r = CurrentDatabase.ContributionsRuns.OrderByDescending(mm => mm.Id).First();
+            Guid? uuid = id == null ? (Guid?)null : Guid.Parse(id);
+            var r = CurrentDatabase.ContributionsRuns.Where(mm => id == null || mm.UUId == uuid).OrderByDescending(mm => mm.Id).First();
             var html = new StringBuilder();
             if (r.CurrSet > 0)
             {
-                html.Append("<a href=\"/Statements/Download\">PDF with all households</a><br>");
+                html.Append($"<a href=\"/Statements/Download/{id}\">PDF with all households</a><br>");
             }
 
             if (r.Sets.HasValue())
@@ -129,21 +157,21 @@ namespace CmsWeb.Areas.Finance.Controllers
                 var sets = r.Sets.Split(',').Select(ss => ss.ToInt()).ToList();
                 foreach (var set in sets)
                 {
-                    html.Append($"<a href=\"/Statements/Download/{set}\">PDF with {set} pages per household</a><br>");
+                    html.Append($"<a href=\"/Statements/Download/{id}/{set}\">Download PDF {set}</a><br>");
                 }
             }
             ViewBag.download = html.ToString();
             return View(r);
         }
 
-        [HttpGet, Route("~/Statements/Download/{id:int?}")]
-        public ActionResult Download(int? id)
+        [HttpGet, Route("~/Statements/Download/{id}/{idx:int?}")]
+        public ActionResult Download(string id, int? idx)
         {
-            var output = Output(CurrentDatabase.Host);
+            var output = Output(CurrentDatabase.Host, id);
             var fn = output;
-            if (id.HasValue)
+            if (idx.HasValue)
             {
-                fn = ContributionStatementsExtract.Output(output, id.Value);
+                fn = ContributionStatementsExtract.Output(output, idx.Value);
             }
 
             if (!System.IO.File.Exists(fn))

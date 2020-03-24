@@ -98,7 +98,7 @@ namespace CmsWeb.Areas.People.Models
         {
             var limitvisibility = Util2.OrgLeadersOnly || !HttpContextFactory.Current.User.IsInRole("Access");
             var roles = CurrentDatabase.CurrentRoles();
-            return from etd in CurrentDatabase.InvolvementPrevious(PeopleId, Util.UserId)
+            return from etd in CurrentDatabase.InvolvementPrevious(PeopleId, CurrentDatabase.UserId)
                    where etd.TransactionStatus == false
                    where etd.PeopleId == PeopleId
                    where etd.TransactionTypeId >= 4

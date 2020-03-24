@@ -22,6 +22,8 @@
     bool useEmbeddedMap;
     bool.TryParse(Model.getSetting("UseEmbeddedMap")?.value ?? "false", out useEmbeddedMap);
 
+    mapModel.SetUseEmbeddedMap(useEmbeddedMap);
+
     if (!string.IsNullOrWhiteSpace(showOnlyName) && !string.IsNullOrWhiteSpace(showOnlyValue))
     {
         mapModel.SetShowOnly(showOnlyName, showOnlyValue);
@@ -63,10 +65,10 @@
     </div>
     <div class="@(useEmbeddedMap ? "col-md-6" : "col-md-12")">
         <ul style="overflow: auto; height: 600px">
-            @foreach (var i in Model.getGroups().Organizations)
+            @foreach (var i in mapModel.Locations())
             {
                 var gl = new GroupLookup();
-                gl.populateFromOrg(i);
+                gl.populateFromOrg(i.org);
                 @Html.Raw(Model.replaceAndWrite(gl));
             }
         </ul>
