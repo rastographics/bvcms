@@ -66,6 +66,12 @@ namespace UtilityExtensions
             return int.TryParse(strValue, out int v) ? v : defaultValue;
         }
 
+        public static int GetFromSession(string name, int defaultValue = 0)
+        {
+            var strValue = GetFromSession<string>(name);
+            return int.TryParse(strValue, out int v) ? v : defaultValue;
+        }
+
         public static DateTime? GetFromSession(string name, DateTime? defaultValue = null)
         {
             var strValue = GetFromSession<string>(name);
