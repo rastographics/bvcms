@@ -98,9 +98,9 @@ namespace CmsWeb.Areas.Setup.Controllers
                 string html = widget.Generate();
                 return Content(html, "text/html");
             }
-            catch
+            catch(Exception e)
             {
-                return Content("Error loading widget");
+                return Content(e.Message);
             }
         }
     }

@@ -22,35 +22,17 @@ namespace CmsWeb.Areas.Setup.Models
         public int HTMLContentId { get; set; }
         public int PythonContentId { get; set; }
         public int SQLContentId { get; set; }
+        public int[] Roles { get; set; }
         public bool Enabled;
         public int Order;
         public bool System;
-
-        public List<DashboardWidgetRole> DashboardWidgetRoles;
-
-        public Content HTMLContent
-        {
-            get => CurrentDatabase.Contents.Where(c => c.Id == HTMLContentId).SingleOrDefault();
-        }
-
-        public Content PythonContent
-        {
-            get => CurrentDatabase.Contents.Where(c => c.Id == PythonContentId).SingleOrDefault();
-        }
-
-        public Content SQLContent
-        {
-            get => CurrentDatabase.Contents.Where(c => c.Id == SQLContentId).SingleOrDefault();
-        }
-
-        //public List<string> Roles
-        //{
-        //    get => DashboardWidgetRoles.Select(wr => wr.Role.RoleName).ToList();
-        //}
+        
+        public Content HTMLContent { get; set; }
+        public Content PythonContent { get; set; }
+        public Content SQLContent { get; set; }
 
         public CMSDataContext CurrentDatabase { get; set; }
         private Content BlankContent = new Content { Id = 0, Name = "(not specified)" };
-        private Role BlankRole = new Role { RoleId = 0, RoleName = "(not specified)" };
 
         [Obsolete(Errors.ModelBindingConstructorError, false)]
         public DashboardWidgetModel() { }
@@ -105,14 +87,12 @@ namespace CmsWeb.Areas.Setup.Models
             return new SelectList(Contents, "Id", "Name", PythonContentId);
         }
 
-        public IEnumerable<SelectListItem> UnassignedRoles()
+        public IEnumerable<SelectListItem> AllRoles()
         {
-            IEnumerable<int> AssignedRoleIDs = DashboardWidgetRoles.Select(r => r.RoleId);
-            var UnassignedRoles = CurrentDatabase.Roles
-                    .Where(r => !AssignedRoleIDs.Contains(r.RoleId))
+            var AllRoles = CurrentDatabase.Roles
+                    .OrderBy(r => r.RoleName)
                     .ToList();
-            UnassignedRoles.Add(BlankRole);
-            return new SelectList(UnassignedRoles, "RoleId", "RoleName", 0);
+            return new SelectList(AllRoles, "RoleId", "RoleName");
         }
 
         public void Fill(DashboardWidget widget)
@@ -125,7 +105,10 @@ namespace CmsWeb.Areas.Setup.Models
             Enabled = widget.Enabled;
             Order = widget.Order;
             System = widget.System;
-            DashboardWidgetRoles = widget.DashboardWidgetRoles.ToList();
+            HTMLContent = widget.HTMLContent;
+            PythonContent = widget.PythonContent;
+            SQLContent = widget.SQLContent;
+            Roles = widget.DashboardWidgetRoles.Select(r => r.RoleId).ToArray();
         }
 
         public void UpdateModel()
@@ -135,16 +118,30 @@ namespace CmsWeb.Areas.Setup.Models
             {
                 // update existing widget
                 widget = CurrentDatabase.DashboardWidgets.Where(w => w.Id == Id).Single();
-                widget.HTMLContentId = null;
-                widget.PythonContentId = null;
-                widget.SQLContentId = null;
                 widget.CopyPropertiesFrom(this);
+                widget.HTMLContent = CurrentDatabase.Contents.Where(c => c.Id == HTMLContentId).SingleOrDefault();
+                widget.HTMLContentId = (HTMLContentId == 0) ? (int?)null : HTMLContentId;
+                widget.PythonContent = CurrentDatabase.Contents.Where(c => c.Id == PythonContentId).SingleOrDefault();
+                widget.PythonContentId = (PythonContentId == 0) ? (int?)null : PythonContentId;
+                widget.SQLContent = CurrentDatabase.Contents.Where(c => c.Id == SQLContentId).SingleOrDefault();
+                widget.SQLContentId = (SQLContentId == 0) ? (int?)null : SQLContentId;
+                SetRoles(Roles);
             }
             else
             {
                 // create new widget
                 widget = new DashboardWidget();
                 widget.CopyPropertiesFrom(this);
+                if (Roles != null)
+                {
+                    foreach (int roleId in Roles)
+                    {
+                        widget.DashboardWidgetRoles.Add(new DashboardWidgetRole()
+                        {
+                            RoleId = roleId
+                        });
+                    }
+                }
                 CurrentDatabase.DashboardWidgets.InsertOnSubmit(widget);
             }
         }
@@ -165,16 +162,19 @@ namespace CmsWeb.Areas.Setup.Models
             db.SubmitChanges();
         }
 
-        public void SetRoles(List<int> roleIds)
+        public void SetRoles(int[] roleIds)
         {
             var existing = CurrentDatabase.DashboardWidgetRoles.Where(r => r.WidgetId == Id);
             CurrentDatabase.DashboardWidgetRoles.DeleteAllOnSubmit(existing);
             CurrentDatabase.SubmitChanges();
 
-            foreach (int roleId in roleIds)
+            if (roleIds != null)
             {
-                var role = new DashboardWidgetRole { RoleId = roleId, WidgetId = Id };
-                CurrentDatabase.DashboardWidgetRoles.InsertOnSubmit(role);
+                foreach (int roleId in roleIds)
+                {
+                    var role = new DashboardWidgetRole { RoleId = roleId, WidgetId = Id };
+                    CurrentDatabase.DashboardWidgetRoles.InsertOnSubmit(role);
+                }
             }
             CurrentDatabase.SubmitChanges();
         }
