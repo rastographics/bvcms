@@ -87,9 +87,10 @@
             <div class="row">
                 <template v-for="family in families">
                     <div class="col-xs-12 col-md-6 family">
-                        <h4 v-on:click="selectFamily(family)">
-                            <a>{{ family.name }} Family</a>
-                        </h4>
+                        <div v-on:click="selectFamily(family)">
+                            <a class="h4">{{ family.name }} Family</a>
+                            <p v-if="family.memberList.length" style="font-size: 12px;">{{ family.memberList }}</p>
+                        </div>
                     </div>
                 </template>
             </div>
@@ -113,8 +114,8 @@
                 <template v-for="org in classes">
                     <div class="col-xs-12 col-md-6 class">
                         <div v-on:click="updateMembership(editingPerson, org, classData.member, true)">
-                            <a style="font-size: 12px; margin-bottom: 5px;">{{ org.date | formatTime }} <span v-if="org.location">- {{ org.location }}</span></a>
-                            <h4>{{ org.name }}<span v-if="org.leaderName"> ({{ org.leaderName }})</span></h4>
+                            <a style="font-size: 12px;">{{ org.date | formatTime }} <span v-if="org.location">- {{ org.location }}</span></a>
+                            <h4 style="margin-bottom: 0;">{{ org.name }}<span v-if="org.leaderName"> ({{ org.leaderName }})</span></h4>
                         </div>
                     </div>
                 </template>
@@ -286,7 +287,7 @@
                             <div class="controls">
                                 <label class="control-label" for="country">Country</label>
                                 <select class="form-control" id="country" name="country" v-model="editingPerson.country">
-                                    <option v-for="country in profile.countries" :value="country.id">{{ country.name }}</option>
+                                    <option v-for="country in profile.countries" :value="country.name">{{ country.name }}</option>
                                 </select>
                             </div>
                         </div>

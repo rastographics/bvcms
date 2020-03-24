@@ -1,7 +1,7 @@
 ﻿@using CmsData
 @model IEnumerable<User>
 @{
-    var mfaSystemEnabled = CmsWeb.Membership.MembershipService.IsTwoFactorAuthenticationEnabled(DbUtil.Db);
+    var mfaSystemEnabled = CmsWeb.Membership.MembershipService.IsTwoFactorAuthenticationEnabled(ViewExtensions2.CurrentDatabase);
 }
 @helper Roles(User user)
 {

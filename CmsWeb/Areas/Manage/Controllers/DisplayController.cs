@@ -49,11 +49,11 @@ namespace CmsWeb.Areas.Manage.Controllers
         {
             if (keywordfilter.HasValue())
             {
-                Session["ContentKeywordFilter"] = keywordfilter.Trim();
+                Util.ContentKeywordFilter = keywordfilter.Trim();
             }
             else
             {
-                Session.Remove("ContentKeywordFilter");
+                Util.ContentKeywordFilter = null;
             }
 
             return Redirect($"/Display#tab_{tab}");
@@ -118,7 +118,7 @@ namespace CmsWeb.Areas.Manage.Controllers
             content.Body = "";
             content.DateCreated = DateTime.Now;
             content.CreatedBy = Util.UserName;
-            var ContentKeywordFilter = Session["ContentKeywordFilter"] as string;
+            var ContentKeywordFilter = Util.ContentKeywordFilter;
             if (ContentKeywordFilter.HasValue())
             {
                 content.SetKeyWords(CurrentDatabase, new[] { ContentKeywordFilter });

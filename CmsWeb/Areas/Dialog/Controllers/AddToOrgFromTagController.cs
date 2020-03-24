@@ -3,6 +3,7 @@ using CmsWeb.Areas.Dialog.Models;
 using CmsWeb.Lifecycle;
 using System;
 using System.Web.Mvc;
+using UtilityExtensions;
 
 namespace CmsWeb.Areas.Dialog.Controllers
 {
@@ -45,7 +46,7 @@ namespace CmsWeb.Areas.Dialog.Controllers
 
             if (!op.Started.HasValue)
             {
-                DbUtil.LogActivity($"Add to org from tag for {Session["ActiveOrganization"]}");
+                DbUtil.LogActivity($"Add to org from tag for {Util.ActiveOrganization}");
                 op.Process(CurrentDatabase);
             }
 

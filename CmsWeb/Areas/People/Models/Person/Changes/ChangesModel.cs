@@ -48,11 +48,11 @@ namespace CmsWeb.Areas.People.Models
             {
                 case "p":
                     Person.UpdateValueFromText(field, value);
-                    Person.LogChanges(CurrentDatabase, Util.UserPeopleId ?? 0);
+                    Person.LogChanges(CurrentDatabase, CurrentDatabase.UserPeopleId ?? 0);
                     break;
                 case "f":
                     Person.Family.UpdateValueFromText(field, value);
-                    Person.Family.LogChanges(CurrentDatabase, PeopleId, Util.UserPeopleId ?? 0);
+                    Person.Family.LogChanges(CurrentDatabase, PeopleId, CurrentDatabase.UserPeopleId ?? 0);
                     break;
             }
             CurrentDatabase.SubmitChanges();

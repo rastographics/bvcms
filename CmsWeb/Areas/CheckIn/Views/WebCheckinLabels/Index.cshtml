@@ -4,7 +4,7 @@
     ViewBag.Title = "Web Check-in Labels";
     ViewBag.PageHeader = "Web Check-in Labels";
 
-    var types = (from t in DbUtil.Db.CheckInLabelTypes
+    var types = (from t in ViewExtensions2.CurrentDatabase.CheckInLabelTypes
                  select new
                  {
                      id = t.Id,
@@ -12,7 +12,7 @@
                  }).ToList();
     var sizes = new List<int> { 100, 200 };
 
-    var labeloptions = DbUtil.Db.CheckInLabels.ToList();
+    var labeloptions = ViewExtensions2.CurrentDatabase.CheckInLabels.ToList();
 }
 @section scripts {
 <script>

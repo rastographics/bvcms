@@ -26,7 +26,7 @@ namespace CmsWeb.Areas.Dialog.Controllers
             model.UpdateLongRunningOp(CurrentDatabase, DeleteMeeting.Op);
             if (!model.Started.HasValue)
             {
-                DbUtil.LogActivity($"Delete Meeting {model.MeetingId}", orgid: model.OrgId, userId: Util.UserPeopleId);
+                DbUtil.LogActivity($"Delete Meeting {model.MeetingId}", orgid: model.OrgId, userId: CurrentDatabase.UserPeopleId);
                 model.Process(CurrentDatabase);
             }
             return View(model);

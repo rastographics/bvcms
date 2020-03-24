@@ -297,25 +297,70 @@ namespace CmsData
         }
         internal Expression GetEldestFamilyMember()
         {
+            Expression expr;
+            Expression<Func<Person, bool>> pred;
+
+            var aMemberType = (MemberTypes ?? "").Split(';').Select(s => s.Split(',')[0].ToInt()).ToArray();
+            var idMemberTypes = string.Join(",", aMemberType);
+            var aAttendType = (AttendTypes ?? "").Split(';').Select(s => s.Split(',')[0].ToInt()).ToArray();
+            var idAttendTypes = string.Join(",", aAttendType);
+            bool boolFilterAttendType;
+
+            if (MemberTypes == null || aMemberType[0] == 0)
+            {
+                idMemberTypes = "";
+            }
+
+            // Note: For Attend type, the people IDs that is generated for database function
+            // AttendanceTypeAsOf, does not generate entries ignoring the Attend Type, if the id is an
+            // empty string.
+
+            // Set variable to indicate whether or not Attend Type is filtered
+            if (AttendTypes == null || aAttendType[0] == 0)
+            {
+                boolFilterAttendType = false;
+            }
+            else
+            {
+                boolFilterAttendType = true;
+            }
+
             DateTime? enddt = null;
             if (!EndDate.HasValue && StartDate.HasValue)
                 enddt = StartDate.Value.AddHours(24);
             if (EndDate.HasValue)
                 enddt = EndDate.Value.AddHours(24);
 
-            var q = db.AttendedAsOf(ProgramInt, DivisionInt, OrganizationInt, StartDate, enddt, false);
+            IQueryable<int> qMemberType;
+            qMemberType = db.AttendMemberTypeAsOf(StartDate, enddt, ProgramInt, DivisionInt, OrganizationInt, idMemberTypes, null)
+                    .Select(a => a.PeopleId ?? 0).Distinct();
 
-            Expression<Func<Person, bool>> pred = p =>
+            IQueryable<int> qAttendType;
+            if (boolFilterAttendType)
+            {
+                qAttendType = db.AttendanceTypeAsOf(StartDate, enddt, ProgramInt, DivisionInt, OrganizationInt, OrgTypeInt ?? 0, idAttendTypes)
+                    .Select(a => a.PeopleId).Distinct();
+            }
+            else
+            {
+                qAttendType = db.AttendedAsOf(ProgramInt, DivisionInt, OrganizationInt, StartDate, enddt, false)
+                    .Select(a => a.PeopleId).Distinct();
+            }
+
+            IQueryable<int> q;
+            q = qMemberType.Intersect(qAttendType);
+
+            pred = p =>
                 (from p2 in p.Family.People
                  where (op == CompareType.Equal || op == CompareType.OneOf) ? CodeIntIds.Contains(p2.PositionInFamilyId) : !CodeIntIds.Contains(p2.PositionInFamilyId)
-                 where q.Select(c => c.PeopleId).Contains(p2.PeopleId)
+                 where q.Contains(p2.PeopleId)
                  orderby (p2.BirthYear ?? 9999), (p2.BirthMonth ?? 99), (p2.BirthDay ?? 99),
                     db.SpaceToNull(p2.LastName) ?? "zzz",
                     db.SpaceToNull(p2.NickName) ?? db.SpaceToNull(p2.FirstName) ?? "zzz",
                     p2.MiddleName + p2.SuffixCode, p2.PeopleId > 0 ? p2.PeopleId : 99999999
                  select p2).First().PeopleId == p.PeopleId;
 
-            Expression expr = Expression.Invoke(pred, parm);
+            expr = Expression.Invoke(pred, parm);
             return expr;
         }
     }

@@ -7,7 +7,7 @@
 @{
     ViewBag.Title = "Online Registration";
     Layout = "~/Views/Shared/onlinereg2.cshtml";
-    var db = DbUtil.Db;
+    var db = ViewExtensions2.CurrentDatabase;
     var VaultDisabled = db.Setting("VaultDisabled");
     var debitcredit = db.GetDebitCreditLabel(Model.ProcessType);
 

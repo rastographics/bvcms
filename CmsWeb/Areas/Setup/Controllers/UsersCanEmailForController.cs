@@ -28,7 +28,7 @@ namespace CmsWeb.Areas.Setup.Controllers
         public ActionResult PersonCanEmailForList(int id)
         {
             Response.NoCache();
-            var t = CurrentDatabase.FetchOrCreateTag(Util.SessionId, Util.UserPeopleId, DbUtil.TagTypeId_AddSelected);
+            var t = CurrentDatabase.FetchOrCreateTag(Util.SessionId, CurrentDatabase.UserPeopleId, DbUtil.TagTypeId_AddSelected);
             CurrentDatabase.TagPeople.DeleteAllOnSubmit(t.PersonTags);
             CurrentDatabase.SubmitChanges();
             if (id > 0)
@@ -56,7 +56,7 @@ namespace CmsWeb.Areas.Setup.Controllers
         [Route("~/UpdatePersonCanEmailForList/{id:int}")]
         public ActionResult UpdatePersonCanEmailForList(int id, int? topid0)
         {
-            var t = CurrentDatabase.FetchOrCreateTag(Util.SessionId, Util.UserPeopleId, DbUtil.TagTypeId_AddSelected);
+            var t = CurrentDatabase.FetchOrCreateTag(Util.SessionId, CurrentDatabase.UserPeopleId, DbUtil.TagTypeId_AddSelected);
             var selected_pids = (from p in t.People(CurrentDatabase)
                                  where p.PeopleId != id
                                  select p.PeopleId).ToArray();

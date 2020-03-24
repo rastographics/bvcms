@@ -100,6 +100,7 @@ namespace CmsWeb.Areas.Main.Models
         }
         public MassEmailer(Guid id, bool? parents = null, bool? ccparents = null, bool? nodups = null, int? orgid = null)
         {
+            var db = DbUtil.Db;
             wantParents = parents ?? false;
             noDuplicates = nodups ?? false;
             CcParents = ccparents ?? false;
@@ -107,7 +108,7 @@ namespace CmsWeb.Areas.Main.Models
             IQueryable<Person> q = null;
             if (OrgId.HasValue && id != Guid.Empty)
             {
-                q = from p in DbUtil.Db.PeopleQuery(id)
+                q = from p in db.PeopleQuery(id)
                     where ((p.EmailAddress ?? "") != "" && (p.SendEmailAddress1 ?? true))
                         || ((p.EmailAddress2 ?? "") != "" && (p.SendEmailAddress2 ?? false))
                     select p;
@@ -116,19 +117,19 @@ namespace CmsWeb.Areas.Main.Models
             {
                 if (id == Guid.Empty)
                 {
-                    q = DbUtil.Db.PeopleQuery2(Util.UserPeopleId.ToString());
+                    q = db.PeopleQuery2(db.UserPeopleId.ToString());
                 }
                 else
                 {
-                    q = DbUtil.Db.PeopleQuery(id);
+                    q = db.PeopleQuery(id);
                 }
 
-                var c = DbUtil.Db.LoadQueryById2(id);
+                var c = db.LoadQueryById2(id);
                 var cc = c.ToClause();
 
                 if (!cc.PlusParentsOf && !cc.ParentsOf && wantParents)
                 {
-                    q = DbUtil.Db.PersonQueryParents(q);
+                    q = db.PersonQueryParents(q);
                 }
 
                 if (CcParents)
@@ -153,14 +154,14 @@ namespace CmsWeb.Areas.Main.Models
                         select p;
                 }
             }
-            var tag = DbUtil.Db.PopulateSpecialTag(q, DbUtil.TagTypeId_Emailer);
+            var tag = db.PopulateSpecialTag(q, DbUtil.TagTypeId_Emailer);
             TagId = tag.Id;
             if (noDuplicates)
             {
-                DbUtil.Db.NoEmailDupsInTag(TagId);
+                db.NoEmailDupsInTag(TagId);
             }
 
-            var people = tag.People(DbUtil.Db);
+            var people = tag.People(db);
             Recipients = people.Select(p => p.ToString()).ToList();
             Count = people.Count();
         }

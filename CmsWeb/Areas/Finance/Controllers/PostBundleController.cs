@@ -44,15 +44,9 @@ namespace CmsWeb.Areas.Finance.Controllers
             }
 
             m.fund = m.Bundle.FundId ?? 1;
-            if (Request["images"] != null)
-            {
-                ViewData[SHOW_CHECK_IMAGES] = Request["images"] == "1";
-            }
-            else
-            {
-                ViewData[SHOW_CHECK_IMAGES] = Session[SHOW_CHECK_IMAGES];
-            }
-            Session[SHOW_CHECK_IMAGES] = ViewData[SHOW_CHECK_IMAGES];
+            ViewData[SHOW_CHECK_IMAGES] = 
+            Util.ShowCheckImages = 
+            (Request["images"] == "1" || Util.ShowCheckImages);
             return View(m);
         }
 
@@ -119,13 +113,15 @@ namespace CmsWeb.Areas.Finance.Controllers
 
         public ActionResult Names(string term)
         {
-            var n = PostBundleModel.Names(term, 10).ToArray();
+            var m = new PostBundleModel(CurrentDatabase);
+            var n = m.Names(term, 10).ToArray();
             return Json(n, JsonRequestBehavior.AllowGet);
         }
 
         public ActionResult Names2(string term)
         {
-            var n = PostBundleModel.Names2(term, 30).ToArray();
+            var m = new PostBundleModel(CurrentDatabase);
+            var n = m.Names2(term, 30).ToArray();
             return Json(n, JsonRequestBehavior.AllowGet);
         }
 

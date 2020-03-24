@@ -55,7 +55,7 @@ namespace CmsData
             {
                 if (!userId.HasValue || userId == 0)
                 {
-                    userId = Util.UserId;
+                    userId = db.UserId;
                 }
 
                 if (userId == 0)
@@ -121,7 +121,7 @@ namespace CmsData
         public static void LogPersonActivity(string activity, int pid, string name)
         {
             _logActivity(Util.Host, activity, null, pid, null, null);
-            if (pid == Util.UserPeopleId)
+            if (pid == Db.UserPeopleId)
             {
                 return;
             }

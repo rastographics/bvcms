@@ -5,7 +5,7 @@
     Layout = ViewExtensions2.TouchPointLayoutWithoutHeaderFooter();
     ViewBag.Title = "Resources";
 
-    var resourcesEnabled = DbUtil.Db.Setting("Resources-Enabled");
+    var resourcesEnabled = ViewExtensions2.CurrentDatabase.Setting("Resources-Enabled");
 }
 @section head
 {

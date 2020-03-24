@@ -260,7 +260,7 @@ namespace CmsWeb.Areas.Manage.Controllers
                     select p.PeopleId;
             foreach (var pid in q.Distinct())
             {
-                Person.Tag(CurrentDatabase, pid, tagname, Util.UserPeopleId, DbUtil.TagTypeId_Personal);
+                Person.Tag(CurrentDatabase, pid, tagname, CurrentDatabase.UserPeopleId, DbUtil.TagTypeId_Personal);
             }
 
             CurrentDatabase.SubmitChanges();
@@ -280,7 +280,7 @@ namespace CmsWeb.Areas.Manage.Controllers
                     select line.GetCsvToken(1, sep: "\t").ToInt();
             if (newtag)
             {
-                var tag = CurrentDatabase.FetchTag(name, Util.UserPeopleId, DbUtil.TagTypeId_Personal);
+                var tag = CurrentDatabase.FetchTag(name, CurrentDatabase.UserPeopleId, DbUtil.TagTypeId_Personal);
                 if (tag != null)
                 {
                     CurrentDatabase.ExecuteCommand("delete TagPerson where Id = {0}", tag.Id);

@@ -319,7 +319,7 @@ namespace CmsWeb.Models
                 {
                     user = u;
                     impersonating = true;
-                    HttpContextFactory.Current.Session["IsNonFinanceImpersonator"] = "true";
+                    Util.IsNonFinanceImpersonator = true;
                     break;
                 }
 
@@ -397,7 +397,7 @@ namespace CmsWeb.Models
             return UserValidationResult.Valid(user);
         }
 
-        public static UserValidationResult AuthenticateLogon(string userName, string password, HttpSessionStateBase Session, HttpRequestBase Request, CMSDataContext db, CMSImageDataContext idb)
+        public static UserValidationResult AuthenticateLogon(string userName, string password, HttpRequestBase Request, CMSDataContext db, CMSImageDataContext idb)
         {
             var status = AuthenticateLogon(userName, password, Request.Url.OriginalString, db);
             if (status.IsValid)
@@ -407,7 +407,7 @@ namespace CmsWeb.Models
             return UserValidationResult.Invalid(UserValidationStatus.IncorrectPassword, status.ErrorMessage);
         }
 
-        public static void FinishLogin(string userName, HttpSessionStateBase Session, CMSDataContext db, CMSImageDataContext idb, bool logEntry = true)
+        public static void FinishLogin(string userName, CMSDataContext db, CMSImageDataContext idb, bool logEntry = true)
         {
             SetUserInfo(db, idb, userName, logEntry);
             FormsAuthentication.SetAuthCookie(userName, false);
@@ -417,10 +417,10 @@ namespace CmsWeb.Models
             }
         }
 
-        public static object AutoLogin(string userName, HttpSessionStateBase Session, HttpRequestBase Request, CMSDataContext db, CMSImageDataContext idb)
+        public static object AutoLogin(string userName, HttpRequestBase Request, CMSDataContext db, CMSImageDataContext idb)
         {
 #if DEBUG
-            FinishLogin(userName, Session, db, idb, false);
+            FinishLogin(userName, db, idb, false);
 #endif
             return null;
         }
@@ -452,9 +452,6 @@ namespace CmsWeb.Models
 
             if (i.u != null)
             {
-                Util.UserId = i.u.UserId;
-                Util.UserPeopleId = i.u.PeopleId;
-
                 Util.UserThumbPictureBgPosition = "top";
                 if (i.u.Person?.Picture != null)
                 {
@@ -479,7 +476,7 @@ namespace CmsWeb.Models
             Util.ActivePerson = i.u.Name;
             if (deleteSpecialTags)
             {
-                cmsdb.DeleteSpecialTags(Util.UserPeopleId);
+                cmsdb.DeleteSpecialTags(cmsdb.UserPeopleId);
             }
             return i.u;
         }
@@ -488,9 +485,9 @@ namespace CmsWeb.Models
         {
             if (!Roles.IsUserInRole(name, "Access") && !Roles.IsUserInRole(name, "OrgMembersOnly"))
             {
-                if (Util.UserPeopleId > 0)
+                if (db.UserPeopleId > 0)
                 {
-                    return $"/Person2/{Util.UserPeopleId}";
+                    return $"/Person2/{db.UserPeopleId}";
                 }
 
                 if (name.HasValue())

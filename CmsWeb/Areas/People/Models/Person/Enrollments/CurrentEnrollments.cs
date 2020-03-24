@@ -101,12 +101,12 @@ namespace CmsWeb.Areas.People.Models
             var oids = new int[0];
             if (Util2.OrgLeadersOnly)
             {
-                oids = CurrentDatabase.GetLeaderOrgIds(Util.UserPeopleId);
+                oids = CurrentDatabase.GetLeaderOrgIds(CurrentDatabase.UserPeopleId);
             }
 
             var roles = CurrentDatabase.CurrentRoles();
 
-            return from om in CurrentDatabase.InvolvementCurrent(PeopleId, Util.UserId)
+            return from om in CurrentDatabase.InvolvementCurrent(PeopleId, CurrentDatabase.UserId)
                    where (om.Pending ?? false) == false
                    where oids.Contains(om.OrganizationId) || !(limitvisibility && om.SecurityTypeId == 3)
                    where om.LimitToRole == null || roles.Contains(om.LimitToRole)

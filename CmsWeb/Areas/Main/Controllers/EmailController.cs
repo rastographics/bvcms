@@ -29,11 +29,6 @@ namespace CmsWeb.Areas.Main.Controllers
                                   bool? ishtml, bool? ccparents, bool? nodups, int? orgid, int? personid, 
                                   bool? recover, bool? onlyProspects, bool? membersAndProspects, bool? useUnlayer)
         {
-            if (Util.SessionTimedOut())
-            {
-                return Redirect("/Errors/SessionTimeout.htm");
-            }
-
             if (!body.HasValue())
             {
                 body = TempData["body"] as string;
@@ -87,7 +82,7 @@ namespace CmsWeb.Areas.Main.Controllers
             {
                 if (templateID != 0 || (!personid.HasValue && !orgid.HasValue))
                 {
-                    return Redirect($"/Person2/{Util.UserPeopleId}");
+                    return Redirect($"/Person2/{CurrentDatabase.UserPeopleId}");
                 }
             }
 
@@ -232,7 +227,7 @@ namespace CmsWeb.Areas.Main.Controllers
                         : "new draft " + DateTime.Now.FormatDateTm(),
                     TypeID = ContentTypeCode.TypeSavedDraft,
                     RoleID = roleId,
-                    OwnerID = Util.UserId
+                    OwnerID = CurrentDatabase.UserId
                 };
             }
 
@@ -274,7 +269,7 @@ namespace CmsWeb.Areas.Main.Controllers
                     : "new draft " + DateTime.Now.FormatDateTm(),
                 TypeID = content.TypeID,
                 RoleID = content.RoleID,
-                OwnerID = Util.UserId,
+                OwnerID = CurrentDatabase.UserId,
                 Title = content.Title,
                 Body = content.Body,
                 Archived = null,
@@ -340,12 +335,6 @@ namespace CmsWeb.Areas.Main.Controllers
             if (!User.IsInRole("Admin") && m.Body.Contains("{createaccount}", ignoreCase: true))
             {
                 return Json(new { id = 0, error = "Only Admin can use {createaccount}." });
-            }
-
-            if (Util.SessionTimedOut())
-            {
-                Session["massemailer"] = m;
-                return Content("timeout");
             }
 
             DbUtil.LogActivity("Emailing people");
@@ -509,12 +498,6 @@ namespace CmsWeb.Areas.Main.Controllers
                 return Json(new { error = TooLargeError });
             }
 
-            if (Util.SessionTimedOut())
-            {
-                Session["massemailer"] = m;
-                return Content("timeout");
-            }
-
             if (m.EmailFroms().Count(ef => ef.Value == m.FromAddress) == 0)
             {
                 return Json(new { error = "No email address to send from." });
@@ -522,7 +505,7 @@ namespace CmsWeb.Areas.Main.Controllers
 
             m.FromName = m.EmailFroms().First(ef => ef.Value == m.FromAddress).Text;
             var from = Util.FirstAddress(m.FromAddress, m.FromName);
-            var p = CurrentDatabase.LoadPersonById(Util.UserPeopleId ?? 0);
+            var p = CurrentDatabase.LoadPersonById(CurrentDatabase.UserPeopleId ?? 0);
 
             try
             {
@@ -645,7 +628,7 @@ namespace CmsWeb.Areas.Main.Controllers
         private void ValidateEmailReplacementCodes(CMSDataContext db, string emailText, MailAddress fromAddress)
         {
             var er = new EmailReplacements(db, emailText, fromAddress);
-            er.DoReplacements(db, db.LoadPersonById(Util.UserPeopleId ?? 0));
+            er.DoReplacements(db, db.LoadPersonById(CurrentDatabase.UserPeopleId ?? 0));
         }
     }
 }

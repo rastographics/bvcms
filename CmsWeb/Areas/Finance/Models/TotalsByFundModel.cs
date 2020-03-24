@@ -125,6 +125,7 @@ namespace CmsWeb.Models
                     Online = Online,
                     FilterByActiveTag = FilterByActiveTag,
                     FundSet = FundSet,
+                    IncludePledges = IncludePledges
                 }
             };
 #if DEBUG2

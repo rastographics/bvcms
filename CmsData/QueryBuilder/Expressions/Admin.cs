@@ -59,7 +59,7 @@ namespace CmsData
         {
             var tf = CodeIds == "1";
             Expression<Func<Person, bool>> pred = p =>
-                p.PeopleId == Util.UserPeopleId;
+                p.PeopleId == db.UserPeopleId;
             Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
             if (op == CompareType.Equal ^ tf)
                 expr = Expression.Not(expr);
