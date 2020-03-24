@@ -5,7 +5,7 @@
     ViewBag.Title = "Edit Draft";
     ViewBag.PageHeader = "Edit Draft";
     Layout = ViewExtensions2.TouchPointLayout();
-    var roleList = ContentModel.fetchRoles((CMSDataContext) ViewBag.CurrentDatabase);
+    var roleList = ContentModel.fetchRoles(ViewExtensions2.CurrentDatabase);
 }
 @using (Html.BeginForm("ContentUpdate", "Display", FormMethod.Post))
 {

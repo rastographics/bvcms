@@ -4,7 +4,8 @@
 @{
     ViewBag.Title = "Edit Template";
     ViewBag.PageHeader = "Edit Template";
-    Layout = ViewExtensions2.TouchPointLayout();var rolelist = ContentModel.fetchRoles((CMSDataContext) ViewBag.CurrentDatabase);
+    Layout = ViewExtensions2.TouchPointLayout();
+    var rolelist = ContentModel.fetchRoles(ViewExtensions2.CurrentDatabase);
 }
 @using (Html.BeginForm("ContentUpdate", "Display", FormMethod.Post))
 {

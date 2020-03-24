@@ -9,7 +9,7 @@ using UtilityExtensions;
 
 namespace CmsWeb.Models
 {
-    public class ContentModel : IDbBinder
+    public class ContentModel
     {
         public CMSDataContext CurrentDatabase { get; set; }
 

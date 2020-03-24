@@ -167,7 +167,6 @@ namespace CmsWeb.Areas.Manage.Controllers
 
             var bodytemplate = new { design = unlayerDesign, rawHtml = GetBody(body) };
             content.Body = JsonConvert.SerializeObject(bodytemplate);
-            content.TypeID = ContentTypeCode.TypeUnlayerTemplate;
             
             content.DateCreated = DateTime.Now;
 

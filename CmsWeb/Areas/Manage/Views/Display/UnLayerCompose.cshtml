@@ -3,11 +3,12 @@
 @using CmsWeb.Models
 @model Content
 @{
-    ViewBag.Title = "Compose Template";
-    ViewBag.PageHeader = "Compose Email Template";
+    var templatedraft = Model.TypeID == ContentTypeCode.TypeUnlayerTemplate ? "Template" : "Draft";
+    ViewBag.Title = "Compose " + Model.TypeID == templatedraft;
+    ViewBag.PageHeader = "Compose Email " + templatedraft;
     Layout = ViewExtensions2.TouchPointLayout();
     int tid = ViewBag.TemplateID;
-    var rolelist = ContentModel.fetchRoles((CMSDataContext)ViewBag.CurrentDatabase);
+    var rolelist = ContentModel.fetchRoles(ViewExtensions2.CurrentDatabase);
 }
 @section head
 {

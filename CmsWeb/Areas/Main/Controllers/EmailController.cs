@@ -53,9 +53,7 @@ namespace CmsWeb.Areas.Main.Controllers
                 DbUtil.LogActivity("Emailing people");
 
                 var m = new MassEmailer(id, parents, ccparents, nodups);
-
-                if (User.IsInRole("EmailBuilder"))
-                    m.UseUnlayer = useUnlayer;
+                m.UseUnlayer = useUnlayer;
 
                 m.Host = CurrentDatabase.Host;
 
