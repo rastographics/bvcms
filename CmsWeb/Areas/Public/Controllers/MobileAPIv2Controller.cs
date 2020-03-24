@@ -839,14 +839,9 @@ namespace CmsWeb.Areas.Public.Controllers
 
             User user = authentication.getUser();
 
-            if (user.PeopleId != message.argInt)
-            {
-                return BaseMessage.createErrorReturn("Giving history is not available for other people");
-            }
-
             BaseMessage response = new BaseMessage();
 
-            Person person = CurrentDatabase.People.SingleOrDefault(p => p.PeopleId == message.argInt);
+            Person person = user.Person;
 
             if (person == null)
             {
@@ -855,27 +850,18 @@ namespace CmsWeb.Areas.Public.Controllers
                 return response;
             }
 
-            int thisYear = DateTime.Now.Year;
-            int lastYear = DateTime.Now.Year - 1;
+            int thisYear = message.argInt;
+            int lastYear = thisYear - 1;
 
-            decimal lastYearTotal = (from c in CurrentDatabase.Contributions
-                                     where c.PeopleId == person.PeopleId
-                                             || c.PeopleId == person.SpouseId
-                                             && (person.ContributionOptionsId ?? StatementOptionCode.Joint) == StatementOptionCode.Joint
-                                     where !ContributionTypeCode.ReturnedReversedTypes.Contains(c.ContributionTypeId)
-                                     where c.ContributionStatusId == ContributionStatusCode.Recorded
+            var q = GetContributionsFor(person);
+            decimal lastYearTotal = (from c in q
                                      where c.ContributionDate.Value.Year == lastYear
                                      orderby c.ContributionDate descending
-                                     select c).AsEnumerable().Sum(c => c.ContributionAmount ?? 0);
+                                     select c).Sum(c => c.ContributionAmount ?? 0);
 
-            List<MobileGivingEntry> entries = (from c in CurrentDatabase.Contributions
+            List<MobileGivingEntry> entries = (from c in q
                                                let online = c.BundleDetails.Single().BundleHeader.BundleHeaderType.Description.Contains("Online")
-                                               where c.PeopleId == person.PeopleId
-                                                       || c.PeopleId == person.SpouseId
-                                                       && (person.ContributionOptionsId ?? StatementOptionCode.Joint) == StatementOptionCode.Joint
-                                               where !ContributionTypeCode.ReturnedReversedTypes.Contains(c.ContributionTypeId)
                                                where c.ContributionTypeId != ContributionTypeCode.Pledge
-                                               where c.ContributionStatusId == ContributionStatusCode.Recorded
                                                where c.ContributionDate.Value.Year == thisYear
                                                orderby c.ContributionDate descending
                                                select new MobileGivingEntry
@@ -906,6 +892,17 @@ namespace CmsWeb.Areas.Public.Controllers
             return response;
         }
 
+        private IQueryable<Contribution> GetContributionsFor(Person person)
+        {
+            return from c in CurrentDatabase.Contributions
+                   where c.PeopleId == person.PeopleId
+                           || c.PeopleId == person.SpouseId
+                           && (person.ContributionOptionsId ?? StatementOptionCode.Joint) == StatementOptionCode.Joint
+                   where !ContributionTypeCode.ReturnedReversedTypes.Contains(c.ContributionTypeId)
+                   where c.ContributionStatusId == ContributionStatusCode.Recorded
+                   select c;
+        }
+
         [HttpPost]
         public MobileMessage FetchGivingSummary(string data)
         {
@@ -923,7 +920,7 @@ namespace CmsWeb.Areas.Public.Controllers
             var peopleId = user.PeopleId.Value;
             var year = message.argInt;
 
-            var q = CurrentDatabase.Contributions.Where(c => c.PeopleId == peopleId);
+            var q = GetContributionsFor(user.Person);
             var givingYears = q.Select(c => c.ContributionDate.Value.Year).Distinct().OrderByDescending(v => v).ToList();
             if (year == 0)
             {
