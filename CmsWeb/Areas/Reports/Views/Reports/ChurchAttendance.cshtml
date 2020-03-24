@@ -1,5 +1,4 @@
-﻿@using CmsData
-@using UtilityExtensions
+﻿@using UtilityExtensions
 @model CmsWeb.Areas.Reports.Models.ChurchAttendanceModel
 @{
     Layout = ViewExtensions2.TouchPointLayout();
@@ -28,7 +27,7 @@
         <div class="visible-print-block text-center">
             <strong>Sunday Date:</strong> @Model.Sunday.ToShortDateString()
         </div>
-        @foreach (var p in Model.FetchInfo(DbUtil.Db))
+        @foreach (var p in Model.FetchInfo(ViewExtensions2.CurrentDatabase))
         {
             <div>
                 <h3>@p.Name</h3>

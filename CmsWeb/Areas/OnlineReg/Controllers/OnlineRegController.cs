@@ -66,10 +66,9 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 
             if (m.ManageGiving())
             {
-                Session[$"Campus-{m.Orgid}"] =
-                    m.Campus = Request.QueryString["campus"];
-                Session["DefaultFunds"] = Request.QueryString["funds"];
-                m.DefaultFunds = Session["DefaultFunds"]?.ToString();
+                RequestManager.SessionProvider.Add($"Campus-{m.Orgid}",
+                    m.Campus = Request.QueryString["campus"]);
+                m.DefaultFunds = Util.DefaultFunds = Request.QueryString["funds"];
             }
 
             if (isMissionTrip)
@@ -113,7 +112,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         public ActionResult Login(OnlineRegModel m)
         {
             fromMethod = "Login";
-            var ret = AccountModel.AuthenticateLogon(m.username, m.password, Session, Request, CurrentDatabase, CurrentImageDatabase);
+            var ret = AccountModel.AuthenticateLogon(m.username, m.password, Request, CurrentDatabase, CurrentImageDatabase);
 
             if (ret.ErrorMessage.HasValue())
             {
@@ -122,7 +121,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             }
             else  if (MembershipService.ShouldPromptForTwoFactorAuthentication(ret.User, CurrentDatabase, Request))
             {
-                Session[AccountController.MFAUserId] = ret.User.UserId;
+                Util.MFAUserId = ret.User.UserId;
                 ViewData["hasshell"] = true;
                 var orgId = m.Orgid ?? m.masterorgid;
                 return View("Auth", new AccountInfo {
@@ -132,21 +131,21 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             }
             else
             {
-                AccountModel.FinishLogin(ret.User.Username, Session, CurrentDatabase, CurrentImageDatabase);
-                if (ret.User.UserId.Equals(Session[AccountController.MFAUserId]))
+                AccountModel.FinishLogin(ret.User.Username, CurrentDatabase, CurrentImageDatabase);
+                if (ret.User.UserId.Equals(Util.MFAUserId))
                 {
                     MembershipService.SaveTwoFactorAuthenticationToken(CurrentDatabase, Response);
-                    Session.Remove(AccountController.MFAUserId);
+                    Util.MFAUserId = null;
                 }
             }
-            Session["OnlineRegLogin"] = true;
+            Util.OnlineRegLogin = true;
 
             if (m.Orgid == Util.CreateAccountCode)
             {
-                DbUtil.LogActivity("OnlineReg CreateAccount Existing", peopleid: Util.UserPeopleId, datumId: m.DatumId);
-                return Content("/Person2/" + Util.UserPeopleId); // they already have an account, so take them to their page
+                DbUtil.LogActivity("OnlineReg CreateAccount Existing", peopleid: ret.User.PeopleId, datumId: m.DatumId);
+                return Content("/Person2/" + ret.User.PeopleId); // they already have an account, so take them to their page
             }
-            m.UserPeopleId = Util.UserPeopleId;
+            m.UserPeopleId = ret.User.PeopleId;
             var route = RouteSpecialLogin(m);
             if (route != null)
             {
@@ -476,7 +475,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             if (ret.Route == RouteType.Payment && (int)GatewayTypes.Pushpay == GatewayId)
             {
                 m.UpdateDatum();
-                Session["PaymentProcessType"] = PaymentProcessTypes.OnlineRegistration;
+                RequestManager.SessionProvider.Add("PaymentProcessType", PaymentProcessTypes.OnlineRegistration.ToInt().ToString());
                 return Redirect($"/Pushpay/Registration/{m.DatumId}");
             }
 
@@ -513,6 +512,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         public ActionResult Timeout(string ret)
         {
             FormsAuthentication.SignOut();
+            RequestManager.SessionProvider.Clear();
             Session.Abandon();
             ViewBag.Url = ret;
             return View("Other/Timeout");
@@ -597,7 +597,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 m.URL = CurrentDatabase.ServerLink($"/OnlineReg/{id}/Giving/{goerid}");
             }
 
-            var currentUserId = Util.UserPeopleId;
+            var currentUserId = CurrentDatabase.UserPeopleId;
             if (currentUserId != null && currentUserId == goerid)
             {
                 return View("Giving/Goer", m);

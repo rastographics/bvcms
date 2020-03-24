@@ -6,8 +6,8 @@
     ViewBag.Title = "Contributions";
     ViewBag.PageHeader = "Contributions";
     Layout = ViewExtensions2.TouchPointLayout();
-    var customFundsList = ContributionStatements.CustomFundSetSelectList(DbUtil.Db); //hack: using static method to get db for now
-    var usingPushPay = DbUtil.Db.Setting("PushPayEnableImport");
+    var customFundsList = ContributionStatements.CustomFundSetSelectList(ViewExtensions2.CurrentDatabase); //hack: using static method to get db for now
+    var usingPushPay = ViewExtensions2.CurrentDatabase.Setting("PushPayEnableImport");
 }
 <div class="box box-responsive">
     <div class="box-content">

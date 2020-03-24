@@ -59,12 +59,10 @@ namespace CmsWeb.Areas.Org.Controllers
 
         public ActionResult OrgPickList(int id)
         {
-            if (Util.SessionTimedOut())
-                return Content("<script type='text/javascript'>window.onload = function() { parent.location = '/'; }</script>");
             Response.NoCache();
             CurrentDatabase.SetCurrentOrgId(id);
             var o = CurrentDatabase.LoadOrganizationById(id);
-            Session["orgPickList"] = (o.OrgPickList ?? "").Split(',').Select(oo => oo.ToInt()).ToList();
+            Util.OrgPickList = (o.OrgPickList ?? "").Split(',').Select(oo => oo.ToInt()).ToList();
             return Redirect("/SearchOrgs/" + id);
         }
 

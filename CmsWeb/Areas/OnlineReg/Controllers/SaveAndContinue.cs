@@ -54,7 +54,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         {
             m.HistoryAdd("saveprogress");
             if (m.UserPeopleId == null)
-                m.UserPeopleId = Util.UserPeopleId;
+                m.UserPeopleId = CurrentDatabase.UserPeopleId;
             m.UpdateDatum();
             var p = m.UserPeopleId.HasValue ? CurrentDatabase.LoadPersonById(m.UserPeopleId.Value) : m.List[0].person;
 
@@ -111,7 +111,7 @@ We have saved your progress. An email with a link to finish this registration wi
                 m.CurrentDatabase = CurrentDatabase;
                 m.HistoryAdd("saveprogress");
                 if (m.UserPeopleId == null)
-                    m.UserPeopleId = Util.UserPeopleId;
+                    m.UserPeopleId = CurrentDatabase.UserPeopleId;
                 m.UpdateDatum();
                 return Json(new
                 {

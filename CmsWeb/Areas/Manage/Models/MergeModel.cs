@@ -179,12 +179,13 @@ namespace CmsWeb.Models
         }
         public void Update()
         {
-            if (!Util.UserPeopleId.HasValue)
+            var db = DbUtil.Db;
+            if (!db.UserPeopleId.HasValue)
             {
                 return;
             }
 
-            var target = DbUtil.Db.LoadPersonById(pi[1].PeopleId);
+            var target = db.LoadPersonById(pi[1].PeopleId);
             var psb = new List<ChangeDetail>();
 
             target.UpdateValue(psb, "TitleCode", pi[UseTitleCode].TitleCode);
@@ -219,9 +220,9 @@ namespace CmsWeb.Models
             target.Family.UpdateValue(fsb, "ZipCode", pi[UseZipCode].ZipCode);
             target.Family.UpdateValue(fsb, "CountryName", pi[UseCountry].Country);
 
-            target.LogChanges(DbUtil.Db, psb);
-            target.Family.LogChanges(DbUtil.Db, fsb, target.PeopleId, Util.UserPeopleId.Value);
-            DbUtil.Db.SubmitChanges();
+            target.LogChanges(db, psb);
+            target.Family.LogChanges(db, fsb, target.PeopleId, db.UserPeopleId.Value);
+            db.SubmitChanges();
         }
         public void Move()
         {
@@ -255,7 +256,7 @@ namespace CmsWeb.Models
                 ToId = pi[1].PeopleId,
                 FromName = pi[0].person.Name,
                 ToName = pi[1].person.Name,
-                WhoId = Util.UserPeopleId,
+                WhoId = DbUtil.Db.UserPeopleId,
                 WhoName = Util.UserFullName,
                 Action = $"{action}{(DeleteDuplicate ? " + Delete" : "")}",
                 Dt = DateTime.Now

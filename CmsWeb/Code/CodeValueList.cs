@@ -11,7 +11,7 @@ namespace CmsWeb.Code
     {
         public IEnumerable<CodeValueItem> EnvelopeOptionList()
         {
-            return from ms in DbUtil.Db.EnvelopeOptions
+            return from ms in Db.EnvelopeOptions
                    orderby ms.Description
                    select new CodeValueItem
                    {
@@ -33,7 +33,7 @@ namespace CmsWeb.Code
 
         public IEnumerable<CodeValueItem> JoinTypeList()
         {
-            return from ms in DbUtil.Db.JoinTypes
+            return from ms in Db.JoinTypes
                    orderby ms.Description
                    select new CodeValueItem
                    {
@@ -45,7 +45,7 @@ namespace CmsWeb.Code
 
         public IEnumerable<CodeValueItem> DropTypeList()
         {
-            return from ms in DbUtil.Db.DropTypes
+            return from ms in Db.DropTypes
                    orderby ms.Description
                    select new CodeValueItem
                    {
@@ -57,7 +57,7 @@ namespace CmsWeb.Code
 
         public IEnumerable<CodeValueItem> NewMemberClassStatusList()
         {
-            return from c in DbUtil.Db.NewMemberClassStatuses
+            return from c in Db.NewMemberClassStatuses
                    select new CodeValueItem
                    {
                        Id = c.Id,
@@ -68,7 +68,7 @@ namespace CmsWeb.Code
 
         public IEnumerable<CodeValueItem> BaptismTypeList()
         {
-            return from ms in DbUtil.Db.BaptismTypes
+            return from ms in Db.BaptismTypes
                    select new CodeValueItem
                    {
                        Id = ms.Id,
@@ -79,7 +79,7 @@ namespace CmsWeb.Code
 
         public IEnumerable<CodeValueItem> BaptismStatusList()
         {
-            return from ms in DbUtil.Db.BaptismStatuses
+            return from ms in Db.BaptismStatuses
                    select new CodeValueItem
                    {
                        Id = ms.Id,
@@ -90,7 +90,7 @@ namespace CmsWeb.Code
 
         public IEnumerable<CodeValueItem> DecisionTypeList()
         {
-            return from ms in DbUtil.Db.DecisionTypes
+            return from ms in Db.DecisionTypes
                    select new CodeValueItem
                    {
                        Id = ms.Id,
@@ -270,7 +270,7 @@ namespace CmsWeb.Code
 
         public SelectList TagList()
         {
-            var tg = UserTags(Util.UserPeopleId).ToList();
+            var tg = UserTags(Db.UserPeopleId).ToList();
             if (HttpContextFactory.Current.User.IsInRole("Edit"))
             {
                 tg.Insert(0, new CodeValueItem { Id = -1, Value = "(last query)" });
@@ -291,7 +291,7 @@ namespace CmsWeb.Code
         }
         public SelectList TaskSearchStatusList()
         {
-            var list = (from vc in DbUtil.Db.TaskStatuses
+            var list = (from vc in Db.TaskStatuses
                         orderby vc.Description
                         select new CodeValueItem
                         {
@@ -302,20 +302,20 @@ namespace CmsWeb.Code
             list.Insert(0, new CodeValueItem { Id = 99, Value = "Active + Pending" });
             return list.AddNotSpecified().ToSelect();
         }
-        public static SelectList TaskStatusList()
+        public SelectList TaskStatusList()
         {
-            var list = DbUtil.Db.TaskStatuses.ToList();
+            var list = Db.TaskStatuses.ToList();
             return new SelectList(list, "Id", "Description");
         }
         public SelectList TaskLimitToRoleList()
         {
-            var roles = DbUtil.Db.Setting("LimitToRolesForTasks",
-                    DbUtil.Db.Setting("LimitToRolesForContacts", ""))
+            var roles = Db.Setting("LimitToRolesForTasks",
+                    Db.Setting("LimitToRolesForContacts", ""))
                 .SplitStr(",").Where(rr => rr.HasValue()).ToArray();
 
             if (roles.Length == 0)
             {
-                roles = DbUtil.Db.Roles.OrderBy(r => r.RoleName).Select(r => r.RoleName).ToArray();
+                roles = Db.Roles.OrderBy(r => r.RoleName).Select(r => r.RoleName).ToArray();
             }
 
             var list = roles.Select(rolename => new

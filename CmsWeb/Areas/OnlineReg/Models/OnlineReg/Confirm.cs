@@ -394,11 +394,10 @@ Thank you.
         }
         public static void LogOutOfOnlineReg()
         {
-            var session = HttpContextFactory.Current.Session;
-            if ((bool?)session["OnlineRegLogin"] == true)
+            if (Util.OnlineRegLogin)
             {
                 FormsAuthentication.SignOut();
-                session.Abandon();
+                HttpContextFactory.Current?.Session?.Abandon();
             }
         }
     }

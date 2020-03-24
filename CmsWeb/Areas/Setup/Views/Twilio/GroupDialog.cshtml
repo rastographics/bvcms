@@ -1,5 +1,4 @@
-﻿@using CmsData
-@{
+﻿@{
     int groupId = ViewBag.ID;
     string action;
     var groupName = "";
@@ -9,7 +8,7 @@
 
     if (groupId > 0)
     {
-        var group = (from e in DbUtil.Db.SMSGroups
+        var group = (from e in ViewExtensions2.CurrentDatabase.SMSGroups
                      where e.Id == groupId
                      select e).Single();
         action = "GroupUpdate";

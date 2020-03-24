@@ -52,7 +52,7 @@ namespace CmsWeb.Areas.Main.Models
                     let isshared = (from tt in db.Tags
                                     where tt.Name == "SharedDrafts"
                                     where tt.PersonOwner.Users.Any(uu => uu.UserId == c.OwnerID)
-                                    where tt.PersonTags.Any(vv => vv.PeopleId == Util.UserPeopleId)
+                                    where tt.PersonTags.Any(vv => vv.PeopleId == db.UserPeopleId)
                                     select tt.Id).Any()
                     where c.RoleID == 0 || c.OwnerID == userId || currentRoleIds.Contains(c.RoleID)
                     orderby (c.OwnerID == userId ? 1 : 0) descending, c.Name

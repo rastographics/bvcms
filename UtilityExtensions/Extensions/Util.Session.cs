@@ -1,5 +1,8 @@
+using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.Threading;
+using UtilityExtensions.Session;
 
 namespace UtilityExtensions
 {
@@ -18,22 +21,17 @@ namespace UtilityExtensions
             }
         }
 
-        private const string STR_UserId = "UserId";
-        public static int UserId
+        private static ISessionProvider GetSessionProvider()
         {
-            get => GetFromSession(STR_UserId).ToInt();
-
-            set => SetValueInSession(STR_UserId, value);
+            return HttpContextFactory.Current?.Items?["SessionProvider"] as ISessionProvider;
         }
 
         public static void SetValueInSession(string name, object value)
         {
-            if (HttpContextFactory.Current != null)
+            var session = GetSessionProvider();
+            if (session != null)
             {
-                if (HttpContextFactory.Current.Session != null)
-                {
-                    HttpContextFactory.Current.Session[name] = value;
-                }
+                session.Add(name, value);
             }
             else
             {
@@ -41,76 +39,197 @@ namespace UtilityExtensions
             }
         }
 
-        public static object GetFromSession(string name, object defaultValue = null)
+        public static T GetFromSession<T>(string name, T defaultValue = null) where T : class
         {
-            object value = defaultValue;
-            if (HttpContextFactory.Current != null)
+            T value = defaultValue;
+            var session = GetSessionProvider();
+            if (session != null)
             {
-                if (HttpContextFactory.Current.Session != null)
-                {
-                    if (HttpContextFactory.Current.Session[name] != null)
-                    {
-                        value = HttpContextFactory.Current.Session[name];
-                    }
-                }
+                value = session.Get(name, defaultValue);
             }
             else
             {
-                value = Thread.GetData(Thread.GetNamedDataSlot(name));
+                value = Thread.GetData(Thread.GetNamedDataSlot(name)) as T;
             }
             return value ?? defaultValue;
+        }
+
+        public static bool GetFromSession(string name, bool defaultValue = false)
+        {
+            var strValue = GetFromSession<string>(name);
+            return bool.TryParse(strValue, out bool v) ? v : defaultValue;
+        }
+
+        public static int? GetFromSession(string name, int? defaultValue = null)
+        {
+            var strValue = GetFromSession<string>(name);
+            return int.TryParse(strValue, out int v) ? v : defaultValue;
+        }
+
+        public static DateTime? GetFromSession(string name, DateTime? defaultValue = null)
+        {
+            var strValue = GetFromSession<string>(name);
+            return DateTime.TryParse(strValue, out DateTime v) ? v : defaultValue;
+        }
+
+        private const string STR_ActiveOrganization = "ActiveOrganization";
+        public static string ActiveOrganization
+        {
+            get => GetFromSession<string>(STR_ActiveOrganization);
+            set => SetValueInSession(STR_ActiveOrganization, value);
         }
 
         private const string STR_ActivePerson = "ActivePerson";
         public static string ActivePerson
         {
-            get => GetFromSession(STR_ActivePerson) as string;
+            get => GetFromSession<string>(STR_ActivePerson);
             set => SetValueInSession(STR_ActivePerson, value);
+        }
+
+        private const string STR_ContentKeywordFilter = "ContentKeywordFilter";
+        public static string ContentKeywordFilter
+        {
+            get => GetFromSession<string>(STR_ContentKeywordFilter);
+            set => SetValueInSession(STR_ContentKeywordFilter, value);
+        }
+
+        private const string STR_CreditCardOnFile = "CreditCardOnFile";
+        public static string CreditCardOnFile
+        {
+            get => GetFromSession<string>(STR_CreditCardOnFile);
+            set => SetValueInSession(STR_CreditCardOnFile, value);
+        }
+
+        private const string STR_DefaultFunds = "DefaultFunds";
+        public static string DefaultFunds
+        {
+            get => GetFromSession<string>(STR_DefaultFunds);
+            set => SetValueInSession(STR_DefaultFunds, value);
+        }
+
+        private const string STR_DefaultGivingYear = "DefaultGivingYear";
+        public static string DefaultGivingYear
+        {
+            get => GetFromSession<string>(STR_DefaultGivingYear);
+            set => SetValueInSession(STR_DefaultGivingYear, value);
+        }
+
+        private const string STR_ExpiresOnFile = "ExpiresOnFile";
+        public static string ExpiresOnFile
+        {
+            get => GetFromSession<string>(STR_ExpiresOnFile);
+            set => SetValueInSession(STR_ExpiresOnFile, value);
+        }
+
+        private const string STR_FormId = "FormId";
+        public static Guid? FormId
+        {
+            get => GetFromSession<string>(STR_FormId).ToGuid();
+            set => SetValueInSession(STR_FormId, value.HasValue ? ToCode(value.Value) : null);
+        }
+
+        private const string STR_IsNonFinanceImpersonator = "IsNonFinanceImpersonator";
+        public static bool? IsNonFinanceImpersonator
+        {
+            get => GetFromSession(STR_IsNonFinanceImpersonator, false);
+            set => SetValueInSession(STR_IsNonFinanceImpersonator, value);
+        }
+
+        private const string STR_MFAUserId = "MFAUserId";
+        public static int? MFAUserId
+        {
+            get => GetFromSession(STR_MFAUserId, (int?)null);
+            set => SetValueInSession(STR_MFAUserId, value);
+        }
+
+        private const string STR_OnlineRegLogin = "OnlineRegLogin";
+        public static bool OnlineRegLogin
+        {
+            get => GetFromSession(STR_OnlineRegLogin, false);
+            set => SetValueInSession(STR_OnlineRegLogin, value);
+        }
+
+        private const string STR_OrgCopySettings = "OrgCopySettings";
+        public static int? OrgCopySettings
+        {
+            get => GetFromSession(STR_OrgCopySettings, (int?)null);
+            set => SetValueInSession(STR_OrgCopySettings, value);
+        }
+
+        private const string STR_OrgPickList = "OrgPickList";
+        public static List<int> OrgPickList
+        {
+            get => GetFromSession<List<int>>(STR_OrgPickList);
+            set => SetValueInSession(STR_OrgPickList, value);
+        }
+
+        private const string STR_OrgSearch = "OrgSearch";
+        public static string OrgSearch
+        {
+            get => GetFromSession<string>(STR_OrgSearch, null);
+            set => SetValueInSession(STR_OrgSearch, value);
+        }
+
+        private const string STR_QueryClipboard = "QueryClipboard";
+        public static string QueryClipboard
+        {
+            get => GetFromSession<string>(STR_QueryClipboard);
+            set => SetValueInSession(STR_QueryClipboard, value);
+        }
+
+        private const string STR_ShowAllMeetings = "ShowAllMeetings";
+        public static bool? ShowAllMeetings
+        {
+            get => GetFromSession(STR_ShowAllMeetings, false);
+            set => SetValueInSession(STR_ShowAllMeetings, value);
+        }
+
+        private const string STR_ShowCheckImages = "ShowCheckImages";
+        public static bool ShowCheckImages
+        {
+            get => GetFromSession(STR_ShowCheckImages, false);
+            set => SetValueInSession(STR_ShowCheckImages, value);
+        }
+
+        private const string STR_TestNoFinance = "TestNoFinance";
+        public static bool TestNoFinance
+        {
+            get => GetFromSession(STR_TestNoFinance, false);
+            set => SetValueInSession(STR_TestNoFinance, value);
         }
 
         private const string STR_UserPreferredName = "UserPreferredName";
         public static string UserPreferredName
         {
-            get => GetFromSession(STR_UserPreferredName) as string;
+            get => GetFromSession<string>(STR_UserPreferredName);
             set => SetValueInSession(STR_UserPreferredName, value);
         }
 
         private const string STR_UserFullName = "UserFullName";
         public static string UserFullName
         {
-            get => GetFromSession(STR_UserFullName) as string;
+            get => GetFromSession<string>(STR_UserFullName);
             set => SetValueInSession(STR_UserFullName, value);
         }
 
         private const string STR_UserFirstName = "UserFirstName";
         public static string UserFirstName
         {
-            get => GetFromSession(STR_UserFirstName) as string;
+            get => GetFromSession<string>(STR_UserFirstName);
             set => SetValueInSession(STR_UserFirstName, value);
-        }
-
-        private const string STR_UserPeopleId = "UserPeopleId";
-        public static int? UserPeopleId
-        {
-            get
-            {
-                var v = GetFromSession(STR_UserPeopleId);
-                return v?.ToInt();
-            }
-            set => SetValueInSession(STR_UserPeopleId, value);
         }
 
         private const string UserThumbPictureSessionKey = "UserThumbPictureUrl";
         public static string UserThumbPictureUrl
         {
-            get => GetFromSession(UserThumbPictureSessionKey) as string;
+            get => GetFromSession<string>(UserThumbPictureSessionKey);
             set => SetValueInSession(UserThumbPictureSessionKey, value);
         }
 
         private const string UserThumbPictureBgPosSessionKey = "UserThumbPictureBgPosition";
         public static string UserThumbPictureBgPosition
         {
-            get => GetFromSession(UserThumbPictureBgPosSessionKey) as string ?? "";
+            get => GetFromSession<string>(UserThumbPictureBgPosSessionKey) ?? "";
             set => SetValueInSession(UserThumbPictureBgPosSessionKey, value);
         }
 
