@@ -123,12 +123,14 @@ namespace CmsData
 
         public string EmailStr(string body)
         {
-            if (!Util.UserPeopleId.HasValue)
-                return "no user";
-            using (var db2 = NewDataContext())
+            using (var db2 = db.Copy())
             {
+                if (!db2.UserPeopleId.HasValue)
+                {
+                    return "no user";
+                }
                 db2.SetCurrentOrgId(CurrentOrgId);
-                var p = db2.LoadPersonById(Util.UserPeopleId.Value);
+                var p = db2.LoadPersonById(db2.UserPeopleId.Value);
                 var m = new EmailReplacements(db2, body, new MailAddress(p.EmailAddress));
                 return m.DoReplacements(db2, p);
             }

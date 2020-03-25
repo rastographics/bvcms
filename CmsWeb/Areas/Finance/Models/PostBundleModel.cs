@@ -364,7 +364,7 @@ namespace CmsWeb.Models
                 var bd = new BundleDetail
                 {
                     BundleHeaderId = id,
-                    CreatedBy = Util.UserId,
+                    CreatedBy = CurrentDatabase.UserId,
                     CreatedDate = DateTime.Now
                 };
                 int type;
@@ -408,7 +408,7 @@ namespace CmsWeb.Models
 
                 bd.Contribution = new Contribution
                 {
-                    CreatedBy = Util.UserId,
+                    CreatedBy = CurrentDatabase.UserId,
                     CreatedDate = bd.CreatedDate,
                     FundId = fund,
                     PeopleId = pid.ToInt2(),

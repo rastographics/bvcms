@@ -32,7 +32,7 @@ namespace CmsWeb.Areas.Dialog.Models
             Host = db.Host;
             CurrentDatabase = db;
             QueryId = id;
-            UserId = Util.UserId;
+            UserId = CurrentDatabase.UserId;
             Tag = new CodeInfo("0", "Tag");
 
             Filter = filter ?? (filter = db.OrgFilter(id));

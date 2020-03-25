@@ -166,7 +166,7 @@
 
             @if ((Model.age >= Model.MinimumUserAge || !Model.BestBirthday.HasValue) && !Model.IsCreateAccount())
             {
-                if (Model.InMobileAppMode && !Util.UserPeopleId.HasValue && !Model.LoggedIn)
+                if (Model.InMobileAppMode && !ViewExtensions2.CurrentDatabase.UserPeopleId.HasValue && !Model.LoggedIn)
                 {
                     @Html.Hidden("CreatingAccount", true)
                 }

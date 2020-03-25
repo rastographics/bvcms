@@ -83,7 +83,7 @@ namespace CmsWeb.Areas.Dialog.Models
                 lop = FetchLongRunningOperation(db, Op, model.QueryId);
                 Debug.Assert(lop != null, "r != null");
                 lop.Processed++;
-                f.LogChanges(db, fsb, pid, Util.UserPeopleId ?? 0);
+                f.LogChanges(db, fsb, pid, db.UserPeopleId ?? 0);
                 db.SubmitChanges();
                 //Thread.Sleep(1000);
             }

@@ -285,13 +285,13 @@ namespace CmsWeb.Models
             CurrentDatabase.SubmitChanges();
         }
 
-        public static Contribution CreateContributionRecord(Contribution c)
+        public Contribution CreateContributionRecord(Contribution c)
         {
             var now = Util.Now;
             var r = new Contribution
             {
                 ContributionStatusId = ContributionStatusCode.Recorded,
-                CreatedBy = Util.UserId1,
+                CreatedBy = CurrentDatabase.UserId1,
                 CreatedDate = now,
                 PeopleId = c.PeopleId,
                 ContributionAmount = c.ContributionAmount,

@@ -22,8 +22,8 @@ namespace CmsWeb.Models
         {
         }
 
-        public UploadExcelIpsModel(CMSDataContext db, string host, int peopleId, bool noupdate, bool ignoremissinggifts, bool testing = false)
-            : base(db, host, peopleId, noupdate, testing)
+        public UploadExcelIpsModel(CMSDataContext db, string host, int peopleId, int userId, bool noupdate, bool ignoremissinggifts, bool testing = false)
+            : base(db, host, peopleId, userId, noupdate, testing)
         {
             PeopleSheetName = "Personal Data";
             IgnoreMissingGifts = ignoremissinggifts;
@@ -116,7 +116,7 @@ namespace CmsWeb.Models
                 {
                     BundleHeaderTypeId = BundleTypeCode.Pledge,
                     BundleStatusId = BundleStatusCode.Closed,
-                    CreatedBy = Util.UserId,
+                    CreatedBy = UserId,
                     CreatedDate = DateTime.Today,
                     ContributionDate = week.Key
                 };
@@ -144,11 +144,11 @@ namespace CmsWeb.Models
 
                     var bd = new BundleDetail
                     {
-                        CreatedBy = Util.UserId,
+                        CreatedBy = UserId,
                         CreatedDate = DateTime.Now,
                         Contribution = new Contribution
                         {
-                            CreatedBy = Util.UserId,
+                            CreatedBy = UserId,
                             CreatedDate = DateTime.Now,
                             ContributionDate = pledge.Date,
                             FundId = f.FundId,
@@ -200,7 +200,7 @@ namespace CmsWeb.Models
                 {
                     BundleHeaderTypeId = BundleTypeCode.ChecksAndCash,
                     BundleStatusId = BundleStatusCode.Closed,
-                    CreatedBy = Util.UserId,
+                    CreatedBy = UserId,
                     CreatedDate = DateTime.Today,
                     ContributionDate = week.Key
                 };
@@ -233,11 +233,11 @@ namespace CmsWeb.Models
 
                     var bd = new BundleDetail
                     {
-                        CreatedBy = Util.UserId,
+                        CreatedBy = UserId,
                         CreatedDate = DateTime.Now,
                         Contribution = new Contribution
                         {
-                            CreatedBy = Util.UserId,
+                            CreatedBy = UserId,
                             CreatedDate = DateTime.Now,
                             ContributionDate = gift.Date,
                             FundId = gift.FundId,

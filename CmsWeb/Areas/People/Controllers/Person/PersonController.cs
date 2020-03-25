@@ -72,9 +72,9 @@ namespace CmsWeb.Areas.People.Controllers
                 return Content("no id");
             }
 
-            if (id == 0 && Util.UserPeopleId.HasValue)
+            if (id == 0 && CurrentDatabase.UserPeopleId.HasValue)
             {
-                id = Util.UserPeopleId;
+                id = CurrentDatabase.UserPeopleId;
             }
 
             var m = new PersonModel(id.Value, CurrentDatabase);
@@ -88,7 +88,7 @@ namespace CmsWeb.Areas.People.Controllers
             ViewBag.PeopleId = id.Value;
 
             int personFamilyId = CurrentDatabase.People.Where(x => x.PeopleId == id).Select(x => x.FamilyId).FirstOrDefault();
-            int adminFamilyId = CurrentDatabase.People.Where(x => x.PeopleId == Util.UserPeopleId).Select(x => x.FamilyId).FirstOrDefault();
+            int adminFamilyId = CurrentDatabase.People.Where(x => x.PeopleId == CurrentDatabase.UserPeopleId).Select(x => x.FamilyId).FirstOrDefault();
 
             ViewBag.HideDeceasedFromFamily = HideDeceasedFromFamily(personFamilyId == adminFamilyId);
 
@@ -115,9 +115,9 @@ namespace CmsWeb.Areas.People.Controllers
                 return Content("no id");
             }
 
-            if (id == 0 && Util.UserPeopleId.HasValue)
+            if (id == 0 && CurrentDatabase.UserPeopleId.HasValue)
             {
-                id = Util.UserPeopleId;
+                id = CurrentDatabase.UserPeopleId;
             }
 
             var m = new PersonModel(id.Value, CurrentDatabase);
@@ -141,9 +141,9 @@ namespace CmsWeb.Areas.People.Controllers
         [Route("~/Person/{id:int}/Statements")]
         public ActionResult Statements(int id)
         {
-            if (id == 0 && Util.UserPeopleId.HasValue)
+            if (id == 0 && CurrentDatabase.UserPeopleId.HasValue)
             {
-                id = Util.UserPeopleId.Value;
+                id = CurrentDatabase.UserPeopleId.Value;
             }
             else if (!User.InAnyRole("Admin", "Finance"))
             {
@@ -174,7 +174,7 @@ namespace CmsWeb.Areas.People.Controllers
                 return Content("OK");
             }
 
-            var tag = CurrentDatabase.FetchOrCreateTag(tagname, Util.UserPeopleId, DbUtil.TagTypeId_Personal);
+            var tag = CurrentDatabase.FetchOrCreateTag(tagname, CurrentDatabase.UserPeopleId, DbUtil.TagTypeId_Personal);
             if (cleartagfirst ?? false)
             {
                 CurrentDatabase.ClearTag(tag);

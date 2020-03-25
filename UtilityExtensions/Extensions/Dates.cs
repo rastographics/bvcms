@@ -100,7 +100,7 @@ namespace UtilityExtensions
         private const string StrDateSimulation = "DateSimulation";
         public static bool DateSimulation
         {
-            get => GetFromSession(StrDateSimulation, false) as bool? ?? false;
+            get => GetFromSession<string>(StrDateSimulation, "false") == "true";
             
             set
             {
@@ -124,9 +124,10 @@ namespace UtilityExtensions
                     return now;
                 }
 
-                if (HttpContextFactory.Current.Session[StrToday] != null)
+                var date = GetFromSession<string>(StrToday);
+                if (date != null)
                 {
-                    now = (DateTime)HttpContextFactory.Current.Session[StrToday];
+                    now = DateTime.Parse(date);
                 }
 
                 return now.Date.Add(DateTime.Now.TimeOfDay);
@@ -143,10 +144,10 @@ namespace UtilityExtensions
                     return now;
                 }
 
-                var value = GetFromSession(StrToday);
+                var value = GetFromSession<string>(StrToday);
                 if (value != null)
                 {
-                    now = (DateTime)value;
+                    now = DateTime.Parse(value);
                 }
 
                 return now.Date;
@@ -156,7 +157,7 @@ namespace UtilityExtensions
 
         public static void ResetToday()
         {
-            HttpContextFactory.Current?.Session?.Remove(StrToday);
+            SetValueInSession(StrToday, null);
         }
 
         public static bool DateValid(string dt)

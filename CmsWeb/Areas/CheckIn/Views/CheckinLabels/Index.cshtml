@@ -6,7 +6,7 @@
     int labelID = ViewBag.ID;
     LabelFormat label = null;
 
-    var list = (from e in DbUtil.Db.LabelFormats
+    var list = (from e in ViewExtensions2.CurrentDatabase.LabelFormats
                 orderby e.Size, e.Name
                 select new
                 {
@@ -17,7 +17,7 @@
 
     if (labelID > 0)
     {
-        label = (from e in DbUtil.Db.LabelFormats
+        label = (from e in ViewExtensions2.CurrentDatabase.LabelFormats
                  where e.Id == labelID
                  select e).FirstOrDefault();
     }

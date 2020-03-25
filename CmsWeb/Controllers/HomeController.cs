@@ -153,14 +153,14 @@ namespace CmsWeb.Controllers
 
         public ActionResult Names(string term)
         {
-            var q = HomeModel.Names(term).ToList();
+            var q = new HomeModel().Names(term).ToList();
             return Json(q, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost, Route("~/FastSearch")]
         public ActionResult FastSearch(SearchRequest sr)
         {
-            var qq = HomeModel.FastSearch(sr).ToArray();
+            var qq = new HomeModel().FastSearch(sr).ToArray();
             return Content(JsonConvert.SerializeObject(qq));
         }
 
@@ -168,7 +168,7 @@ namespace CmsWeb.Controllers
         public ActionResult FastSearchPrefetch()
         {
             Response.NoCache();
-            var qq = HomeModel.PrefetchSearch().ToArray();
+            var qq = new HomeModel().PrefetchSearch().ToArray();
             return Content(JsonConvert.SerializeObject(qq));
         }
 

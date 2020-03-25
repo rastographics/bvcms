@@ -6,7 +6,7 @@
     Layout = ViewExtensions2.TouchPointLayout();
     ViewBag.Title = "Special Content";
     ViewBag.PageHeader = "Special Content";
-    var ContentKeywordFilter = Session["ContentKeywordFilter"] as string;
+    var ContentKeywordFilter = Util.ContentKeywordFilter;
 
     var roleList = ContentModel.fetchRoles();
 }

@@ -1,6 +1,6 @@
 ﻿@using CmsWeb.Areas.Reports.Models
 @{
-  CMSDataContext Db = ViewBag.CurrentDatabase;
+  CMSDataContext Db = ViewExtensions2.CurrentDatabase;
   var qid = ViewBag.queryid;
   var oid = ViewBag.oid;
   var m = new CustomReportsModel(Db, oid);

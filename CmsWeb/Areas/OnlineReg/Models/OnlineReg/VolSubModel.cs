@@ -174,7 +174,7 @@ Sorry, I cannot sub for you.</a>";
         }
         public void SendEmails()
         {
-            var tag = CurrentDatabase.FetchOrCreateTag(Util.SessionId, Util.UserPeopleId, CurrentDatabase.NextTagId);
+            var tag = CurrentDatabase.FetchOrCreateTag(Util.SessionId, CurrentDatabase.UserPeopleId, CurrentDatabase.NextTagId);
             CurrentDatabase.ExecuteCommand("delete TagPerson where Id = {0}", tag.Id);
             CurrentDatabase.TagAll(pids, tag);
             var dt = new DateTime(ticks);

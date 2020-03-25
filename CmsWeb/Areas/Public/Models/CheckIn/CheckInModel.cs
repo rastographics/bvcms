@@ -384,7 +384,7 @@ namespace CmsWeb.Models
                     OrganizationId = OrgId,
                     MeetingDate = info.MeetingTime,
                     CreatedDate = Util.Now,
-                    CreatedBy = Util.UserId1,
+                    CreatedBy = CurrentDatabase.UserId1,
                     GroupMeetingFlag = false,
                     Location = info.Location,
                     AttendCreditId = acr,

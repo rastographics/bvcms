@@ -269,6 +269,7 @@ namespace CmsWeb.Models
 
         public Coupon CreateCoupon()
         {
+            var db = DbUtil.Db;
             var code = couponcode;
             if (!couponcode.HasValue())
             {
@@ -285,11 +286,11 @@ namespace CmsWeb.Models
                 Created = DateTime.Now,
                 Amount = amount,
                 Name = name,
-                UserId = Util.UserId,
+                UserId = db.UserId,
             };
             SetDivOrgIds(c);
-            DbUtil.Db.Coupons.InsertOnSubmit(c);
-            DbUtil.Db.SubmitChanges();
+            db.Coupons.InsertOnSubmit(c);
+            db.SubmitChanges();
             couponcode = Util.fmtcoupon(c.Id);
 
             return c;

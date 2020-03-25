@@ -4,7 +4,7 @@
 @model CmsWeb.Areas.People.Models.ContactModel
 @{
     var prewrap = Model.Ministry.ToString() == "TouchPoint Support" ? "" : "pre-wrap";
-    var evmodel = new ExtraValueModel(DbUtil.Db, Model.ContactId, "Contact", Model.Location);
+    var evmodel = new ExtraValueModel(ViewExtensions2.CurrentDatabase, Model.ContactId, "Contact", Model.Location);
 }
 <form class="form ajax" method="post" data-init="Editable" data-init2="ExtraEditable">
     @if (Model.Incomplete.HasValue())
@@ -33,12 +33,12 @@
                 <div class="col-sm-6">
                     @Html.DisplayFor(m => m.ContactType)
                     @Html.DisplayFor(m => m.ContactReason)
-                    @if (DbUtil.Db.Setting("UseContactVisitedOrgs") &&
-                 !DbUtil.Db.Setting("UX-ShowVisitedOrgInContactees") &&
+                    @if (ViewExtensions2.CurrentDatabase.Setting("UseContactVisitedOrgs") &&
+                 !ViewExtensions2.CurrentDatabase.Setting("UX-ShowVisitedOrgInContactees") &&
                  !string.IsNullOrWhiteSpace(Model.OrganizationName))
                     {
                         <dl>
-                            <dt>@DbUtil.Db.Setting("UX-VisitedOrgLabel", "Visited Organization")</dt>
+                            <dt>@ViewExtensions2.CurrentDatabase.Setting("UX-VisitedOrgLabel", "Visited Organization")</dt>
                             <dd>@Model.OrganizationName</dd>
                         </dl>
                     }

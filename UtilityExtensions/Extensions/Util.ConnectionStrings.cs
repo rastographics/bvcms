@@ -93,15 +93,9 @@ namespace UtilityExtensions
         {
             get
             {
-                if (HttpContextFactory.Current != null)
+                if (HttpContextFactory.Current?.Items?[STR_ConnectionString] != null)
                 {
-                    if (HttpContextFactory.Current.Session != null)
-                    {
-                        if (HttpContextFactory.Current.Session[STR_ConnectionString] != null)
-                        {
-                            return HttpContextFactory.Current.Session[STR_ConnectionString].ToString();
-                        }
-                    }
+                    return HttpContextFactory.Current.Items[STR_ConnectionString].ToString();
                 }
 
                 var cs = ConnectionStringSettings;
@@ -113,7 +107,7 @@ namespace UtilityExtensions
             {
                 if (HttpContextFactory.Current != null)
                 {
-                    HttpContextFactory.Current.Session[STR_ConnectionString] = value;
+                    HttpContextFactory.Current.Items[STR_ConnectionString] = value;
                 }
             }
         }

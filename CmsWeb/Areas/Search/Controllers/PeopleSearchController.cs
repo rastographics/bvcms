@@ -22,7 +22,7 @@ namespace CmsWeb.Areas.Main.Controllers
             }
             else
             {
-                var i = Session["FindPeopleInfo"] as PeopleSearchInfo;
+                var i = RequestManager.SessionProvider.Get<PeopleSearchInfo>("FindPeopleInfo");
                 if (i != null)
                 {
                     m.m = i;
@@ -35,14 +35,14 @@ namespace CmsWeb.Areas.Main.Controllers
         public ActionResult Results(PeopleSearchModel m)
         {
             UpdateModel(m.m);
-            Session["FindPeopleInfo"] = m.m;
+            RequestManager.SessionProvider.Add("FindPeopleInfo", m.m);
             return View(m);
         }
         [HttpPost]
         public ActionResult ConvertToQuery(PeopleSearchModel m)
         {
             UpdateModel(m.m);
-            Session["FindPeopleInfo"] = m.m;
+            RequestManager.SessionProvider.Add("FindPeopleInfo", m.m);
             return Content(m.ConvertToSearch());
         }
     }

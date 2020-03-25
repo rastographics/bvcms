@@ -9,8 +9,8 @@
         url = "/Person2/InlineEdit/" + Model.PeopleId,
         source = "/Person2/InlineCodes/"
     };
-    var finance = User.IsInRole("Finance") && ((string)Session["testnofinance"]) != "true";
-    ContributionStatements.CustomStatementsList(DbUtil.Db);
+    var finance = User.IsInRole("Finance") && !Util.TestNoFinance;
+    ContributionStatements.CustomStatementsList(ViewExtensions2.CurrentDatabase);
 }
 <form class="ajax" method="post" data-init="Editable" data-init2="ExtraEditable">
     <h4>Statements</h4>
@@ -18,7 +18,7 @@
         <div class="col-md-8">
             <div>
                 @{
-                    var statementEntries = ContributionsModel.Statements(DbUtil.Db, Model.PeopleId).ToList();
+                    var statementEntries = ContributionsModel.Statements(ViewExtensions2.CurrentDatabase, Model.PeopleId).ToList();
                     foreach (var year in statementEntries.Select(s => s.StartDate.Year).Distinct())
                     {
                         var startDate = new DateTime(year, 1, 1);

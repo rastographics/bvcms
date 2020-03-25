@@ -17,6 +17,7 @@ namespace CmsWeb.Models
         internal readonly bool Noupdate;
         internal readonly Dictionary<string, int> Orgs = new Dictionary<string, int>();
         internal readonly int PeopleId;
+        internal readonly int UserId;
         internal readonly CMSDataContext ProgressDbContext;
 
         internal readonly List<string> Standardnames = new List<string>
@@ -47,22 +48,24 @@ namespace CmsWeb.Models
         {
         }
 
-        public UploadPeopleModel(string host, int peopleId, bool noupdate, bool testing = false)
+        public UploadPeopleModel(string host, int peopleId, int userId, bool noupdate, bool testing = false)
         {
             JobDbContext = CMSDataContext.Create(host);
             ProgressDbContext = CMSDataContext.Create(host);
             PeopleId = peopleId;
+            UserId = userId;
             Noupdate = noupdate;
             Testing = testing;
             Host = host;
             PeopleSheetName = "People";
         }
 
-        public UploadPeopleModel(CMSDataContext existingProgressDbContext, string host, int peopleId, bool noupdate, bool testing = false)
+        public UploadPeopleModel(CMSDataContext existingProgressDbContext, string host, int peopleId, int userId, bool noupdate, bool testing = false)
         {
             JobDbContext = CMSDataContext.Create(host);
             ProgressDbContext = existingProgressDbContext;
             PeopleId = peopleId;
+            UserId = userId;
             Noupdate = noupdate;
             Testing = testing;
             Host = host;
