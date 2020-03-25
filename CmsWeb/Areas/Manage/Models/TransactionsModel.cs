@@ -184,7 +184,7 @@ namespace CmsWeb.Models
                                     where t.OriginalId == nameid
                                     select t;
                 }
-                else if (name.All(char.IsDigit))
+                else if (name.Any(char.IsDigit))
                 {
                     if (name.AllDigits())
                     {
@@ -195,7 +195,7 @@ namespace CmsWeb.Models
                     else
                     {
                         _transactions = from t in _transactions
-                            where t.Batchref == name || t.TransactionId == name
+                            where t.Batchref == name
                             select t;
                     }
                 }
