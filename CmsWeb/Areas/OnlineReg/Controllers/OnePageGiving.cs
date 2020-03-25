@@ -265,7 +265,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 
             if (ti == null)
             {
-                ModelState.AddModelError("TranId: ", "Transaction duplicated");
+                ModelState.AddModelError("TranId", "Transaction duplicated");
 
                 m.List[0].FundItem = fundItem;
                 pf.AmtToPay = amtToPay;
