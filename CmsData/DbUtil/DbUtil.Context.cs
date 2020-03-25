@@ -1880,7 +1880,7 @@ This search uses multiple steps which cannot be duplicated in a single query.
 
             if (DateTime.Now.AddMinutes(-5) < t.TransactionDate)
             {
-                var tran = Transactions.FirstOrDefault(x=>
+                var tran = Transactions.Where(x=>
                     x.Name == t.Name && 
                     x.First == t.First &&
                     x.MiddleInitial == t.MiddleInitial &&
@@ -1906,9 +1906,9 @@ This search uses multiple steps which cannot be duplicated in a single query.
                     x.PaymentType == t.PaymentType &&
                     x.LastFourCC == t.LastFourCC &&
                     x.LastFourACH == t.LastFourACH
-                    );
+                    ).ToList();
 
-                if (tran != null)
+                if (tran.Count != 0)
                     isDuplicateTransaction = true;
             }
 
