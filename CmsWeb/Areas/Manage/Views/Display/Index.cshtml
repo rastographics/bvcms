@@ -120,7 +120,7 @@
                                                 Limited to Role: @(ro != null ? ro.RoleName : "missing role!")
                                                 @if (t.IsUnLayer())
                                                 {
-                                                    <img src="@Url.Content("~/Content/touchpoint/img/Responsive_Design-512.svg")" style="height:25%;width:25%;" />
+                                                    <br/><img src="@Url.Content("~/Content/touchpoint/img/Responsive_Design-512.svg")" style="height:25%;width:25%;" />
                                                 }
 
                                             </div>
@@ -300,7 +300,7 @@
                             {
                                 <div class="col-sm-6">
                                     <div class="form-group">
-                                        <label for="useUnlayer" class="control-label">Use Unlayer</label>
+                                        <label for="useUnlayer" class="control-label">Use Mobile Responsive WYSIWYG</label>
                                         @Html.CheckBox("useUnLayer", false, new{@class = "form-control"})
                                     </div>
                                 </div>
