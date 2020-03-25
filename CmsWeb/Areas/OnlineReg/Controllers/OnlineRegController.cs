@@ -448,7 +448,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             if (s?.Value == null)
             {
                 DbUtil.LogActivity("OnlineReg Error PageRefreshNotAllowed");
-                throw new Exception("Registration cannot be completed after a page refresh.");
+                return null;
             }
             var m = Util.DeSerialize<OnlineRegModel>(s.Value);
             CurrentDatabase.SessionValues.DeleteAllOnSubmit(
@@ -461,6 +461,10 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         {
             Response.NoCache();
             var m = ReadOnlineRegModelFromSession();
+            if (m == null)
+            {
+                return Message("Registration cannot be completed after a page refresh.");
+            }
             m.CurrentDatabase = CurrentDatabase;
             var msg = m.CheckExpiredOrCompleted();
             if (msg.HasValue())
