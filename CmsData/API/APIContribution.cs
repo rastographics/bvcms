@@ -235,7 +235,7 @@ namespace CmsData.API
                          Name = name,
                          MailingAddress = MailingAddress(p),
                          PeopleId = p.PeopleId,
-                         SpouseID = p.SpouseId,
+                         SpouseId = p.SpouseId,
                          DeacesedDate = p.DeceasedDate,
                          FamilyId = p.FamilyId,
                          Age = p.Age,
@@ -277,7 +277,7 @@ namespace CmsData.API
                          Name = name,
                          MailingAddress = MailingAddress(p),
                          PeopleId = p.PeopleId,
-                         SpouseID = p.SpouseId,
+                         SpouseId = p.SpouseId,
                          DeacesedDate = p.DeceasedDate,
                          FamilyId = p.FamilyId,
                          Age = p.Age,
@@ -310,7 +310,7 @@ namespace CmsData.API
         public static IEnumerable<NormalContribution> Contributions(CMSDataContext db, ContributorInfo ci, DateTime fromDate, DateTime toDate, List<int> funds)
         {
             var q = from c in
-                db.NormalContributions(ci.PeopleId, ci.SpouseID, ci.Joint, fromDate, toDate, funds?.JoinInts(","))
+                db.NormalContributions(ci.PeopleId, ci.SpouseId, ci.Joint, fromDate, toDate, funds?.JoinInts(","))
                     orderby c.ContributionDate
                     select c;
             return q;
@@ -319,7 +319,7 @@ namespace CmsData.API
         public static IEnumerable<NonTaxContribution> NonTaxItems(CMSDataContext db, ContributorInfo ci, DateTime fromDate, DateTime toDate, List<int> funds)
         {
             var q = from c in
-                db.NonTaxContributions(ci.PeopleId, ci.SpouseID, ci.Joint, fromDate, toDate, funds.JoinInts(","))
+                db.NonTaxContributions(ci.PeopleId, ci.SpouseId, ci.Joint, fromDate, toDate, funds.JoinInts(","))
                     orderby c.ContributionDate
                     select c;
             return q;
@@ -328,7 +328,7 @@ namespace CmsData.API
         public static IEnumerable<StockGift> StockGifts(CMSDataContext db, ContributorInfo ci, DateTime fromDate, DateTime toDate, List<int> funds)
         {
             var q = from c in
-                db.StockGifts(ci.PeopleId, ci.SpouseID, ci.Joint, fromDate, toDate, funds.JoinInts(","))
+                db.StockGifts(ci.PeopleId, ci.SpouseId, ci.Joint, fromDate, toDate, funds.JoinInts(","))
                     orderby c.ContributionDate
                     select c;
             return q;
@@ -338,7 +338,7 @@ namespace CmsData.API
         {
             var showNegatives = db.Setting("ShowNegativePledgeBalances");
             var q = from c in
-                db.UnitPledgeSummary(ci.PeopleId, ci.SpouseID, ci.Joint, toDate, funds.JoinInts(","))
+                db.UnitPledgeSummary(ci.PeopleId, ci.SpouseId, ci.Joint, toDate, funds.JoinInts(","))
                     orderby c.FundName
                     select c;
             foreach(var p in q)
@@ -352,7 +352,7 @@ namespace CmsData.API
         public static IEnumerable<GiftSummary> GiftSummary(CMSDataContext db, ContributorInfo ci, DateTime fromDate, DateTime toDate, List<int> funds)
         {
             var q = from c in
-                db.GiftSummary(ci.PeopleId, ci.SpouseID, ci.Joint, fromDate, toDate, funds.JoinInts(","))
+                db.GiftSummary(ci.PeopleId, ci.SpouseId, ci.Joint, fromDate, toDate, funds.JoinInts(","))
                     orderby c.FundName
                     select c;
             return q;
@@ -361,7 +361,7 @@ namespace CmsData.API
         public static IEnumerable<GiftsInKind> GiftsInKind(CMSDataContext db, ContributorInfo ci, DateTime fromDate, DateTime toDate, List<int> funds)
         {
             var q = from c in
-                db.GiftsInKind(ci.PeopleId, ci.SpouseID, ci.Joint, fromDate, toDate, funds.JoinInts(","))
+                db.GiftsInKind(ci.PeopleId, ci.SpouseId, ci.Joint, fromDate, toDate, funds.JoinInts(","))
                     orderby c.ContributionDate
                     select c;
             return q;
@@ -426,7 +426,7 @@ namespace CmsData.API
         public string Name { get; set; }
         public string MailingAddress { get; set; }
         public int PeopleId { get; set; }
-        public int? SpouseID { get; set; }
+        public int? SpouseId { get; set; }
         public int FamilyId { get; set; }
         public DateTime? DeacesedDate { get; set; }
         public int hohInd { get; set; }
