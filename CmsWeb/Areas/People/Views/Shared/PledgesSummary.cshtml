@@ -1,10 +1,11 @@
-﻿@using UtilityExtensions
-@using CmsData
+﻿@using CmsData
 @model CmsWeb.Areas.People.Models.ContributionsModel
 @{
     var campusId = Model.Person.CampusId;
     var PledgesSummary = Model.GetPledgesSummary();
-    var giving = Util.UserPeopleId == Util2.CurrentPeopleId && (MultipleGatewayUtils.GatewayId(DbUtil.Db, PaymentProcessTypes.RecurringGiving) != null) && DbUtil.Db.Setting("OnlineGiving", true);
+    var giving = ViewExtensions2.CurrentDatabase.UserPeopleId == Util2.CurrentPeopleId &&
+        (MultipleGatewayUtils.GatewayId(ViewExtensions2.CurrentDatabase, PaymentProcessTypes.RecurringGiving) != null) &&
+        ViewExtensions2.CurrentDatabase.Setting("OnlineGiving", true);
     var pledgeSumCollapse = Model.pledgeSumCollapse == true ? "in" : "";
     var collapseArrow = pledgeSumCollapse == "in" ? "down" : "right";
 }

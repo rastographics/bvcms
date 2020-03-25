@@ -167,7 +167,7 @@ namespace CmsData
         internal Expression InOneOfMyOrgs()
         {
             var tf = CodeIds == "1";
-            var uid = Util.UserPeopleId;
+            var uid = db.UserPeopleId;
             Expression<Func<Person, bool>> pred = p =>
                 p.OrganizationMembers.Any(m =>
                     db.OrganizationMembers.Any(um =>

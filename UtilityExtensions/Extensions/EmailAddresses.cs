@@ -336,68 +336,35 @@ namespace UtilityExtensions
 
             msg.To.Add(a);
         }
-        private const string STR_UserEmail = "UserEmail";
 
+        private const string STR_UserEmail = "UserEmail";
         public static string UserEmail
         {
-            get
-            {
-                string email = null;
-                if (HttpContextFactory.Current != null)
-                {
-                    if (HttpContextFactory.Current.Session != null)
-                    {
-                        if (HttpContextFactory.Current.Session[STR_UserEmail] != null)
-                        {
-                            email = HttpContextFactory.Current.Session[STR_UserEmail] as String;
-                        }
-                    }
-                }
-                else
-                {
-                    email = (string)Thread.GetData(Thread.GetNamedDataSlot("UserEmail"));
-                }
-
-                return email;
-            }
-            set
-            {
-                if (HttpContextFactory.Current != null)
-                {
-                    if (HttpContextFactory.Current.Session != null)
-                    {
-                        HttpContextFactory.Current.Session[STR_UserEmail] = value;
-                    }
-                }
-                else
-                {
-                    Thread.SetData(Thread.GetNamedDataSlot(STR_UserEmail), value);
-                }
-            }
+            get => GetFromSession<string>(STR_UserEmail);
+            set => SetValueInSession(STR_UserEmail, value);
         }
+
+        private const string STR_IsInRoleEmailTest = "IsInRoleEmailTest";
         public static bool IsInRoleEmailTest
         {
             get
             {
                 if (HttpContextFactory.Current != null)
                 {
-                    return HttpContextFactory.Current.User.IsInRole("EmailTest") || ((bool?)HttpContextFactory.Current.Session?["IsInRoleEmailTest"] ?? false);
+                    return HttpContextFactory.Current.User.IsInRole("EmailTest") || GetFromSession(STR_IsInRoleEmailTest, false);
                 }
 
-                return (bool?)Thread.GetData(Thread.GetNamedDataSlot("IsInRoleEmailTest")) ?? false;
+                return (bool?)Thread.GetData(Thread.GetNamedDataSlot(STR_IsInRoleEmailTest)) ?? false;
             }
             set
             {
                 if (HttpContextFactory.Current != null)
                 {
-                    if (HttpContextFactory.Current.Session != null)
-                    {
-                        HttpContextFactory.Current.Session["IsInRoleEmailTest"] = value;
-                    }
+                    SetValueInSession(STR_IsInRoleEmailTest, value);
                 }
                 else
                 {
-                    Thread.SetData(Thread.GetNamedDataSlot("IsInRoleEmailTest"), value);
+                    Thread.SetData(Thread.GetNamedDataSlot(STR_IsInRoleEmailTest), value);
                 }
             }
         }

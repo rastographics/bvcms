@@ -2,6 +2,7 @@
 using CmsWeb.Areas.Dialog.Models;
 using CmsWeb.Lifecycle;
 using System.Web.Mvc;
+using UtilityExtensions;
 
 namespace CmsWeb.Areas.Dialog.Controllers
 {
@@ -36,7 +37,7 @@ namespace CmsWeb.Areas.Dialog.Controllers
 
             if (!model.Started.HasValue)
             {
-                DbUtil.LogActivity($"Add attendees from tag for {Session["ActiveOrganization"]}");
+                DbUtil.LogActivity($"Add attendees from tag for {Util.ActiveOrganization}");
                 model.Process(CurrentDatabase);
             }
 

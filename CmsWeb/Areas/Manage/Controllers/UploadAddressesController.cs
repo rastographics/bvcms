@@ -22,7 +22,7 @@ namespace CmsWeb.Areas.Manage.Controllers
         public ActionResult UploadAddresses(string text)
         {
             string host = CurrentDatabase.Host;
-            var pid = Util.UserPeopleId;
+            var pid = CurrentDatabase.UserPeopleId;
             HostingEnvironment.QueueBackgroundWorkItem(ct =>
             {
                 var db = CMSDataContext.Create(host);

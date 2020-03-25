@@ -31,97 +31,11 @@ namespace CmsData
         public string Host { get; set; }
 
         private const string STR_UserId = "UserId";
-        public int UserId
-        {
-            //TODO: we're only going to fall back to Util.UserId while we transition to the new session provider so users don't get forced to log out
-            get => GetSessionValue(STR_UserId).ToInt2() ?? SetSessionValue(STR_UserId, Util.UserId);
-            set => SetSessionValue(STR_UserId, value);
-        }
+        public int UserId => CurrentUser?.UserId ?? 0;
+
+        public int? UserPeopleId => CurrentUser?.PeopleId;
 
         public int UserId1 => UserId == 0 ? 1 : UserId;
-
-        private const string STR_SessionDictionary = "STR_SessionDictionary";
-        private Dictionary<string, string> DictionaryFromCurrentContext => HttpContextFactory.Current?.Items?[STR_SessionDictionary] as Dictionary<string, string>;
-
-        private string GetSessionValue(string key)
-        {
-            return GetSessionValueFromContext(key) ??
-                SetSessionValueInContext(key, SessionValues
-                    .SingleOrDefault(v => v.SessionId == CurrentSessionId && v.Name == key)?.Value);
-        }
-
-        private string GetSessionValueFromContext(string key)
-        {
-            if (HttpContextFactory.Current?.Items != null)
-            {
-                var dict = DictionaryFromCurrentContext;
-                if (dict != null)
-                {
-                    return dict[key];
-                }
-            }
-            return null;
-        }
-
-        private string SetSessionValueInContext(string key, string value)
-        {
-            if (HttpContextFactory.Current?.Items != null && CurrentSessionId != null)
-            {
-                var dict = DictionaryFromCurrentContext;
-                if (dict == null)
-                {
-                    dict = SessionValues.Where(v => v.SessionId == CurrentSessionId).ToDictionary(v => v.Name, v => v.Value);
-                    HttpContextFactory.Current.Items[STR_SessionDictionary] = dict;
-                }
-                dict[key] = value;
-            }
-            return value;
-        }
-
-        private T SetSessionValue<T>(string key, T value)
-        {
-            string stringValue = null;
-            if (value is string)
-            {
-                stringValue = value as string;
-            }
-            else if (value != null)
-            {
-                stringValue = JsonConvert.SerializeObject(value);
-            }
-            FetchOrCreateSessionValue(key, stringValue);
-            SetSessionValueInContext(key, stringValue);
-            return value;
-        }
-
-        private SessionValue FetchOrCreateSessionValue(string key, string value)
-        {
-            var sv = SessionValues.FirstOrDefault(v => v.SessionId == CurrentSessionId && v.Name == key);
-            if (sv == null && value != null && CurrentSessionId != null)
-            {
-                sv = new SessionValue
-                {
-                    Name = key,
-                    SessionId = CurrentSessionId,
-                    CreatedDate = DateTime.UtcNow
-                };
-                SessionValues.InsertOnSubmit(sv);
-            }
-            if (sv != null)
-            {
-                if (value == null)
-                {
-                    SessionValues.DeleteOnSubmit(sv);
-                }
-                else
-                {
-                    sv.Value = value;
-                }
-                SubmitChanges();
-            }
-            return sv;
-        }
-
         public string CurrentSessionId => HttpContextFactory.Current?.Session?.SessionID;
 
         public string CmsHost
@@ -185,7 +99,7 @@ namespace CmsData
 
         public void CopySession()
         {
-            if (HttpContextFactory.Current != null && HttpContextFactory.Current.Session != null)
+            if (HttpContextFactory.Current != null && CurrentSessionId != null)
             {
                 CurrentPeopleId = Util2.CurrentPeopleId;
                 CurrentTagOwnerId = Util2.CurrentTagOwnerId;

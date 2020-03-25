@@ -32,10 +32,10 @@ namespace CmsWeb.Areas.Org.Controllers
 
             if (Util2.OrgLeadersOnly)
             {
-                var oids = CurrentDatabase.GetLeaderOrgIds(Util.UserPeopleId);
+                var oids = CurrentDatabase.GetLeaderOrgIds(CurrentDatabase.UserPeopleId);
                 if (!oids.Contains(m.Org.OrganizationId))
                     return NotAllowed("You must be a leader of this organization", m.Org.OrganizationName);
-                var sgleader = CurrentDatabase.SmallGroupLeader(id, Util.UserPeopleId);
+                var sgleader = CurrentDatabase.SmallGroupLeader(id, CurrentDatabase.UserPeopleId);
                 if (sgleader.HasValue())
                     m.SgFilter = sgleader;
             }
@@ -52,7 +52,7 @@ namespace CmsWeb.Areas.Org.Controllers
             ViewBag.model = m;
             ViewBag.selectmode = 0;
             InitExportToolbar(m);
-            Session["ActiveOrganization"] = m.Org.OrganizationName;
+            Util.ActiveOrganization = m.Org.OrganizationName;
             return View(m);
         }
 
@@ -74,8 +74,8 @@ namespace CmsWeb.Areas.Org.Controllers
             var err = org.PurgeOrg(CurrentDatabase);
             if(err.HasValue())
                 return Content($"error, {err}");
-            DbUtil.LogActivity($"Delete Org {Session["ActiveOrganization"]}");
-            Session.Remove("ActiveOrganization");
+            DbUtil.LogActivity($"Delete Org {Util.ActiveOrganization}");
+            Util.ActiveOrganization = null;
             return Content("ok");
         }
 
@@ -166,7 +166,7 @@ namespace CmsWeb.Areas.Org.Controllers
             CurrentDatabase.Contacts.InsertOnSubmit(c);
             CurrentDatabase.SubmitChanges();
 
-            c.contactsMakers.Add(new Contactor { PeopleId = Util.UserPeopleId.Value });
+            c.contactsMakers.Add(new Contactor { PeopleId = CurrentDatabase.UserPeopleId.Value });
             CurrentDatabase.SubmitChanges();
 
             var defaultRole = CurrentDatabase.Setting("Contacts-DefaultRole", null);

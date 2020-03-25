@@ -81,14 +81,14 @@ namespace CmsWeb.Controllers
         [Authorize(Roles = "Finance")]
         public ActionResult TurnFinanceOn()
         {
-            Session.Remove("testnofinance");
+            Util.TestNoFinance = false;
             return Redirect("/Person2/Current");
         }
 
         [Authorize(Roles = "Finance")]
         public ActionResult TurnFinanceOff()
         {
-            Session["testnofinance"] = "true";
+            Util.TestNoFinance = true;
             return Redirect("/Person2/Current");
         }
     }

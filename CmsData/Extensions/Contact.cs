@@ -57,7 +57,7 @@ namespace CmsData
             var c = new Contact 
 			{ 
 				ContactDate = date ?? DateTime.Parse("1/1/1900"), 
-				CreatedBy = Util.UserPeopleId ?? Db.UserId1,
+				CreatedBy = Db.UserPeopleId ?? Db.UserId1,
 	            CreatedDate = DateTime.Now,
 				Comments = comments
 			};

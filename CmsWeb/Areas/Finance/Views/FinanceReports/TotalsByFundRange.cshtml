@@ -13,7 +13,7 @@
         ViewBag.Title = "Totals by Fund Range";
         ViewBag.ReportPageHeader = "Totals by Fund Range";
     }
-    var customFundsList = ContributionStatements.CustomFundSetSelectList(DbUtil.Db);
+    var customFundsList = ContributionStatements.CustomFundSetSelectList(ViewExtensions2.CurrentDatabase);
 }
 <div class="report box box-responsive">
     <div class="box-content">

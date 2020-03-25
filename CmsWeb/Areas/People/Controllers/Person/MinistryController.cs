@@ -70,7 +70,7 @@ namespace CmsWeb.Areas.People.Controllers
             CurrentDatabase.SubmitChanges();
 
             c.contactees.Add(new Contactee { PeopleId = p.PeopleId });
-            c.contactsMakers.Add(new Contactor { PeopleId = Util.UserPeopleId.Value });
+            c.contactsMakers.Add(new Contactor { PeopleId = CurrentDatabase.UserPeopleId.Value });
             CurrentDatabase.SubmitChanges();
 
             var defaultRole = CurrentDatabase.Setting("Contacts-DefaultRole", null);
@@ -93,12 +93,12 @@ namespace CmsWeb.Areas.People.Controllers
         public ActionResult AddTaskAbout(int id)
         {
             var p = CurrentDatabase.LoadPersonById(id);
-            if (p == null || !Util.UserPeopleId.HasValue)
+            if (p == null || !CurrentDatabase.UserPeopleId.HasValue)
             {
                 return Content("no id");
             }
 
-            var t = p.AddTaskAbout(CurrentDatabase, Util.UserPeopleId.Value, "Please Contact");
+            var t = p.AddTaskAbout(CurrentDatabase, CurrentDatabase.UserPeopleId.Value, "Please Contact");
             CurrentDatabase.SubmitChanges();
             return Content($"/Task/{t.Id}");
         }

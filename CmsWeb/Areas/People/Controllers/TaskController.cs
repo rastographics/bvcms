@@ -63,7 +63,7 @@ namespace CmsWeb.Areas.People.Controllers
         [HttpPost]
         public ActionResult AddTask(string description)
         {
-            var tid = TaskModel.AddTask(Util.UserPeopleId ?? 0, description, CurrentDatabase.Host, CurrentDatabase);
+            var tid = TaskModel.AddTask(CurrentDatabase.UserPeopleId ?? 0, description, CurrentDatabase.Host, CurrentDatabase);
             return Content(tid.ToString());
         }
 

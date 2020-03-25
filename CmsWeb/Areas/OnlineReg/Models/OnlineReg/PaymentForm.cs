@@ -310,7 +310,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 ProcessType = PaymentProcessTypes.OnlineRegistration
             };
 
-            if (pi.PeopleId == Util.UserPeopleId) // Is this the logged in user?
+            if (pi.PeopleId == db.UserPeopleId) // Is this the logged in user?
             {
                 pf.CreditCard = pi.MaskedCard;
                 pf.Expires = pi.Expires;
@@ -819,7 +819,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                     return RouteModel.ProcessPayment();
                 }
 
-                HttpContextFactory.Current.Session["FormId"] = FormId;
+                Util.FormId = FormId;
                 if (m != null)
                 {
                     m.DatumId = DatumId; // todo: not sure this is necessary
@@ -890,7 +890,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             Transaction ti = CurrentDatabase.Transactions.Where(p => p.Id == extTransactionId).FirstOrDefault();
             orgId = ti.OrgId.Value;
 
-            HttpContextFactory.Current.Session["FormId"] = FormId;
+            Util.FormId = FormId;
             if (m != null)
             {
                 m.DatumId = DatumId; // todo: not sure this is necessary

@@ -40,7 +40,7 @@ namespace CmsWeb.Areas.Manage.Models.BatchModel
             }
 
             var list = new List<FindInfo>();
-
+            var db = DbUtil.Db;
             while (csv.Read())
             {
                 var row = new FindInfo();
@@ -72,7 +72,7 @@ namespace CmsWeb.Areas.Manage.Models.BatchModel
                     }
                 };
 
-                var pids = DbUtil.Db.FindPerson3(row.First, row.Last, row.Birthday, row.Email,
+                var pids = db.FindPerson3(row.First, row.Last, row.Birthday, row.Email,
                     row.Phone, row.Phone2, row.Phone3).ToList();
                 row.Found = pids.Count;
                 if (pids.Count == 1)
@@ -87,10 +87,10 @@ namespace CmsWeb.Areas.Manage.Models.BatchModel
                     select pi.PeopleId;
             foreach (var pid in q.Distinct())
             {
-                Person.Tag(DbUtil.Db, pid ?? 0, tagname, Util.UserPeopleId, DbUtil.TagTypeId_Personal);
+                Person.Tag(db, pid ?? 0, tagname, db.UserPeopleId, DbUtil.TagTypeId_Personal);
             }
 
-            DbUtil.Db.SubmitChanges();
+            db.SubmitChanges();
             return list;
         }
         public class FindInfo
