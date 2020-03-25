@@ -1,15 +1,14 @@
+using Dapper;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data.SqlClient;
-using System.IO;
 using System.Linq;
 using System.Web;
-using UtilityExtensions;
 using System.Web.Caching;
-using Dapper;
-using HandlebarsDotNet;
 using System.Web.Configuration;
+using UtilityExtensions;
 
 namespace CmsData
 {
@@ -18,9 +17,7 @@ namespace CmsData
         public void SetCurrentOrgId(int? id)
         {
             Util2.CurrentOrgId = id;
-//            CurrentOrgId = id;
         }
-//        public int? CurrentOrgId { get; set; }
         public int CurrentSessionOrgId => Util2.CurrentOrgId ?? 0;
 
         public int CurrentPeopleId { get; set; }
@@ -33,12 +30,20 @@ namespace CmsData
         public int? QbDivisionOverride { get; set; }
         public string Host { get; set; }
 
+        private const string STR_UserId = "UserId";
+        public int UserId => CurrentUser?.UserId ?? 0;
+
+        public int? UserPeopleId => CurrentUser?.PeopleId;
+
+        public int UserId1 => UserId == 0 ? 1 : UserId;
+        public string CurrentSessionId => HttpContextFactory.Current?.Session?.SessionID;
+
         public string CmsHost
         {
             get
             {
                 string defaultHost = null;
-                if (Util.IsDebug()) 
+                if (Util.IsDebug())
                 {
                     defaultHost = ConfigurationManager.AppSettings["cmshost"];
                 }
@@ -58,10 +63,14 @@ namespace CmsData
 
                 // finally, try the "cmshost" setting
                 if (!defaultHost.HasValue())
+                {
                     defaultHost = Util.URLCombine(ConfigurationManager.AppSettings["cmshost"], "");
+                }
 
                 if (Host.HasValue())
+                {
                     return defaultHost.Replace("{church}", Host, ignoreCase: true);
+                }
 
                 throw (new Exception("No URL for Server in CmsHost"));
             }
@@ -74,7 +83,10 @@ namespace CmsData
                 var Request = HttpContextFactory.Current.Request;
                 var scheme = Request.Url.Scheme;
                 if (Request.Headers["X-Forwarded-Proto"] == "https")
+                {
                     scheme = "https";
+                }
+
                 return scheme;
             }
             return "http";
@@ -87,7 +99,7 @@ namespace CmsData
 
         public void CopySession()
         {
-            if (HttpContextFactory.Current != null && HttpContextFactory.Current.Session != null)
+            if (HttpContextFactory.Current != null && CurrentSessionId != null)
             {
                 CurrentPeopleId = Util2.CurrentPeopleId;
                 CurrentTagOwnerId = Util2.CurrentTagOwnerId;
@@ -102,14 +114,20 @@ namespace CmsData
         {
             var setting = Settings.SingleOrDefault(ss => ss.Id == name);
             if (setting == null)
+            {
                 return defaultvalue;
+            }
+
             return setting.SettingX ?? defaultvalue ?? string.Empty;
         }
 
         public string Setting(string name, string defaultvalue)
         {
             if (name == null)
+            {
                 return defaultvalue;
+            }
+
             var list = HttpRuntime.Cache[Host + "Setting"] as Dictionary<string, string>;
             if (list == null)
             {
@@ -175,7 +193,7 @@ namespace CmsData
                 setting.SettingX = value;
             }
         }
-		
+
         public Task SetTaskDetails(int id, string name, string value)
         {
             var task = Tasks.Single(c => c.Id == id);
@@ -205,7 +223,7 @@ namespace CmsData
             }
             return task;
         }
-		
+
         public void DeleteSetting(string name)
         {
             var list = HttpRuntime.Cache[Host + "Setting"] as Dictionary<string, string>;
@@ -222,7 +240,9 @@ namespace CmsData
 
             var setting = Settings.SingleOrDefault(c => c.Id == name);
             if (setting != null)
+            {
                 Settings.DeleteOnSubmit(setting);
+            }
         }
 
         public void LogActivity(string activity, int? oid = null, int? pid = null, int? did = null, int? uid = null)
@@ -261,7 +281,9 @@ namespace CmsData
 
                 var user = HttpRuntime.Cache[Host + sendgridmailpassword] as string;
                 if (user.HasValue())
+                {
                     return user;
+                }
 
                 user = Setting(sendgridmailpassword, "");
                 if (!user.HasValue())
@@ -311,7 +333,7 @@ namespace CmsData
         }
 
         public string RenderTemplate(string source, object data)
-        {  
+        {
             var template = PythonModel.RegisterHelpers(this).Compile(source);
             var result = template(data);
             return result;

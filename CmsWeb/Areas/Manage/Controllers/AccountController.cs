@@ -125,6 +125,7 @@ namespace CmsWeb.Areas.Manage.Controllers
         [Route("~/Abandon")]
         public ActionResult Abandon()
         {
+            RequestManager.SessionProvider.Clear();
             Session.Abandon();
             return Redirect("/");
         }
@@ -229,7 +230,7 @@ namespace CmsWeb.Areas.Manage.Controllers
             }
 
             AccountModel.SetUserInfo(cmsdb, cmsidb, username);
-            if (Util.UserId == 0)
+            if (cmsdb.UserId == 0)
             {
                 return false;
             }
@@ -242,7 +243,7 @@ namespace CmsWeb.Areas.Manage.Controllers
         [HttpPost, MyRequireHttps]
         public ActionResult Logon(AccountInfo m)
         {
-            Session.Remove("IsNonFinanceImpersonator");
+            Util.IsNonFinanceImpersonator = null;
             TryLoadAlternateShell();
             if (m.ReturnUrl.HasValue())
             {
@@ -258,7 +259,7 @@ namespace CmsWeb.Areas.Manage.Controllers
                 return View(m);
             }
 
-            var ret = AccountModel.AuthenticateLogon(m.UsernameOrEmail, m.Password, Session, Request, CurrentDatabase, CurrentImageDatabase);
+            var ret = AccountModel.AuthenticateLogon(m.UsernameOrEmail, m.Password, Request, CurrentDatabase, CurrentImageDatabase);
             if (ret.ErrorMessage.HasValue())
             {
                 ViewBag.error = ret.ErrorMessage;
@@ -277,13 +278,13 @@ namespace CmsWeb.Areas.Manage.Controllers
 
             if (MembershipService.ShouldPromptForTwoFactorAuthentication(user, CurrentDatabase, Request))
             {
-                Session[MFAUserId] = user.UserId;
+                Util.MFAUserId = user.UserId;
                 m.UsernameOrEmail = user.Username;
                 return View("Auth", m);
             }
             else
             {
-                AccountModel.FinishLogin(user.Username, Session, CurrentDatabase, CurrentImageDatabase);
+                AccountModel.FinishLogin(user.Username, CurrentDatabase, CurrentImageDatabase);
             }
 
             return RedirectTo("/Auth" + m.ReturnUrlQueryString);
@@ -293,7 +294,7 @@ namespace CmsWeb.Areas.Manage.Controllers
         [Route("~/Auth")]
         public ActionResult Auth(AccountInfo m)
         {
-            var userId = Session[MFAUserId] as int?;
+            var userId = Util.MFAUserId;
             var user = CurrentDatabase.CurrentUser ?? CurrentDatabase.Users
                 .Where(u => u.Username == m.UsernameOrEmail || u.EmailAddress == m.UsernameOrEmail || u.Person.EmailAddress2 == m.UsernameOrEmail)
                 .Where(u => u.UserId == userId).SingleOrDefault();
@@ -307,11 +308,11 @@ namespace CmsWeb.Areas.Manage.Controllers
                 var passcode = Request["passcode"]?.Replace(",", "");
                 if (MembershipService.ValidateTwoFactorPasscode(user, CurrentDatabase, passcode))
                 {
-                    AccountModel.FinishLogin(user.Username, Session, CurrentDatabase, CurrentImageDatabase);
-                    if (user.UserId.Equals(Session[MFAUserId]))
+                    AccountModel.FinishLogin(user.Username, CurrentDatabase, CurrentImageDatabase);
+                    if (user.UserId.Equals(Util.MFAUserId))
                     {
                         MembershipService.SaveTwoFactorAuthenticationToken(CurrentDatabase, Response);
-                        Session.Remove(MFAUserId);
+                        Util.MFAUserId = null;
                     }
                 }
                 else
@@ -338,7 +339,7 @@ namespace CmsWeb.Areas.Manage.Controllers
             {
                 if (!CMSRoleProvider.provider.IsUserInRole(user.Username, "Access"))
                 {
-                    return RedirectTo("/Person2/" + Util.UserPeopleId);
+                    return RedirectTo("/Person2/" + CurrentDatabase.UserPeopleId);
                 }
             }
 
@@ -437,8 +438,9 @@ namespace CmsWeb.Areas.Manage.Controllers
         [MyRequireHttps]
         public ActionResult LogOff()
         {
-            CurrentDatabase.DeleteSpecialTags(Util.UserPeopleId);
+            CurrentDatabase.DeleteSpecialTags(CurrentDatabase.UserPeopleId);
             FormsAuthentication.SignOut();
+            RequestManager.SessionProvider.Clear();
             Session.Abandon();
             return Redirect("/");
         }

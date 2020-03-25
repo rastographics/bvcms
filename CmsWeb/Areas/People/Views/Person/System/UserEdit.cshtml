@@ -3,7 +3,7 @@
 @using roles = CmsData.User
 @model roles
 @{
-    var mfaEnabled = Model.MFAEnabled && CmsWeb.Membership.MembershipService.IsTwoFactorAuthenticationEnabled(DbUtil.Db);
+    var mfaEnabled = Model.MFAEnabled && CmsWeb.Membership.MembershipService.IsTwoFactorAuthenticationEnabled(ViewExtensions2.CurrentDatabase);
 }
 <form class="ajax" autocomplete="off">
     <div class="row">
@@ -89,7 +89,7 @@
                 }
                 @if (roles.SpecialPurpose.Contains("OrgLeadersOnly"))
                 {
-                    if (!Model.CanAssign(DbUtil.Db, "OrgLeadersOnly"))
+                    if (!Model.CanAssign(ViewExtensions2.CurrentDatabase, "OrgLeadersOnly"))
                     {
                         if (Model.Roles.Contains("OrgLeadersOnly"))
                         {
@@ -130,7 +130,7 @@
         <strong>Custom</strong>
         <div class="row">
             <div class="col-sm-12">
-                @foreach (var role in roles.CustomRoles(DbUtil.Db))
+                @foreach (var role in roles.CustomRoles(ViewExtensions2.CurrentDatabase))
                 {
                     @Role(role)
                 }
@@ -146,7 +146,7 @@
 </form>
 @helper Role(string role)
 {
-  if (!Model.CanAssign(DbUtil.Db, role))
+  if (!Model.CanAssign(ViewExtensions2.CurrentDatabase, role))
   {
     if (Model.Roles.Contains(@role))
     {

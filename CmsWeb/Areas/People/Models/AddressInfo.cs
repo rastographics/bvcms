@@ -153,7 +153,7 @@ namespace CmsWeb.Areas.People.Models
 
         public static IEnumerable<SelectListItem> ResCodes()
         {
-            return CodeValueModel.ConvertToSelect(CodeValueModel.ResidentCodesWithZero(), "Id");
+            return CodeValueModel.ConvertToSelect(new CodeValueModel().ResidentCodesWithZero(), "Id");
         }
         public static IEnumerable<SelectListItem> States()
         {
@@ -265,9 +265,10 @@ namespace CmsWeb.Areas.People.Models
 
         public void UpdateAddress(ModelStateDictionary modelState, bool forceSave = false)
         {
-            var p = DbUtil.Db.LoadPersonById(PeopleId);
+            var db = DbUtil.Db;
+            var p = db.LoadPersonById(PeopleId);
             var f = p.Family;
-            var rc = DbUtil.Db.FindResCode(ZipCode, Country.Value);
+            var rc = db.FindResCode(ZipCode, Country.Value);
             ResCode = new CodeInfo(rc, "ResCode");
 
             switch (Name)
@@ -305,12 +306,12 @@ namespace CmsWeb.Areas.People.Models
             {
                 var c = new ChangeLog
                 {
-                    UserPeopleId = Util.UserPeopleId.Value,
+                    UserPeopleId = db.UserPeopleId.Value,
                     PeopleId = PeopleId,
                     Field = Name,
                     Created = Util.Now
                 };
-                DbUtil.Db.ChangeLogs.InsertOnSubmit(c);
+                db.ChangeLogs.InsertOnSubmit(c);
                 c.ChangeDetails.AddRange(psb);
             }
             if (fsb.Count > 0)
@@ -318,17 +319,17 @@ namespace CmsWeb.Areas.People.Models
                 var c = new ChangeLog
                 {
                     FamilyId = p.FamilyId,
-                    UserPeopleId = Util.UserPeopleId.Value,
+                    UserPeopleId = db.UserPeopleId.Value,
                     PeopleId = PeopleId,
                     Field = Name,
                     Created = Util.Now
                 };
-                DbUtil.Db.ChangeLogs.InsertOnSubmit(c);
+                db.ChangeLogs.InsertOnSubmit(c);
                 c.ChangeDetails.AddRange(fsb);
             }
             try
             {
-                DbUtil.Db.SubmitChanges();
+                db.SubmitChanges();
                 DbUtil.LogActivity($"Update Address for: {person.Name}");
             }
             catch (InvalidOperationException ex)
@@ -346,11 +347,11 @@ namespace CmsWeb.Areas.People.Models
                         sb.AppendFormat("<tr><td>{0}</td><td>{1}</td><td>{2}</td></tr>\n", c.Field, c.Before, c.After);
                     foreach (var c in fsb)
                         sb.AppendFormat("<tr><td>{0}</td><td>{1}</td><td>{2}</td></tr>\n", c.Field, c.Before, c.After);
-                    var np = DbUtil.Db.GetNewPeopleManagers();
+                    var np = db.GetNewPeopleManagers();
                     if(np != null)
-                        DbUtil.Db.EmailRedacted(p.FromEmail, np,
+                        db.EmailRedacted(p.FromEmail, np,
                             "Address Info Changed",
-                            $"{Util.UserName} changed the <a href='{DbUtil.Db.ServerLink($"/Person2/{PeopleId}")}'>following information</a>:<br />\n<table>{sb}</table>");
+                            $"{Util.UserName} changed the <a href='{db.ServerLink($"/Person2/{PeopleId}")}'>following information</a>:<br />\n<table>{sb}</table>");
                 }
         }
 
@@ -360,11 +361,6 @@ namespace CmsWeb.Areas.People.Models
         }
         public bool ValidateAddress(ModelStateDictionary modelState)
         {
-            //            if (!Address1.HasValue())
-            //                modelState.AddModelError(this.GetNameFor(m => m.Address1), "Street Address Required");
-            //            if ((!City.HasValue() || !State.Value.HasValue()) && !Zip.HasValue())
-            //                modelState.AddModelError(this.GetNameFor(m => m.Zip), "Require either Zip Code or City/State");
-
             Addrok = modelState.IsValid;
             if (Addrok == false)
                 return false;

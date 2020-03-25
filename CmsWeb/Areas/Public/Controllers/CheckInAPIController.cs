@@ -426,7 +426,7 @@ namespace CmsWeb.Areas.Public.Controllers
                 }
             }
 
-            person?.LogPictureUpload(CurrentDatabase, Util.UserPeopleId ?? 1);
+            person?.LogPictureUpload(CurrentDatabase, CurrentDatabase.UserPeopleId ?? 1);
 
             CurrentDatabase.SubmitChanges();
 
@@ -560,7 +560,7 @@ namespace CmsWeb.Areas.Public.Controllers
                 p = new Person
                 {
                     CreatedDate = Util.Now,
-                    CreatedBy = Util.UserId,
+                    CreatedBy = CurrentDatabase.UserId,
                     MemberStatusId = MemberStatusCode.JustAdded,
                     AddressTypeId = 10,
                     OriginId = OriginCode.Visit,
@@ -723,7 +723,7 @@ namespace CmsWeb.Areas.Public.Controllers
             Attend.RecordAttend(CurrentDatabase, cia.peopleID, cia.orgID, cia.present, cia.datetime);
 
             CurrentDatabase.UpdateMeetingCounters(cia.orgID);
-            DbUtil.LogActivity($"Check-In Record Attend Org ID:{cia.orgID} People ID:{cia.peopleID} User ID:{Util.UserPeopleId} Attended:{cia.present}");
+            DbUtil.LogActivity($"Check-In Record Attend Org ID:{cia.orgID} People ID:{cia.peopleID} User ID:{CurrentDatabase.UserPeopleId} Attended:{cia.present}");
 
             // Check Entry Point and replace if Check-In
             Person person = CurrentDatabase.People.FirstOrDefault(p => p.PeopleId == cia.peopleID);

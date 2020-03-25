@@ -822,7 +822,7 @@ namespace CmsWeb.Code
 
         public List<CodeValueItem> PeopleToEmailFor()
         {
-            var p = Db.LoadPersonById(Util.UserPeopleId ?? 0);
+            var p = Db.LoadPersonById(Db.UserPeopleId ?? 0);
 
             var q = from cf in Db.PeopleCanEmailFors
                     where cf.CanEmail == p.PeopleId
@@ -948,9 +948,9 @@ namespace CmsWeb.Code
             return list;
         }
 
-        public static IEnumerable<CodeValueItem> ResidentCodes()
+        public IEnumerable<CodeValueItem> ResidentCodes()
         {
-            return from c in DbUtil.Db.ResidentCodes
+            return from c in Db.ResidentCodes
                    select new CodeValueItem
                    {
                        Id = c.Id,
@@ -959,7 +959,7 @@ namespace CmsWeb.Code
                    };
         }
 
-        public static List<CodeValueItem> ResidentCodesWithZero()
+        public List<CodeValueItem> ResidentCodesWithZero()
         {
             var list = ResidentCodes().ToList();
             list.Insert(0, top[0]);
@@ -1012,9 +1012,9 @@ namespace CmsWeb.Code
             };
         }
 
-        public static IEnumerable<CodeValueItem> StatusFlags()
+        public IEnumerable<CodeValueItem> StatusFlags()
         {
-            var sf = from ms in DbUtil.Db.ViewStatusFlagLists.ToList()
+            var sf = from ms in Db.ViewStatusFlagLists.ToList()
                      where (ms.RoleName == null) || HttpContextFactory.Current.User.IsInRole(ms.RoleName)
                      select new CodeValueItem
                      {
@@ -1023,9 +1023,10 @@ namespace CmsWeb.Code
                      };
             return sf.OrderBy(ss => ss.Value);
         }
-        public static IEnumerable<CodeValueItem> QueryTags()
+
+        public IEnumerable<CodeValueItem> QueryTags()
         {
-            var sf = from t in DbUtil.Db.Tags
+            var sf = from t in Db.Tags
                      where t.TypeId == DbUtil.TagTypeId_QueryTags
                      select new CodeValueItem
                      {
@@ -1036,9 +1037,9 @@ namespace CmsWeb.Code
             return sf.OrderBy(ss => ss.Value);
         }
 
-        public static IEnumerable<SelectListItem> StatusIds()
+        public IEnumerable<SelectListItem> StatusIds()
         {
-            var q = from s in DbUtil.Db.OrganizationStatuses
+            var q = from s in Db.OrganizationStatuses
                     select new SelectListItem
                     {
                         Value = s.Id.ToString(),
@@ -1049,10 +1050,10 @@ namespace CmsWeb.Code
             return list;
         }
 
-        public static IEnumerable<SelectListItem> Tags()
+        public IEnumerable<SelectListItem> Tags()
         {
             var cv = new CodeValueModel();
-            var tg = ConvertToSelect(cv.UserTags(Util.UserPeopleId), "Id").ToList();
+            var tg = ConvertToSelect(cv.UserTags(Db.UserPeopleId), "Id").ToList();
             if (HttpContextFactory.Current.User.IsInRole("Edit"))
                 tg.Insert(0, new SelectListItem { Value = "-1", Text = "(last query)" });
             tg.Insert(0, new SelectListItem { Value = "0", Text = "(not specified)" });
@@ -1071,7 +1072,6 @@ namespace CmsWeb.Code
             list.Insert(0, new CodeValueItem { Code = "", Value = "(not specified)" });
             return list;
         }
-
 
         public IEnumerable<CodeValueItem> UserRoles()
         {
@@ -1103,15 +1103,15 @@ namespace CmsWeb.Code
             return list;
         }
 
-        public static List<CodeValueItem> UserTags()
+        public List<CodeValueItem> UserTags()
         {
-            var tid = DbUtil.Db.TagCurrent().Id;
-            return new CodeValueModel().UserTags(Util.UserPeopleId).Where(tt => tt.Id != tid).ToList();
+            var tid = Db.TagCurrent().Id;
+            return new CodeValueModel().UserTags(Db.UserPeopleId).Where(tt => tt.Id != tid).ToList();
         }
 
         public List<CodeValueItem> UserTags(int? UserPeopleId)
         {
-            if (UserPeopleId == Util.UserPeopleId)
+            if (UserPeopleId == Db.UserPeopleId)
                 Db.TagCurrent(); // make sure the current tag exists
 
             var q1 = from t in Db.Tags
@@ -1141,14 +1141,14 @@ namespace CmsWeb.Code
             return list;
         }
 
-        public static List<CodeValueItem> UserTagsAll()
+        public List<CodeValueItem> UserTagsAll()
         {
-            return new CodeValueModel().UserTags(Util.UserPeopleId).ToList();
+            return new CodeValueModel().UserTags(Db.UserPeopleId).ToList();
         }
 
         public IEnumerable<CodeValueItem> UserTagsWithUnspecified()
         {
-            var list = UserTags(Util.UserPeopleId).ToList();
+            var list = UserTags(Db.UserPeopleId).ToList();
             list.Insert(0, top[0]);
             return list;
         }
@@ -1177,9 +1177,9 @@ namespace CmsWeb.Code
                    };
         }
 
-        public static IEnumerable<string> VolunteerOpportunities()
+        public IEnumerable<string> VolunteerOpportunities()
         {
-            return from c in DbUtil.Db.Contents
+            return from c in Db.Contents
                    where c.Name.StartsWith("Volunteer-")
                    where c.Name.EndsWith(".view")
                    orderby c.Name

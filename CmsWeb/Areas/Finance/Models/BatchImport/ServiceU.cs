@@ -144,14 +144,15 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
 
         private static BundleDetail CreateContribution(DateTime date, int fundid)
         {
+            var userId = DbUtil.Db.UserId;
             var bd = new BundleDetail
             {
-                CreatedBy = Util.UserId,
+                CreatedBy = userId,
                 CreatedDate = Util.Now
             };
             bd.Contribution = new Contribution
             {
-                CreatedBy = Util.UserId,
+                CreatedBy = userId,
                 CreatedDate = Util.Now,
                 ContributionDate = date,
                 FundId = fundid,

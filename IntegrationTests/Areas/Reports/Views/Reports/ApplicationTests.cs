@@ -1,6 +1,5 @@
 ﻿using CmsData;
 using CmsData.Codes;
-using CmsWeb;
 using CmsWeb.Areas.OnlineReg.Controllers;
 using CmsWeb.Areas.Org.Models;
 using CmsWeb.Models;
@@ -10,7 +9,6 @@ using SharedTestFixtures;
 using Shouldly;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using Xunit;
 using static CmsWeb.Models.MailingController;
 
@@ -37,7 +35,7 @@ namespace IntegrationTests.Areas.Reports.Views.Reports
             var oid = FakeOrg.org.OrganizationId;
             m.OrgId = oid;
             var wife = CreateUser(RandomString(), RandomString());
-            
+
             username = RandomString();
             password = RandomString();
             string roleName = "role_" + RandomString();
@@ -54,7 +52,6 @@ namespace IntegrationTests.Areas.Reports.Views.Reports
             //Finalize
             FakeOrganizationUtils.DeleteOrg(FakeOrg.org.OrganizationId);
             RemoveFakePeopleFromDB(ToPeople(ExcelCouplesBoth), db);
-            Logout();
         }
 
         private List<Person> ToPeople(List<CouplesBothInfo> couples)

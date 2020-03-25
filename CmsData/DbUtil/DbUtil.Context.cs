@@ -68,6 +68,7 @@ namespace CmsData
                 return _LogFile;
             }
         }
+
         public override void SubmitChanges(ConflictMode failureMode)
         {
             if (ObjectTrackingEnabled == true)
@@ -636,7 +637,7 @@ This search uses multiple steps which cannot be duplicated in a single query.
                 name = Util.SessionId;
             }
 
-            var tag = FetchOrCreateTag(name, Util.UserPeopleId ?? Util.UserId1, TagTypeId);
+            var tag = FetchOrCreateTag(name, UserPeopleId ?? UserId1, TagTypeId);
             ExecuteCommand("delete TagPerson where Id = {0}", tag.Id);
             var qpids = q.Select(pp => pp.PeopleId);
             var cmd = GetCommand(qpids);
@@ -662,7 +663,7 @@ This search uses multiple steps which cannot be duplicated in a single query.
 
         public Tag NewTemporaryTag()
         {
-            var tag = FetchOrCreateTag(Util.SessionId, Util.UserPeopleId ?? Util.UserId1, NextTagId);
+            var tag = FetchOrCreateTag(Util.SessionId, UserPeopleId ?? UserId1, NextTagId);
             Debug.Assert(NextTagId != 10, "got a 10");
             ExecuteCommand("delete TagPerson where Id = {0}", tag.Id);
             return tag;
@@ -709,7 +710,7 @@ This search uses multiple steps which cannot be duplicated in a single query.
 
         public int PopulateSpecialTag(IQueryable<Person> q, string tagname, int tagTypeId)
         {
-            var tag = FetchOrCreateTag(tagname, Util.UserPeopleId ?? Util.UserId1, tagTypeId);
+            var tag = FetchOrCreateTag(tagname, UserPeopleId ?? UserId1, tagTypeId);
             TagPeople.DeleteAllOnSubmit(tag.PersonTags);
             tag.Created = Util.Now;
             SubmitChanges();
@@ -719,7 +720,7 @@ This search uses multiple steps which cannot be duplicated in a single query.
 
         public void DePopulateSpecialTag(IQueryable<Person> q, int TagTypeId)
         {
-            var tag = FetchOrCreateTag(Util.SessionId, Util.UserPeopleId ?? Util.UserId1, TagTypeId);
+            var tag = FetchOrCreateTag(Util.SessionId, UserPeopleId ?? UserId1, TagTypeId);
             TagPeople.DeleteAllOnSubmit(tag.PersonTags);
             SubmitChanges();
         }
@@ -777,51 +778,39 @@ This search uses multiple steps which cannot be duplicated in a single query.
             return null;
         }
 
-        private bool _isFinanceUser = false;
         private User _currentuser;
         public User CurrentUser
         {
-            get
-            {
-                if (_currentuser != null)
-                {
-                    return _currentuser;
-                }
-
-                GetCurrentUser();
-                return _currentuser;
-            }
+            get => _currentuser ?? GetCurrentUser();
 
             set
             {
                 _currentuser = value;
-                _isFinanceUser = _roles?.Contains("Finance") ?? _currentuser?.InRole("Finance") ?? false;
             }
         }
 
-        private void GetCurrentUser()
+        private User GetCurrentUser()
         {
             var username = GetUserNameFromHttpContext();
             if (username.HasValue())
             {
                 var q = from u in Users
-                        where u.UserId == Util.UserId || u.Username == username
+                        where u.Username == username
                         select new
                         {
-                            u,
+                            user = u,
                             roleids = u.UserRoles.Select(uu => uu.RoleId).ToArray(),
                             roles = u.UserRoles.Select(uu => uu.Role.RoleName).ToArray(),
                         };
                 var i = q.FirstOrDefault();
-                if (i == null)
+                if (i != null)
                 {
-                    return;
+                    _roles = i.roles;
+                    _roleids = i.roleids;
+                    CurrentUser = i.user;
                 }
-
-                _roles = i.roles;
-                _roleids = i.roleids;
-                CurrentUser = i.u;
             }
+            return _currentuser;
         }
 
         private string GetUserNameFromHttpContext()
@@ -866,10 +855,10 @@ This search uses multiple steps which cannot be duplicated in a single query.
             return _roleids;
         }
 
-        public Person CurrentUserPerson => Users.Where(u => u.UserId == Util.UserId).Select(u => u.Person).SingleOrDefault();
+        public Person CurrentUserPerson => Users.Where(u => u.UserId == UserId).Select(u => u.Person).SingleOrDefault();
         public Tag OrgLeadersOnlyTag2()
         {
-            return FetchOrCreateTag(Util.SessionId, Util.UserPeopleId, DbUtil.TagTypeId_OrgLeadersOnly);
+            return FetchOrCreateTag(Util.SessionId, UserPeopleId, DbUtil.TagTypeId_OrgLeadersOnly);
         }
 
         public Tag FetchOrCreateTag(string tagname, int? ownerId, int tagtypeid)
@@ -935,10 +924,10 @@ This search uses multiple steps which cannot be duplicated in a single query.
 
         public void SetOrgLeadersOnly()
         {
-            var me = Util.UserPeopleId;
+            var me = UserPeopleId;
             var dt = Util.Now.AddYears(-3);
 
-            var oids = GetLeaderOrgIds(Util.UserPeopleId);
+            var oids = GetLeaderOrgIds(UserPeopleId);
             // current members of one of my orgs I lead
             var q = from p in People
                     where p.OrganizationMembers.Any(m => oids.Contains(m.OrganizationId))
@@ -1120,7 +1109,7 @@ This search uses multiple steps which cannot be duplicated in a single query.
         public string RecordAttendance(
             int? orgId, int? peopleId, DateTime meetingDate, bool present, string location)
         {
-            var r = RecordAttendance(orgId, peopleId, meetingDate, present, location, Util.UserId1);
+            var r = RecordAttendance(orgId, peopleId, meetingDate, present, location, UserId1);
             var s = r.GetResult<RecordAttendInfo>().First();
             return s.ret;
         }
@@ -1177,7 +1166,7 @@ This search uses multiple steps which cannot be duplicated in a single query.
             }
             else
             {
-                p = new Preference { UserId = Util.UserId1, PreferenceX = pref, ValueX = value.ToString() };
+                p = new Preference { UserId = UserId1, PreferenceX = pref, ValueX = value.ToString() };
                 Preferences.InsertOnSubmit(p);
             }
             SubmitChanges();
@@ -1497,7 +1486,7 @@ This search uses multiple steps which cannot be duplicated in a single query.
         {
             return OrgPeople(oid, GroupSelectCode.Member, first, last, sgfilter, false,
                 Util2.CurrentTagName, Util2.CurrentTagOwnerId, filterchecked,
-                filtertag, null, Util.UserPeopleId);
+                filtertag, null, UserPeopleId);
         }
 
         public IQueryable<View.OrgPerson> OrgPeople(
@@ -1513,7 +1502,7 @@ This search uses multiple steps which cannot be duplicated in a single query.
         {
             return OrgPeople(oid, grouptype, first, last, sgfilter, showhidden,
                 Util2.CurrentTagName, Util2.CurrentTagOwnerId, filterchecked,
-                filtertag, null, Util.UserPeopleId);
+                filtertag, null, UserPeopleId);
         }
 
         public OrganizationMember LoadOrgMember(int PeopleId, string OrgName, bool orgmustexist)

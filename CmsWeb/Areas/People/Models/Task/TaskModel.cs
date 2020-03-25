@@ -6,7 +6,6 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
-using System.Web;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.People.Models.Task
@@ -14,99 +13,51 @@ namespace CmsWeb.Areas.People.Models.Task
     public class TaskModel
     {
         private readonly string _host;
-        private readonly CMSDataContext _cmsDataContext;
+        private readonly CMSDataContext CurrentDatabase;
 
         public TaskModel()
         {
             _host = Util.Host;
-            _cmsDataContext = CMSDataContext.Create(_host);
+            CurrentDatabase = CMSDataContext.Create(_host);
 
         }
         public TaskModel(string host, CMSDataContext db)
         {
             _host = host;
-            _cmsDataContext = db;
+            CurrentDatabase = db;
         }
-         
+
 
         internal Person Who;
         private DateTime? SortDue { get; set; }
-        
-        public string About
-        {
-            get { return Who?.Name ?? ""; }
-        }
 
-        public bool CanAccept
-        {
-            get
-            {
-                return IsCoOwner && (TaskStatus.IntVal == TaskStatusCode.Pending || TaskStatus.IntVal == TaskStatusCode.Declined);
-            }
-        }
+        public string About => Who?.Name ?? "";
 
-        public bool CanComplete
-        {
-            get
-            {
-                return IsAnOwner && TaskStatus.IntVal != TaskStatusCode.Complete && !ForceCompleteWithContact;
-            }
-        }
+        public bool CanAccept => IsCoOwner && (TaskStatus.IntVal == TaskStatusCode.Pending || TaskStatus.IntVal == TaskStatusCode.Declined);
 
-        public bool CanCompleteWithContact
-        {
-            get { return IsAnOwner && TaskStatus.IntVal != TaskStatusCode.Complete && WhoId != null && Description != "New Person Data Entry"; }
-        }
+        public bool CanComplete => IsAnOwner && TaskStatus.IntVal != TaskStatusCode.Complete && !ForceCompleteWithContact;
 
-        public string ContactUrl
-        {
-            get { return $"/Contact2/{CompletedContactId}"; }
-        }
+        public bool CanCompleteWithContact => IsAnOwner && TaskStatus.IntVal != TaskStatusCode.Complete && WhoId != null && Description != "New Person Data Entry";
 
-        public string FmtNotes
-        {
-            get { return ViewExtensions2.Markdown(Notes?.Replace("{peopleid}", WhoId.ToString())).ToString(); }
-        }
+        public string ContactUrl => $"/Contact2/{CompletedContactId}";
 
-        public bool HasNotes
-        {
-            get { return Notes.HasValue(); }
-        }
+        public string FmtNotes => ViewExtensions2.Markdown(Notes?.Replace("{peopleid}", WhoId.ToString())).ToString();
 
-        public bool IsAnOwner
-        {
-            get { return IsOwner || IsCoOwner || Util.IsInRole("ManageTasks"); }
-        }
+        public bool HasNotes => Notes.HasValue();
 
-        public bool ShowCompleted
-        {
-            get { return CompletedOn.HasValue; }
-        }
+        public bool IsAnOwner => IsOwner || IsCoOwner || Util.IsInRole("ManageTasks");
 
-        public string WhoAddrCityStateZip
-        {
-            get { return Who?.AddrCityStateZip ?? ""; }
-        }
+        public bool ShowCompleted => CompletedOn.HasValue;
 
-        public string WhoAddress
-        {
-            get { return Who?.PrimaryAddress ?? ""; }
-        }
+        public string WhoAddrCityStateZip => Who?.AddrCityStateZip ?? "";
 
-        public string WhoEmail
-        {
-            get { return Who?.EmailAddress ?? ""; }
-        }
+        public string WhoAddress => Who?.PrimaryAddress ?? "";
 
-        public string WhoPhone
-        {
-            get { return Who?.HomePhone?.FmtFone() ?? ""; }
-        }
+        public string WhoEmail => Who?.EmailAddress ?? "";
 
-        public string WhoCellPhone
-        {
-            get { return Who?.CellPhone?.FmtFone() ?? ""; }
-        }
+        public string WhoPhone => Who?.HomePhone?.FmtFone() ?? "";
+
+        public string WhoCellPhone => Who?.CellPhone?.FmtFone() ?? "";
 
         public bool Completed { get; set; }
         public DateTime? CompletedContact { get; set; }
@@ -123,8 +74,8 @@ namespace CmsWeb.Areas.People.Models.Task
 
         public DateTime? Due
         {
-            get { return SortDue.HasValue && SortDue != DateTime.MaxValue.Date ? SortDue : null; }
-            set { SortDue = value; }
+            get => SortDue.HasValue && SortDue != DateTime.MaxValue.Date ? SortDue : null;
+            set => SortDue = value;
         }
 
         public bool ForceCompleteWithContact { get; set; }
@@ -139,8 +90,8 @@ namespace CmsWeb.Areas.People.Models.Task
 
         public int? Priority
         {
-            get { return SortPriority == 4 ? null : (int?)SortPriority; }
-            set { SortPriority = value ?? 4; }
+            get => SortPriority == 4 ? null : (int?)SortPriority;
+            set => SortPriority = value ?? 4;
         }
 
         public string Project { get; set; }
@@ -152,12 +103,12 @@ namespace CmsWeb.Areas.People.Models.Task
 
         public int? WhoId
         {
-            get { return Who?.PeopleId; }
+            get => Who?.PeopleId;
             set
             {
                 if (value.HasValue)
                 {
-                    Who = _cmsDataContext.LoadPersonById(value.Value);
+                    Who = CurrentDatabase.LoadPersonById(value.Value);
                 }
             }
         }
@@ -183,9 +134,9 @@ namespace CmsWeb.Areas.People.Models.Task
 
             gcm.sendNotification(task.Owner.PeopleId, GCMHelper.TYPE_TASK, task.Id, "Task Accepted", $"{Util.UserFullName} accepted a task");
 
-            if (Util.UserPeopleId.HasValue)
+            if (db.UserPeopleId.HasValue)
             {
-                gcm.sendRefresh(Util.UserPeopleId.Value, GCMHelper.TYPE_TASK);
+                gcm.sendRefresh(db.UserPeopleId.Value, GCMHelper.TYPE_TASK);
             }
         }
 
@@ -311,16 +262,16 @@ namespace CmsWeb.Areas.People.Models.Task
                 c.contactees.Add(new Contactee { PeopleId = task.WhoId.Value });
             }
 
-            if (Util.UserPeopleId.HasValue)
+            if (db.UserPeopleId.HasValue)
             {
-                c.contactsMakers.Add(new Contactor { PeopleId = Util.UserPeopleId.Value });
+                c.contactsMakers.Add(new Contactor { PeopleId = db.UserPeopleId.Value });
             }
 
             c.Comments = task.Notes;
             task.CompletedContact = c;
             task.StatusId = TaskStatusCode.Complete;
 
-            if (task.CoOwnerId == Util.UserPeopleId)
+            if (task.CoOwnerId == db.UserPeopleId)
             {
                 db.Email(task.CoOwner.EmailAddress, task.Owner, $"Task completed with a Contact by {Util.UserFullName}", CreateEmailBody(task, host, db));
             }
@@ -333,7 +284,7 @@ namespace CmsWeb.Areas.People.Models.Task
 
             db.SubmitChanges();
 
-            if (task.Owner.PeopleId == Util.UserPeopleId)
+            if (task.Owner.PeopleId == db.UserPeopleId)
             {
                 if (task.CoOwner != null)
                 {
@@ -345,9 +296,9 @@ namespace CmsWeb.Areas.People.Models.Task
                 gcm.sendNotification(task.Owner.PeopleId, GCMHelper.TYPE_TASK, task.Id, "Task Complete", $"{Util.UserFullName} completed a task you delegated them");
             }
 
-            if (Util.UserPeopleId.HasValue)
+            if (db.UserPeopleId.HasValue)
             {
-                gcm.sendRefresh(Util.UserPeopleId.Value, GCMHelper.TYPE_TASK);
+                gcm.sendRefresh(db.UserPeopleId.Value, GCMHelper.TYPE_TASK);
             }
 
             return c.ContactId;
@@ -356,7 +307,7 @@ namespace CmsWeb.Areas.People.Models.Task
         public static void ChangeOwner(int taskId, int toId, string host, CMSDataContext db)
         {
             var gcm = new GCMHelper(host, db);
-            if (toId == Util.UserPeopleId)
+            if (toId == db.UserPeopleId)
             {
                 return; // nothing to do
             }
@@ -375,9 +326,9 @@ namespace CmsWeb.Areas.People.Models.Task
 
             gcm.sendNotification(toId, GCMHelper.TYPE_TASK, task.Id, "Task Transferred", $"{Util.UserFullName} has transferred a task to you");
 
-            if (Util.UserPeopleId.HasValue)
+            if (db.UserPeopleId.HasValue)
             {
-                gcm.sendRefresh(Util.UserPeopleId.Value, GCMHelper.ACTION_REFRESH);
+                gcm.sendRefresh(db.UserPeopleId.Value, GCMHelper.ACTION_REFRESH);
             }
 
             if (task.CoOwner != null)
@@ -478,7 +429,7 @@ namespace CmsWeb.Areas.People.Models.Task
             NotifyIfNeeded(sb, task, host, db);
             db.SubmitChanges();
 
-            if (task.Owner.PeopleId == Util.UserPeopleId)
+            if (task.Owner.PeopleId == db.UserPeopleId)
             {
                 if (task.CoOwner != null)
                 {
@@ -490,9 +441,9 @@ namespace CmsWeb.Areas.People.Models.Task
                 gcm.sendNotification(task.Owner.PeopleId, GCMHelper.TYPE_TASK, task.Id, "Task Complete", $"{Util.UserFullName} completed a task you delegated them");
             }
 
-            if (Util.UserPeopleId.HasValue)
+            if (db.UserPeopleId.HasValue)
             {
-                gcm.sendRefresh(Util.UserPeopleId.Value, GCMHelper.TYPE_TASK);
+                gcm.sendRefresh(db.UserPeopleId.Value, GCMHelper.TYPE_TASK);
             }
         }
 
@@ -546,9 +497,9 @@ namespace CmsWeb.Areas.People.Models.Task
 
             gcm.sendNotification(task.Owner.PeopleId, GCMHelper.TYPE_TASK, task.Id, "Task Declined", $"{Util.UserFullName} declined a task");
 
-            if (Util.UserPeopleId.HasValue)
+            if (db.UserPeopleId.HasValue)
             {
-                gcm.sendRefresh(Util.UserPeopleId.Value, GCMHelper.TYPE_TASK);
+                gcm.sendRefresh(db.UserPeopleId.Value, GCMHelper.TYPE_TASK);
             }
         }
 
@@ -580,7 +531,7 @@ namespace CmsWeb.Areas.People.Models.Task
 
         public static void Delegate(int taskId, int toId, string host, CMSDataContext db, bool notify = true, bool forceCompleteWithContact = false)
         {
-            if (toId == Util.UserPeopleId)
+            if (toId == db.UserPeopleId)
             {
                 return; // cannot delegate to self
             }
@@ -621,7 +572,7 @@ namespace CmsWeb.Areas.People.Models.Task
             }
             else // Had a previous delegatee
             {
-                if (previousDelegatee == Util.UserPeopleId) // Delegatee redelegating
+                if (previousDelegatee == db.UserPeopleId) // Delegatee redelegating
                 {
                     gcm.sendRefresh(previousDelegatee, GCMHelper.TYPE_TASK);
                     gcm.sendNotification(toPerson.PeopleId, GCMHelper.TYPE_TASK, taskId, "Task Delegated", $"{Util.UserFullName} has delegated a task to you");
@@ -636,7 +587,7 @@ namespace CmsWeb.Areas.People.Models.Task
             }
         }
 
-        
+
 
         public static TaskModel FetchModel(int id, string host, CMSDataContext db)
         {
@@ -673,8 +624,8 @@ namespace CmsWeb.Areas.People.Models.Task
                 TaskStatus = new CodeInfo(task.StatusId, "TaskStatus"),
                 Completed = task.StatusId == TaskStatusCode.Complete,
                 SortPriority = task.Priority ?? 4,
-                IsCoOwner = task.CoOwnerId != null && task.CoOwnerId == Util.UserPeopleId,
-                IsOwner = task.OwnerId == Util.UserPeopleId,
+                IsCoOwner = task.CoOwnerId != null && task.CoOwnerId == db.UserPeopleId,
+                IsOwner = task.OwnerId == db.UserPeopleId,
                 CompletedContact = task.CompletedContact?.ContactDate,
                 ForceCompleteWithContact = task.ForceCompleteWContact ?? false
             };
@@ -687,7 +638,7 @@ namespace CmsWeb.Areas.People.Models.Task
                 return;
             }
 
-            var from = Util.UserPeopleId.Value == task.OwnerId ? task.Owner : task.CoOwner;
+            var from = db.UserPeopleId.Value == task.OwnerId ? task.Owner : task.CoOwner;
             var to = from.PeopleId == task.OwnerId ? task.CoOwner : task.Owner;
 
             db.Email(from.EmailAddress, to, $"Task updated by {Util.UserFullName}", CreateEmailBody(task, host, db));
@@ -715,7 +666,7 @@ namespace CmsWeb.Areas.People.Models.Task
 
             Util2.CurrentPeopleId = WhoId.Value;
             Util.ActivePerson = About;
-            var qb = _cmsDataContext.QueryIsCurrentPerson();
+            var qb = CurrentDatabase.QueryIsCurrentPerson();
             return $"/Reports/Prospect/{qb.QueryId}?form=true";
         }
 
@@ -731,37 +682,37 @@ namespace CmsWeb.Areas.People.Models.Task
                 gcm.sendNotification(task.CoOwner.PeopleId, GCMHelper.TYPE_TASK, task.Id, "Tasks About Changed", $"{Util.UserFullName} has change the about person on a task delegated to you");
             }
 
-            if (Util.UserPeopleId.HasValue)
+            if (db.UserPeopleId.HasValue)
             {
-                gcm.sendRefresh(Util.UserPeopleId.Value, GCMHelper.ACTION_REFRESH);
+                gcm.sendRefresh(db.UserPeopleId.Value, GCMHelper.ACTION_REFRESH);
             }
         }
 
         public void UpdateTask()
         {
-            var gcm = new GCMHelper(_host, _cmsDataContext);
+            var gcm = new GCMHelper(_host, CurrentDatabase);
             var sb = new StringBuilder();
-            var task = _cmsDataContext.Tasks.Single(t => t.Id == Id);
-            ChangeTask(sb, task, "Description", Description, _host, _cmsDataContext);
-            ChangeTask(sb, task, "LimitToRole", TaskLimitToRole.Value == "0" ? null : TaskLimitToRole.Value, _host, _cmsDataContext);
-            ChangeTask(sb, task, "Due", Due, _host, _cmsDataContext);
-            ChangeTask(sb, task, "Notes", Notes, _host, _cmsDataContext);
-            ChangeTask(sb, task, "StatusId", TaskStatus.IntVal, _host, _cmsDataContext);
+            var task = CurrentDatabase.Tasks.Single(t => t.Id == Id);
+            ChangeTask(sb, task, "Description", Description, _host, CurrentDatabase);
+            ChangeTask(sb, task, "LimitToRole", TaskLimitToRole.Value == "0" ? null : TaskLimitToRole.Value, _host, CurrentDatabase);
+            ChangeTask(sb, task, "Due", Due, _host, CurrentDatabase);
+            ChangeTask(sb, task, "Notes", Notes, _host, CurrentDatabase);
+            ChangeTask(sb, task, "StatusId", TaskStatus.IntVal, _host, CurrentDatabase);
             task.ForceCompleteWContact = ForceCompleteWithContact;
 
             if (HttpContextFactory.Current.User.IsInRole("AdvancedTask"))
             {
-                ChangeTask(sb, task, "Project", Project, _host, _cmsDataContext);
+                ChangeTask(sb, task, "Project", Project, _host, CurrentDatabase);
             }
 
             task.Location = Location;
 
             task.Priority = Priority == 0 ? null : Priority;
 
-            _cmsDataContext.SubmitChanges();
-            NotifyIfNeeded(sb, task, _host, _cmsDataContext);
+            CurrentDatabase.SubmitChanges();
+            NotifyIfNeeded(sb, task, _host, CurrentDatabase);
 
-            if (task.Owner.PeopleId == Util.UserPeopleId)
+            if (task.Owner.PeopleId == CurrentDatabase.UserPeopleId)
             {
                 if (task.CoOwner != null)
                 {
@@ -773,9 +724,9 @@ namespace CmsWeb.Areas.People.Models.Task
                 gcm.sendNotification(task.Owner.PeopleId, GCMHelper.TYPE_TASK, task.Id, "Task Updated", $"{Util.UserFullName} updated a task you own");
             }
 
-            if (Util.UserPeopleId.HasValue)
+            if (CurrentDatabase.UserPeopleId.HasValue)
             {
-                gcm.sendRefresh(Util.UserPeopleId.Value, GCMHelper.TYPE_TASK);
+                gcm.sendRefresh(CurrentDatabase.UserPeopleId.Value, GCMHelper.TYPE_TASK);
             }
         }
 

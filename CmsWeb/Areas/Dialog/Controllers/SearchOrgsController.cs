@@ -19,7 +19,7 @@ namespace CmsWeb.Areas.Dialog.Controllers
         public ActionResult Index(int id, bool? singlemode)
         {
             Response.NoCache();
-            var list = Session["orgPickList"] as List<int>;
+            var list = Util.OrgPickList;
             var m = new SearchOrgsModel
             {
                 id = id,
@@ -31,13 +31,13 @@ namespace CmsWeb.Areas.Dialog.Controllers
         [HttpPost]
         public ActionResult Results(SearchOrgsModel m)
         {
-            m.cklist = Session["orgPickList"] as List<int>;
+            m.cklist = Util.OrgPickList;
             return View("Index", m);
         }
         [HttpPost]
         public ActionResult SaveOrgIds(int id, string oids)
         {
-            Session["orgPickList"] = oids.Split(',').Select(oo => oo.ToInt()).ToList();
+            Util.OrgPickList = oids.Split(',').Select(oo => oo.ToInt()).ToList();
             return new EmptyResult();
         }
     }

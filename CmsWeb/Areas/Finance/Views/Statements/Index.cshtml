@@ -4,7 +4,7 @@
     Layout = ViewExtensions2.TouchPointLayout();
     ViewBag.Title = "Contribution Statements";
     ViewBag.ReportPageHeader = "Contribution Statements";
-    var cv = new CodeValueModel();
+    var cv = new CodeValueModel(ViewExtensions2.CurrentDatabase);
     var customstatementslist = ContributionStatements.CustomStatementsSelectList();
 }
 <div class="report box box-responsive">
