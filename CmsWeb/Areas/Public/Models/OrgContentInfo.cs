@@ -103,7 +103,7 @@ namespace CmsWeb.Models
         {
             var q = from oo in db.Organizations
                     where oo.OrganizationId == id
-                    let om = oo.OrganizationMembers.SingleOrDefault(mm => mm.PeopleId == Util.UserPeopleId)
+                    let om = oo.OrganizationMembers.SingleOrDefault(mm => mm.PeopleId == db.UserPeopleId)
                     let oc = db.OrgContents.SingleOrDefault(cc => cc.OrgId == id && cc.Landing == true)
                     let memberLeaderType = om.MemberType.AttendanceTypeId
                     select new OrgContentInfo
@@ -114,7 +114,7 @@ namespace CmsWeb.Models
                         IsMember = om != null && !MemberTypeCode.ProspectInactive.Contains(om.MemberTypeId),
                         IsLeader = (memberLeaderType ?? 0) == AttendTypeCode.Leader,
                         oc = oc,
-                        NotAuthenticated = !Util.UserPeopleId.HasValue
+                        NotAuthenticated = !db.UserPeopleId.HasValue
                     };
             var o = q.SingleOrDefault();
             if (o != null)
@@ -123,7 +123,7 @@ namespace CmsWeb.Models
             }
             if (o != null && !o.IsMember)
             {
-                var oids = db.GetLeaderOrgIds(Util.UserPeopleId);
+                var oids = db.GetLeaderOrgIds(db.UserPeopleId);
                 if (!oids.Contains(o.OrgId))
                 {
                     return o;
@@ -141,7 +141,7 @@ namespace CmsWeb.Models
             var q = from oo in db.Organizations
                     let oc = db.OrgContents.SingleOrDefault(cc => cc.Id == id)
                     where oo.OrganizationId == oc.OrgId
-                    let om = oo.OrganizationMembers.SingleOrDefault(mm => mm.PeopleId == Util.UserPeopleId)
+                    let om = oo.OrganizationMembers.SingleOrDefault(mm => mm.PeopleId == db.UserPeopleId)
                     let memberLeaderType = om.MemberType.AttendanceTypeId
                     select new OrgContentInfo
                     {
@@ -151,7 +151,7 @@ namespace CmsWeb.Models
                         IsMember = om != null && om.MemberTypeId != MemberTypeCode.InActive,
                         IsLeader = (memberLeaderType ?? 0) == CmsData.Codes.AttendTypeCode.Leader,
                         oc = oc,
-                        NotAuthenticated = !Util.UserPeopleId.HasValue
+                        NotAuthenticated = !db.UserPeopleId.HasValue
                     };
             var o = q.SingleOrDefault();
             if (o != null)
@@ -160,7 +160,7 @@ namespace CmsWeb.Models
             }
             if (o != null && !o.IsMember)
             {
-                var oids = db.GetLeaderOrgIds(Util.UserPeopleId);
+                var oids = db.GetLeaderOrgIds(db.UserPeopleId);
                 if (!oids.Contains(o.OrgId))
                 {
                     return o;

@@ -4,7 +4,7 @@
 @using CmsWeb.Areas.Dialog.Models
 @using UtilityExtensions
 @{
-  var goer = DbUtil.Db.LoadPersonById(Model.Parent.GoerId ?? 0);
+  var goer = ViewExtensions2.CurrentDatabase.LoadPersonById(Model.Parent.GoerId ?? 0);
   var name = goer != null ? goer.Name : "selected participant";
   var paylink = Model.Parent.MissionTripSelfSupportPaylink;
 }
@@ -49,7 +49,7 @@
   <div class="col-sm-offset-3 col-sm-9">
     @if ((Model.age >= 16 || !Model.BestBirthday.HasValue) && !Model.IsCreateAccount() && !Model.IsSpecialScript())
     {
-      if (Model.InMobileAppMode && !Util.UserPeopleId.HasValue && !Model.LoggedIn)
+      if (Model.InMobileAppMode && !ViewExtensions2.CurrentDatabase.UserPeopleId.HasValue && !Model.LoggedIn)
       {
         @Html.Hidden("CreatingAccount", true)
       }

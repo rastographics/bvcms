@@ -91,7 +91,6 @@
     <Compile Include="EnDeCryptTests.cs" />
     <Compile Include="Extensions\UtilTests.cs" />
     <Compile Include="Helpers\MockHttpSessionState.cs" />
-    <Compile Include="UtilSessionTests.cs" />
     <Compile Include="UtilConnectionStringsTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

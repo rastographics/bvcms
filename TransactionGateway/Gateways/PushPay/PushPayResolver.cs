@@ -61,9 +61,9 @@ namespace TransactionGateway
             }
         }
 
-        public string ResolvePayerKey(int PeopleId)
+        public static string ResolvePayerKey(CMSDataContext db, int PeopleId)
         {
-            PeopleExtra pe = _db.PeopleExtras.Where(c => c.PeopleId == PeopleId && c.Field == "PushPayKey").FirstOrDefault();
+            PeopleExtra pe = db.PeopleExtras.Where(c => c.PeopleId == PeopleId && c.Field == "PushPayKey").FirstOrDefault();
             if (pe == null) return null;                     
             return  pe.StrValue;
         }
@@ -201,6 +201,25 @@ namespace TransactionGateway
                     break;
             }
             return fundExist;
+        }
+
+        public async Task<string> GetMerchantHandle(string merchantHandle)
+        {
+            bool merchantExist = false;
+
+            if (!string.IsNullOrEmpty(merchantHandle))
+                merchantExist = await MerchantNameExist(merchantHandle);
+
+            if (merchantExist)
+                return merchantHandle;
+
+            return string.Empty;
+        }
+
+        private async Task<bool> MerchantNameExist(string merchantHandle)
+        {
+            var merchants = await _pushpay.SearchMerchants(merchantHandle);
+            return merchants.Any();           
         }
 
         public BundleHeader CreateBundle(DateTime CreatedOn, decimal? BundleTotal, decimal? TotalCash, decimal? TotalChecks, string RefId, int? RefIdType)

@@ -19,7 +19,7 @@ namespace CmsWeb.Areas.Org.Controllers
         {
             if (CurrentDatabase.Organizations.Any(oo => oo.OrganizationId == id && oo.PublishDirectory > 0)
                 && (User.IsInRole("Admin") || CurrentDatabase.OrganizationMembers.Any(
-                    mm => mm.OrganizationId == id && mm.PeopleId == UtilityExtensions.Util.UserPeopleId)))
+                    mm => mm.OrganizationId == id && mm.PeopleId == CurrentDatabase.UserPeopleId)))
             {
                 return View(new MemberDirectoryModel(CurrentDatabase, id));
             }
@@ -31,7 +31,7 @@ namespace CmsWeb.Areas.Org.Controllers
         {
             if (User.IsInRole("Admin") ||
                 CurrentDatabase.OrganizationMembers.Any(
-                    mm => mm.OrganizationId == m.OrgId && mm.PeopleId == UtilityExtensions.Util.UserPeopleId))
+                    mm => mm.OrganizationId == m.OrgId && mm.PeopleId == CurrentDatabase.UserPeopleId))
             {
                 return View(m);
             }

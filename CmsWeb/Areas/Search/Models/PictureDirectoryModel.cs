@@ -100,7 +100,7 @@ namespace CmsWeb.Areas.Search.Models
                 {
                     CanView = HttpContextFactory.Current.User.IsInRole("Admin") || CurrentDatabase.PeopleQuery2($@"
 IsMemberOfDirectory( Org={OrgId} ) = 1 
-AND PeopleId = {Util.UserPeopleId}", fromDirectory: true).Any();
+AND PeopleId = {CurrentDatabase.UserPeopleId}", fromDirectory: true).Any();
                 }
                 //HasDirectory = (om.Organization.PublishDirectory ?? 0) > 0,
 
@@ -117,7 +117,7 @@ AND PeopleId = {Util.UserPeopleId}", fromDirectory: true).Any();
                 {
                     CanView = HttpContextFactory.Current.User.IsInRole("Admin") || CurrentDatabase.PeopleQuery2($@"
 IsMemberOfDirectory( Div={DivId} ) = 1 
-AND PeopleId = {Util.UserPeopleId}", fromDirectory: true).Any();
+AND PeopleId = {CurrentDatabase.UserPeopleId}", fromDirectory: true).Any();
                 }
 
                 TemplateName = PictureDirectoryTemplateName + "-" + Selector;
@@ -137,7 +137,7 @@ AND PeopleId = {Util.UserPeopleId}", fromDirectory: true).Any();
                 if (!CanView.HasValue)
                 {
                     var hasstatus = (from v in CurrentDatabase.StatusFlags(StatusFlag)
-                                     where v.PeopleId == Util.UserPeopleId
+                                     where v.PeopleId == CurrentDatabase.UserPeopleId
                                      where v.StatusFlags != null
                                      select v).Any();
                     CanView = hasstatus || HttpContextFactory.Current.User.IsInRole("Admin");

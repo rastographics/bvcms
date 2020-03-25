@@ -52,10 +52,10 @@ namespace CmsWeb.Areas.Search.Models
                     where (c.LimitToRole ?? "") == "" || roles.Contains(c.LimitToRole) || managePrivateContacts
                     select c;
 
-            if (ppl != null && Util.UserPeopleId != null)
+            if (ppl != null && CurrentDatabase.UserPeopleId != null)
             {
                 q = from c in q
-                    where c.contactsMakers.Any(cm => cm.PeopleId == Util.UserPeopleId.Value)
+                    where c.contactsMakers.Any(cm => cm.PeopleId == CurrentDatabase.UserPeopleId.Value)
                     select c;
             }
 
@@ -369,22 +369,23 @@ namespace CmsWeb.Areas.Search.Models
         private const string STR_ContactSearch = "ContactSearch2";
         internal void GetFromSession()
         {
-            var os = HttpContextFactory.Current.Session[STR_ContactSearch] as ContactSearchInfo;
+            var os = Util.GetFromSession<ContactSearchInfo>(STR_ContactSearch);
             if (os != null)
             {
                 SearchParameters.CopyPropertiesFrom(os);
             }
         }
+
         internal void SaveToSession()
         {
             var os = new ContactSearchInfo();
             SearchParameters.CopyPropertiesTo(os);
-            HttpContextFactory.Current.Session[STR_ContactSearch] = os;
+            Util.SetValueInSession(STR_ContactSearch, os);
         }
 
         internal void ClearSession()
         {
-            HttpContextFactory.Current.Session.Remove(STR_ContactSearch);
+            Util.SetValueInSession(STR_ContactSearch, null);
         }
     }
 }

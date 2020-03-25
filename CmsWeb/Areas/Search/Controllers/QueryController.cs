@@ -361,7 +361,7 @@ namespace CmsWeb.Areas.Search.Controllers
 
             if (shouldContinue)
             {
-                var workingTag = CurrentDatabase.FetchOrCreateTag(Util2.GetValidTagName(tagname), Util.UserPeopleId, DbUtil.TagTypeId_Personal);
+                var workingTag = CurrentDatabase.FetchOrCreateTag(Util2.GetValidTagName(tagname), CurrentDatabase.UserPeopleId, DbUtil.TagTypeId_Personal);
                 var shouldEmptyTag = cleartagfirst ?? false;
 
                 if (shouldEmptyTag)

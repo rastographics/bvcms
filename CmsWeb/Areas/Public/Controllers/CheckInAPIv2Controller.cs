@@ -100,7 +100,7 @@ namespace CmsWeb.Areas.Public.Controllers
 																}).ToList();
 
 			Information information = new Information {
-				userID = Util.UserId,
+				userID = CurrentDatabase.UserId,
 				userName = Util.UserFullName,
 				settings = settings,
 				states = states,
@@ -280,7 +280,7 @@ namespace CmsWeb.Areas.Public.Controllers
 			// Create Person
 			CmsData.Person p = new CmsData.Person {
 				CreatedDate = Util.Now,
-				CreatedBy = Util.UserId,
+				CreatedBy = CurrentDatabase.UserId,
 				MemberStatusId = MemberStatusCode.JustAdded,
 				AddressTypeId = 10,
 				OriginId = OriginCode.Visit,
@@ -375,7 +375,7 @@ namespace CmsWeb.Areas.Public.Controllers
             f.UpdateValue(fsb, "StateCode", person.state);
             f.UpdateValue(fsb, "ZipCode", person.zipCode);
             f.UpdateValue(fsb, "CountryName", person.country);
-            f.LogChanges(NewContext, fsb, p.PeopleId, Util.UserPeopleId ?? 0);
+            f.LogChanges(NewContext, fsb, p.PeopleId, CurrentDatabase.UserPeopleId ?? 0);
             person.fillFamily(f);
             NewContext.SubmitChanges();
 

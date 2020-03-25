@@ -28,7 +28,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 
         public void SetHeaders(OnlineRegModel m2)
         {
-            Session["gobackurl"] = m2.URL;
+            RequestManager.SessionProvider.Add("gobackurl", m2.URL);
             ViewBag.Title = m2.Header;
             SetHeaders2(m2.Orgid ?? m2.masterorgid ?? 0);
         }
@@ -124,7 +124,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         {
             var shell = string.Empty;
             var managedGivingShellSettingKey = ManagedGivingShellSettingKey;
-            var campus = Session[$"Campus-{orgId}"]?.ToString(); // campus is only set for managed giving flow.
+            var campus = RequestManager.SessionProvider.Get<string>($"Campus-{orgId}"); // campus is only set for managed giving flow.
             if (!string.IsNullOrWhiteSpace(campus))
             {
                 managedGivingShellSettingKey = $"{managedGivingShellSettingKey}-{campus.ToUpper()}";

@@ -49,12 +49,13 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             // One time or Reg...
             Response.NoCache();
 
-#if DEBUG
-#else
-            if (Session["FormId"] != null)
-                if ((Guid)Session["FormId"] == pf.FormId)
+            if (!Util.IsDebug())
+            {
+                if (Util.FormId != null && Util.FormId == pf.FormId)
+                {
                     return Message("Already submitted");
-#endif
+                }
+            }
 
             OnlineRegModel m = null;
             var ed = CurrentDatabase.RegistrationDatas.SingleOrDefault(e => e.Id == pf.DatumId);
@@ -64,11 +65,13 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 m.CurrentDatabase = CurrentDatabase;
             }
 
-#if DEBUG
-#else
-            if (m != null && m.History.Any(h => h.Contains("ProcessPayment")))
-                return Content("Already submitted");
-#endif
+            if (!Util.IsDebug())
+            {
+                if (m != null && m.History.Any(h => h.Contains("ProcessPayment")))
+                {
+                    return Content("Already submitted");
+                }
+            }
 
             int? datumid = null;
             if (m != null)
@@ -222,6 +225,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             try
             {
                 OnlineRegModel.LogOutOfOnlineReg();
+                RequestManager.SessionProvider.Clear();
                 var view = m.ConfirmTransaction(transactionId);
                 m.UpdateDatum(completed: true);
                 SetHeaders(m);
@@ -276,6 +280,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             try
             {
                 OnlineRegModel.LogOutOfOnlineReg();
+                RequestManager.SessionProvider.Clear();
                 var view = m.ConfirmTransaction(transactionId);
                 m.UpdateDatum(completed: true);
                 SetHeaders(m);
@@ -335,7 +340,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 if (string.IsNullOrEmpty(MultipleGatewayUtils.Setting(CurrentDatabase, "PushpayMerchant", "", (int)PaymentProcessTypes.OnlineRegistration)))
                     return View("OnePageGiving/NotConfigured");
 
-                Session["PaymentProcessType"] = PaymentProcessTypes.OnlineRegistration;
+                RequestManager.SessionProvider.Add("PaymentProcessType", PaymentProcessTypes.OnlineRegistration.ToInt().ToString());
                 return Redirect($"/Pushpay/PayAmtDue/{ti.Id}/{amtdue}");
             }
 #if DEBUG

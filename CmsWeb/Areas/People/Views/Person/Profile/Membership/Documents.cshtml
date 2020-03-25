@@ -24,7 +24,7 @@
                 </div>
             </div>
         }
-        @foreach (var i in MemberDocModel.DocForms(DbUtil.Db, Model.PeopleId, Model.Finance))
+        @foreach (var i in MemberDocModel.DocForms(ViewExtensions2.CurrentDatabase, Model.PeopleId, Model.Finance))
         {
             <div class="col-sm-6 col-md-4 col-lg-3" style="margin-top: 5px; margin-bottom: 5px;">
                 <div class="row">

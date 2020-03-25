@@ -26,7 +26,7 @@ namespace CmsWeb.Areas.Dialog.Controllers
         public ActionResult Process(OrgDrop model)
         {
             model.Host = CurrentDatabase.Host;
-            model.UserId = Util.UserId;
+            model.UserId = CurrentDatabase.UserId;
             model.UpdateLongRunningOp(CurrentDatabase, OrgDrop.Op);
             if (!model.Started.HasValue)
             {
