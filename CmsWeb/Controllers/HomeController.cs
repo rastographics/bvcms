@@ -30,8 +30,17 @@ namespace CmsWeb.Controllers
                 Util2.OrgLeadersOnly = true;
                 CurrentDatabase.SetOrgLeadersOnly();
             }
-            var m = new HomeModel();
-            return View(m);
+            var newHomePageEnabled = CurrentDatabase.Setting("EnableCustomHomepage");
+            var m = new HomeModel(CurrentDatabase);
+            if (newHomePageEnabled)
+            {
+                var widgets = m.HomepageWidgets();
+                return View("Dashboard", widgets);
+            }
+            else
+            {
+                return View(m);
+            }
         }
 
         [OutputCache(Duration = 60, Location = OutputCacheLocation.Any)]

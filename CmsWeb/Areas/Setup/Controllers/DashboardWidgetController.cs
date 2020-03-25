@@ -100,7 +100,7 @@ namespace CmsWeb.Areas.Setup.Controllers
             }
             catch(Exception e)
             {
-                return Content(e.Message);
+                return Content("Error: " + e.Message);
             }
         }
     }
