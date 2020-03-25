@@ -164,6 +164,8 @@ namespace CmsWeb.Areas.Manage.Controllers
             }
 
             content.Title = title;
+            content.RoleID = roleid;
+            content.Name = name.HasValue() ? name : content.Name;
 
             var bodytemplate = new { design = unlayerDesign, rawHtml = GetBody(body) };
             content.Body = JsonConvert.SerializeObject(bodytemplate);
@@ -179,7 +181,8 @@ namespace CmsWeb.Areas.Manage.Controllers
 
             ViewBag.templateID = content.Id;
 
-            return Redirect("/Display/#tab_emailTemplates");
+            var templatedraft = content.TypeID == ContentTypeCode.TypeUnlayerTemplate ? "emailTemplates" : "savedDrafts";
+            return Redirect($"/Display/#tab_{templatedraft}");
         }
         private string GetBody(string body)
         {

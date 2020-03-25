@@ -4,6 +4,7 @@
 @model Content
 @{
     var templatedraft = Model.TypeID == ContentTypeCode.TypeUnlayerTemplate ? "Template" : "Draft";
+    var backtolist = Model.TypeID == ContentTypeCode.TypeUnlayerTemplate ? "emailTemplates" : "savedDrafts";
     ViewBag.Title = "Compose " + Model.TypeID == templatedraft;
     ViewBag.PageHeader = "Compose Email " + templatedraft;
     Layout = ViewExtensions2.TouchPointLayout();
@@ -77,9 +78,9 @@
                             </div>
                         </div>
                     </div>
-                    <a href="/Display/#tab_emailTemplates" class="btn btn-default">Back to List</a>
+                    <a href="/Display/#tab_@(backtolist)" class="btn btn-default">Back to List</a>
                     <a href="#" class="btn btn-danger delete"><i class="fa fa-trash"></i> Delete</a>
-                    <input id="SaveTemplateButton" type="submit" class="btn btn-primary" value="Save Template" />
+                    <input id="SaveTemplateButton" type="submit" class="btn btn-primary" value="Save @templatedraft" />
                 }
             </div>
         </div>
