@@ -4,6 +4,7 @@ using System.Data.Linq.SqlClient;
 using System.Linq;
 using System.Web.Mvc;
 using CmsData;
+using CmsWeb.Areas.Finance.Models.Report;
 using CmsWeb.Code;
 using UtilityExtensions;
 
@@ -490,6 +491,26 @@ namespace CmsWeb.Areas.Search.Models
                       };
             }
             return qSL;
+        }
+
+        public IEnumerable<SelectListItem> CustomFundsList()
+        {
+            if (ContributionStatements.CustomFundSetSelectList(CurrentDatabase).IsNull()) return null;
+            var q = from s in ContributionStatements.CustomFundSetSelectList(CurrentDatabase)
+                    select new SelectListItem
+                    {
+                        Value = $"{s.Text}",
+                        Text = s.Text,
+                        Selected = s.Text == Selected.FundSet
+                    };
+            var listItems = q.ToList();
+            listItems.Insert(0, new SelectListItem
+            {
+                Value = "(not specified)",
+                Text = "(not specified)",
+                Selected = Selected.FundSet == null
+            });
+            return listItems;
         }
 
         /// <summary>

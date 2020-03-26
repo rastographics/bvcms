@@ -102,6 +102,7 @@ namespace CmsData
                     case Param.OrgName:
                     case Param.Quarters:
                     case Param.FundIds:
+                    case Param.FundSet:
                         list.AddParamStr(attr, prop);
                         break;
                     case Param.Days:
@@ -223,6 +224,7 @@ namespace CmsData
         EndDate,
         Quarters,
         FundIds,
+        FundSet,
         Age,
         Days,
         Ministry,

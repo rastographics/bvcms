@@ -134,7 +134,7 @@ namespace CmsData
             }
 
             var tf = CodeIds == "1";
-            var fundcsv = APIContributionSearchModel.GetCustomFundSetList(db, Quarters);
+            var fundcsv = APIContributionSearchModel.GetCustomFundSetList(db, FundSet);
             if (fundcsv == null)
             {
                 return AlwaysFalse();
