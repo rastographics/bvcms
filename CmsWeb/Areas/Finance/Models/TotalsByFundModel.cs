@@ -203,7 +203,7 @@ namespace CmsWeb.Models
                 fundIds = authorizedFundIds.JoinInts(",");
             }
 
-            var list = (from r in DbUtil.Db.GetTotalContributionsRange(Dt1, Dt2, CampusId, NonTaxDeductible ? (bool?)true : false, IncUnclosedBundles, fundIds)
+            var list = (from r in DbUtil.Db.GetTotalContributionsRange(Dt1, Dt2, CampusId, NonTaxDeductible ? (bool?)true : false, IncUnclosedBundles, fundIds, Pledges)
                         orderby r.Range
                         select r).ToList();
 

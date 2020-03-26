@@ -2479,7 +2479,8 @@ namespace CmsData
             [Parameter(DbType = "int")] int? campusid,
             [Parameter(DbType = "bit")] bool? nontaxded,
             [Parameter(DbType = "bit")] bool? includeUnclosed,
-            [Parameter(DbType = "varchar")] string fundids
+            [Parameter(DbType = "varchar")] string fundids,
+            [Parameter(DbType = "bit")] bool? includePledges
             )
         {
             return CreateMethodCallQuery<View.GetTotalContributionsAgeRange>(this,
@@ -2489,7 +2490,8 @@ namespace CmsData
                 campusid,
                 nontaxded,
                 includeUnclosed,
-                fundids
+                fundids,
+                includePledges
                 );
         }
 
@@ -2577,7 +2579,8 @@ namespace CmsData
             [Parameter(DbType = "int")] int? campusid,
             [Parameter(DbType = "bit")] bool? nontaxded,
             [Parameter(DbType = "bit")] bool? includeUnclosed,
-            [Parameter(DbType = "varchar")] string fundids
+            [Parameter(DbType = "varchar")] string fundids,
+            [Parameter(DbType = "bit")] bool? includePledges
             )
         {
             return CreateMethodCallQuery<View.GetTotalContributionsRange>(this,
@@ -2587,7 +2590,8 @@ namespace CmsData
                 campusid,
                 nontaxded,
                 includeUnclosed,
-                fundids
+                fundids,
+                includePledges
                 );
         }
 

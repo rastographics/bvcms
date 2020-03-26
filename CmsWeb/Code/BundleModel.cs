@@ -685,9 +685,9 @@ namespace CmsWeb.Models
             return new List<RangeInfo>();
         }
         [DataObjectMethod(DataObjectMethodType.Select, false)]
-        public IEnumerable<AgeRangeInfo> TotalsByFundAgeRange(int fundid, DateTime dt1, DateTime dt2, string Pledges, int CampusId, string fundids)
+        public IEnumerable<AgeRangeInfo> TotalsByFundAgeRange(int fundid, DateTime dt1, DateTime dt2, string Pledges, int CampusId, string fundids, bool includePledges)
         {
-            var list1 = (from r in DbUtil.Db.GetTotalContributionsAgeRange(dt1, dt2, CampusId, null, true, fundids)
+            var list1 = (from r in DbUtil.Db.GetTotalContributionsAgeRange(dt1, dt2, CampusId, null, true, fundids, includePledges)
                          select new AgeRangeInfo()
                          {
                              Range = r.Range,

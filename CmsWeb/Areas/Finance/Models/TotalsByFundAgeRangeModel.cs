@@ -14,6 +14,7 @@ namespace CmsWeb.Models
         public DateTime? Dt2 { get; set; }
         public int CampusId { get; set; }
         public string FundSet { get; set; }
+        public bool IncludePledges { get; set; }
 
         public RangeInfo RangeTotal { get; set; }
 
@@ -47,7 +48,7 @@ namespace CmsWeb.Models
                 fundIds = authorizedFundIds.JoinInts(",");
             }
 
-            var ageRangeInfos = model.TotalsByFundAgeRange(0, Dt1.GetValueOrDefault(), Dt2.GetValueOrDefault(), string.Empty, CampusId, fundIds);
+            var ageRangeInfos = model.TotalsByFundAgeRange(0, Dt1.GetValueOrDefault(), Dt2.GetValueOrDefault(), string.Empty, CampusId, fundIds, IncludePledges); //change
             RangeTotal = model.RangeTotal;
             return ageRangeInfos;
         }
