@@ -110,12 +110,14 @@ namespace CmsWeb.Areas.Manage.Controllers
         {
             var content = new Content();
             content.Name = newName;
+            if (!content.Name.HasValue())
+                content.Name = "new template " + DateTime.Now.FormatDateTm();
             content.TypeID = newType == ContentTypeCode.TypeEmailTemplate && useUnlayer == true
                 ? ContentTypeCode.TypeUnlayerTemplate
                 : newType;
             content.RoleID = newRole ?? 0;
-            content.Title = newName;
             content.Body = "";
+            content.Title = "";
             content.DateCreated = DateTime.Now;
             content.CreatedBy = Util.UserName;
             var ContentKeywordFilter = Util.ContentKeywordFilter;
@@ -133,7 +135,7 @@ namespace CmsWeb.Areas.Manage.Controllers
 
             if (useUnlayer == true)
             {
-                ViewBag.TemplateId = tid;
+                ViewBag.TemplateId = 0; // force using a blank empty template with only "click here to edit content"
                 return View("UnLayerCompose", content);
             }
 
@@ -493,6 +495,13 @@ namespace CmsWeb.Areas.Manage.Controllers
         [Route("~/Manage/Display/EmailBody")]
         public ActionResult EmailBody(string id)
         {
+            if (id == "0") // used for unlayer, force using a blank empty template with only "click here to edit content"
+            {
+                ViewBag.body = "<div class='bvedit'>Click here to edit content</div>";
+                ViewBag.design = "";
+                ViewBag.useUnlayer = true;
+                return View();
+            }
             var i = id.ToInt();
             var c = ViewExtensions2.GetContent(i);
             if (c == null)
@@ -505,9 +514,16 @@ namespace CmsWeb.Areas.Manage.Controllers
 
             if (ContentTypeCode.IsUnlayer(c.TypeID))
             {
-                dynamic payload = JsonConvert.DeserializeObject(c.Body);
-                design = payload.design;
-                body = payload.rawHtml;
+                if (!c.Body.HasValue())
+                {
+                    c.Body = "<div class='bvedit'>Click here to edit content</div>";
+                }
+                else
+                {
+                    dynamic payload = JsonConvert.DeserializeObject(c.Body);
+                    design = payload.design;
+                    body = payload.rawHtml;
+                }
             }
             else
                 body = c.Body;
