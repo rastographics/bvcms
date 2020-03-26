@@ -42,7 +42,7 @@ namespace CmsWeb.Models
             admin = User != null ? (User.InRole("Admin") || User.InRole("ManageTransactions")) : false;
         }
 
-        public TransactionsModel(CMSDataContext db, int? tranid, string reference = "", string desc = "")
+        public TransactionsModel(CMSDataContext db, int? tranid, string reference = "", string desc = "", bool isBatchref = false)
         {
             CurrentDatabase = db;
             name = tranid.ToString();
@@ -50,6 +50,8 @@ namespace CmsWeb.Models
             {
                 GoerId = null;
             }
+
+            this.isBatchref = isBatchref;
 
             if (!string.IsNullOrWhiteSpace(reference))
             {
@@ -72,6 +74,7 @@ namespace CmsWeb.Models
         public string gateway { get; set; }
         public string batchref { get; set; }
         public string[] AdditionalFilters { get; set; }
+        public bool isBatchref { get; set; }
 
         private bool? _usebatchdates;
         public bool? usebatchdates
@@ -184,20 +187,17 @@ namespace CmsWeb.Models
                                     where t.OriginalId == nameid
                                     select t;
                 }
-                else if (name.Any(char.IsDigit))
+                else if (isBatchref)
                 {
-                    if (name.AllDigits())
-                    {
-                        _transactions = from t in _transactions
-                            where t.TransactionId == name || t.OriginalId == nameid || t.Id == nameid
-                            select t;
-                    }
-                    else
-                    {
-                        _transactions = from t in _transactions
-                            where t.Batchref == name
-                            select t;
-                    }
+                    _transactions = from t in _transactions
+                        where t.Batchref == name
+                        select t;
+                }
+                else if (name.AllDigits())
+                {
+                    _transactions = from t in _transactions
+                        where t.TransactionId == name || t.OriginalId == nameid || t.Id == nameid
+                        select t;
                 }
                 else
                 {
@@ -207,7 +207,7 @@ namespace CmsWeb.Models
                                             (t.Last.StartsWith(last) || t.Last.StartsWith(name))
                                             && (!hasfirst || t.First.StartsWith(first) || t.Last.StartsWith(name))
                                             )
-                                        || t.Batchref == name || t.TransactionId == name || t.OriginalId == nameid || t.Id == nameid
+                                        || t.TransactionId == name || t.OriginalId == nameid || t.Id == nameid
                                     select t;
                 }
             }
