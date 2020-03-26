@@ -116,6 +116,7 @@ namespace CmsData
             {
                 mru.RemoveAt(mru.Count - 1);
             }
+            Util2.MostRecentOrgs = mru;
         }
 
         public static void LogPersonActivity(string activity, int pid, string name)
@@ -138,6 +139,7 @@ namespace CmsData
             {
                 mru.RemoveAt(mru.Count - 1);
             }
+            Util2.MostRecentPeople = mru;
         }
 
         public static void DbDispose()
