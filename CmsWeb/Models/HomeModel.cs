@@ -693,9 +693,14 @@ namespace CmsWeb.Models
             return list;
         }
 
-        public IEnumerable<DashboardWidget> HomepageWidgets()
+        public List<List<DashboardWidget>> HomepageWidgets()
         {
-            IEnumerable<DashboardWidget> widgets;
+            // create a list of columns for the home page markup. in each list is a list of widgets. in this way
+            // each column can be drawn in a row to support bootstrap, and the layout is flexible enough to support
+            // future layouts with any number of columns
+            int NumColumns = 3;
+            List<List<DashboardWidget>> Columns = Enumerable.Range(0, NumColumns).Select(x => new List<DashboardWidget>()).ToList();
+            List<DashboardWidget> widgets;
             using (SqlConnection db = new SqlConnection(Util.ConnectionString))
             {
                 var Roles = CurrentDatabase.CurrentRoleIds();
@@ -709,7 +714,12 @@ namespace CmsWeb.Models
                 and Enabled = 1 order by [Order]";
                 widgets = db.Query<DashboardWidget>(qWidgets, new { Roles }).ToList();
             }
-            return widgets;
+            for (int i = 0; i < widgets.Count(); i++)
+            {
+                int column = i % NumColumns;
+                Columns[column].Add(widgets[i]);
+            }
+            return Columns;
         }
     }
 }

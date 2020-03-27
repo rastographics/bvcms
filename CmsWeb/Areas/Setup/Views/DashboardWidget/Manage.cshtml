@@ -18,6 +18,16 @@
             overflow-y: auto;
             margin-bottom: 0;
         }
+        .widget-preview .box > .center {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+        }
+        .widget-preview .box > .center i {
+            margin-bottom: 15px;
+        }
         .btn.multiselect {
             width: 100%;
             text-align: left;
@@ -46,7 +56,7 @@
                 <div class="box-content">
                     <div class="row">
                         <div class="col-sm-3">
-                            <label for="Name" class="control-label">Name <a href="#" data-toggle="popover" data-placement="right" data-trigger="focus" data-title="Title" data-content="Only visible to admins. Used to identify this widget in the list."><i class="fa fa-info-circle"></i></a></label>
+                            <label for="Name" class="control-label">Name <a href="#" data-toggle="popover" data-placement="right" data-trigger="focus" data-title="Title" data-content="Used to identify the widget. This field is required."><i class="fa fa-info-circle"></i></a></label>
                         </div>
                         <div class="col-sm-9">
                             @Html.EditorFor(m => m.Name, new { required = true })
