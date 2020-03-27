@@ -20,9 +20,9 @@
     </div>
     <div style="width: 297px; height: 300px; background-color: white; display: inline-block; text-align: center; padding: 20px">
         <table width="250" height="260" style="text-align: center;">
-            <tr><td><label id='Total_Fund' style="font-size: 25px"></label><label id='Total_Fund2' hidden></label><br/><label style="font-size: 10px; color: grey">2018 GIVING</label></td></tr>
-            <tr><td><label id='Total_Attendance' style="font-size: 25px"></label><br/><label style="font-size: 10px; color: grey">2018 ATTENDANCE</label></td></tr>
-            <tr><td><label id='Total_Percent' style="font-size: 25px"></label><br/><label style="font-size: 10px; color: grey">2018 AVG GIVING PER ATTENDANCE</label></td></tr>
+            <tr><td><label id='Total_Fund' style="font-size: 25px"></label><label id='Total_Fund2' hidden></label><br/><label style="font-size: 10px; color: grey">@DateTime.Now.Year GIVING</label></td></tr>
+            <tr><td><label id='Total_Attendance' style="font-size: 25px"></label><br/><label style="font-size: 10px; color: grey">@DateTime.Now.Year ATTENDANCE</label></td></tr>
+            <tr><td><label id='Total_Percent' style="font-size: 25px"></label><br/><label style="font-size: 10px; color: grey">@DateTime.Now.Year AVG GIVING PER ATTENDANCE</label></td></tr>
         </table>
     </div><div id='Attendance_chart_display' style='width: 600px; height: 300px; display: inline-block'>
         @Html.Action("AttendanceChartDisplayView")
