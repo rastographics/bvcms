@@ -129,7 +129,7 @@ namespace CmsData
 
                 select c
                    );
-            return (fundids.IsNotNull()) ? q.Where(x => fundids.Contains(x.FundId)).ToList() : q.ToList();
+            return (fundids.IsNotNull()) ? q.Where(x => fundids.Contains(x.FundId)).ToList() : q.Where(c => c.ContributionDate != null).ToList();
         }
 
         public static List<Contribution> GetContributionsPerYear(CMSDataContext db, int? year, int[] fundids = null, bool includeReturnedReversed = false, bool includePledges = false)
