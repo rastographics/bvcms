@@ -27,8 +27,8 @@ namespace CmsData
                 }
                 else
                 {
-                    FirstName = value; // treat FirstName as a fuzzy search
-                    LastName = null;
+                    FirstName = null;
+                    LastName = value; // treat FirstName as a fuzzy search
                 }
             }
         }
