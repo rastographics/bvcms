@@ -130,7 +130,17 @@ namespace CMSShared.Session
                     }
                     sv.Value = value;
                 }
-                db.SubmitChanges();
+                try
+                {
+                    db.SubmitChanges();
+                }
+                catch (Exception)
+                {
+                    if (Util.IsDebug())
+                    {
+                        throw;
+                    }
+                }
             }
             return sv;
         }
