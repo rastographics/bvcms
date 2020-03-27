@@ -1,7 +1,6 @@
-﻿@using CmsWeb.Controllers
-@using CmsWeb.Models
+﻿@using CmsWeb.Models
 @{
-    CMSDataContext Db = ViewBag.CurrentDatabase;
+    CMSDataContext Db = ViewExtensions2.CurrentDatabase;
     var admin = User.IsInRole("Admin");
     var developer = User.IsInRole("Developer");
     var manageemails = User.IsInRole("ManageEmails");
@@ -10,7 +9,7 @@
     var sendsms = User.IsInRole("SendSms");
     var manageResources = User.IsInRole("ManageResources") && Db.Setting("Resources-Enabled");
     var design = User.IsInRole("Design");
-    var finance = User.IsInRole("Finance") && ((string)Session["testnofinance"]) != "true";
+    var finance = User.IsInRole("Finance") && !Util.TestNoFinance;
     var financeadmin = User.IsInRole("FinanceAdmin");
     var financedataentry = User.IsInRole("FinanceDataEntry");
     var financeviewonly = User.IsInRole("FinanceViewOnly");
@@ -181,7 +180,7 @@
             </li>
         }
     }
-    if ((finance || managetrans || financeadmin) && DbUtil.Db.Setting("ShowSyncBatchDatesOption"))
+    if ((finance || managetrans || financeadmin) && ViewExtensions2.CurrentDatabase.Setting("ShowSyncBatchDatesOption"))
     {
         @Helper.LiAnchorLink("Retrieve Batch Data", "/Batch/RetrieveBatchData")
     }
@@ -213,7 +212,7 @@
 
 @helper AdminList2(bool admin, bool design, bool managetrans, bool edit, bool manageemails, bool finance, bool developer, bool manageResources, bool sendsms, bool financedataentry, bool checkin)
 {
-    CMSDataContext Db = ViewBag.CurrentDatabase;
+    CMSDataContext Db = ViewExtensions2.CurrentDatabase;
     var attendanceUseMeetingCategory = Db.Setting("AttendanceUseMeetingCategory");
     var webCheckinEnabled = Db.Setting("EnableWebCheckin");
     if (admin)

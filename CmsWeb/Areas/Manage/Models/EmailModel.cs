@@ -215,8 +215,8 @@ WHERE
 ORDER BY Name2
 OFFSET (@currentPage-1)*@pageSize ROWS FETCH NEXT @pageSize ROWS ONLY
 ";
-            var roles = DbUtil.Db.CurrentRoles();
-            var isAdmin = roles.Contains("Admin") || roles.Contains("ManageEmails") || roles.Contains("Finance");
+            var db = DbUtil.Db;
+            var isAdmin = db.CurrentUser.InAnyRole("Admin", "ManageEmails", "Finance");
             string filter;
 
             switch (FilterType)
@@ -241,26 +241,27 @@ OFFSET (@currentPage-1)*@pageSize ROWS FETCH NEXT @pageSize ROWS ONLY
                 currentPage = Pager.Page,
                 pageSize = Pager.PageSize,
                 isAdmin,
-                currentPeopleId = Util.UserPeopleId,
+                currentPeopleId = db.UserPeopleId,
                 filter
             };
 
-            return DbUtil.Db.Connection.Query<RecipientInfo>(sql, args);
+            return db.Connection.Query<RecipientInfo>(sql, args);
         }
 
         public bool CanDelete()
         {
-            if (HttpContextFactory.Current.User.IsInRole("Admin"))
+            var db = DbUtil.Db;
+            if (db.CurrentUser.InRole("Admin"))
             {
                 return true;
             }
 
-            if (queue.QueuedBy == Util.UserPeopleId)
+            if (queue.QueuedBy == db.UserPeopleId)
             {
                 return true;
             }
 
-            var u = DbUtil.Db.LoadPersonById(Util.UserPeopleId ?? 0);
+            var u = db.LoadPersonById(db.UserPeopleId ?? 0);
             return queue.FromAddr == u.EmailAddress;
         }
 

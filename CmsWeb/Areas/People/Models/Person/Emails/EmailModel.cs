@@ -66,11 +66,11 @@ namespace CmsWeb.Areas.People.Models
             }
 
             q = from e in q
-                let p = CurrentDatabase.People.Single(pp => pp.PeopleId == Util.UserPeopleId)
-                let isSender = e.QueuedBy == Util.UserPeopleId
+                let p = CurrentDatabase.People.Single(pp => pp.PeopleId == CurrentDatabase.UserPeopleId)
+                let isSender = e.QueuedBy == CurrentDatabase.UserPeopleId
                                || (e.FromAddr == p.EmailAddress && p.EmailAddress.Length > 0)
                                || (e.FromAddr == p.EmailAddress2 && p.EmailAddress2.Length > 0)
-                let isReceiver = e.EmailQueueTos.Any(ee => ee.PeopleId == Util.UserPeopleId)
+                let isReceiver = e.EmailQueueTos.Any(ee => ee.PeopleId == CurrentDatabase.UserPeopleId)
                 where isSender || isReceiver
                 select e;
 

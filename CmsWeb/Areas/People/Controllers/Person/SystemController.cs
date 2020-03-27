@@ -120,9 +120,10 @@ namespace CmsWeb.Areas.People.Controllers
             }
 
             Session.Clear();
+            RequestManager.SessionProvider.Clear();
             if (!User.IsInRole("Finance"))
             {
-                Session["IsNonFinanceImpersonator"] = "true";
+                Util.IsNonFinanceImpersonator = true;
             }
 
             FormsAuthentication.SetAuthCookie(user.Username, false);

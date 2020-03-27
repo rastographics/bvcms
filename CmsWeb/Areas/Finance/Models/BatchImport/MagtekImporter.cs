@@ -16,17 +16,19 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
 
         private static int? BatchProcessMagTek(string lines, DateTime date)
         {
+            var db = DbUtil.Db;
+            var userId = db.UserId;
             var now = DateTime.Now;
             var bh = new BundleHeader
             {
                 BundleHeaderTypeId = BundleTypeCode.ChecksAndCash,
                 BundleStatusId = BundleStatusCode.Open,
                 ContributionDate = date,
-                CreatedBy = Util.UserId,
+                CreatedBy = userId,
                 CreatedDate = now,
-                FundId = DbUtil.Db.Setting("DefaultFundId", "1").ToInt()
+                FundId = db.Setting("DefaultFundId", "1").ToInt()
             };
-            DbUtil.Db.BundleHeaders.InsertOnSubmit(bh);
+            db.BundleHeaders.InsertOnSubmit(bh);
 
             var re = new Regex(
 @"(T(?<rt>[\d?]+)T(?<ac>[\d ?]*)U\s*(?<ck>[\d?]+))|
@@ -40,18 +42,18 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
                 var ck = m.Groups["ck"].Value;
                 var bd = new BundleDetail
                 {
-                    CreatedBy = Util.UserId,
+                    CreatedBy = userId,
                     CreatedDate = now,
                 };
                 bh.BundleDetails.Add(bd);
-                var qf = from f in DbUtil.Db.ContributionFunds
+                var qf = from f in db.ContributionFunds
                          where f.FundStatusId == 1
                          orderby f.FundId
                          select f.FundId;
 
                 bd.Contribution = new Contribution
                 {
-                    CreatedBy = Util.UserId,
+                    CreatedBy = userId,
                     CreatedDate = now,
                     ContributionDate = date,
                     FundId = qf.First(),
@@ -60,7 +62,7 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
                 };
                 bd.Contribution.ContributionDesc = ck;
                 var eac = Util.Encrypt(rt + "," + ac);
-                var q = from kc in DbUtil.Db.CardIdentifiers
+                var q = from kc in db.CardIdentifiers
                         where kc.Id == eac
                         select kc.PeopleId;
                 var pid = q.SingleOrDefault();
@@ -77,7 +79,7 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
             bh.TotalChecks = 0;
             bh.TotalCash = 0;
             bh.TotalEnvelopes = 0;
-            DbUtil.Db.SubmitChanges();
+            db.SubmitChanges();
             return bh.BundleHeaderId;
         }
     }

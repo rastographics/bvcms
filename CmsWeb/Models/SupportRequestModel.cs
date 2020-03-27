@@ -79,7 +79,7 @@ $@"<b>Request ID: {id}</b><br>
             if (Subj != _mydataRequest)
             {
                 var roles = (from e in CurrentDatabase.Users
-                             where e.UserId == Util.UserId
+                             where e.UserId == CurrentDatabase.UserId
                              select string.Join(", ", e.Roles)).SingleOrDefault();
 
                 var ccto = !string.IsNullOrEmpty(Cc) ? $@"<b>CC:</b> {Cc}<br>" : "";
@@ -126,7 +126,7 @@ $@"<b>Request ID: {id}</b><br>
             if (Subj != _mydataRequest)
             {
                 var p = (from e in CurrentDatabase.Users
-                         where e.UserId == Util.UserId
+                         where e.UserId == CurrentDatabase.UserId
                          select new
                          {
                              roles = string.Join(", ", e.Roles)
@@ -172,7 +172,7 @@ $@"{{
             ""name"": ""{Util.UserFullName}"",
             ""email"": ""{Util.UserEmail}""
         }},
-        ""requester_id"": {Util.UserPeopleId},
+        ""requester_id"": {CurrentDatabase.UserPeopleId},
         ""subject"": ""{subject}"",
         ""comment"": {{ ""body"": ""{escapedbody}"" }},
         ""external_id"": {id},

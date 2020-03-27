@@ -91,7 +91,7 @@ namespace CmsWeb.Areas.People.Controllers
             CurrentDatabase.SubmitChanges();
 
             // if we are updating the current user update their thumbnail pic position in session also.
-            if (Util.UserPeopleId == id)
+            if (CurrentDatabase.UserPeopleId == id)
             {
                 Util.UserThumbPictureBgPosition = $"{xPos}% {yPos}%";
             }

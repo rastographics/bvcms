@@ -20,9 +20,10 @@ namespace CmsWeb.Models
 {
     public class HomeModel
     {
-        public CMSDataContext CurrentDatabase { get; set; }
+        private CMSDataContext _currentDatabase;
+        private CMSDataContext CurrentDatabase => _currentDatabase ?? (_currentDatabase = DbUtil.Db);
 
-        public string UserUrl => "/Person2/" + Util.UserPeopleId;
+        public string UserUrl => "/Person2/" + CurrentDatabase.UserPeopleId;
 
         public class BirthdayInfo
         {
@@ -38,13 +39,13 @@ namespace CmsWeb.Models
 
         public IEnumerable<BirthdayInfo> Birthdays()
         {
-            if (Util.UserPeopleId == null)
+            if (CurrentDatabase.UserPeopleId == null)
             {
                 return new List<BirthdayInfo>();
             }
 
             var qB = CurrentDatabase.Queries.FirstOrDefault(cc => cc.Name == "TrackBirthdays" && cc.Owner == Util.UserName);
-            var tagq = CurrentDatabase.FetchTag("FromTrackBirthdaysQuery", Util.UserPeopleId, DbUtil.TagTypeId_System);
+            var tagq = CurrentDatabase.FetchTag("FromTrackBirthdaysQuery", CurrentDatabase.UserPeopleId, DbUtil.TagTypeId_System);
             if (qB != null)
             {
                 if (tagq?.Created == null || tagq.Created < DateTime.Today)
@@ -52,7 +53,7 @@ namespace CmsWeb.Models
                     CurrentDatabase.PopulateSpecialTag(CurrentDatabase.PeopleQuery(qB.QueryId), "FromTrackBirthdaysQuery", DbUtil.TagTypeId_System);
                 }
 
-                tagq = CurrentDatabase.FetchTag("FromTrackBirthdaysQuery", Util.UserPeopleId, DbUtil.TagTypeId_System);
+                tagq = CurrentDatabase.FetchTag("FromTrackBirthdaysQuery", CurrentDatabase.UserPeopleId, DbUtil.TagTypeId_System);
                 if (tagq != null)
                 {
                     var q0 = from p in tagq.People(CurrentDatabase)
@@ -73,7 +74,7 @@ namespace CmsWeb.Models
                 }
             }
             tagq?.DeleteTag(CurrentDatabase);
-            var tag = CurrentDatabase.FetchOrCreateTag("TrackBirthdays", Util.UserPeopleId, DbUtil.TagTypeId_Personal);
+            var tag = CurrentDatabase.FetchOrCreateTag("TrackBirthdays", CurrentDatabase.UserPeopleId, DbUtil.TagTypeId_Personal);
             var q = qB != null
                 ? CurrentDatabase.PeopleQuery(qB.QueryId)
                 : tag.People(CurrentDatabase);
@@ -82,7 +83,7 @@ namespace CmsWeb.Models
             if (!q.Any())
             {
                 q = from p in CurrentDatabase.People
-                    let up = CurrentDatabase.People.Single(pp => pp.PeopleId == Util.UserPeopleId)
+                    let up = CurrentDatabase.People.Single(pp => pp.PeopleId == CurrentDatabase.UserPeopleId)
                     where p.OrganizationMembers.Any(om => om.OrganizationId == up.BibleFellowshipClassId)
                     select p;
             }
@@ -105,6 +106,7 @@ namespace CmsWeb.Models
                      };
             return q2;
         }
+
         public class MyInvolvementInfo
         {
             public string Name { get; set; }
@@ -112,6 +114,7 @@ namespace CmsWeb.Models
             public int OrgId { get; set; }
             public string OrgType { get; set; }
         }
+
         public IEnumerable<MyInvolvementInfo> MyInvolvements()
         {
             var u = CurrentDatabase.CurrentUser;
@@ -149,12 +152,14 @@ namespace CmsWeb.Models
 
             return q;
         }
+
         public class NewsInfo
         {
             public string Title { get; set; }
             public DateTime Published { get; set; }
             public string Url { get; set; }
         }
+
         public IEnumerable<NewsInfo> BvcmsNews()
         {
             return CachedNewsInfo("BvcmsNews", "http://www.touchpointsoftware.com/feed/", 10);
@@ -171,9 +176,10 @@ namespace CmsWeb.Models
             public string Name { get; set; }
             public string Url { get; set; }
         }
+
         public IEnumerable<MySavedQueryInfo> MyQueries()
         {
-            if (Util.UserPeopleId == null)
+            if (CurrentDatabase.UserPeopleId == null)
             {
                 return new List<MySavedQueryInfo>();
             }
@@ -188,6 +194,7 @@ namespace CmsWeb.Models
                        Url = "/Query/" + c.QueryId
                    };
         }
+
         public class TaskInfo
         {
             public int TaskId { get; set; }
@@ -196,9 +203,10 @@ namespace CmsWeb.Models
             public string Description { get; set; }
             public string Url => "/Person2/" + PeopleId;
         }
+
         public IEnumerable<TaskInfo> Tasks()
         {
-            if (Util.UserPeopleId == null)
+            if (CurrentDatabase.UserPeopleId == null)
             {
                 return new List<TaskInfo>();
             }
@@ -220,17 +228,19 @@ namespace CmsWeb.Models
                     };
             return q;
         }
+
         public IEnumerable<CodeValueItem> Tags()
         {
-            if (Util.UserPeopleId == null)
+            if (CurrentDatabase.UserPeopleId == null)
             {
                 return new List<CodeValueItem>();
             }
 
             var ctl = new CodeValueModel();
-            var list = ctl.UserTags(Util.UserPeopleId);
+            var list = ctl.UserTags(CurrentDatabase.UserPeopleId);
             return list;
         }
+
         public class SearchInfo
         {
             public string line1 { get; set; }
@@ -238,10 +248,10 @@ namespace CmsWeb.Models
             public bool isOrg { get; set; }
             public int id { get; set; }
         }
-        public static IEnumerable<SearchInfo> Names(string text)
+
+        public IEnumerable<SearchInfo> Names(string text)
         {
             string First, Last;
-            var CurrentDatabase = DbUtil.Db;
             var qp = CurrentDatabase.People.AsQueryable();
             var qo = from o in CurrentDatabase.Organizations
                      where o.OrganizationStatusId == CmsData.Codes.OrgStatusCode.Active
@@ -351,7 +361,7 @@ namespace CmsWeb.Models
             });
             return list;
         }
-        [SuppressMessage("ReSharper", "InconsistentNaming")]
+
         public class SearchInfo22
         {
             public SearchInfo22()
@@ -373,7 +383,7 @@ namespace CmsWeb.Models
             internal int peopleid;
             internal int? age;
 
-            internal string displayname => (showaltname ? $"{(name2.HasValue()? name2:lastname)} {altname}" : name2.HasValue()?name2:lastname);
+            internal string displayname => (showaltname ? $"{(name2.HasValue() ? name2 : lastname)} {altname}" : name2.HasValue() ? name2 : lastname);
             internal string name2;
             internal string lastname;
             internal string nonPersonName;
@@ -381,9 +391,9 @@ namespace CmsWeb.Models
             internal bool showaltname;
         }
 
-        public static IEnumerable<SearchInfo22> PrefetchSearch()
+        public IEnumerable<SearchInfo22> PrefetchSearch()
         {
-            var list = (from c in DbUtil.Db.Queries
+            var list = (from c in CurrentDatabase.Queries
                         where c.Name != Util.ScratchPad2
                         where c.Owner == Util.UserName
                         orderby c.LastRun descending
@@ -403,7 +413,7 @@ namespace CmsWeb.Models
             return list;
         }
 
-        public static IEnumerable<SearchInfo22> FastSearch(SearchRequest sr)
+        public IEnumerable<SearchInfo22> FastSearch(SearchRequest sr)
         {
             var CurrentDatabase = DbUtil.Db;
             string first, last;
@@ -595,9 +605,8 @@ namespace CmsWeb.Models
         public bool ShowTip => !CurrentDatabase.UserPreference("hide-tip-home", "false").ToBool();
         public string BlogAppUrl => CurrentDatabase.Setting("BlogAppUrl", "#");
 
-        private static IEnumerable<NewsInfo> GetNewsInfo(string feedurl)
+        private IEnumerable<NewsInfo> GetNewsInfo(string feedurl)
         {
-            var CurrentDatabase = DbUtil.Db;
             var feed = CurrentDatabase.RssFeeds.FirstOrDefault(r => r.Url == feedurl);
             if (!feedurl.HasValue())
             {
@@ -679,7 +688,8 @@ namespace CmsWeb.Models
                 return new List<NewsInfo>();
             }
         }
-        private static IEnumerable<NewsInfo> CachedNewsInfo(string bvcmsnews, string feedurl, int minutes)
+
+        private IEnumerable<NewsInfo> CachedNewsInfo(string bvcmsnews, string feedurl, int minutes)
         {
             var list = HttpRuntime.Cache[bvcmsnews] as List<NewsInfo>;
             if (list != null)

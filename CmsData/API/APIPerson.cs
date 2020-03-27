@@ -342,7 +342,7 @@ namespace CmsData.API
                         break;
                 }
             p.LogChanges(Db, u.sb);
-            p.Family.LogChanges(Db, u.fsb, p.PeopleId, Util.UserPeopleId.Value);
+            p.Family.LogChanges(Db, u.fsb, p.PeopleId, Db.UserPeopleId.Value);
             Db.SubmitChanges();
             return "<Success />";
         }

@@ -10,12 +10,7 @@ namespace CmsWeb.Areas.Org.Controllers
         [Authorize(Roles = "Edit")]
         public ActionResult CopySettings(int id)
         {
-            if (Util.SessionTimedOut())
-            {
-                return Redirect("/");
-            }
-
-            Session["OrgCopySettings"] = id;
+            Util.OrgCopySettings = id;
             return Redirect("/OrgSearch/");
         }
 
@@ -41,7 +36,7 @@ namespace CmsWeb.Areas.Org.Controllers
                 CurrentDatabase.TagAll(q);
                 return Content("Remove");
             }
-            var tag = CurrentDatabase.FetchOrCreateTag(tagname, Util.UserPeopleId, DbUtil.TagTypeId_Personal);
+            var tag = CurrentDatabase.FetchOrCreateTag(tagname, CurrentDatabase.UserPeopleId, DbUtil.TagTypeId_Personal);
             if (cleartagfirst ?? false)
             {
                 CurrentDatabase.ClearTag(tag);

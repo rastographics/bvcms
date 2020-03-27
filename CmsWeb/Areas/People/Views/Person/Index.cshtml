@@ -11,11 +11,11 @@
     var portraitBgPos = Model.Picture.X.HasValue || Model.Picture.Y.HasValue ? $"{Model.Picture.X.GetValueOrDefault()}% {Model.Picture.Y.GetValueOrDefault()}%" : "top";
 
     var showResourcesTab = false;
-    var resourcesEnabled = DbUtil.Db.Setting("Resources-Enabled");
-    var canviewmemberstatus = User.IsInRole("Access") || !DbUtil.Db.Setting("HideMemberStatusFromMyData");
+    var resourcesEnabled = ViewExtensions2.CurrentDatabase.Setting("Resources-Enabled");
+    var canviewmemberstatus = User.IsInRole("Access") || !ViewExtensions2.CurrentDatabase.Setting("HideMemberStatusFromMyData");
     if (resourcesEnabled)
     {
-        showResourcesTab = Model.PeopleId == Util.UserPeopleId || User.IsInRole("ViewResources");
+        showResourcesTab = Model.PeopleId == ViewExtensions2.CurrentDatabase.UserPeopleId || User.IsInRole("ViewResources");
     }
 
     var showMinistryTab = Util.IsMyDataUser ? false : !RoleChecker.HasSetting(SettingName.HideMinistryTab, false);

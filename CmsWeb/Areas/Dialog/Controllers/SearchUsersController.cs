@@ -40,7 +40,7 @@ namespace CmsWeb.Areas.Dialog.Controllers
         [HttpPost]
         public ActionResult TagUntag(int id, bool ischecked, bool isordered)
         {
-            var t = CurrentDatabase.FetchOrCreateTag(Util.SessionId, Util.UserPeopleId, DbUtil.TagTypeId_AddSelected);
+            var t = CurrentDatabase.FetchOrCreateTag(Util.SessionId, CurrentDatabase.UserPeopleId, DbUtil.TagTypeId_AddSelected);
             var count = t.PersonTags.Count();
             var topid = "";
             var tp = CurrentDatabase.TagPeople.SingleOrDefault(tt => tt.PeopleId == id && tt.Id == t.Id);

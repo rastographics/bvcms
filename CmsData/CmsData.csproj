@@ -1183,6 +1183,9 @@
       <SubType>Designer</SubType>
     </Resource>
     <Content Include="Migrations\20200224_Add_CreatedDate_OrgMemberDocuments_Column.sql" />
+    <Content Include="Migrations\20200319_alter_GetContributionsDetails_func.sql" />
+    <Content Include="Migrations\20200318_alter_GetTotalContributionsDonorFund_func.sql" />
+    <Content Include="Migrations\20200318_alter_ContributionSearch_func.sql" />
     <Content Include="Migrations\20200224_Create_OrgTemporaryDocuments_Table.sql" />
     <Content Include="Migrations\20200312_AddSettingMetaData_ContributionsCampusColumn.sql" />
     <Content Include="Migrations\20200312_Add_FK_Contribution_Campus.sql" />

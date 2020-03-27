@@ -9,9 +9,9 @@
     url = "/Person2/InlineEdit/" + Model.PeopleId,
     source = "/Person2/InlineCodes/"
   };
-  var evmodel = new ExtraValueModel(DbUtil.Db, Model.PeopleId, "People", "Membership");
-  var newMemberClassLabel = DbUtil.Db.Setting("NewMemberClassLabel", "New Member Class");
-  ViewBag.EvLocationLabel = DbUtil.Db.Setting("ExtraMembershipDataLabel", "Extra Membership Data");
+  var evmodel = new ExtraValueModel(ViewExtensions2.CurrentDatabase, Model.PeopleId, "People", "Membership");
+  var newMemberClassLabel = ViewExtensions2.CurrentDatabase.Setting("NewMemberClassLabel", "New Member Class");
+  ViewBag.EvLocationLabel = ViewExtensions2.CurrentDatabase.Setting("ExtraMembershipDataLabel", "Extra Membership Data");
 }
 <form class="ajax" method="post" data-init="Editable" data-init2="ExtraEditable">
   <h3>Member Profile</h3>

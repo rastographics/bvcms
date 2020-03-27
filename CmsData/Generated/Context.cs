@@ -1870,7 +1870,8 @@ namespace CmsData
             [Parameter(DbType = "bit")] bool? Mobile,
             [Parameter(DbType = "int")] int? PeopleId,
             [Parameter(DbType = "int")] int? ActiveTagFilter,
-            [Parameter(DbType = "varchar")] string fundids
+            [Parameter(DbType = "varchar")] string fundids,
+            [Parameter(DbType = "bit")] bool? IncludePledges
             )
         {
             return CreateMethodCallQuery<View.ContributionSearch>(this,
@@ -1893,7 +1894,8 @@ namespace CmsData
                 Mobile,
                 PeopleId,
                 ActiveTagFilter,
-                fundids
+                fundids,
+                IncludePledges
                 );
         }
 
@@ -2530,7 +2532,7 @@ namespace CmsData
             [Parameter(DbType = "bit")] bool? nontaxded,
             [Parameter(DbType = "bit")] bool? includeUnclosed,
             [Parameter(DbType = "int")] int? tagid,
-            [Parameter(DbType = "int")] int? fundid
+            [Parameter(DbType = "int")] int? fundid            
             )
         {
             return CreateMethodCallQuery<View.GetTotalContributionsDonor2>(this,
@@ -2553,7 +2555,9 @@ namespace CmsData
             [Parameter(DbType = "bit")] bool? nontaxded,
             [Parameter(DbType = "bit")] bool? includeUnclosed,
             [Parameter(DbType = "int")] int? tagid,
-            [Parameter(DbType = "varchar")] string fundids
+            [Parameter(DbType = "varchar")] string fundids,
+            [Parameter(DbType = "bit")] bool? includePledges,
+            [Parameter(DbType = "int")] int? online
             )
         {
             return CreateMethodCallQuery<View.GetTotalContributionsDonorFund>(this,
@@ -2564,7 +2568,9 @@ namespace CmsData
                 nontaxded,
                 includeUnclosed,
                 tagid,
-                fundids
+                fundids,
+                includePledges,
+                online
                 );
         }
 

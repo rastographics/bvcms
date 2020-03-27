@@ -169,7 +169,7 @@ namespace CmsWeb.Areas.Reports.Models
                 var sql = Sql();
                 if (sql.Contains("@userid"))
                 {
-                    p.Add("@userid", Util.UserId);
+                    p.Add("@userid", db.UserId);
                 }
 
                 if (sql.Contains("pagebreak"))
@@ -192,7 +192,7 @@ namespace CmsWeb.Areas.Reports.Models
                 var sql = Sql();
                 if (sql.Contains("@userid"))
                 {
-                    p.Add("@userid", Util.UserId);
+                    p.Add("@userid", db.UserId);
                 }
 
                 result = cn.ExecuteReader(sql, p).ToExcel(Report + ".xlsx");
@@ -222,7 +222,7 @@ namespace CmsWeb.Areas.Reports.Models
                 var sql = Sql();
                 if (sql.Contains("@userid"))
                 {
-                    p.Add("@userid", Util.UserId);
+                    p.Add("@userid", db.UserId);
                 }
 
                 result = cn.ExecuteReader(sql, p).ToExcel(Report + ".xlsx");

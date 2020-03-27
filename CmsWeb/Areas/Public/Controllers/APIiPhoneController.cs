@@ -103,7 +103,7 @@ namespace CmsWeb.Areas.Public.Controllers
                 return new OrgResult(null);
             }
 
-            return new OrgResult(Util.UserPeopleId);
+            return new OrgResult(CurrentDatabase.UserPeopleId);
         }
 
         [HttpPost]
@@ -224,7 +224,7 @@ namespace CmsWeb.Areas.Public.Controllers
             p.UpdateValue(psb, "MaritalStatusId", m.marital);
 
             p.LogChanges(CurrentDatabase, psb);
-            p.Family.LogChanges(CurrentDatabase, fsb, p.PeopleId, Util.UserPeopleId ?? 0);
+            p.Family.LogChanges(CurrentDatabase, fsb, p.PeopleId, CurrentDatabase.UserPeopleId ?? 0);
             CurrentDatabase.SubmitChanges();
             if (!CurrentDatabase.Setting("NotifyCheckinChanges", "true").ToBool() || (psb.Count <= 0 && fsb.Count <= 0))
             {
@@ -322,13 +322,13 @@ namespace CmsWeb.Areas.Public.Controllers
             return new RollListResult(meeting, peopleId);
         }
 
-        private static int RecordAttend2Extracted(int id, int peopleId, bool present, DateTime dt, User u)
+        private int RecordAttend2Extracted(int id, int peopleId, bool present, DateTime dt, User u)
         {
             //todo: static
-            var meetingId = DbUtil.Db.CreateMeeting(id, dt);
+            var meetingId = CurrentDatabase.CreateMeeting(id, dt);
             Attend.RecordAttendance(peopleId, meetingId, present);
-            DbUtil.Db.UpdateMeetingCounters(id);
-            DbUtil.LogActivity($"Mobile RecAtt o:{id} p:{peopleId} u:{Util.UserPeopleId} a:{present}");
+            CurrentDatabase.UpdateMeetingCounters(id);
+            DbUtil.LogActivity($"Mobile RecAtt o:{id} p:{peopleId} u:{CurrentDatabase.UserPeopleId} a:{present}");
             return meetingId;
         }
 

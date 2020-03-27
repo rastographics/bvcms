@@ -41,7 +41,7 @@ namespace CmsWeb.Areas.Reports.Controllers
                     Results = GridResult.Table(rd, Name2);
                 }
             }
-            CurrentDatabase.LogActivity($"Run SQL report: {Report}", pid: Util.UserPeopleId, uid: Util.UserId);
+            CurrentDatabase.LogActivity($"Run SQL report: {Report}", pid: CurrentDatabase.UserPeopleId, uid: CurrentDatabase.UserId);
         }
 
         public EpplusResult RunSqlExcel()
@@ -51,7 +51,7 @@ namespace CmsWeb.Areas.Reports.Controllers
             using (var cn = CurrentDatabase.ReadonlyConnection())
             {
                 cn.Open();
-                CurrentDatabase.LogActivity($"Run SQL report: {Report}", pid: Util.UserPeopleId, uid: Util.UserId);
+                CurrentDatabase.LogActivity($"Run SQL report: {Report}", pid: CurrentDatabase.UserPeopleId, uid: CurrentDatabase.UserId);
                 return cn.ExecuteReader(content, p).ToExcel($"{Report.Replace(" ", "")}.xlsx", fromSql: true);
             }
         }
@@ -142,7 +142,7 @@ namespace CmsWeb.Areas.Reports.Controllers
             pe.RunScript(content);
             Results = pe.Output;
 
-            CurrentDatabase.LogActivity($"Run Python script: {Report}", pid: Util.UserPeopleId, uid: Util.UserId);
+            CurrentDatabase.LogActivity($"Run Python script: {Report}", pid: CurrentDatabase.UserPeopleId, uid: CurrentDatabase.UserId);
         }
 
         public static bool CanRunScript(string script)

@@ -48,7 +48,7 @@ namespace CmsWeb.Areas.Main.Controllers
         public ActionResult Delete()
         {
             var t = CurrentDatabase.TagCurrent();
-            if (t.TagShares.Count() > 0 || t.PeopleId != Util.UserPeopleId)
+            if (t.TagShares.Count() > 0 || t.PeopleId != CurrentDatabase.UserPeopleId)
             {
                 return Content("error");
             }
@@ -118,7 +118,7 @@ namespace CmsWeb.Areas.Main.Controllers
                 CurrentDatabase.TagAll(q);
                 return Content("Remove");
             }
-            var tag = CurrentDatabase.FetchOrCreateTag(tagname, Util.UserPeopleId, DbUtil.TagTypeId_Personal);
+            var tag = CurrentDatabase.FetchOrCreateTag(tagname, CurrentDatabase.UserPeopleId, DbUtil.TagTypeId_Personal);
             if (cleartagfirst ?? false)
             {
                 CurrentDatabase.ClearTag(tag);
@@ -161,7 +161,7 @@ namespace CmsWeb.Areas.Main.Controllers
 
         public ActionResult SharedTags()
         {
-            var t = CurrentDatabase.FetchOrCreateTag(Util.SessionId, Util.UserPeopleId, DbUtil.TagTypeId_AddSelected);
+            var t = CurrentDatabase.FetchOrCreateTag(Util.SessionId, CurrentDatabase.UserPeopleId, DbUtil.TagTypeId_AddSelected);
             CurrentDatabase.TagPeople.DeleteAllOnSubmit(t.PersonTags);
             CurrentDatabase.SubmitChanges();
             var tag = CurrentDatabase.TagCurrent();
@@ -177,10 +177,10 @@ namespace CmsWeb.Areas.Main.Controllers
         [HttpPost]
         public ActionResult UpdateShared()
         {
-            var t = CurrentDatabase.FetchOrCreateTag(Util.SessionId, Util.UserPeopleId, DbUtil.TagTypeId_AddSelected);
+            var t = CurrentDatabase.FetchOrCreateTag(Util.SessionId, CurrentDatabase.UserPeopleId, DbUtil.TagTypeId_AddSelected);
             var tag = CurrentDatabase.TagCurrent();
             var selected_pids = (from p in t.People(CurrentDatabase)
-                                 where p.PeopleId != Util.UserPeopleId
+                                 where p.PeopleId != CurrentDatabase.UserPeopleId
                                  select p.PeopleId).ToArray();
             var userDeletes = tag.TagShares.Where(ts => !selected_pids.Contains(ts.PeopleId));
             CurrentDatabase.TagShares.DeleteAllOnSubmit(userDeletes);
@@ -218,7 +218,7 @@ namespace CmsWeb.Areas.Main.Controllers
                 return View();
             }
             var t = CurrentDatabase.Tags.FirstOrDefault(tt =>
-                tt.Name == tag && tt.PeopleId == Util.UserPeopleId && tt.TypeId == DbUtil.TagTypeId_Personal);
+                tt.Name == tag && tt.PeopleId == CurrentDatabase.UserPeopleId && tt.TypeId == DbUtil.TagTypeId_Personal);
             if (t == null)
             {
                 TempData["message"] = "tag not found";

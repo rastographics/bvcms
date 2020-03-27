@@ -227,7 +227,7 @@ namespace CmsWeb.Areas.People.Models
 
             var fsb = new List<ChangeDetail>();
             p.Family.UpdateValue(fsb, "HomePhone", HomePhone.GetDigits());
-            p.Family.LogChanges(db, fsb, p.PeopleId, Util.UserPeopleId ?? 0);
+            p.Family.LogChanges(db, fsb, p.PeopleId, db.UserPeopleId ?? 0);
 
             if (p.DeceasedDateChanged)
             {
