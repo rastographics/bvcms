@@ -151,6 +151,10 @@ namespace CmsData
                 }
                 return mru;
             }
+            set
+            {
+                Util.SetValueInSession(STR_MostRecentOrgs, value);
+            }
         }
 
         public static List<MostRecentItem> MostRecentPeople
@@ -166,6 +170,10 @@ namespace CmsData
                     Util.SetValueInSession(STR_MostRecentPeople, mru);
                 }
                 return mru;
+            }
+            set
+            {
+                Util.SetValueInSession(STR_MostRecentPeople, value);
             }
         }
 

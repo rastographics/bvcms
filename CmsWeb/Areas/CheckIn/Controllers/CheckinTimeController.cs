@@ -14,7 +14,7 @@ namespace CmsWeb.Areas.CheckIn.Controllers
         [Route("~/CheckinTimes")]
         public ActionResult Index(CheckinTimeModel m)
         {
-            if (m.Locations().Count == 0)
+            if (m.Locations().Count == 0 || m.AccessTypes().Count == 1)
             {
                 return Content("Building Checkin mode not setup, no checkin times available");
             }
