@@ -1,10 +1,3 @@
-USE [CMS_concordjc]
-GO
-/****** Object:  UserDefinedFunction [dbo].[GetTotalContributionsAgeRange]    Script Date: 3/26/2020 1:09:57 PM ******/
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
 ALTER FUNCTION [dbo].[GetTotalContributionsAgeRange]
 (
 	@fd DATETIME, 
