@@ -39,8 +39,8 @@
 
 <div class="row" id="Edit-VueApp">
     <div class="col-md-9">
-        <div class="box box-responsive">
-            <div class="box-content">
+        <div class="box box-responsive" style="margin-bottom: 0px;">
+            <div class="box-content Edit-VueApp-box-content">
                 @using (Html.BeginForm("SaveUnlayerTemplate", "Display", FormMethod.Post))
                 {
                     <input type="hidden" id="UnlayerDesign" name="UnlayerDesign" />
@@ -50,13 +50,14 @@
                     <div class="row">
                         <div class="col-sm-4">
                             <div class="form-group">
-                                <label for="name" class="control-label">Name</label>
+                                <label for="name" class="control-label">Template Name</label>
                                 @{
                                     IDictionary<string, object> attr = new Dictionary<string, object>() { { "class", "form-control" }, { @"v-model", @"editName" } };
                                 }
                                 @Html.TextBox("name", Model.Name, attr)
                             </div>
                             <div class="form-group">
+                                <a href="#" data-toggle="popover" data-placement="right" data-trigger="focus" data-title="Description" data-content="Title for the tab or window when using the Publicly viewable? option. See <a href=&quot;https://docs.touchpointsoftware.com/EmailTexting/PublicEmails.html&quot; target=&quot;_blank&quot;>Public Emails</a>."><i class="fa fa-info-circle"></i></a>
                                 <label for="title" class="control-label">Title</label>
                                 @Html.TextBox("title", Model.Title, new { @class = "form-control" })
                             </div>
@@ -73,23 +74,25 @@
                         <div class="col-md-10 col-lg-8">
                             <div class="form-group">
                                 <div class="col-sm-offset-2 col-sm-10">
-                                    <iframe src="/Manage/Display/EmailBody?id=@tid" frameborder="0" style="width: 100%;" id="email-body" name="email-body"></iframe>
+                                    <iframe src="/Manage/Display/EmailBody?id=@tid" frameborder="0" class="unlayer-email-body" id="email-body" name="email-body"></iframe>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <a href="/Display/#tab_@(backtolist)" class="btn btn-default">Back to List</a>
-                    <a href="#" class="btn btn-danger delete"><i class="fa fa-trash"></i> Delete</a>
-                    <input id="SaveTemplateButton" type="submit" class="btn btn-primary" value="Save @templatedraft" />
+                    <div class="row" style="margin-left:0px;">
+                        <a href="/Display/#tab_@(backtolist)" class="btn btn-default">Back to List</a>
+                        <a href="#" class="btn btn-danger delete"><i class="fa fa-trash"></i> Delete</a>
+                        <input id="SaveTemplateButton" type="submit" class="btn btn-primary" value="Save @templatedraft" />
+                    </div>
                 }
             </div>
         </div>
     </div>
 </div>
-<div class="modal fade" id="unlayer-editor-modal" style="overflow-y: hidden !important;" data-backdrop="static" data-keyboard="false">
+<div class="modal fade" id="unlayer-editor-modal" data-backdrop="static" data-keyboard="false">
     <div class="modal-dialog modal-xl">
-        <div class="modal-content">
-            <div class="modal-body">
+        <div class="modal-content unlayer-modal-editor-content">
+            <div class="modal-body unlayer-modal-editor-body">
                 <div class="row">
                     <div class="col-sm-12">
                         <div class="pull-right" style="margin-bottom: 5px;">
@@ -100,7 +103,7 @@
                 </div>
                 <div class="row">
                     <div class="col-sm-12">
-                        <div id="unlayerEditor" style="height: 500px;"></div>
+                        <div id="unlayerEditor" class="modal-unlayerEditor"></div>
                     </div>
                 </div>
             </div>
@@ -234,6 +237,10 @@
                         }
                     });
                 });
+        });
+        $('[data-toggle="popover"]').popover({ html: true });
+        $('[data-toggle="popover"]').click(function (ev) {
+            ev.preventDefault();
         });
     });
     </script>

@@ -298,18 +298,22 @@
                             </div>
                             @if (User.IsInRole("Admin") || User.IsInRole("Design"))
                             {
-                                <div class="col-sm-6">
-                                    <div class="form-group">
-                                        <label for="useUnlayer" class="control-label">Use Mobile Responsive WYSIWYG</label>
-                                        @Html.CheckBox("useUnLayer", false, new{@class = "form-control"})
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <div class="use-mobile-checkbox">
+                                        <label for="useUnlayer" class="control-label">Use Mobile Responsive</label>
+                                    </div>
+                                    <div style="text-align:center">
+                                        @Html.CheckBox("useUnLayer", false, new { @class = "new-email-unlayer-template-checkbox" })
                                     </div>
                                 </div>
+                            </div>
                             }
                         </div>
                         <div class="row">
                             <div class="col-sm-12">
                                 <div class="form-group">
-                                    <label for="newName-role" class="control-label">File Name</label>
+                                    <label for="newName-role" class="control-label">Template Name</label>
                                     <input type="text" id="newName-role" v-model="newName" name="newName" class="form-control" />
                                     <small v-if="notValidName" class="red-empty">"Empty Template" name cannot be used</small>
                                 </div>
