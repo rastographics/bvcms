@@ -87,11 +87,7 @@ namespace CmsData
         public static bool GatewayTesting(CMSDataContext db, PaymentProcessTypes processType)
         {
             var User = db.Users.SingleOrDefault(us => us.UserId == db.UserId);
-#if DEBUG
-            return Setting(db, "GatewayTesting", (int)processType);
-#else
             return (User != null && User.InRole("Developer")) ? Setting(db, "GatewayTesting", (int)processType) : false;
-#endif
         }
 
         public static PaymentProcessTypes ProcessByTransactionDescription(CMSDataContext db, string Description)
