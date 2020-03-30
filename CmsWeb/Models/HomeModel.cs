@@ -34,7 +34,7 @@ namespace CmsWeb.Models
         }
 
         public HomeModel(CMSDataContext db) {
-            CurrentDatabase = db;
+            _currentDatabase = db;
         }
 
         public IEnumerable<BirthdayInfo> Birthdays()
