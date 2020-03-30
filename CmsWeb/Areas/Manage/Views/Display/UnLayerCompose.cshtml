@@ -34,14 +34,17 @@
                 display: inline-block;
                 vertical-align: middle; /* vertical alignment of the inline element */
             }
+        .bvedit {
+            max-width: 600px;
+        }
     </style>
 }
 
 <div class="row" id="Edit-VueApp">
     <div class="col-md-9">
-        <div class="box box-responsive" style="margin-bottom: 0px;">
+        <div class="box box-responsive Edit-VueApp-box-responsive">
             <div class="box-content Edit-VueApp-box-content">
-                @using (Html.BeginForm("SaveUnlayerTemplate", "Display", FormMethod.Post))
+                @using (Html.BeginForm("SaveUnlayerTemplate", "Display", FormMethod.Post, new { @class="unlayer-form" }))
                 {
                     <input type="hidden" id="UnlayerDesign" name="UnlayerDesign" />
                     <input type="hidden" id="body" name="body" />
@@ -71,11 +74,9 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-10 col-lg-8">
-                            <div class="form-group">
-                                <div class="col-sm-offset-2 col-sm-10">
-                                    <iframe src="/Manage/Display/EmailBody?id=@tid" frameborder="0" class="unlayer-email-body" id="email-body" name="email-body"></iframe>
-                                </div>
+                        <div class="form-group">
+                            <div class="col-sm-offset-2 col-sm-9 col-sm-offset-1">
+                                <iframe src="/Manage/Display/EmailBody?id=@tid" frameborder="0" class="unlayer-email-body" id="email-body" name="email-body"></iframe>
                             </div>
                         </div>
                     </div>
@@ -103,7 +104,7 @@
                 </div>
                 <div class="row">
                     <div class="col-sm-12">
-                        <div id="unlayerEditor" class="modal-unlayerEditor"></div>
+                        <div id="unlayerEditor" class="unlayer-modal-editor"></div>
                     </div>
                 </div>
             </div>

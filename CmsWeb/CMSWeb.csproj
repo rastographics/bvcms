@@ -1909,6 +1909,7 @@
     <Content Include="Areas\Manage\Views\Batch\RetrieveBatchData.cshtml" />
     <Content Include="Areas\Manage\Views\Display\UnLayerCompose.cshtml" />
     <Content Include="Areas\Manage\Views\Display\EmailBody.cshtml" />
+    <Content Include="Content\touchpoint\src\less\unlayer-editor.less" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
