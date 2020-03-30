@@ -16,7 +16,7 @@
                     <div class="row">
                         <div class="col-sm-4">
                             <div class="@((Model.Name == "Empty Template") ? "hidden" : "form-group")">
-                                <label for="name" class="control-label">Name</label>
+                                <label for="name" class="control-label">Template Name</label>
                                 @{
                                     IDictionary<string, object> attr = new Dictionary<string, object>() { { "class", "form-control" }, { @"v-model", @"editName" } };
                                 }
