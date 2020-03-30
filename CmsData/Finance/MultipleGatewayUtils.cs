@@ -72,7 +72,7 @@ namespace CmsData
             return setting.ToLower() == "true";
         }
 
-        public static int? GatewayId (CMSDataContext db, PaymentProcessTypes processType)
+        public static int? GatewayId(CMSDataContext db, PaymentProcessTypes processType)
         {
             return (from e in db.PaymentProcess
                     join d in db.GatewayAccount on e.GatewayAccountId equals d.GatewayAccountId into gj
