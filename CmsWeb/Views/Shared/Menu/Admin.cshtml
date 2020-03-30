@@ -156,7 +156,7 @@
 }
 @helper AdminList1(bool admin, bool design, bool managetrans, bool edit, bool manageemails, bool finance, bool developer, bool financeadmin)
 {
-    CMSDataContext Db = ViewBag.CurrentDatabase;
+    CMSDataContext Db = ViewExtensions2.CurrentDatabase;
     var newHomePageEnabled = Db.Setting("EnableCustomHomepage");
     if (admin || finance || managetrans)
     {
