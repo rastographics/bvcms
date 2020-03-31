@@ -94,7 +94,7 @@ namespace CmsWeb.Areas.Setup.Controllers
             return Redirect(redirectUrl);
         }
 
-        [AllowAnonymous, Route("~/Pushpay/Complete")]
+        [Route("~/Pushpay/Complete")]
         public async Task<ActionResult> Complete(string state)
         {
             string redirectUrl;
@@ -116,7 +116,7 @@ namespace CmsWeb.Areas.Setup.Controllers
             return Redirect("~/Home/Index");
         }
 
-        [AllowAnonymous, Route("~/Pushpay/CompletePayment")]
+        [Route("~/Pushpay/CompletePayment")]
         public ActionResult CompletePayment(string paymentToken, string sr)
         {
             string redirectUrl = "~/Home/Index";
