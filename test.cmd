@@ -28,6 +28,7 @@ IF "%CodeCovToken%" NEQ "" (
 )
 del /Q *Tests.xml
 ::Integration tests
+IF "%IntegrationTestsDisabled%" NEQ "" goto end
 set test_coverage=%~dp0IntegrationTests.xml
 set "integration_tests=.\IntegrationTests\bin\Debug\IntegrationTests.dll"
 set "IISEXPRESS_HOST=%OpenCover%"
@@ -52,4 +53,5 @@ IF NOT EXIST %test_coverage% (
   exit 10
 )
 IF "%CodeCovToken%" NEQ "" %codecov% -f "%test_coverage%" --root %root% --pr %PR% --name "IntegrationTests" --flag integrationtests -t "%CodeCovToken%"
+:end
 endlocal

@@ -14,7 +14,7 @@ namespace UtilityExtensions
             {
                 if (HttpContextFactory.Current != null)
                 {
-                    return GetUserName(HttpContextFactory.Current.User.Identity.Name);
+                    return GetUserName(HttpContextFactory.Current.User?.Identity?.Name);
                 }
 
                 return ConfigurationManager.AppSettings["TestName"];
@@ -41,7 +41,7 @@ namespace UtilityExtensions
 
         public static T GetFromSession<T>(string name, T defaultValue = null) where T : class
         {
-            T value = defaultValue;
+            T value;
             var session = GetSessionProvider();
             if (session != null)
             {
@@ -61,6 +61,12 @@ namespace UtilityExtensions
         }
 
         public static int? GetFromSession(string name, int? defaultValue = null)
+        {
+            var strValue = GetFromSession<string>(name);
+            return int.TryParse(strValue, out int v) ? v : defaultValue;
+        }
+
+        public static int GetFromSession(string name, int defaultValue = 0)
         {
             var strValue = GetFromSession<string>(name);
             return int.TryParse(strValue, out int v) ? v : defaultValue;

@@ -80,7 +80,6 @@
         </div>
     </div>
 </div>
-<iframe id="iframe-download" name="iframe-download" class="sr-only" frameborder="0"></iframe>
 @helper RenderToolBar(bool remoteDeposit, bool xs)
 {
     var css = xs ? "btn-block" : "";
@@ -109,7 +108,7 @@
                 <li><a href="/Bundle/Export/@Model.BundleId"><i class="fa fa-file-excel-o"></i>&nbsp;&nbsp;Export to Excel</a></li>
                 if (remoteDeposit)
                 {
-                    <li><a href="/Bundle/RemoteDeposit/@Model.BundleId" target="iframe-download" class="remotedeposit"><i class="fa fa-file-text-o"></i>&nbsp;&nbsp;Export Remote Deposit File</a></li>
+                    <li><a href="/RemoteDeposit/@Model.BundleId" class="longrunop"><i class="fa fa-file-text-o"></i>&nbsp;&nbsp;Export Remote Deposit File</a></li>
                 }
             }
             <li class="divider"></li>
