@@ -273,11 +273,11 @@ namespace CmsData
         {
             get
             {
-                var db = DbUtil.Db;
                 if (Util.Host == null || HttpContextFactory.Current == null)
                 {
                     return BirthYear;
                 }
+                var db = DbUtil.Db;
 
                 if (db.UserPeopleId == PeopleId)
                 {
