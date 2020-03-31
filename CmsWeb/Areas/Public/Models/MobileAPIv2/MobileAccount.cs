@@ -1,4 +1,5 @@
 ﻿using CmsData;
+using CmsWeb.Constants;
 using CmsWeb.Membership;
 using CmsWeb.Models;
 using CmsWeb.Properties;
@@ -49,6 +50,8 @@ namespace CmsWeb.Areas.Public.Models.MobileAPIv2
 
         private Results results = Results.None;
 
+        [Obsolete(Errors.ModelBindingConstructorError, true)]
+        public MobileAccount() { }
         public MobileAccount(CMSDataContext Db)
         {
             CurrentDatabase = Db;

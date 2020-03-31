@@ -92,6 +92,7 @@ namespace CmsData.Registration
         public int? DonationFundId { get; set; }
         public string AccountingCode { get; set; }
         public string PushpayFundName { get; set; }
+        public string PushpayMerchantName { get; set; }
         public int? TimeSlotLockDays { get; set; }
         public string GroupToJoin { get; set; }
         public bool AddAsProspect { get; set; }

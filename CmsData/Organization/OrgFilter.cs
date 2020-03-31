@@ -17,10 +17,19 @@ namespace CmsData
             }
             set
             {
+                if (value == null) FirstName = LastName = "";
                 string first, last;
                 Util.NameSplit(value, out first, out last);
-                FirstName = first;
-                LastName = last;
+                if (first.HasValue() || last.HasValue())
+                {
+                    FirstName = first;
+                    LastName = last;
+                }
+                else // treat as a fuzzy first/last search
+                {
+                    FirstName = value;
+                    LastName = null;
+                }
             }
         }
     }

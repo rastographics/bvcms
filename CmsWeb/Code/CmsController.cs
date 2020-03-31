@@ -41,7 +41,7 @@ namespace CmsWeb
         {
             base.OnActionExecuting(filterContext);
             Util.Helpfile = $"_{filterContext.ActionDescriptor.ControllerDescriptor.ControllerName}_{filterContext.ActionDescriptor.ActionName}";
-            CurrentDatabase.UpdateLastActivity(Util.UserId);
+            CurrentDatabase.UpdateLastActivity(CurrentDatabase.UserId);
             if (AccountController.TryImpersonate(CurrentDatabase, CurrentImageDatabase) || filterContext.ActionParameters.Values.Equals("/Pushpay/true"))
             {
                 var returnUrl = Request.QueryString["returnUrl"];
@@ -114,7 +114,7 @@ namespace CmsWeb
             NoCheckRole = NoCheckRole ||
                           (filterContext.RouteData.Values["Controller"].ToString() == "Email" && CurrentDatabase.Setting("UX-AllowMyDataUserEmails")) ||
                           (filterContext.RouteData.Values["Controller"].ToString() == "OrgMemberDialog" && filterContext.RouteData.Values["Action"].ToString() == "Drop"
-                            && CurrentDatabase.Setting("UX-AllowMyDataUserLeaveOrg") && Util.UserPeopleId.ToString() == filterContext.RequestContext?.HttpContext?.Request?.Params["PeopleId"]);
+                            && CurrentDatabase.Setting("UX-AllowMyDataUserLeaveOrg") && CurrentDatabase.UserPeopleId.ToString() == filterContext.RequestContext?.HttpContext?.Request?.Params["PeopleId"]);
 
             if (!User.Identity.IsAuthenticated)
             {
@@ -149,7 +149,7 @@ namespace CmsWeb
             {
                 Util2.OrgLeadersOnly = true;
                 CurrentDatabase.SetOrgLeadersOnly();
-                filterContext.Result = Redirect($"/Person2/{Util.UserPeopleId}");
+                filterContext.Result = Redirect($"/Person2/{CurrentDatabase.UserPeopleId}");
             }
             else if (orgleaderonly && Util2.OrgLeadersOnly == false)
             {
@@ -159,16 +159,16 @@ namespace CmsWeb
 
             if (contr == "Home" && act == "Index" && RoleChecker.HasSetting(SettingName.DisableHomePage, false))
             {
-                filterContext.Result = Redirect($"/Person2/{Util.UserPeopleId}");
+                filterContext.Result = Redirect($"/Person2/{CurrentDatabase.UserPeopleId}");
             }
 
             base.OnActionExecuting(filterContext);
             Util.Helpfile = $"_{filterContext.ActionDescriptor.ControllerDescriptor.ControllerName}_{filterContext.ActionDescriptor.ActionName}";
-            if (Util.UserId == 0 && User.Identity.IsAuthenticated)
+            if (CurrentDatabase.UserId == 0 && User.Identity.IsAuthenticated)
             {
                 AccountModel.SetUserInfo(CurrentDatabase, CurrentImageDatabase, User.Identity.Name);
             }
-            CurrentDatabase.UpdateLastActivity(Util.UserId);
+            CurrentDatabase.UpdateLastActivity(CurrentDatabase.UserId);
             HttpContext.Response.Headers.Add("X-Robots-Tag", "noindex");
             HttpContext.Response.Headers.Add("X-Robots-Tag", "unavailable after: 1 Jan 2017 01:00:00 CST");
         }
@@ -261,7 +261,7 @@ namespace CmsWeb
             }
             base.OnActionExecuting(filterContext);
             Util.Helpfile = $"_{filterContext.ActionDescriptor.ControllerDescriptor.ControllerName}_{filterContext.ActionDescriptor.ActionName}";
-            CurrentDatabase.UpdateLastActivity(Util.UserId);
+            CurrentDatabase.UpdateLastActivity(CurrentDatabase.UserId);
         }
         public ViewResult Message(string text)
         {
@@ -289,17 +289,6 @@ namespace CmsWeb
     {
         public override void OnActionExecuting(ActionExecutingContext filterContext)
         {
-#if DEBUG
-#else
-            var context = filterContext.HttpContext;
-            if (context.Session != null)
-                if (context.Session.IsNewSession)
-                {
-                    string sessionCookie = context.Request.Headers["Cookie"];
-                    if ((sessionCookie != null) && (sessionCookie.IndexOf("ASP.NET_SessionId") >= 0))
-                        filterContext.Result = new RedirectResult("/Errors/SessionTimeout.htm");
-                }
-#endif
             base.OnActionExecuting(filterContext);
         }
     }

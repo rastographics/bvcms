@@ -1,8 +1,8 @@
 ﻿@using CmsData.Classes.RoleChecker
 @using CmsData.Classes.Twilio
 @{
-    CMSDataContext Db = ViewBag.CurrentDatabase;
-    var twilio = TwilioHelper.userSendSMS(Util.UserId);
+    CMSDataContext Db = ViewExtensions2.CurrentDatabase;
+    var twilio = TwilioHelper.userSendSMS(Db.UserId);
     var qb = Db.QueryIsCurrentUser();
     var showAdvanced = !RoleChecker.HasSetting(SettingName.LimitToolbar, false);
 }

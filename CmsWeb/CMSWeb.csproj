@@ -415,6 +415,7 @@
     <Compile Include="Areas\Dialog\Controllers\OrgSearchDropController.cs" />
     <Compile Include="Areas\Dialog\Controllers\OrgDropController.cs" />
     <Compile Include="Areas\Dialog\Controllers\MoveOrgMembersController.cs" />
+    <Compile Include="Areas\Dialog\Controllers\RemoteDepositController.cs" />
     <Compile Include="Areas\Dialog\Controllers\ValidateAddressController.cs" />
     <Compile Include="Areas\Dialog\Controllers\AddToOrgFromTagController.cs" />
     <Compile Include="Areas\Dialog\Controllers\DeleteMeetingController.cs" />
@@ -444,6 +445,7 @@
     <Compile Include="Areas\Dialog\Models\OrgMember\OrgMemberTransactionModel.cs" />
     <Compile Include="Areas\Dialog\Models\OrgMember\OrgMoveInfo.cs" />
     <Compile Include="Areas\Dialog\Models\MoveOrgMembersModel.cs" />
+    <Compile Include="Areas\Dialog\Models\RemoteDeposit.cs" />
     <Compile Include="Areas\Dialog\Models\ResourceModel.cs" />
     <Compile Include="Areas\Dialog\Models\ValidateAddress.cs" />
     <Compile Include="Areas\Dialog\Models\RepairTransactions.cs" />
@@ -1138,6 +1140,7 @@
     <Compile Include="Code\SmartBinder.cs" />
     <Compile Include="Models\HtmlHolder.cs" />
     <Compile Include="Models\PythonScriptModel.cs" />
+    <Compile Include="Models\SearchRequest.cs" />
     <Compile Include="Models\SqlScriptModel.cs" />
     <Compile Include="Services\MeetingCategory\MeetingCategoryService.cs" />
     <Compile Include="Services\MeetingCategory\IMeetingCategoryService.cs" />
@@ -1284,11 +1287,14 @@
     <Content Include="Content\touchpoint\js\form-ajax.js" />
     <Content Include="Content\touchpoint\js\gateway.js" />
     <Content Include="Content\touchpoint\js\checkin.js" />
+    <Content Include="Content\touchpoint\js\onlineregister.min.js" />
+    <Content Include="Content\touchpoint\js\update-add-modal-results.js" />
+    <Content Include="Content\touchpoint\js\update-modal-results.js" />
+    <Content Include="Content\touchpoint\js\vue-search-add.js" />
     <Content Include="Content\touchpoint\js\sgfilters.js" />
     <Content Include="Content\touchpoint\js\snackbar.js" />
     <Content Include="Content\touchpoint\js\main.js" />
     <Content Include="Content\touchpoint\js\metrozip\metro-zip.js" />
-    <Content Include="Content\touchpoint\js\onlineregister.min.js" />
     <Content Include="Content\touchpoint\js\onlinereg\uploadoc.js" />
     <Content Include="Content\touchpoint\js\people\givingtab.js" />
     <Content Include="Content\touchpoint\js\people\merge.js" />
@@ -1866,7 +1872,7 @@
       <Link>bin\RepairOrg.exe.config</Link>
     </Content>
     <Content Include="Areas\People\Views\Person\Giving\Statements.cshtml" />
-    <Content Include="Areas\Setup\Views\Pushpay\CompletePayment.cshtml" />
+    <Content Include="Areas\Setup\Views\Pushpay\ProcessPayment.cshtml" />
     <Content Include="Areas\Setup\Views\Pushpay\RecurringManagment.cshtml" />
     <Content Include="Areas\Setup\Views\Gateway\Index.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\ManageGiving\_ManagedGivingFunds.cshtml" />
@@ -1903,6 +1909,8 @@
     <Content Include="Areas\Org\Views\Org\DisplayTemplates\ESpaceEventId.cshtml" />
     <Content Include="Areas\Org\Views\Org\Other\eSpaceResults.cshtml" />
     <Content Include="Areas\Manage\Views\Batch\RetrieveBatchData.cshtml" />
+    <Content Include="Areas\Dialog\Views\RemoteDeposit\Index.cshtml" />
+    <Content Include="Areas\Dialog\Views\RemoteDeposit\NotConfigured.cshtml" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
@@ -3422,7 +3430,6 @@
     <Folder Include="Areas\CheckIn\Views\Shared\" />
     <Folder Include="Areas\Dialog\Views\Shared\" />
     <Folder Include="Areas\Figures\Views\Shared\" />
-    <Folder Include="Areas\Finance\Views\Shared\" />
     <Folder Include="Areas\Main\Views\Shared\" />
     <Folder Include="Areas\Manage\Views\Shared\" />
     <Folder Include="Areas\MeetingCategory\Models\" />

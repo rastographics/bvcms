@@ -31,7 +31,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                     return Redirect($"/OnlineReg/{id}" + Request.Url.Query);
                 }
 
-                var pid = Util.UserPeopleId;
+                var pid = CurrentDatabase.UserPeopleId;
                 if (pid.HasValue)
                     PrePopulate(m, pid.Value);
 
@@ -144,7 +144,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 
             m.ProcessType = pf.ProcessType;
 
-            var pid = Util.UserPeopleId;
+            var pid = CurrentDatabase.UserPeopleId;
             if (pid.HasValue)
                 PrePopulate(m, pid.Value);
 
@@ -274,6 +274,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 pf.Zip = null;
 
             var ret = m.ConfirmTransaction(ti);
+            RequestManager.SessionProvider.Clear();
             switch (ret.Route)
             {
                 case RouteType.ModelAction:
@@ -333,7 +334,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         [HttpPost, Route("~/OnePageGiving/Login/{id:int}")]
         public ActionResult OnePageGivingLogin(int id, string username, string password, bool? testing, string source)
         {
-            var ret = AccountModel.AuthenticateLogon(username, password, Session, Request, CurrentDatabase, CurrentImageDatabase);
+            var ret = AccountModel.AuthenticateLogon(username, password, Request, CurrentDatabase, CurrentImageDatabase);
             var ev = CurrentDatabase.OrganizationExtras.SingleOrDefault(vv => vv.OrganizationId == id && vv.Field == "LoggedInOrgId");
             var orgId = ev?.IntValue ?? id;
             var returnUrl = $"/OnePageGiving/{orgId}{(testing == true ? "?testing=true" : "")}";
@@ -347,7 +348,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             }
             else if (MembershipService.ShouldPromptForTwoFactorAuthentication(ret.User, CurrentDatabase, Request))
             {
-                Session[AccountController.MFAUserId] = ret.User.UserId;
+                Util.MFAUserId = ret.User.UserId;
                 return View("Auth", new AccountInfo
                 {
                     UsernameOrEmail = ret.User.Username,
@@ -356,14 +357,14 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             }
             else
             {
-                AccountModel.FinishLogin(ret.User.Username, Session, CurrentDatabase, CurrentImageDatabase);
-                if (ret.User.UserId.Equals(Session[AccountController.MFAUserId]))
+                AccountModel.FinishLogin(ret.User.Username, CurrentDatabase, CurrentImageDatabase);
+                if (ret.User.UserId.Equals(Util.MFAUserId))
                 {
                     MembershipService.SaveTwoFactorAuthenticationToken(CurrentDatabase, Response);
-                    Session.Remove(AccountController.MFAUserId);
+                    Util.MFAUserId = null;
                 }
             }
-            Session["OnlineRegLogin"] = true;
+            Util.OnlineRegLogin = true;
 
             ViewData["Redirect"] = returnUrl;
             return View("Redirect");

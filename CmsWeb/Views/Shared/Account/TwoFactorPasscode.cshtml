@@ -45,12 +45,20 @@
     </div>
 </div>
 <script>
+    //IE 11 polyfills
+    if (window.NodeList && !NodeList.prototype.forEach) {
+        NodeList.prototype.forEach = Array.prototype.forEach;
+    }
+    if (window.HTMLCollection && !HTMLCollection.prototype.forEach) {
+        HTMLCollection.prototype.forEach = Array.prototype.forEach;
+    }
     (function () {
         var passcodes = document.querySelectorAll('[name="passcode"].hidden-xs');
         passcodes.forEach(function (el) {
             el.onkeydown = function (event) {
                 if (13 == event.keyCode || 10 == event.keyCode) {
                     event.preventDefault();
+                    return false;
                 }
             };
             el.onkeyup = function (event) {
@@ -74,6 +82,7 @@
                     if (valid) {
                         document.getElementById('finish').click();
                     }
+                    return false;
                 } else if ('Backspace' === event.key) {
                     var prev;
                     passcodes.forEach(function (e) {

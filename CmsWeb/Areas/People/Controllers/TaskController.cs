@@ -36,7 +36,7 @@ namespace CmsWeb.Areas.People.Controllers
         {
             var task = CurrentDatabase.SetTaskDetails(pk, name, value);
             CurrentDatabase.SubmitChanges();
-            DbUtil.LogActivity($"Edit Task {pk} to {value}", userId: Util.UserId);
+            DbUtil.LogActivity($"Edit Task {pk} to {value}", userId: CurrentDatabase.UserId);
 
             return Json(TaskModel.WithTask(task, CurrentDatabase.Host, CurrentDatabase));
         }
@@ -63,7 +63,7 @@ namespace CmsWeb.Areas.People.Controllers
         [HttpPost]
         public ActionResult AddTask(string description)
         {
-            var tid = TaskModel.AddTask(Util.UserPeopleId ?? 0, description, CurrentDatabase.Host, CurrentDatabase);
+            var tid = TaskModel.AddTask(CurrentDatabase.UserPeopleId ?? 0, description, CurrentDatabase.Host, CurrentDatabase);
             return Content(tid.ToString());
         }
 

@@ -97,7 +97,7 @@ namespace CmsWeb.Models
 
             if (sql.Contains("@userid", ignoreCase: true))
             {
-                p.Add("@userid", Util.UserId);
+                p.Add("@userid", Db.UserId);
             }
 #if DEBUG
             foreach (var name in p.ParameterNames)

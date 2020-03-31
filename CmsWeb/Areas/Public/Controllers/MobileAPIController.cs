@@ -84,7 +84,7 @@ namespace CmsWeb.Areas.Public.Controllers
                 return AuthorizationError(result);
             }
 
-            savePushID(Util.UserPeopleId ?? 0, dataIn.device, dataIn.key);
+            savePushID(CurrentDatabase.UserPeopleId ?? 0, dataIn.device, dataIn.key);
 
             MobileSettings ms = getUserInfo();
 
@@ -192,7 +192,7 @@ namespace CmsWeb.Areas.Public.Controllers
 
             AuthenticateUser(requirePin: true);
 
-            savePushID(Util.UserPeopleId ?? 0, dataIn.device, dataIn.key);
+            savePushID(CurrentDatabase.UserPeopleId ?? 0, dataIn.device, dataIn.key);
 
             MobileSettings ms = getUserInfo();
 
@@ -351,14 +351,14 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
         private MobileSettings getUserInfo()
         {
             var roles = from r in CurrentDatabase.UserRoles
-                        where r.UserId == Util.UserId
+                        where r.UserId == CurrentDatabase.UserId
                         orderby r.Role.RoleName
                         select r.Role.RoleName;
 
             MobileSettings ms = new MobileSettings
             {
-                peopleID = Util.UserPeopleId ?? 0,
-                userID = Util.UserId,
+                peopleID = CurrentDatabase.UserPeopleId ?? 0,
+                userID = CurrentDatabase.UserId,
                 userName = Util.UserFullName,
                 roles = roles.ToList()
             };
@@ -433,7 +433,7 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
             {
                 case 1: // Add
                     {
-                        savePushID(Util.UserPeopleId ?? 0, dataIn.device, dataIn.key);
+                        savePushID(CurrentDatabase.UserPeopleId ?? 0, dataIn.device, dataIn.key);
                         br.setNoError();
                         break;
                     }
@@ -733,7 +733,7 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
 
             BaseMessage dataIn = BaseMessage.createFromString(data);
 
-            Person user = CurrentDatabase.People.FirstOrDefault(p => p.PeopleId == Util.UserPeopleId);
+            Person user = CurrentDatabase.People.FirstOrDefault(p => p.PeopleId == CurrentDatabase.UserPeopleId);
 
             if (user == null)
             {
@@ -745,7 +745,7 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
                 return BaseMessage.createErrorReturn("Childern cannot edit records");
             }
 
-            if (user.PositionInFamilyId == PositionInFamily.SecondaryAdult && Util.UserPeopleId != dataIn.argInt)
+            if (user.PositionInFamilyId == PositionInFamily.SecondaryAdult && CurrentDatabase.UserPeopleId != dataIn.argInt)
             {
                 return BaseMessage.createErrorReturn("Secondary adults can only modify themselves");
             }
@@ -806,7 +806,7 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
 
             BaseMessage dataIn = BaseMessage.createFromString(data);
 
-            if (Util.UserPeopleId != dataIn.argInt)
+            if (CurrentDatabase.UserPeopleId != dataIn.argInt)
             {
                 return BaseMessage.createErrorReturn("Giving history is not available for other people");
             }
@@ -883,7 +883,7 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
 
             BaseMessage dataIn = BaseMessage.createFromString(data);
 
-            if (Util.UserPeopleId != dataIn.argInt)
+            if (CurrentDatabase.UserPeopleId != dataIn.argInt)
             {
                 return BaseMessage.createErrorReturn("Involvement is not available for other people");
             }
@@ -893,14 +893,14 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
 
             if (Util2.OrgLeadersOnly)
             {
-                oids = CurrentDatabase.GetLeaderOrgIds(Util.UserPeopleId);
+                oids = CurrentDatabase.GetLeaderOrgIds(CurrentDatabase.UserPeopleId);
             }
 
             string[] roles = CurrentDatabase.CurrentRoles();
 
             List<MobileInvolvement> orgList = (from om in CurrentDatabase.OrganizationMembers
                                                let org = om.Organization
-                                               where om.PeopleId == Util.UserPeopleId
+                                               where om.PeopleId == CurrentDatabase.UserPeopleId
                                                where (om.Pending ?? false) == false
                                                where oids.Contains(om.OrganizationId) || !(limitvisibility && om.Organization.SecurityTypeId == 3)
                                                where org.LimitToRole == null || roles.Contains(org.LimitToRole)
@@ -1060,7 +1060,7 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
             }
 
             CurrentDatabase.SubmitChanges();
-            person.LogPictureUpload(CurrentDatabase, Util.UserPeopleId ?? 1);
+            person.LogPictureUpload(CurrentDatabase, CurrentDatabase.UserPeopleId ?? 1);
 
             br.setNoError();
             br.data = "Image updated.";
@@ -1167,12 +1167,12 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
 
             var tasks = from t in CurrentDatabase.ViewIncompleteTasks
                         orderby t.CreatedOn, t.StatusId, t.OwnerId, t.CoOwnerId
-                        where t.OwnerId == Util.UserPeopleId || t.CoOwnerId == Util.UserPeopleId
+                        where t.OwnerId == CurrentDatabase.UserPeopleId || t.CoOwnerId == CurrentDatabase.UserPeopleId
                         select t;
 
             var complete = (from c in CurrentDatabase.Tasks
                             where c.StatusId == TaskStatusCode.Complete
-                            where c.OwnerId == Util.UserPeopleId || c.CoOwnerId == Util.UserPeopleId
+                            where c.OwnerId == CurrentDatabase.UserPeopleId || c.CoOwnerId == CurrentDatabase.UserPeopleId
                             orderby c.CreatedOn descending
                             select c).Take(20);
 
@@ -1186,13 +1186,13 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
 
                         foreach (var item in tasks)
                         {
-                            MobileTask task = new MobileTask().populate(item, Util.UserPeopleId ?? 0, CurrentImageDatabase);
+                            MobileTask task = new MobileTask().populate(item, CurrentDatabase.UserPeopleId ?? 0, CurrentImageDatabase);
                             taskList.Add(task.id, task);
                         }
 
                         foreach (var item in complete)
                         {
-                            MobileTask task = new MobileTask().populate(item, Util.UserPeopleId ?? 0, CurrentImageDatabase);
+                            MobileTask task = new MobileTask().populate(item, CurrentDatabase.UserPeopleId ?? 0, CurrentImageDatabase);
                             taskList.Add(task.id, task);
                         }
 
@@ -1206,13 +1206,13 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
 
                         foreach (var item in tasks)
                         {
-                            MobileTask task = new MobileTask().populate(item, Util.UserPeopleId ?? 0, CurrentImageDatabase);
+                            MobileTask task = new MobileTask().populate(item, CurrentDatabase.UserPeopleId ?? 0, CurrentImageDatabase);
                             taskList.Add(task);
                         }
 
                         foreach (var item in complete)
                         {
-                            MobileTask task = new MobileTask().populate(item, Util.UserPeopleId ?? 0, CurrentImageDatabase);
+                            MobileTask task = new MobileTask().populate(item, CurrentDatabase.UserPeopleId ?? 0, CurrentImageDatabase);
                             taskList.Add(task);
                         }
 
@@ -1359,7 +1359,7 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
 
             BaseMessage dataIn = BaseMessage.createFromString(data);
 
-            var pid = Util.UserPeopleId;
+            var pid = CurrentDatabase.UserPeopleId;
             var oids = CurrentDatabase.GetLeaderOrgIds(pid);
             var dt = DateTime.Parse("8:00 AM");
 
@@ -1554,7 +1554,7 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
             Attend.RecordAttend(CurrentDatabase, mpa.peopleID, mpa.orgID, mpa.present, mpa.datetime);
 
             CurrentDatabase.UpdateMeetingCounters(mpa.orgID);
-            DbUtil.LogActivity($"Mobile RecAtt o:{mpa.orgID} p:{mpa.peopleID} u:{Util.UserPeopleId} a:{mpa.present}");
+            DbUtil.LogActivity($"Mobile RecAtt o:{mpa.orgID} p:{mpa.peopleID} u:{CurrentDatabase.UserPeopleId} a:{mpa.present}");
 
             BaseMessage br = new BaseMessage();
             br.setNoError();
@@ -1645,7 +1645,7 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
             var p = new Person
             {
                 CreatedDate = Util.Now,
-                CreatedBy = Util.UserId,
+                CreatedBy = CurrentDatabase.UserId,
 
                 MemberStatusId = MemberStatusCode.JustAdded,
                 AddressTypeId = 10,

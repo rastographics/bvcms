@@ -10,6 +10,7 @@ using System.Linq;
 using System.Threading;
 using System.Web.Hosting;
 using UtilityExtensions;
+using CmsWeb.Constants;
 
 namespace CmsWeb.Areas.Dialog.Models
 {
@@ -42,15 +43,13 @@ namespace CmsWeb.Areas.Dialog.Models
         public int UserId { get; set; }
         public CMSDataContext CurrentDatabase { get; set; }
 
-        public OrgDrop()
-        {
-        }
-
+        [Obsolete(Errors.ModelBindingConstructorError, true)]
+        public OrgDrop() { }
         public OrgDrop(CMSDataContext db)
         {
             Host = db.Host;
-            UserId = Util.UserId;
             CurrentDatabase = db;
+            UserId = CurrentDatabase.UserId;
         }
         public OrgDrop(CMSDataContext db, Guid id)
             : this(db)

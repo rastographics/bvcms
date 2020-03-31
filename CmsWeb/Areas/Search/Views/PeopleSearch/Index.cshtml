@@ -71,7 +71,7 @@
                         <div class="form-group">
                             <label for="statusflags" class="control-label">Status Flags</label>
                             <div class="form-group">
-                                @Html.DropDownList("statusflags", new SelectList(CodeValueModel.StatusFlags(), "Code", "Value"), new { multiple = "multiple", @class = "form-control" })
+                                @Html.DropDownList("statusflags", new SelectList(new CodeValueModel(ViewExtensions2.CurrentDatabase).StatusFlags(), "Code", "Value"), new { multiple = "multiple", @class = "form-control" })
                             </div>
                         </div>
                     </div>

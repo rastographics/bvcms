@@ -1,0 +1,91 @@
+﻿@model CmsData.BundleHeader
+<form class="modal-form ajax validate">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                <h4 class="modal-title">Export Remote Deposit File</h4>
+            </div>
+            <div class="modal-body">
+                <p>You can optionally provide a deposit date and account number for this bundle export.</p>
+                @Html.HiddenFor(m => m.BundleHeaderId)
+                @Html.DisplayFor(m => m.BundleHeaderId, new { Label = "Bundle ID" })
+                @Html.EditorFor(m => m.DepositDate)
+                <div class="form-group">
+                    <label class="control-label" for="AccountNumber">Deposit Account Number</label>
+                    <div class="controls">
+                        <input class="form-control " id="AccountNumber" name="AccountNumber" type="text" value="" autocomplete="off">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <a class="btn btn-default" data-dismiss="modal">Cancel</a>
+                <a href="/RemoteDeposit/Process" class="btn btn-primary remotedeposit" data-dismiss="modal">OK</a>
+            </div>
+        </div>
+    </div>
+</form>
+<script>
+    (function() {
+        function downloadFailed() {
+            error_swal('Download failed', 'There was a problem generating the file.  Please contact support to resolve this issue.');
+        }
+
+        function downloadFile(href, bundleId, depositDate, account) {
+            $.block('Preparing the remote deposit bundle export<h4>Please wait...</h4>');
+            var request = new XMLHttpRequest();
+            request.open("POST", href, true);
+            request.setRequestHeader("Content-Type", "application/json");
+            request.responseType = "arraybuffer";
+
+            request.onload = function () {
+                var arrayBuffer = request.response;
+                var contentDisposition = request.getResponseHeader('Content-Disposition');
+                var contentType = request.getResponseHeader('Content-Type');
+                if (contentDisposition) {
+                    var filename = contentDisposition.split('filename=')[1];
+                }
+                var blob = new Blob([arrayBuffer], { type: contentType });
+                var url = URL.createObjectURL(blob);
+                var a = document.createElement('a');
+                document.body.appendChild(a);
+                a.style.display = 'none';
+                a.href = url;
+                if (filename) { a.download = filename; }
+                a.click();
+                URL.revokeObjectURL(url);
+                $.unblock();
+                document.body.removeChild(a);
+                $('#empty-dialog').modal('hide');
+            };
+            request.onerror = function () {
+                $.unblock();
+                downloadFailed();
+            };
+
+            request.send(JSON.stringify({ bundleHeaderId: bundleId, depositDate: depositDate, accountNumber: account }));
+        }
+
+        $('.modal-form a.remotedeposit').click(function (event) {
+            event.preventDefault();
+            var href = event.target.href;
+            var $form = $(event.target).closest('form');
+            if ($form.valid()) {
+                var enabled = $form.find('#DepositDateEnable').is(':checked');
+                var depositDate = enabled ? $form.find('[name=DepositDate]').val() : null;
+                var account = $form.find('[name=AccountNumber]').val();
+                var bundleId = $form.find('[name=BundleHeaderId]').val();
+                downloadFile(href, bundleId, depositDate, account);
+            }
+        });
+
+        var label = $('[for=DepositDate].control-label');
+        $('<label class="checkbox control-label" for="DepositDateEnable" style="padding-left:20px"><input type="checkbox" id="DepositDateEnable">Deposit Date</label>')
+            .insertBefore(label);
+        label.remove();
+        $('.modal-form #DepositDateEnable').change(function (event) {
+            var enable = event && event.target && event.target.checked;
+            $('.modal-form #DepositDate').attr({ disabled: !enable }).parent().find('.input-group-addon').attr({ disabled: !enable });
+        }).trigger('change');
+    })();
+</script>

@@ -66,7 +66,11 @@ namespace CmsWeb.Areas.Finance.Models.Report
             string notice = cs.Notice ?? db.ContentHtml("StatementNotice", Resource1.ContributionStatementNotice);
             string footer = db.ContentHtml("StatementTemplateFooter", "");
             ContributionsRun runningtotals = db.ContributionsRuns.Where(mm => mm.UUId == UUId).SingleOrDefault();
-            StatementOptions options = GetStatementOptions(bodyHtml);
+            StatementOptions options;
+            if (!GetStatementOptions(bodyHtml, out options))
+            {
+                GetStatementOptions(html, out options);
+            }
 
             var toDate = ToDate.Date.AddHours(24).AddSeconds(-1);
 
@@ -122,11 +126,11 @@ namespace CmsWeb.Areas.Finance.Models.Report
                     {
                         fromDate = FromDate,
                         toDate = toDate,
-                        header = header,
-                        notice = notice,
+                        header = "",
+                        notice = "",
                         now = DateTime.Now,
                         body = "",
-                        footer = footer,
+                        footer = "",
                         contributor = contributor,
                         envelopeNumber = Convert.ToString(Person.GetExtraValue(db, contributor.PeopleId, "EnvelopeNumber")?.IntValue),
                         contributions = new ListOfNormalContributions(contributions),
@@ -137,7 +141,10 @@ namespace CmsWeb.Areas.Finance.Models.Report
                         nontaxSummary = nontaxSummary,
                         totalGiven = taxSummary.Total + nontaxSummary.Total
                     };
+                    data.header = db.RenderTemplate(header, data);
+                    data.notice = db.RenderTemplate(notice, data);
                     data.body = db.RenderTemplate(bodyHtml, data);
+                    data.footer = db.RenderTemplate(footer, data);
                     var htmlDocument = db.RenderTemplate(html, data);
                     document.Objects.Add(new ObjectSettings {
                         CountPages = true,
@@ -168,15 +175,17 @@ namespace CmsWeb.Areas.Finance.Models.Report
             stream.Write(bytes, 0, bytes.Length);
         }
 
-        private StatementOptions GetStatementOptions(string html)
+        private bool GetStatementOptions(string html, out StatementOptions options)
         {
-            var options = new StatementOptions();
+            var found = false;
+            options = new StatementOptions();
             HtmlDocument doc = new HtmlDocument();
             doc.LoadHtml(html);
             var node = doc.DocumentNode.SelectSingleNode("//script[@id=\"options\"]");
             if (node != null)
             {
                 options = JsonConvert.DeserializeObject<StatementOptions>(node.InnerText);
+                found = true;
             }
             if (options.Margins == null)
             {
@@ -199,7 +208,7 @@ namespace CmsWeb.Areas.Finance.Models.Report
                     FontSize = 10
                 };
             }
-            return options;
+            return found;
         }
 
         private static ListOfNormalContributions SumByFund(List<NormalContribution> contributions)
@@ -441,8 +450,8 @@ p { font-size: 11px; }
                 var colwidth = (doc.Right - doc.Left - gutter) / NumberOfColumns;
 
                 var t = (NumberOfColumns == 2)
-                ? new PdfPTable(new[] { 10f, 24f, 10f })
-                : new PdfPTable(new[] { 15f, 25f, 15f, 15f, 30f })
+                ? new PdfPTable(new[] { 18f, 24f, 15f })
+                : new PdfPTable(new[] { 18f, 25f, 15f, 15f, 30f })
                 {
                     WidthPercentage = 100
                 };
@@ -613,7 +622,7 @@ p { font-size: 11px; }
                 if (giftsinkind.Count > 0)
                 {
                     t = new PdfPTable((NumberOfColumns == 1)
-                        ? new[] { 15f, 25f, 15f, 15f, 30f }
+                        ? new[] { 18f, 25f, 15f, 15f, 30f }
                         : new[] { 12f, 18f, 20f });
 
                     t.WidthPercentage = 100;
@@ -744,8 +753,8 @@ p { font-size: 11px; }
                 if (nontaxitems.Count > 0)
                 {
                     t = new PdfPTable((NumberOfColumns == 1)
-                        ? new[] { 15f, 25f, 15f, 15f, 30f }
-                        : new[] { 10f, 24f, 10f });
+                        ? new[] { 18f, 25f, 15f, 15f, 30f }
+                        : new[] { 18f, 24f, 15f });
 
                     t.WidthPercentage = 100;
                     t.DefaultCell.Border = Rectangle.NO_BORDER;

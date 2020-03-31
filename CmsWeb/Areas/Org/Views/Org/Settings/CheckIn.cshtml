@@ -1,7 +1,7 @@
 ﻿@using CmsData
 @model CmsWeb.Areas.Org.Models.SettingsCheckInModel
 @{
-    ViewBag.ShowHelp = DbUtil.Db.UserPreference("ShowCheckInHelp");
+    ViewBag.ShowHelp = ViewExtensions2.CurrentDatabase.UserPreference("ShowCheckInHelp");
     ViewBag.FalseValue = "";
 }
 <form class="ajax" data-snackbar-success="Settings saved.">

@@ -24,6 +24,7 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
 
 		public string name = "";
 		public string altName = "";
+        public string firstName = "";
 		public string email = "";
 		public string mobile = "";
 		public string picture = "";
@@ -42,6 +43,8 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
 										FROM (SELECT
 													person.PeopleId AS id,
 													person.Name AS name,
+                                                    person.PreferredName as firstName,
+                                                    person.AltName as altName,
 													ISNULL( person.Age, 0 ) AS age,
 													person.BDate AS birthday,
 													gender.Id AS genderID,
@@ -54,6 +57,8 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
 												SELECT
 													person.PeopleId AS id,
 													person.Name AS name,
+                                                    person.PreferredName as firstName,
+                                                    person.AltName as altName,
 													ISNULL( person.Age, 0 ) AS age,
 													person.BDate AS birthday,
 													gender.Id AS genderID,

@@ -67,7 +67,7 @@ namespace CmsWeb.Areas.Org.Models
             var os = Db.CreateRegistrationSettings(RegSettings.ToString(), Id);
             if (Org.RegistrationTypeId > 0)
                 if (!Org.NotifyIds.HasValue())
-                    Org.NotifyIds = Util.UserPeopleId.ToString();
+                    Org.NotifyIds = Db.UserPeopleId.ToString();
             Org.UpdateRegSetting(os);
             Db.SubmitChanges();
         }

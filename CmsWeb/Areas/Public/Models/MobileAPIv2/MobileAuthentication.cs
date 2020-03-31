@@ -7,8 +7,6 @@ using System.Linq;
 using System.Net;
 using System.Security.Cryptography;
 using System.Text;
-using System.Web;
-using System.Web.Security;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Public.Models.MobileAPIv2
@@ -108,7 +106,7 @@ namespace CmsWeb.Areas.Public.Models.MobileAPIv2
                 return Error.MALFORMED_BASE64;
             }
 
-            string[] userAndPassword = credentials.SplitStr(":");
+            string[] userAndPassword = credentials.SplitStr(":", 2);
 
             if (userAndPassword.Length != 2)
             {
@@ -146,9 +144,7 @@ namespace CmsWeb.Areas.Public.Models.MobileAPIv2
 
                 db.Refresh(RefreshMode.OverwriteCurrentValues, foundUser);
                 user = foundUser;
-
-                // TODO: Remove the connection to Util and Util2 in the future
-                Util.UserPeopleId = user.PeopleId;
+                db.CurrentUser = user;
 
                 if (CMSRoleProvider.provider.IsUserInRole(user.Username, "OrgLeadersOnly"))
                 {
@@ -221,8 +217,7 @@ namespace CmsWeb.Areas.Public.Models.MobileAPIv2
             user = device.User;
             instance = device.InstanceID;
 
-            // TODO: Remove the connection to Util and Util2 in the future
-            Util.UserPeopleId = user.PeopleId;
+            db.CurrentUser = user;
 
             if (CMSRoleProvider.provider.IsUserInRole(user.Username, "OrgLeadersOnly"))
             {
@@ -268,8 +263,7 @@ namespace CmsWeb.Areas.Public.Models.MobileAPIv2
 
                 username = user.Username;
 
-                // TODO: Remove the connection to Util and Util2 in the future
-                Util.UserPeopleId = user.PeopleId;
+                db.CurrentUser = user;
 
                 if (CMSRoleProvider.provider.IsUserInRole(user.Username, "OrgLeadersOnly"))
                 {

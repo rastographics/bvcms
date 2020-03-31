@@ -161,7 +161,7 @@
         return false;
     });
 
-    $('body').on('click', 'form.ajax a.ajax', function (event) {
+    $('body').on('click', 'form.ajax a.ajax, form.ajax ul.nav-pills .search-add-person, form.ajax ul.nav-pills a.search-person', function (event) {
         event.preventDefault();
         var t = $(this);
         if (t.data("confirm"))

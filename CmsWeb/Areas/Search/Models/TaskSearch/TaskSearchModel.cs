@@ -160,10 +160,10 @@ namespace CmsWeb.Areas.Search.Models
                 TaskModel.Delegate(tid, toPeopleId, _host, CurrentDatabase, true, true);
             }
 
-            if (Util.UserPeopleId.HasValue)
+            if (CurrentDatabase.UserPeopleId.HasValue)
             {
-                owners.Remove(Util.UserPeopleId.Value);
-                delegates.Remove(Util.UserPeopleId.Value);
+                owners.Remove(CurrentDatabase.UserPeopleId.Value);
+                delegates.Remove(CurrentDatabase.UserPeopleId.Value);
             }
             owners.Remove(toPeopleId);
             delegates.Remove(toPeopleId);
@@ -174,9 +174,9 @@ namespace CmsWeb.Areas.Search.Models
             _gcm.sendNotification(delegates, GCMHelper.TYPE_TASK, 0, "Tasks Redelegated", $"{Util.UserFullName} has redelegated {taskString} to someone else");
             _gcm.sendNotification(toPeopleId, GCMHelper.TYPE_TASK, 0, "Task Delegated", $"{Util.UserFullName} delegated you {taskString}");
 
-            if (Util.UserPeopleId.HasValue)
+            if (CurrentDatabase.UserPeopleId.HasValue)
             {
-                _gcm.sendRefresh(Util.UserPeopleId.Value, GCMHelper.ACTION_REFRESH);
+                _gcm.sendRefresh(CurrentDatabase.UserPeopleId.Value, GCMHelper.ACTION_REFRESH);
             }
 
             CurrentDatabase.SubmitChanges();
@@ -188,7 +188,7 @@ namespace CmsWeb.Areas.Search.Models
             var roles = u.UserRoles.Select(uu => uu.Role.RoleName.ToLower()).ToArray();
             var managePrivateContacts = HttpContextFactory.Current.User.IsInRole("ManagePrivateContacts");
             var manageTasks = HttpContextFactory.Current.User.IsInRole("ManageTasks") && !opt.MyTasksOnly;
-            var uid = Util.UserPeopleId;
+            var uid = CurrentDatabase.UserPeopleId;
             var q = from t in db.ViewTaskSearches
                     where (t.LimitToRole ?? "") == "" || roles.Contains(t.LimitToRole) || managePrivateContacts
                     where manageTasks || t.OrginatorId == uid || t.OwnerId == uid || t.CoOwnerId == uid

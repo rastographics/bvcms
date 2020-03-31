@@ -120,7 +120,7 @@ namespace CmsData
 
         public void LogChanges(CMSDataContext Db, List<ChangeDetail> changes, int PeopleId)
         {
-            LogChanges(Db, changes, PeopleId, Util.UserPeopleId ?? 0);
+            LogChanges(Db, changes, PeopleId, Db.UserPeopleId ?? 0);
         }
 
         public void LogChanges(CMSDataContext Db, List<ChangeDetail> changes, int PeopleId, int UserPeopleId)
@@ -169,7 +169,7 @@ namespace CmsData
             p.SmallId = Image.NewImageFromBits(bits, 120, 120, idb).Id;
             p.MediumId = Image.NewImageFromBits(bits, 320, 400, idb).Id;
             p.LargeId = Image.NewImageFromBits(bits, idb).Id;
-            LogPictureUpload(db, PeopleId, Util.UserPeopleId ?? 1);
+            LogPictureUpload(db, PeopleId, db.UserPeopleId ?? 1);
             db.SubmitChanges();
         }
 

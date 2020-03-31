@@ -1,11 +1,10 @@
-﻿@using CmsWeb.Membership
-@{
+﻿@{
     var finance = User.IsInRole("Finance");
     var edituser = User.IsInRole("Edit");
     var targetperson = Util2.TargetLinkPeople;
     var targetorg = Util2.TargetLinkOrg;
     var onlineregtypesearchadd = Util2.OnlineRegTypeSearchAdd;
-    var testnofinance = (string) HttpContextFactory.Current.Session["testnofinance"] == "true";
+    var testnofinance = Util.TestNoFinance;
 }
 <a href="#" class="dropdown-toggle" data-toggle="dropdown" id="me" title="@Util.UserName">
     @if (!string.IsNullOrEmpty(Util.UserThumbPictureUrl))
@@ -19,7 +18,7 @@
     <i class="fa fa-user visible-xs-inline"></i>&nbsp;&nbsp;<span class="visible-lg-inline-block visible-xs-inline">@(Util.UserName == "Admin" ? "Admin" : Util.UserFirstName)</span> <span class="caret"></span>
 </a>
 <ul class="dropdown-menu">
-    @Helper.LiAnchorLink("Profile", "/Person2/" + Util.UserPeopleId)
+    @Helper.LiAnchorLink("Profile", "/Person2/" + ViewExtensions2.CurrentDatabase.UserPeopleId)
     @ViewExtensions2.TwoFactorAuthSetupLink()
     @Helper.LiAnchorLink("Change Password", "/Account/ChangePassword/")
     <li class="divider"></li>

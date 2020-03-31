@@ -107,23 +107,24 @@ namespace CmsWeb.Models
         }
 
         public IQueryable<CmsData.View.GetContributionsDetail> GetValidContributionDetails(DateTime startdt, DateTime enddt,
-            int campusid, bool pledges, bool? nontaxdeductible, bool includeUnclosed, int? tagid, string fundids)
+            int campusid, bool pledges, bool? nontaxdeductible, bool includeUnclosed, int? tagid, string fundids, int online = -1)
         {
             var nontax = nontaxdeductible is null ? null : nontaxdeductible?.ToInt();
-            var q = from c in CurrentDatabase.GetContributionsDetails(startdt, enddt, campusid, pledges, nontax, null, includeUnclosed, tagid, fundids)
+            var q = from c in CurrentDatabase.GetContributionsDetails(startdt, enddt, campusid, pledges, nontax, online, includeUnclosed, tagid, fundids)
                     where !ContributionTypeCode.ReturnedReversedTypes.Contains(c.ContributionTypeId)
+                    where ContributionStatusCode.Recorded.Equals(c.ContributionStatusId)
                     select c;
             return q;
         }
 
         public DataTable DonorDetails(DateTime startdt, DateTime enddt,
-            int fundid, int campusid, bool pledges, bool? nontaxdeductible, bool includeUnclosed, int? tagid, string fundids)
+            int fundid, int campusid, bool pledges, bool? nontaxdeductible, bool includeUnclosed, int? tagid, string fundids, int online = -1)
         {
             var UseTitles = !CurrentDatabase.Setting("NoTitlesOnStatements");
 
             if (CurrentDatabase.Setting("UseLabelNameForDonorDetails"))
             {
-                var q = from c in GetValidContributionDetails(startdt, enddt, campusid, pledges, nontaxdeductible, includeUnclosed, tagid, fundids)
+                var q = from c in GetValidContributionDetails(startdt, enddt, campusid, pledges, nontaxdeductible, includeUnclosed, tagid, fundids, online)
                         join p in CurrentDatabase.People on c.CreditGiverId equals p.PeopleId
                         let mainFellowship = CurrentDatabase.Organizations.SingleOrDefault(oo => oo.OrganizationId == p.BibleFellowshipClassId).OrganizationName
                         let head1 = CurrentDatabase.People.Single(hh => hh.PeopleId == p.Family.HeadOfHouseholdId)
@@ -152,7 +153,7 @@ namespace CmsWeb.Models
                             MemberStatus = p.MemberStatus.Description,
                             p.JoinDate,
                             Amount = c.Amount ?? 0m,
-                            Pledge = c.PledgeAmount ?? 0m,
+                            Pledge = c.PledgeAmount,
                             c.CheckNo,
                             c.ContributionDesc,
                             c.FundId,
@@ -170,12 +171,40 @@ namespace CmsWeb.Models
                             FamilyName = famname,
                             p.EmailAddress
                         };
-                return q.ToDataTable();
-
+                return pledges ? q.ToDataTable() : (from r in q
+                                                    select new
+                                                    {
+                                                        r.FamilyId,
+                                                        r.Date,
+                                                        r.GiverId,
+                                                        r.CreditGiverId,
+                                                        r.HeadName,
+                                                        r.SpouseName,
+                                                        r.MainFellowship,
+                                                        r.MemberStatus,
+                                                        r.JoinDate,
+                                                        r.Amount,
+                                                        r.CheckNo,
+                                                        r.ContributionDesc,
+                                                        r.FundId,
+                                                        r.FundName,
+                                                        r.BundleHeaderId,
+                                                        r.BundleType,
+                                                        r.BundleStatus,
+                                                        r.Addr,
+                                                        r.Addr2,
+                                                        r.City,
+                                                        r.ST,
+                                                        r.Zip,
+                                                        r.FirstName,
+                                                        r.LastName,
+                                                        r.FamilyName,
+                                                        r.EmailAddress
+                                                    }).ToDataTable();
             }
             else
             {
-                var q = from c in GetValidContributionDetails(startdt, enddt, campusid, pledges, nontaxdeductible, includeUnclosed, tagid, fundids)
+                var q = from c in GetValidContributionDetails(startdt, enddt, campusid, pledges, nontaxdeductible, includeUnclosed, tagid, fundids, online)
                         join p in CurrentDatabase.People on c.CreditGiverId equals p.PeopleId
                         let mainFellowship = CurrentDatabase.Organizations.SingleOrDefault(oo => oo.OrganizationId == p.BibleFellowshipClassId).OrganizationName
                         let spouse = CurrentDatabase.People.SingleOrDefault(sp => sp.PeopleId == p.SpouseId)
@@ -192,7 +221,7 @@ namespace CmsWeb.Models
                             MemberStatus = p.MemberStatus.Description,
                             p.JoinDate,
                             Amount = c.Amount ?? 0m,
-                            Pledge = c.PledgeAmount ?? 0m,
+                            Pledge = c.PledgeAmount ,
                             c.CheckNo,
                             c.ContributionDesc,
                             c.FundId,
@@ -203,15 +232,38 @@ namespace CmsWeb.Models
                             p.FullAddress,
                             p.EmailAddress
                         };
-                return q.ToDataTable();
+
+                return pledges ? q.ToDataTable() : (from r in q
+                                                    select new
+                                                    {
+                                                        r.FamilyId,
+                                                        r.Date,
+                                                        r.GiverId,
+                                                        r.CreditGiverId,
+                                                        r.HeadName,
+                                                        r.SpouseName,
+                                                        r.MainFellowship,
+                                                        r.MemberStatus,
+                                                        r.JoinDate,
+                                                        r.Amount,
+                                                        r.CheckNo,
+                                                        r.ContributionDesc,
+                                                        r.FundId,
+                                                        r.FundName,
+                                                        r.BundleHeaderId,
+                                                        r.BundleType,
+                                                        r.BundleStatus,
+                                                        r.FullAddress,
+                                                        r.EmailAddress
+                                                    }).ToDataTable();
             }
         }
 
         public DataTable ExcelDonorTotals(DateTime startdt, DateTime enddt,
-            int campusid, bool? pledges, bool? nontaxdeductible, int? Online, bool includeUnclosed, int? tagid, string fundids, bool includePledges)
+            int campusid, bool? pledges, bool? nontaxdeductible, int? Online, bool includeUnclosed, int? tagid, string fundids)
         {
-            var nontaxded = includePledges ? 2 : (nontaxdeductible.HasValue ? (nontaxdeductible.Value ? 1 : 0) : (int?)null);
-            pledges = nontaxded == 2 ? true : (bool?)null;
+            var nontaxded = -1; // Both
+            if (nontaxdeductible.IsNotNull()) { nontaxded = (bool)nontaxdeductible ? 1 : 0; }            
 
             var q2 = from r in CurrentDatabase.GetTotalContributionsDonor(startdt, enddt, campusid, nontaxded, Online, includeUnclosed, tagid, fundids, pledges)
                      where ContributionStatusCode.Recorded.Equals(r.ContributionStatusId)
@@ -253,7 +305,7 @@ namespace CmsWeb.Models
                          rr.Key.Zip
                      };
 
-            var report = includePledges ? q2.ToDataTable() : (from r in q2
+            var report = (bool)pledges ? q2.ToDataTable() : (from r in q2
                                                               select new
                                                               {
                                                                   r.GiverId,
@@ -276,9 +328,9 @@ namespace CmsWeb.Models
             return report;
         }
         public DataTable ExcelDonorFundTotals(DateTime startdt, DateTime enddt,
-            int fundid, int campusid, bool pledges, bool? nontaxdeductible, bool includeUnclosed, int? tagid, string fundids)
+            int fundid, int campusid, bool pledges, bool? nontaxdeductible, bool includeUnclosed, int? tagid, string fundids, int online)
         {
-            var q2 = from r in CurrentDatabase.GetTotalContributionsDonorFund(startdt, enddt, campusid, nontaxdeductible, includeUnclosed, tagid, fundids)
+            var q2 = from r in CurrentDatabase.GetTotalContributionsDonorFund(startdt, enddt, campusid, nontaxdeductible, includeUnclosed, tagid, fundids, pledges, online)
                      where ContributionStatusCode.Recorded.Equals(r.ContributionStatusId)
                      where !ContributionTypeCode.ReturnedReversedTypes.Contains(r.ContributionTypeId)
                      group r by new
@@ -299,7 +351,7 @@ namespace CmsWeb.Models
                          GiverId = rr.Key.CreditGiverId,
                          Count = rr.Key.Count ?? 0,
                          Amount = rr.Sum(x => x.Amount) ?? 0m,
-                         Pledged = rr.Key.PledgeAmount ?? 0m,
+                         Pledged = rr.Key.PledgeAmount,
                          Name = rr.Key.HeadName,
                          SpouseName = rr.Key.SpouseName ?? "",
                          rr.Key.FundName,
@@ -308,7 +360,20 @@ namespace CmsWeb.Models
                          rr.Key.MemberStatus,
                          rr.Key.JoinDate
                      };
-            return q2.ToDataTable();
+            return pledges ? q2.ToDataTable() : (from r in q2
+                                                 select new
+                                                 {
+                                                     r.GiverId,
+                                                     r.Count,
+                                                     r.Amount,                                                     
+                                                     r.Name,
+                                                     r.SpouseName,
+                                                     r.FundName,
+                                                     r.FundId,
+                                                     r.MainFellowship,
+                                                     r.MemberStatus,
+                                                     r.JoinDate
+                                                 }).ToDataTable();
         }
 
         public static EpplusResult FetchExcelListFamilyMembers(Guid qid)

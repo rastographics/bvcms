@@ -10,24 +10,24 @@ namespace CmsWeb.Areas.Search.Models
     {
         public static bool ClipboardHasCondition()
         {
-            var clip = HttpContextFactory.Current.Session["QueryClipboard"] as string;
+            var clip = Util.QueryClipboard;
             return clip != null;
         }
 
         public void Copy()
         {
-            HttpContextFactory.Current.Session["QueryClipboard"] = Selected.ToXml(newGuids: true);
+            Util.QueryClipboard = Selected.ToXml(newGuids: true);
         }
         public void Cut()
         {
-            HttpContextFactory.Current.Session["QueryClipboard"] = Selected.ToXml();
+            Util.QueryClipboard = Selected.ToXml();
             Selected.DeleteClause();
             TopClause.Save(Db, increment: true);
         }
 
         public void Paste()
         {
-            var clip = HttpContextFactory.Current.Session["QueryClipboard"] as string;
+            var clip = Util.QueryClipboard;
             if (clip == null)
                 return;
             var newclause = Condition.Import(clip);

@@ -3,8 +3,8 @@
 @using CmsData.Classes.RoleChecker
 @using CmsWeb.Models.ExtraValues
 @{
-    var evmodel = new ExtraValueModel(DbUtil.Db, Model.Org.OrganizationId, "Organization", "CommunityGroup");
-    var ExtraMembershipDataLabel = DbUtil.Db.Setting("ExtraCommunityGroupDataLabel", "Extra Community Group Data");
+    var evmodel = new ExtraValueModel(ViewExtensions2.CurrentDatabase, Model.Org.OrganizationId, "Organization", "CommunityGroup");
+    var ExtraMembershipDataLabel = ViewExtensions2.CurrentDatabase.Setting("ExtraCommunityGroupDataLabel", "Extra Community Group Data");
     var firstTime = true;
     var list = evmodel.GetExtraValues().ToList();
 }

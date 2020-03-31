@@ -1,7 +1,7 @@
 ﻿@using CmsData
 @model CmsWeb.Areas.Org.Models.SettingsFeesModel
 @{
-    ViewBag.ShowHelp = DbUtil.Db.UserPreference("ShowFeesHelp");
+    ViewBag.ShowHelp = ViewExtensions2.CurrentDatabase.UserPreference("ShowFeesHelp");
 }
 <form class="ajax">
     @if (!Html.ViewData.ModelState.IsValid)
@@ -54,12 +54,15 @@
         </div>
         @if (Model.IsPushpay)
         {
-            <div class="row">
-                <div class="col-sm-4 col-md-4">
-                    @Html.EditorFor(m => m.PushpayFundName)
-                    @Html.HiddenFor(m => m.IsPushpay)
-                </div>
+        <div class="row">
+            <div class="col-sm-4 col-md-4">
+                @Html.EditorFor(m => m.PushpayFundName)
+                @Html.HiddenFor(m => m.IsPushpay)
             </div>
+            <div class="col-sm-4 col-md-4">
+                @Html.EditorFor(m => m.PushpayMerchantName)
+            </div>
+        </div>
         }
     </div>
     <h4>Org Fees</h4>

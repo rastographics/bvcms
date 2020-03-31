@@ -32,7 +32,7 @@ namespace CmsData
 
         public static int? CurrentOrgId
         {
-            get => Util.GetFromSession(STR_ActiveOrganizationId) as int?;
+            get => Util.GetFromSession(STR_ActiveOrganizationId, (int?)null);
             set => Util.SetValueInSession(STR_ActiveOrganizationId, value);
         }
 
@@ -52,7 +52,7 @@ namespace CmsData
 
         public static string CurrentGroupsPrefix
         {
-            get => (string)Util.GetFromSession(STR_ActiveGroupPrefix, null);
+            get => Util.GetFromSession<string>(STR_ActiveGroupPrefix, null);
             set => Util.SetValueInSession(STR_ActiveGroupPrefix, value);
         }
 
@@ -68,13 +68,13 @@ namespace CmsData
             set => Util.SetValueInSession(STR_ActivePersonId, value);
         }
 
-        public static string FromMobile => (string)Util.GetFromSession(STR_FromMobile, null);
+        public static string FromMobile => Util.GetFromSession<string>(STR_FromMobile, null);
 
         public static int? CurrentTagOwnerId
         {
             get
             {
-                var pid = Util.UserPeopleId;
+                var pid = Db.UserPeopleId;
                 var a = CurrentTag.Split('!');
                 if (a.Length > 1)
                 {
@@ -114,7 +114,7 @@ namespace CmsData
 
         public static bool OrgLeadersOnly
         {
-            get => (bool)Util.GetFromSession(STR_OrgLeadersOnly, false);
+            get => Util.GetFromSession(STR_OrgLeadersOnly, false);
             set => Util.SetValueInSession(STR_OrgLeadersOnly, value);
         }
 
@@ -141,15 +141,19 @@ namespace CmsData
         {
             get
             {
-                var mru = (List<MostRecentItem>)Util.GetFromSession(STR_MostRecentOrgs, null);
+                var mru = Util.GetFromSession<List<MostRecentItem>>(STR_MostRecentOrgs, null);
                 if (mru == null)
                 {
-                    mru = (from i in Db.MostRecentItems(Util.UserId)
+                    mru = (from i in Db.MostRecentItems(Db.UserId)
                            where i.Type == "org"
                            select new MostRecentItem() { Id = i.Id.Value, Name = i.Name }).ToList();
-                    HttpContextFactory.Current.Session[STR_MostRecentOrgs] = mru;
+                    Util.SetValueInSession(STR_MostRecentOrgs, mru);
                 }
                 return mru;
+            }
+            set
+            {
+                Util.SetValueInSession(STR_MostRecentOrgs, value);
             }
         }
 
@@ -157,15 +161,19 @@ namespace CmsData
         {
             get
             {
-                var mru = (List<MostRecentItem>)Util.GetFromSession(STR_MostRecentPeople, null);
+                var mru = Util.GetFromSession<List<MostRecentItem>>(STR_MostRecentPeople, null);
                 if (mru == null)
                 {
-                    mru = (from i in Db.MostRecentItems(Util.UserId)
+                    mru = (from i in Db.MostRecentItems(Db.UserId)
                            where i.Type == "per"
                            select new MostRecentItem() { Id = i.Id.Value, Name = i.Name }).ToList();
-                    HttpContextFactory.Current.Session[STR_MostRecentPeople] = mru;
+                    Util.SetValueInSession(STR_MostRecentPeople, mru);
                 }
                 return mru;
+            }
+            set
+            {
+                Util.SetValueInSession(STR_MostRecentPeople, value);
             }
         }
 

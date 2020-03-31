@@ -53,7 +53,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 
             SetCampusAndDefaultFunds(campus, funds, orgId.ToInt());
 
-            funds = Session["DefaultFunds"]?.ToString();
+            funds = Util.DefaultFunds;
 
             if (td != null)
             {
@@ -83,8 +83,8 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 ot.Used = true;
                 CurrentDatabase.SubmitChanges();
             }
-            Session["CreditCardOnFile"] = m.CreditCard;
-            Session["ExpiresOnFile"] = m.Expires;
+            Util.CreditCardOnFile = m.CreditCard;
+            Util.ExpiresOnFile = m.Expires;
             if (!m.testing)
                 m.testing = testing ?? false;
             SetHeaders(m.orgid);
@@ -150,7 +150,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 return View("ManageGiving/Setup", m);
             }
 
-            TempData["managegiving"] = m;
+            RequestManager.SessionProvider.Add("managegiving", m);
             return Redirect("/OnlineReg/ConfirmRecurringGiving");
         }
 
@@ -168,7 +168,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 
         public ActionResult ConfirmRecurringGiving()
         {
-            var m = TempData["managegiving"] as ManageGivingModel;
+            var m = RequestManager.SessionProvider.Get<ManageGivingModel>("managegiving");
             if (m == null)
             {
                 return Content("No active registration");
@@ -188,6 +188,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 
             SetHeaders(m.orgid);
             OnlineRegModel.LogOutOfOnlineReg();
+            RequestManager.SessionProvider.Clear();
 
             m.Log("Confirm");
             return View("ManageGiving/Confirm", m);
@@ -199,6 +200,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             m.Confirm();
             SetHeaders(m.orgid);
             OnlineRegModel.LogOutOfOnlineReg();
+            RequestManager.SessionProvider.Clear();
 
             m.Log("Confirm");
             return View("ManagePledge/Confirm", m);
@@ -212,7 +214,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             m.ThankYouMessage = "Your recurring giving has been stopped.";
 
             m.Log("Remove");
-            TempData["managegiving"] = m;
+            RequestManager.SessionProvider.Add("managegiving", m);
             return Json(new { Url = Url.Action("ConfirmRecurringGiving") });
         }
 
@@ -220,11 +222,11 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         {
             if (!string.IsNullOrWhiteSpace(campus))
             {
-                Session[$"Campus-{orgId}"] = campus;
+                RequestManager.SessionProvider.Add($"Campus-{orgId}", campus);
             }
             if (!string.IsNullOrWhiteSpace(funds))
             {
-                Session["DefaultFunds"] = funds;
+                Util.DefaultFunds = funds;
             }
         }
     }

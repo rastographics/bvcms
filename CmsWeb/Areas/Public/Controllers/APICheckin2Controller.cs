@@ -357,7 +357,7 @@ namespace CmsWeb.Areas.Public.Controllers
             }
 
             p.LogChanges(CurrentDatabase, psb);
-            p.Family.LogChanges(CurrentDatabase, fsb, p.PeopleId, Util.UserPeopleId ?? 0);
+            p.Family.LogChanges(CurrentDatabase, fsb, p.PeopleId, CurrentDatabase.UserPeopleId ?? 0);
             CurrentDatabase.SubmitChanges();
             if (CurrentDatabase.Setting("NotifyCheckinChanges", "true").ToBool() && (psb.Count > 0 || fsb.Count > 0))
             {
@@ -494,8 +494,6 @@ namespace CmsWeb.Areas.Public.Controllers
         [Authorize(Roles = "Access")]
         public ActionResult CheckIn(int? id, int? pid)
         {
-            Session.Timeout = 1000;
-            Session["CheckInOrgId"] = id ?? 0;
             var m = new CheckInRecModel(id ?? 0, pid);
             return View(m);
         }
@@ -503,7 +501,6 @@ namespace CmsWeb.Areas.Public.Controllers
         [HttpPost]
         public JsonResult PostCheckIn(int id, string KeyCode)
         {
-            Session["CheckInOrgId"] = id;
             var q = from kc in CurrentDatabase.CardIdentifiers
                     where KeyCode == kc.Id
                     select kc.PeopleId;
@@ -604,7 +601,7 @@ namespace CmsWeb.Areas.Public.Controllers
             p.SmallId = Image.NewImageFromBits(bits, 120, 120, CurrentImageDatabase).Id;
             p.MediumId = Image.NewImageFromBits(bits, 320, 400, CurrentImageDatabase).Id;
             p.LargeId = Image.NewImageFromBits(bits, CurrentImageDatabase).Id;
-            person.LogPictureUpload(CurrentDatabase, Util.UserPeopleId ?? 1);
+            person.LogPictureUpload(CurrentDatabase, CurrentDatabase.UserPeopleId ?? 1);
             CurrentDatabase.SubmitChanges();
             return Content("done");
         }

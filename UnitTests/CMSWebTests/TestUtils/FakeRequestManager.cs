@@ -4,8 +4,9 @@ using System;
 using System.Security.Principal;
 using System.Web;
 using CmsWeb.Lifecycle;
-using UtilityExtensions;
 using SharedTestFixtures;
+using UtilityExtensions.Session;
+using CMSShared.Session;
 
 namespace CMSWebTests
 {
@@ -16,6 +17,7 @@ namespace CMSWebTests
         public HttpContextBase CurrentHttpContext { get; }
         public CMSDataContext CurrentDatabase { get; private set; }
         public CMSImageDataContext CurrentImageDatabase { get; private set; }
+        public ISessionProvider SessionProvider { get; }
 
         public FakeRequestManager(bool isAuthenticated)
         {
@@ -24,6 +26,7 @@ namespace CMSWebTests
             CurrentImageDatabase = CMSImageDataContext.Create(DatabaseFixture.Host);
             CurrentUser = CurrentHttpContext.User;
             RequestId = Guid.NewGuid();
+            SessionProvider = new CmsSessionProvider(CurrentDatabase);
         }
 
         public Elmah.ErrorLog GetErrorLog()

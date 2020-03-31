@@ -156,8 +156,8 @@
                     @Html.EditorFor(m => m.CreditCard, new { autocomplete = Model.AutocompleteOnOff, Label = Model.debitcredit })
                     @Html.EditorFor(m => m.Expires, new { classes = "narrow" })
                     @Html.EditorFor(m => m.CVV, new { classes = "narrow", autocomplete = Model.AutocompleteOnOff })
-                    <input type="hidden" id="hdnCreditCardOnFile" data-value="@Request.RequestContext.HttpContext.Session["CreditCardOnFile"]" />
-                    <input type="hidden" id="hdnExpiresOnFile" data-value="@Request.RequestContext.HttpContext.Session["ExpiresOnFile"]" />
+                    <input type="hidden" id="hdnCreditCardOnFile" data-value="@Util.CreditCardOnFile" />
+                    <input type="hidden" id="hdnExpiresOnFile" data-value="@Util.ExpiresOnFile" />
                 </div>
             }
         @if (Model.useRecaptcha) {
