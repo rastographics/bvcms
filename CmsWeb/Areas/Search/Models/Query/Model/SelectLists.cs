@@ -495,21 +495,16 @@ namespace CmsWeb.Areas.Search.Models
 
         public IEnumerable<SelectListItem> CustomFundsList()
         {
-            if (ContributionStatements.CustomFundSetSelectList(CurrentDatabase).IsNull()) return null;
-            var q = from s in ContributionStatements.CustomFundSetSelectList(CurrentDatabase)
+            var clist = ContributionStatements.CustomFundSetSelectList(CurrentDatabase);
+            if (clist.IsNull()) return null;
+            var q = from s in clist
                     select new SelectListItem
                     {
                         Value = $"{s.Text}",
                         Text = s.Text,
-                        Selected = s.Text == Selected.FundSet
+                        Selected = s.Text == (Selected.FundSet ?? "(not specified)")
                     };
-            var listItems = q.ToList();
-            listItems.Insert(0, new SelectListItem
-            {
-                Value = "(not specified)",
-                Text = "(not specified)",
-                Selected = Selected.FundSet == null
-            });
+            var listItems = q.ToList();            
             return listItems;
         }
 

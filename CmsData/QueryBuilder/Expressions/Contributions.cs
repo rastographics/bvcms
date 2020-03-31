@@ -137,12 +137,12 @@ namespace CmsData
             var fundcsv = APIContributionSearchModel.GetCustomFundSetList(db, FundSet);
             if (fundcsv == null)
             {
-                return AlwaysFalse();
+                fundcsv = db.ContributionFunds.Select(cc => cc.FundId).ToList();                
             }
             //throw new Exception($"fundset '{Quarters}' was not found");
             var fundlist = string.Join(",", fundcsv);
 
-            if (TaxNonTax.IsNotNull()) TaxNonTaxBool = TaxNonTax == "TaxDed" ? false : true;
+            if (TaxNonTax.IsNotNull() && !TaxNonTax.Contains("Both")) TaxNonTaxBool = TaxNonTax == "TaxDed" ? false : true;
             else
                 TaxNonTaxBool = null;
 

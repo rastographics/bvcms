@@ -78,7 +78,12 @@ namespace CmsData
         public string TaxNonTax { get; set; }
         public bool? TaxNonTaxBool { get; set; }
         public string FundIds { get; set; }
-        public string FundSet { get; set; }
+        private string _fundset;
+        public string FundSet
+        {
+            get => _fundset ?? "(not specified)";
+            set => _fundset = value;
+        }
         public string SavedQuery { get; set; }
         public string SavedQueryIdDesc => SavedQuery;
         public string Tags { get; set; }

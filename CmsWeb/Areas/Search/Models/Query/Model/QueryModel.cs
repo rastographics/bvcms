@@ -90,8 +90,12 @@ namespace CmsWeb.Areas.Search.Models
         public int? Age { get; set; }
         public string Quarters { get; set; }
         public string FundIds { get; set; }
-        public string FundSet { get; set; }
-
+        private string _fundset;
+        public string FundSet
+        {
+            get => _fundset ?? "(not specified)";
+            set => _fundset = value;
+        }
         public string QuartersLabel
         {
             get { return QuartersVisible ? fieldMap.QuartersTitle : ""; }
