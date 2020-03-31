@@ -209,10 +209,8 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 LastFourACH = Type == PaymentType.Ach ? Account.Last(4) : null
             };
 
-            var tran = CurrentDatabase.FetchOrCreateTransaction(ti, amount, amtdue, transactionGateway);
+            var tran = CurrentDatabase.CreateTransaction(ti, amount, amtdue, transactionGateway);
 
-            //CurrentDatabase.Transactions.InsertOnSubmit(ti);
-            //CurrentDatabase.SubmitChanges();
             if (OriginalId == null && tran != null) // first transaction
             {
                 tran.OriginalId = tran.Id;
@@ -479,7 +477,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             var amtdue = t.Amtdue - (amount ?? 0);
             var transactionGateway = OnlineRegModel.GetTransactionGateway(db)?.GatewayAccountName;
 
-            return db.FetchOrCreateTransaction(t, amount, amtdue, transactionGateway);
+            return db.CreateTransaction(t, amount, amtdue, transactionGateway);
         }
 
         public object Autocomplete(bool small = false)

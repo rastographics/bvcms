@@ -129,7 +129,7 @@ namespace CmsDataTests
 
         [Fact]        
         public void Should_Return_Null_Transaction()
-        {
+       {
             var currentDate = Util.Now;
 
             var randomName = DatabaseTestBase.RandomString();
@@ -145,8 +145,8 @@ namespace CmsDataTests
                     MiddleInitial = "m",
                     Last = randomLast,
                     Suffix = "sufix",
-                    Donate = null,
-                    Amtdue = null,
+                    Donate = 0,
+                    Amtdue = 0,
                     Amt = 10,
                     Emails = Util.FirstAddress("email@gmail.com").Address,
                     Testing = true,
@@ -168,7 +168,7 @@ namespace CmsDataTests
                     LastFourACH = null
                 };
 
-                var tran = db.FetchOrCreateTransaction(t1, 10, 0, "transnational");
+                var tran = db.CreateTransaction(t1, 10, 0, "transnational");
                 tran.ShouldNotBeNull();
             }
 
@@ -181,8 +181,8 @@ namespace CmsDataTests
                     MiddleInitial = "m",
                     Last = randomLast,
                     Suffix = "sufix",
-                    Donate = null,
-                    Amtdue = null,
+                    Donate = 0,
+                    Amtdue = 0,
                     Amt = 10,
                     Emails = Util.FirstAddress("email@gmail.com").Address,
                     Testing = true,
@@ -204,7 +204,7 @@ namespace CmsDataTests
                     LastFourACH = null
                 };                
 
-                var tran2 = db.FetchOrCreateTransaction(t2, 10, 0, "transnational");
+                var tran2 = db.CreateTransaction(t2, 10, 0, "transnational");
                 tran2.ShouldBeNull();
             }
         }

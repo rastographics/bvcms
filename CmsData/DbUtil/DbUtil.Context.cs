@@ -1859,47 +1859,36 @@ This search uses multiple steps which cannot be duplicated in a single query.
             return FetchOrCreateFund(0, Description);
         }
 
-        public Transaction FetchOrCreateTransaction(Transaction t, decimal? amount, decimal? amtdue, string transactionGateway)
+        public Transaction CreateTransaction(Transaction t, decimal? amount, decimal? amtdue, string transactionGateway)
         {
             bool isDuplicateTransaction = false;
             int? originalId = null;
+            TimeSpan? timeDifference = null;
 
             if (t.Id != 0)
                 originalId = t.Id;
 
-            if (DateTime.Now.AddMinutes(-5) < t.TransactionDate)
-            {
-                var tran = Transactions.Where(x=>
-                    x.Name == t.Name && 
-                    x.First == t.First &&
-                    x.MiddleInitial == t.MiddleInitial &&
-                    x.Last == t.Last &&
-                    x.Suffix == t.Suffix &&
-                    x.Donate == t.Donate &&
-                    x.Amtdue == amtdue &&
-                    x.Amt == amount &&
-                    x.Emails == Util.FirstAddress(t.Emails).Address &&
-                    x.Testing == t.Testing &&
-                    x.Description == t.Description &&
-                    x.OrgId == t.OrgId &&
-                    x.Url == t.Url &&
-                    x.Address == t.Address &&
-                    x.TransactionGateway == transactionGateway &&
-                    x.City == t.City &&
-                    x.State == t.State &&
-                    x.Zip == t.Zip &&
-                    x.DatumId == t.DatumId &&
-                    x.Phone == t.Phone &&
-                    x.OriginalId == (t.OriginalId ?? originalId) &&
-                    x.Financeonly == t.Financeonly &&
-                    x.PaymentType == t.PaymentType &&
-                    x.LastFourCC == t.LastFourCC &&
-                    x.LastFourACH == t.LastFourACH
-                    ).ToList();
+            var posDuplicatedTran = Transactions
+                .Where(x =>
+                x.Name == t.Name &&
+                x.First == t.First &&
+                x.Last == t.Last &&
+                x.Amtdue == amtdue &&
+                x.Amt == amount &&
+                x.Emails == Util.FirstAddress(t.Emails).Address &&
+                x.Testing == t.Testing &&
+                x.Description == t.Description &&
+                x.OrgId == t.OrgId &&
+                x.TransactionGateway == transactionGateway &&
+                x.PaymentType == t.PaymentType && (t.PaymentType == "C" ? x.LastFourCC == t.LastFourCC : x.LastFourACH == t.LastFourACH))
+                .OrderByDescending(x => x.TransactionDate)
+                .FirstOrDefault();
 
-                if (tran.Count != 0)
-                    isDuplicateTransaction = true;
-            }
+            if (posDuplicatedTran != null)            
+                timeDifference = DateTime.Now - posDuplicatedTran.TransactionDate;                            
+
+            if (timeDifference.HasValue && timeDifference.Value.TotalMinutes < 19)
+                isDuplicateTransaction = true;
 
             if (isDuplicateTransaction)
                 return null;
