@@ -49,8 +49,6 @@ BVCMS is maintained by TouchPoint Software, Inc.
 
 1. Find and edit the web.config file in the **CMSWeb** folder.
 
-    - In the `appSettings` section, configure the `dbserver` value to point to the server that your database will be hosted on. This value will become part of your connection string.
-    - For example, you could change \<add key="dbserver" value="" /> to \<add key="dbserver" value="localhost\SQLEXPRESS" />.
     - In the `appSettings` section, configure the `host` value to point to the name you would like to call your database (without the CMS_). This value will become part of your connection string.
     - For example, you could change \<add key="host" value="" /> to \<add key="host" value="myBvcms" />.
     - In the `mailSettings` section, configure the pickupDirectoryLocation to a directory on your development machine (for testing purposes).
@@ -58,7 +56,6 @@ BVCMS is maintained by TouchPoint Software, Inc.
 
 1. Find and edit the ConnectionStrings.config file in the **CMSWeb** folder
     - Change the database server in the connection string named `CMS` if `(local)` or `localhost` is not the name of your SQL Server. For instance, if you installed SQL Express with the default options, you would change `(local)` to `.\SQLEXPRESS`
-    - For example, \<add name="CMS" connectionString="Data Source=localhost\SQLEXPRESS;Initial Catalog=myBvcms;Integrated Security=True" />
     - If SQL Server is not installed on your local machine, you may have to make further connection string changes.  See [connectionstrings.com](https://www.connectionstrings.com/sql-server/) for more help.
 
 1. The SQL Server database should be running
