@@ -39,6 +39,27 @@ namespace CmsData.Codes
         public const int TypeSqlScript = 4;
         public const int TypePythonScript = 5;
         public const int TypeUnlayerSavedDraft = 6;
+        public const int TypeUnlayerTemplate = 7;
+
+        public static int[] EmailTemplates =
+        {
+            TypeEmailTemplate,
+            TypeUnlayerTemplate
+        };
+        public static int[] EmailDrafts =
+        {
+            TypeSavedDraft,
+            TypeUnlayerSavedDraft,
+        };
+        public static int[] UnLayerTypes =
+        {
+            TypeUnlayerSavedDraft,
+            TypeUnlayerTemplate,
+        };
+
+        public static bool IsUnlayer(int type) => UnLayerTypes.Contains(type);
+        public static bool IsTemplate(int type) => EmailTemplates.Contains(type);
+        public static bool IsDraft(int type) => EmailDrafts.Contains(type);
     }
 
     public static class MemberStatusCode

@@ -5,6 +5,7 @@
     ViewBag.Title = "Edit Draft";
     ViewBag.PageHeader = "Edit Draft";
     Layout = ViewExtensions2.TouchPointLayout();
+    var roleList = ContentModel.fetchRoles(ViewExtensions2.CurrentDatabase);
 }
 @using (Html.BeginForm("ContentUpdate", "Display", FormMethod.Post))
 {
@@ -24,7 +25,7 @@
                 </div>
                 <div class="form-group">
                   <label for="role" class="control-label">Role</label>
-                  @Html.DropDownList("roleid", new SelectList(ContentModel.fetchRoles(), "RoleId", "RoleName"), new { @class = "form-control" })
+                  @Html.DropDownList("roleid", new SelectList(roleList, "RoleId", "RoleName"), new { @class = "form-control" })
                 </div>
               </div>
               <div class="col-sm-4 pull-right" style="margin-bottom: 5px;">

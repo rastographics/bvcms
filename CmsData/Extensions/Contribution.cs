@@ -126,6 +126,7 @@ namespace CmsData
                 && (!includeReturnedReversed ? c.ContributionStatusId != ContributionStatusCode.Returned : 1 == 1)
                 && (!includeReturnedReversed ? c.ContributionStatusId != ContributionStatusCode.Reversed : 1 == 1)
                 && (!includePledges ? c.ContributionTypeId != ContributionTypeCode.Pledge : 1 == 1)
+                && (c.ContributionDate != null)
 
                 select c
                    );

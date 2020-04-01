@@ -3,13 +3,16 @@
 
 @helper descriptionForEvent(eSpace.Models.eSpaceEvent item)
 {
-    var location = Util.PickFirst(item.OffsiteLocation, item.Locations.FirstOrDefault().Name);
+    var location = Util.PickFirst(item.OffsiteLocation, item.Locations.FirstOrDefault()?.Name);
+    var time = item.StartTime.ToString("t");
+    @item.EventName
     if (location.HasValue())
     {
-        location = $"({location})";
+        <br/>
+        @location
     }
-    var time = item.StartTime.ToString("t");
-    Write($"{item.EventName} {location} {time}");
+    Write(" - ");
+    @time
 }
 @if (Model == null)
 {
