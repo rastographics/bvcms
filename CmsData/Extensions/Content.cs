@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UtilityExtensions;
 using System.Linq;
+using CmsData.Codes;
 
 namespace CmsData
 {
@@ -32,5 +33,7 @@ namespace CmsData
             foreach (var s in addlist)
                 ContentKeyWords.Add(new ContentKeyWord {Id = Id, Word = s});
         }
+
+        public bool IsUnLayer() => ContentTypeCode.UnLayerTypes.Contains(TypeID);
     }
 }

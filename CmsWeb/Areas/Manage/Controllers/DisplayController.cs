@@ -19,9 +19,12 @@ using System.Web.Mvc;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Windows.Forms;
+using CmsWeb.Areas.Main.Models;
+using Newtonsoft.Json;
 using UtilityExtensions;
 using Content = CmsData.Content;
 using Encoder = System.Drawing.Imaging.Encoder;
+using HtmlDocument = HtmlAgilityPack.HtmlDocument;
 
 namespace CmsWeb.Areas.Manage.Controllers
 {
@@ -38,7 +41,7 @@ namespace CmsWeb.Areas.Manage.Controllers
         [Route("~/Manage/Display")]
         public ActionResult Index()
         {
-            return View(new ContentModel());
+            return View(new ContentModel(CurrentDatabase));
         }
 
         [HttpPost]
@@ -79,6 +82,11 @@ namespace CmsWeb.Areas.Manage.Controllers
                 CurrentDatabase.SubmitChanges();
             }
             ViewBag.ContentKeywords = i.keywords;
+            if (ContentTypeCode.IsUnlayer(i.content.TypeID))
+            {
+                ViewBag.TemplateId = id;
+                return View("UnLayerCompose", i.content);
+            }
             return RedirectEdit(i.content);
         }
         public ActionResult Content(int? id)
@@ -98,14 +106,18 @@ namespace CmsWeb.Areas.Manage.Controllers
         }
 
         [HttpPost]
-        public ActionResult ContentCreate(int newType, string newName, int? newRole)
+        public ActionResult ContentCreate(int newType, string newName, int? newRole, bool? useUnlayer)
         {
             var content = new Content();
             content.Name = newName;
-            content.TypeID = newType;
+            if (!content.Name.HasValue())
+                content.Name = "new template " + DateTime.Now.FormatDateTm();
+            content.TypeID = newType == ContentTypeCode.TypeEmailTemplate && useUnlayer == true
+                ? ContentTypeCode.TypeUnlayerTemplate
+                : newType;
             content.RoleID = newRole ?? 0;
-            content.Title = newName;
             content.Body = "";
+            content.Title = "";
             content.DateCreated = DateTime.Now;
             content.CreatedBy = Util.UserName;
             var ContentKeywordFilter = Util.ContentKeywordFilter;
@@ -113,12 +125,84 @@ namespace CmsWeb.Areas.Manage.Controllers
             {
                 content.SetKeyWords(CurrentDatabase, new[] { ContentKeywordFilter });
             }
+            var tid = EmailTemplatesModel.FetchTemplateByName("Empty Template", CurrentDatabase).Id;
+            if (ContentTypeCode.EmailTemplates.Contains(content.TypeID))
+                content.Id = tid;
 
             CurrentDatabase.Contents.InsertOnSubmit(content);
             CurrentDatabase.SubmitChanges();
             ViewBag.ContentKeywords = ContentKeywordFilter ?? "";
 
+            if (useUnlayer == true)
+            {
+                ViewBag.TemplateId = 0; // force using a blank empty template with only "click here to edit content"
+                return View("UnLayerCompose", content);
+            }
+
             return RedirectEdit(content);
+        }
+        [HttpPost]
+        [ValidateInput(false)]
+        public ActionResult SaveUnlayerTemplate(int? saveid, string name, int roleid, string title, string body, string unlayerDesign)
+        {
+            Content content = null;
+
+            if (saveid.HasValue && saveid > 0)
+            {
+                content = CurrentDatabase.ContentFromID(saveid.Value);
+            }
+
+            if (content == null)
+            {
+                content = new Content
+                {
+                    Name = name.HasValue()
+                        ? name
+                        : "new template",
+                    TypeID = ContentTypeCode.TypeUnlayerTemplate,
+                    RoleID = roleid,
+                    OwnerID = CurrentDatabase.UserId
+                };
+            }
+
+            content.Title = title;
+            content.RoleID = roleid;
+            content.Name = name.HasValue() ? name : content.Name;
+
+            var bodytemplate = new { design = unlayerDesign, rawHtml = GetBody(body) };
+            content.Body = JsonConvert.SerializeObject(bodytemplate);
+            
+            content.DateCreated = DateTime.Now;
+
+            if (!saveid.HasValue || saveid == 0)
+            {
+                CurrentDatabase.Contents.InsertOnSubmit(content);
+            }
+
+            CurrentDatabase.SubmitChanges();
+
+            ViewBag.templateID = content.Id;
+
+            var templatedraft = content.TypeID == ContentTypeCode.TypeUnlayerTemplate ? "emailTemplates" : "savedDrafts";
+            return Redirect($"/Display/#tab_{templatedraft}");
+        }
+        private string GetBody(string body)
+        {
+            if (body == null)
+            {
+                body = "";
+            }
+
+            body = body.RemoveGrammarly();
+            var doc = new HtmlDocument();
+            doc.LoadHtml(body);
+            var ele = doc.DocumentNode.SelectSingleNode("/div[@bvedit='discardthis']");
+            if (ele != null)
+            {
+                body = ele.InnerHtml;
+            }
+
+            return body;
         }
 
         [HttpPost]
@@ -251,15 +335,7 @@ namespace CmsWeb.Areas.Manage.Controllers
                     cContent.RemoveGrammarly();
                     return View("EditDraft", cContent);
             }
-
             return View("Index");
-        }
-
-        public ActionResult EmailBody(int id)
-        {
-            var content = CurrentDatabase.ContentFromID(id);
-            content.RemoveGrammarly();
-            return View(content);
         }
 
         //        [HttpPost]
@@ -416,6 +492,55 @@ namespace CmsWeb.Areas.Manage.Controllers
             return url;
         }
 
+        [Route("~/Manage/Display/EmailBody")]
+        public ActionResult EmailBody(string id)
+        {
+            if (id == "0") // used for unlayer, force using a blank empty template with only "click here to edit content"
+            {
+                ViewBag.body = "<div class='bvedit'>Click here to edit content</div>";
+                ViewBag.design = "";
+                ViewBag.useUnlayer = true;
+                return View();
+            }
+            var i = id.ToInt();
+            var c = ViewExtensions2.GetContent(i);
+            if (c == null)
+            {
+                return new EmptyResult();
+            }
+
+            var design = string.Empty;
+            var body = string.Empty;
+
+            if (ContentTypeCode.IsUnlayer(c.TypeID))
+            {
+                if (!c.Body.HasValue())
+                {
+                    c.Body = "<div class='bvedit'>Click here to edit content</div>";
+                }
+                else
+                {
+                    dynamic payload = JsonConvert.DeserializeObject(c.Body);
+                    design = payload.design;
+                    body = payload.rawHtml;
+                }
+            }
+            else
+                body = c.Body;
+            
+            var doc = new HtmlDocument();
+            doc.LoadHtml(body);
+            var bvedits = doc.DocumentNode.SelectNodes("//div[contains(@class,'bvedit') or @bvedit]");
+            if (bvedits == null || !bvedits.Any())
+            {
+                body = $"<div bvedit='discardthis'>{body}</div>";
+            }
+
+            ViewBag.body = body;
+            ViewBag.design = design;
+            ViewBag.useUnlayer = true;
+            return View();
+        }
     }
     public class GridResult : ActionResult
     {

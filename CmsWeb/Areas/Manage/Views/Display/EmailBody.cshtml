@@ -1,28 +1,120 @@
-﻿@model CmsData.Content
+﻿@using CmsData
 @{
-    Layout = null;
+   var design = ViewBag.design;
+   var body = ViewBag.body;
 }
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, maximum-scale=1.0">
-        <title></title>
-        @ViewExtensions2.FontAwesome()
-        <style>
-            #editor-body {
-                font-family: Arial,Helvetica;
-            }
-            .tp-gold {
-                color: #eaab00;
-            }
-        </style>
-    </head>
-    <body style="margin: 0;">
-        <div id="editor-body">
-            @Html.Raw(Model.Body)
-        </div>
-        <input type="hidden" id="hiddenHtml" name="hiddenHtml" value="@Model.Body" />
-    </body>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, maximum-scale=1.0">
+  <title></title>
+  @Fingerprint.Css("/Content/touchpoint/css/editor.css")
+  <style>
+    #templateBody { font-family: Arial, Helvetica; }
+  </style>
+</head>
+<body>
+<input type="hidden" id="templateDesign" value="@design"/>
+<div id="templateBody">
+  @if (body == "<div bvedit=\"\" style=\"max-width:600px;\">Click here to edit content</div>\r\n")
+  {
+    <font face="Arial,Helvetica">@Html.Raw(body)</font>
+  }
+  else
+  {
+    @Html.Raw(body)
+  }
+</div>
+@ViewExtensions2.jQuery()
+<script type="text/javascript">
+  $(function() {
+    $.hClick = function(e) {
+      $.removeButtons();
+      window.parent.displayEditor(this, $("#templateDesign"), @ViewBag.useUnlayer.ToString().ToLower());
+    };
+
+    $("a")
+      .bind('click',
+        function() {
+          return false;
+        });
+    $('div[bvedit], div.bvedit').bind('click', $.hClick).addClass("ti");
+    $('td[bvrepeat]').mouseenter($.hHoverIn).mouseleave($.hHoverOut);
+
+    $.hHoverIn = function(ev) {
+      currentHover = this;
+      $(this).css("border", "solid 1px #ff0000");
+      $(this)
+        .append("<div id='controlButtons' class='tiAdd'><input id='addButton' type='button' value='Copy Section' /></div>");
+      $("#controlButtons").css("top", $(this).offset().top + 5).css("left", $(this).offset().left + 5);
+      $("#addButton").bind("click", $.hClickAdd);
+      ev.stopPropagation();
+    };
+
+    $.hHoverOut = function(ev) {
+      currentHover = null;
+      $(this).css("border", "");
+      $.removeButtons();
+      ev.stopPropagation();
+    };
+
+    $.removeButtons = function() {
+      $("#controlButtons").remove();
+    };
+
+    $.hClickAdd = function(e) {
+      $.removeButtons();
+      parentTR = $(currentHover).parent();
+      var dup = $(currentHover).clone();
+      $(parentTR).after($(dup));
+      dup.wrap("<tr></tr>");
+      dup.attr("bvrepeatadd", "");
+      dup.removeAttr("bvrepeat");
+      dup.mouseenter($.hAddHoverIn).mouseleave($.hHoverOut);
+      $('div[bvedit], div.bvedit').bind('click', $.hClick).addClass("ti");
+    };
+
+    $.hAddHoverIn = function(ev) {
+      currentHover = this;
+      $(this).css("border", "solid 1px #ff0000");
+      $(this)
+        .append("<div id='controlButtons' class='tiAdd'><input id='removeButton' type='button' value='Remove' /></div>");
+      $("#controlButtons").css("top", $(this).offset().top + 5).css("left", $(this).offset().left + 5);
+      $("#removeButton").bind('click', $.removeSection);
+    };
+
+    $.removeSection = function(ev) {
+      $(currentHover).parent().remove();
+      ev.stopPropagation();
+    };
+
+    $.clearTemplateClass = function() {
+      $.removeButtons();
+      $("div[bvedit], div.bvedit").removeClass("ti");
+      $("div[bveditadd], div.bveditadd").removeClass("ti");
+    };
+
+    $.addTemplateClass = function() {
+      $("div[bveditadd], div.bveditadd").addClass("ti");
+      $("div[bvedit], div.bvedit").addClass("ti");
+    };
+
+    $.addRowAfter = function(ev) {
+      $(this).parent().parent().after("<tr bvrepeatadd=''>" + $(this).html() + "</tr>");
+      $("div[bvrepeatadd]").hover($.hAddHoverIn, $.hHoverOut);
+      ev.stopPropagation();
+    };
+    window.parent.$.clearFunction = $.clearTemplateClass;
+    window.parent.$.addFunction = $.addTemplateClass;
+    if ($('#recover', window.parent.document).val()) {
+        var eb = localStorage.email;
+        $('#templateBody').html(eb).ready(function() {
+        $('div[bvedit], div.bvedit').bind('click', $.hClick).addClass("ti");
+      });
+    }
+  });
+</script>
+</body>
 </html>
