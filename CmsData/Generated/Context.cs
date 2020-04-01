@@ -3746,15 +3746,17 @@ namespace CmsData
         }
 
         [Function(Name = "dbo.RecentGiverFunds", IsComposable = true)]
-        public IQueryable<View.RecentGiverFund> RecentGiverFunds(
+        public IQueryable<View.RecentGiverFund> RecentGiverFunds(            
             [Parameter(DbType = "int")] int? days,
-            [Parameter(DbType = "varchar")] string funds
+            [Parameter(DbType = "varchar")] string funds,
+            [Parameter(DbType = "bit")] bool? nontaxded
             )
         {
             return CreateMethodCallQuery<View.RecentGiverFund>(this,
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 days,
-                funds
+                funds,
+                nontaxded
                 );
         }
 

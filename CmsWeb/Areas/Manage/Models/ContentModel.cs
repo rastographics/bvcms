@@ -11,12 +11,17 @@ namespace CmsWeb.Models
 {
     public class ContentModel
     {
+        public CMSDataContext CurrentDatabase { get; set; }
+
         private string filter;
         public string Filter => filter ?? (filter = Util.ContentKeywordFilter ?? "");
-        public ContentModel() { }
-        public IQueryable<Content> fetchHTMLFiles()
+
+        public ContentModel(CMSDataContext db)
         {
-            return from c in DbUtil.Db.Contents
+            CurrentDatabase = db;
+        }
+        public IQueryable<Content> fetchHTMLFiles() {
+            return from c in CurrentDatabase.Contents
                    where c.TypeID == ContentTypeCode.TypeHtml
                    where !Filter.HasValue() || c.ContentKeyWords.Any(vv => vv.Word == Filter)
                    orderby c.Name
@@ -25,7 +30,7 @@ namespace CmsWeb.Models
 
         public IQueryable<Content> fetchTextFiles()
         {
-            return from c in DbUtil.Db.Contents
+            return from c in CurrentDatabase.Contents
                    where c.TypeID == ContentTypeCode.TypeText
                    where !Filter.HasValue() || c.ContentKeyWords.Any(vv => vv.Word == Filter)
                    orderby c.Name
@@ -33,7 +38,7 @@ namespace CmsWeb.Models
         }
         public IQueryable<Content> fetchSqlScriptFiles()
         {
-            return from c in DbUtil.Db.Contents
+            return from c in CurrentDatabase.Contents
                    where c.TypeID == ContentTypeCode.TypeSqlScript
                    where !Filter.HasValue() || c.ContentKeyWords.Any(vv => vv.Word == Filter)
                    orderby c.Name
@@ -41,7 +46,7 @@ namespace CmsWeb.Models
         }
         public IQueryable<Content> fetchPythonScriptFiles()
         {
-            return from c in DbUtil.Db.Contents
+            return from c in CurrentDatabase.Contents
                    where c.TypeID == ContentTypeCode.TypePythonScript
                    where !Filter.HasValue() || c.ContentKeyWords.Any(vv => vv.Word == Filter)
                    orderby c.Name
@@ -50,18 +55,18 @@ namespace CmsWeb.Models
 
         public IQueryable<Content> fetchEmailTemplates()
         {
-            return from c in DbUtil.Db.Contents
-                   where c.TypeID == ContentTypeCode.TypeEmailTemplate
+            return from c in CurrentDatabase.Contents
+                   where ContentTypeCode.EmailTemplates.Contains(c.TypeID)
                    orderby c.Name
                    select c;
         }
 
         public IQueryable<SavedDraft> fetchSavedDrafts()
         {
-            return from c in DbUtil.Db.Contents
-                   where c.TypeID == ContentTypeCode.TypeSavedDraft
-                   from p in DbUtil.Db.Users.Where(p => p.UserId == c.OwnerID).DefaultIfEmpty()
-                   from r in DbUtil.Db.Roles.Where(r => r.RoleId == c.RoleID).DefaultIfEmpty()
+            return from c in CurrentDatabase.Contents
+                   where ContentTypeCode.EmailDrafts.Contains(c.TypeID)
+                   from p in CurrentDatabase.Users.Where(p => p.UserId == c.OwnerID).DefaultIfEmpty()
+                   from r in CurrentDatabase.Roles.Where(r => r.RoleId == c.RoleID).DefaultIfEmpty()
                    orderby c.Name
                    select new SavedDraft()
                    {
@@ -70,13 +75,14 @@ namespace CmsWeb.Models
                        name = c.Name,
                        owner = p.Username,
                        role = r.RoleName,
-                       roleID = c.RoleID
+                       roleID = c.RoleID,
+                       isUnlayer = c.TypeID == ContentTypeCode.TypeUnlayerSavedDraft
                    };
         }
 
-        public static List<Role> fetchRoles()
+        public static List<Role> fetchRoles(CMSDataContext db)
         {
-            var r = from e in DbUtil.Db.Roles
+            var r = from e in db.Roles
                     select e;
 
             var l = r.ToList();
@@ -92,7 +98,7 @@ namespace CmsWeb.Models
                 return keywords;
             }
 
-            var list = (from kw in DbUtil.Db.ContentKeyWords
+            var list = (from kw in CurrentDatabase.ContentKeyWords
                         orderby kw.Word
                         select kw.Word).Distinct().ToList();
             var keywordfilter = Util.ContentKeywordFilter;
