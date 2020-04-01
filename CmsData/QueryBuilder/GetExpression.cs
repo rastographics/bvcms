@@ -128,7 +128,7 @@ namespace CmsData
                 { QueryType.MembOfOrgWithCampus, MembOfOrgWithCampus },
                 { QueryType.MembOfOrgWithSched, MembOfOrgWithSched },
                 { QueryType.NeedAttendance, NeedAttendance },
-                { QueryType.NonTaxDedAmount, NonTaxDedAmount },
+                { QueryType.NonTaxDedAmountBothJoint, NonTaxDedAmountBothJoint },
                 { QueryType.NonTaxDedAmountDonorOnly, NonTaxDedAmountDonorOnly },
                 { QueryType.NumberOfFamilyMembers, NumberOfFamilyMembers },
                 { QueryType.NumberOfMemberships, NumberOfMemberships },
