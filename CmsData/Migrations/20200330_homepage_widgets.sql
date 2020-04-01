@@ -36,6 +36,13 @@ BEGIN
     </div>
 </div>',
            GETDATE(),1,0,0,0,'admin')
+           
+INSERT INTO [dbo].[ContentKeyWords]
+           ([Id]
+           ,[Word])
+     VALUES
+           ((select SCOPE_IDENTITY())
+           ,'widget')
 
 INSERT INTO [dbo].[Content]
            ([Name],[Title],
@@ -54,6 +61,13 @@ def Get():
 
 Get()',
            GETDATE(),5,0,0,0,'admin')
+          
+INSERT INTO [dbo].[ContentKeyWords]
+           ([Id]
+           ,[Word])
+     VALUES
+           ((select SCOPE_IDENTITY())
+           ,'widget')
            
 INSERT INTO [dbo].[Content]
            ([Name],[Title],
@@ -71,6 +85,12 @@ and not (OwnerId = @pid and CoOwnerId is not null)
 order by CreatedOn',
            GETDATE(),4,0,0,0,'admin')
 
+INSERT INTO [dbo].[ContentKeyWords]
+           ([Id]
+           ,[Word])
+     VALUES
+           ((select SCOPE_IDENTITY())
+           ,'widget')
 END
 GO
 
@@ -92,7 +112,7 @@ INSERT INTO [dbo].[DashboardWidgets]
            ,(select max(Id) from Content where [Name] like 'WidgetTasksPython')
            ,(select max(Id) from Content where [Name] like 'WidgetTasksSQL')
            ,1
-           ,(select max([Order])+1 from DashboardWidgets)
+           ,(select isnull(max([Order]), 0)+1 from DashboardWidgets)
            ,1)
 
 INSERT INTO [dbo].[DashboardWidgetRoles]
@@ -135,7 +155,13 @@ BEGIN
     </div>
 </div>',
            GETDATE(),1,0,0,0,'admin')
-
+           
+INSERT INTO [dbo].[ContentKeyWords]
+           ([Id]
+           ,[Word])
+     VALUES
+           ((select SCOPE_IDENTITY())
+           ,'widget')
 INSERT INTO [dbo].[Content]
            ([Name],[Title],
 		   [Body],
@@ -154,6 +180,12 @@ def Get():
 Get()',
            GETDATE(),5,0,0,0,'admin')
            
+INSERT INTO [dbo].[ContentKeyWords]
+           ([Id]
+           ,[Word])
+     VALUES
+           ((select SCOPE_IDENTITY())
+           ,'widget')
 INSERT INTO [dbo].[Content]
            ([Name],[Title],
 		   [Body],
@@ -171,7 +203,13 @@ and t.TypeId = 1
 and ts.PeopleId = @pid
 order by t.Name',
            GETDATE(),4,0,0,0,'admin')
-
+           
+INSERT INTO [dbo].[ContentKeyWords]
+           ([Id]
+           ,[Word])
+     VALUES
+           ((select SCOPE_IDENTITY())
+           ,'widget')
 END
 GO
 
@@ -193,7 +231,7 @@ INSERT INTO [dbo].[DashboardWidgets]
            ,(select max(Id) from Content where [Name] like 'WidgetTagsPython')
            ,(select max(Id) from Content where [Name] like 'WidgetTagsSQL')
            ,1
-           ,(select max([Order])+1 from DashboardWidgets)
+           ,(select isnull(max([Order]), 0)+1 from DashboardWidgets)
            ,1)
 
 INSERT INTO [dbo].[DashboardWidgetRoles]
