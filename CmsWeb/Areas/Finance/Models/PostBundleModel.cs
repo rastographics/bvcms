@@ -277,6 +277,11 @@ namespace CmsWeb.Models
 
             Util.NameSplit(q, out First, out Last);
             var hasfirst = First.HasValue();
+            var hasLast = Last.HasValue();
+            if (!hasfirst && !hasLast)
+            {
+                First = Last = q; //search both first and last name by this value
+            }
 
             if (q.AllDigits())
             {

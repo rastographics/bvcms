@@ -14,7 +14,7 @@ namespace UtilityExtensions
             {
                 if (HttpContextFactory.Current != null)
                 {
-                    return GetUserName(HttpContextFactory.Current.User.Identity.Name);
+                    return GetUserName(HttpContextFactory.Current.User?.Identity?.Name);
                 }
 
                 return ConfigurationManager.AppSettings["TestName"];

@@ -17,7 +17,8 @@
                 color: '#000',
                 border: 'none',
                 backgroundColor: 'transparent',
-                cursor: 'wait'
+                cursor: 'wait',
+                zIndex: 1041
             };
         } else {
             $.blockUI.defaults.css = {
@@ -29,7 +30,8 @@
                 color: '#000',
                 border: 'none',
                 backgroundColor: 'transparent',
-                cursor: 'wait'
+                cursor: 'wait',
+                zIndex: 1041
             };
         }
         var h2 = message ? '<h2>' + message + '</h2>' : '';
@@ -37,7 +39,8 @@
             message: svg + h2,
             overlayCSS: {
                 backgroundColor: '#fff',
-                opacity: .75
+                opacity: .75,
+                zIndex: 1040
             }
         });
         initializeLoading();
