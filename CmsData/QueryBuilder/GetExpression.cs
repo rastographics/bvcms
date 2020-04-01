@@ -49,6 +49,7 @@ namespace CmsData
                 { QueryType.DaysSinceContact, DaysSinceContact },
                 { QueryType.DaysTillAnniversary, DaysTillAnniversary },
                 { QueryType.DaysTillBirthday, DaysTillBirthday },
+                { QueryType.DoNotPublishPhones, DoNotPublishPhones },
                 { QueryType.DuplicateEmails, DuplicateEmails },
                 { QueryType.DuplicateNames, DuplicateNames },
                 { QueryType.EmailRecipient, EmailRecipient },
