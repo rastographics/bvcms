@@ -340,6 +340,9 @@ namespace CmsData
                 case Param.SavedQueryIdDesc:
                     c.SavedQuery = Token.Text.Replace("''", "'");
                     break;
+                case Param.TaxNonTax:
+                    c.TaxNonTax = Token.Text;
+                    break;
                 default:
                     throw new QueryParserException($"No Such Param:{param}");
             }
