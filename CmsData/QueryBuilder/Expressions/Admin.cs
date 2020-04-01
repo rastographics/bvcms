@@ -59,7 +59,7 @@ namespace CmsData
         {
             var tf = CodeIds == "1";
             Expression<Func<Person, bool>> pred = p =>
-                p.PeopleId == Util.UserPeopleId;
+                p.PeopleId == db.UserPeopleId;
             Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
             if (op == CompareType.Equal ^ tf)
                 expr = Expression.Not(expr);
@@ -118,12 +118,28 @@ namespace CmsData
         }
         internal Expression HasEmailOptout()
         {
+            Expression<Func<Person, bool>> pred = null;
             var email = TextValue;
-            Expression<Func<Person, bool>> pred = p =>
-                (from oo in p.EmailOptOuts
-                 where email == null || email == "" || oo.FromEmail == email
-                 where EndDate == null || (oo.DateX >= EndDate)
-                 select oo).Any();
+            switch (op)
+            {
+                case CompareType.Equal:
+                    pred = p =>
+                        (from oo in p.EmailOptOuts
+                         where email == null || email == "" || oo.FromEmail == email
+                         where EndDate == null || (oo.DateX >= EndDate)
+                         select oo).Any();
+                    break;
+                case CompareType.NotEqual:
+                    pred = p =>
+                        (from oo in p.EmailOptOuts
+                         where email == null || email == "" || oo.FromEmail != email
+                         where EndDate == null || (oo.DateX >= EndDate)
+                         select oo).Any();
+                    break;
+                default:
+                    return AlwaysFalse();
+            }
+            
             Expression expr = Expression.Invoke(pred, parm);
             return expr;
         }

@@ -19,7 +19,7 @@ namespace CmsWeb.Areas.Org.Controllers
         [HttpGet, Route("MissionTripEmail2/{oid}/{pid}")]
         public ActionResult Index(int oid, int pid)
         {
-            if (Util.UserPeopleId != pid)
+            if (CurrentDatabase.UserPeopleId != pid)
             {
                 return Content("not authorized");
             }
@@ -31,7 +31,7 @@ namespace CmsWeb.Areas.Org.Controllers
         [HttpGet, Route("MissionTripEmail2/EmailBody/{oid}/{pid}")]
         public ActionResult EmailBody(int oid, int pid)
         {
-            if (Util.UserPeopleId != pid)
+            if (CurrentDatabase.UserPeopleId != pid)
             {
                 return Content("not authorized");
             }

@@ -1,5 +1,5 @@
 ﻿@{
-  CMSDataContext Db = ViewBag.CurrentDatabase;
+  CMSDataContext Db = ViewExtensions2.CurrentDatabase;
   var menuaddpeople = Db.Setting("MenuAddPeople", true) || Util.IsDebug();
 }
 <li class="dropdown dropdown-large">
@@ -42,7 +42,7 @@
             }
         }
         <li class="dropdown-header dropdown-sub-header">My Record</li>
-        @Helper.LiAnchorLink(Util.UserFullName, "/Person2/" + Util.UserPeopleId) 
+        @Helper.LiAnchorLink(Util.UserFullName, "/Person2/" + Db.UserPeopleId) 
       </ul>
     </li>
   </ul>

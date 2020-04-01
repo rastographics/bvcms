@@ -257,6 +257,13 @@
         $("#SendEmail").submit();
     });
 
+    $("#SaveTemplateButton").click(function () {
+        $.clearTemplateClass();
+        $("#UnlayerDesign").val($('#email-body').contents().find('#templateDesign').val());
+        $("#body").val($('#email-body').contents().find('#templateBody').html());
+        $.addTemplateClass();
+    });
+
     $(".TestSend").click(function () {
         $.block();
 
@@ -301,7 +308,7 @@
 
         init: function () {
             // toggle visibility
-            $('#create-special-link').click(function () {
+            $("#editor-modal,#unlayer-editor-modal").on("click", ".create-special-link", function () {
                 specialLinks.reset();
                 specialLinks.el.modal('show');
             });

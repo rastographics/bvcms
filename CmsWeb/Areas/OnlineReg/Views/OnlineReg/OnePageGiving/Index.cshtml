@@ -7,7 +7,7 @@
 @{
     Layout = "~/Views/Shared/onlinereg2.cshtml";
     ViewBag.Title = "OnePageGiving";
-    var db = DbUtil.Db;
+    var db = ViewExtensions2.CurrentDatabase;
     var debitcredit = db.GetDebitCreditLabel(PaymentProcessTypes.OneTimeGiving);
     var vaultDisabled = db.Setting("VaultDisabled");
     var processorerror = Html.ErrorMessage("TranId");

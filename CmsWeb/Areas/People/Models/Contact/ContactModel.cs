@@ -192,7 +192,7 @@ namespace CmsWeb.Areas.People.Models
             {
                 ContactDate = contact.ContactDate.Date,
                 MinistryId = contact.MinistryId,
-                CreatedBy = Util.UserId1,
+                CreatedBy = CurrentDatabase.UserId1,
                 CreatedDate = DateTime.Now,
                 ContactTypeId = contact.ContactTypeId,
                 ContactReasonId = contact.ContactReasonId,

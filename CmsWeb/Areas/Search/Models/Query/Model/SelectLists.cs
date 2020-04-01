@@ -4,6 +4,7 @@ using System.Data.Linq.SqlClient;
 using System.Linq;
 using System.Web.Mvc;
 using CmsData;
+using CmsWeb.Areas.Finance.Models.Report;
 using CmsWeb.Code;
 using UtilityExtensions;
 
@@ -384,7 +385,7 @@ namespace CmsWeb.Areas.Search.Models
         }
         public IEnumerable<SelectListItem> TagData(int? userpeopleid = null)
         {
-            var q = new CodeValueModel().UserTags(userpeopleid ?? Util.UserPeopleId).ToList();
+            var q = new CodeValueModel().UserTags(userpeopleid ?? CurrentDatabase.UserPeopleId).ToList();
             return ToIdValueSelectList(q);
         }
 
@@ -394,7 +395,8 @@ namespace CmsWeb.Areas.Search.Models
         }
         public IEnumerable<SelectListItem> StatusFlags()
         {
-            var q = from s in CodeValueModel.StatusFlags() 
+            var statusFlags = new CodeValueModel().StatusFlags();
+            var q = from s in statusFlags 
                     select new SelectListItem
                     {
                         Value = $"{s.Code}:{s.Value}",
@@ -489,6 +491,21 @@ namespace CmsWeb.Areas.Search.Models
                       };
             }
             return qSL;
+        }
+
+        public IEnumerable<SelectListItem> CustomFundsList()
+        {
+            var clist = ContributionStatements.CustomFundSetSelectList(CurrentDatabase);
+            if (clist.IsNull()) return null;
+            var q = from s in clist
+                    select new SelectListItem
+                    {
+                        Value = $"{s.Text}",
+                        Text = s.Text,
+                        Selected = s.Text == (Selected.FundSet ?? "(not specified)")
+                    };
+            var listItems = q.ToList();            
+            return listItems;
         }
 
         /// <summary>

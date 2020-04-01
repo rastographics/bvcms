@@ -141,6 +141,7 @@
     <Compile Include="Areas\OnlineReg\Models\OnlineReg\PaymentFormTests.cs" />
     <Compile Include="Areas\Public\Models\CheckIn\CheckInModelTests.cs" />
     <Compile Include="Areas\Public\Models\MobileAPIv2\MobileAccountTests.cs" />
+    <Compile Include="Areas\Public\Models\MobileAPIv2\MobileAuthenticationTests.cs" />
     <Compile Include="Areas\Public\Models\SmallGroupFinderModelTests.cs" />
     <Compile Include="Areas\Reports\Models\Export\ExportPeopleTests.cs" />
     <Compile Include="Areas\Reports\Models\Reports\Export\ExportInvolvementsTests.cs" />
@@ -185,6 +186,10 @@
     <ProjectReference Include="..\..\CmsData\CmsData.csproj">
       <Project>{98aee43c-4226-49e7-bd46-c1a85467eced}</Project>
       <Name>CmsData</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\CMSShared\CmsShared.csproj">
+      <Project>{E9D91EA2-2231-4371-BEDF-0A0674A52F37}</Project>
+      <Name>CmsShared</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\CmsWeb\CMSWeb.csproj">
       <Project>{FC942D51-94B5-456B-9683-0BA000A1EAF4}</Project>

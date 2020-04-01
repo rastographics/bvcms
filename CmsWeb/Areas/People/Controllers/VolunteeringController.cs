@@ -60,7 +60,7 @@ namespace CmsWeb.Areas.People.Controllers
 
             var f = new VolunteerForm
             {
-                UploaderId = Util.UserId1,
+                UploaderId = CurrentDatabase.UserId1,
                 PeopleId = vol.Volunteer.PeopleId,
                 Name = name.Truncate(100),
                 AppDate = Util.Now,
@@ -128,7 +128,7 @@ namespace CmsWeb.Areas.People.Controllers
         public ActionResult CreateCheck(int id, string code, int type, int label = 0)
         {
             var tabName = type == 1 ? "tab_backgroundChecks" : "tab_creditChecks";
-            ProtectMyMinistryHelper.Create(CurrentDatabase, id, Util.UserPeopleId, code, type, label);
+            ProtectMyMinistryHelper.Create(CurrentDatabase, id, CurrentDatabase.UserPeopleId, code, type, label);
             return Redirect($"/Volunteering/{id}#{tabName}");
         }
 

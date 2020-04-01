@@ -98,9 +98,11 @@ namespace CmsWeb.Areas.Public.ControllersTests
             current.summary[0].comment.ShouldBe(comment);
             current.summary[0].count.ShouldBe(contribCount);
             current.summary[0].showAsPledge.ShouldBe(0);
-            current.summary[0].funds[0].name.ShouldBe("General Operation");
-            current.summary[0].funds[0].given.ShouldBe(total);
-
+            if (contribution > 0)
+            {
+                current.summary[0].funds[0].name.ShouldBe("General Operation");
+                current.summary[0].funds[0].given.ShouldBe(total);
+            }
             message = new MobileMessage
             {
                 argInt = Now.Year - 1

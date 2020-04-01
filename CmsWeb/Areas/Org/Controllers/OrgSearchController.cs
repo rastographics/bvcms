@@ -5,6 +5,7 @@ using CmsWeb.Areas.Search.Models;
 using CmsWeb.Code;
 using CmsWeb.Lifecycle;
 using Dapper;
+using Newtonsoft.Json;
 using System;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -60,9 +61,10 @@ namespace CmsWeb.Areas.Search.Controllers
                 m.ProgramId = progid;
                 m.TagProgramId = m.ProgramId;
             }
-            else if (Session[STR_OrgSearch].IsNotNull())
+            else if (Util.OrgSearch.IsNotNull())
             {
-                (Session[STR_OrgSearch] as OrgSearchInfo).CopyPropertiesTo(m);
+                var search = JsonConvert.DeserializeObject<OrgSearchInfo>(Util.OrgSearch);
+                search.CopyPropertiesTo(m);
             }
 
             return View(m);
@@ -71,7 +73,7 @@ namespace CmsWeb.Areas.Search.Controllers
         [HttpPost]
         public ActionResult Results(OrgSearchModel m)
         {
-            Session[STR_OrgSearch] = new OrgSearchInfo(m);
+            Util.OrgSearch = JsonConvert.SerializeObject(new OrgSearchInfo(m));
             return View(m);
         }
 
@@ -368,7 +370,7 @@ namespace CmsWeb.Areas.Search.Controllers
         [HttpPost]
         public ActionResult PasteSettings(OrgSearchModel m)
         {
-            var frorg = (int)Session["OrgCopySettings"];
+            var frorg = Util.OrgCopySettings.ToInt();
             var orgs = from os in m.FetchOrgs()
                        join o in CurrentDatabase.Organizations on os.OrganizationId equals o.OrganizationId
                        select o;
@@ -439,7 +441,7 @@ namespace CmsWeb.Areas.Search.Controllers
                 newMtg = new Meeting
                 {
                     CreatedDate = Util.Now,
-                    CreatedBy = Util.UserId1,
+                    CreatedBy = CurrentDatabase.UserId1,
                     OrganizationId = orgid,
                     GroupMeetingFlag = false,
                     Location = organization.Location,
@@ -517,9 +519,13 @@ namespace CmsWeb.Areas.Search.Controllers
         [Serializable]
         private class OrgSearchInfo
         {
+            public OrgSearchInfo() { }
             public OrgSearchInfo(OrgSearchModel m)
             {
-                this.CopyPropertiesFrom(m);
+                if (m != null)
+                {
+                    this.CopyPropertiesFrom(m);
+                }
             }
 
             public string Name { get; set; }

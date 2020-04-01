@@ -107,6 +107,11 @@ namespace CmsWeb.Models
                             orderby c.FundId, c.ContributionDate descending
                             select c;
                         break;
+                    case "Campus":
+                        q = from c in q
+                            orderby c.Person.Campu.Code, c.ContributionDate descending
+                            select c;
+                        break;
                     case "Name":
                         q = from c in q
                             orderby c.Person.Name2
@@ -139,6 +144,11 @@ namespace CmsWeb.Models
                     case "Fund":
                         q = from c in q
                             orderby c.FundId descending, c.ContributionDate descending
+                            select c;
+                        break;
+                    case "Campus":
+                        q = from c in q
+                            orderby c.Person.Campu.Code descending, c.ContributionDate descending
                             select c;
                         break;
                     case "Name":
@@ -275,13 +285,13 @@ namespace CmsWeb.Models
             CurrentDatabase.SubmitChanges();
         }
 
-        public static Contribution CreateContributionRecord(Contribution c)
+        public Contribution CreateContributionRecord(Contribution c)
         {
             var now = Util.Now;
             var r = new Contribution
             {
                 ContributionStatusId = ContributionStatusCode.Recorded,
-                CreatedBy = Util.UserId1,
+                CreatedBy = CurrentDatabase.UserId1,
                 CreatedDate = now,
                 PeopleId = c.PeopleId,
                 ContributionAmount = c.ContributionAmount,

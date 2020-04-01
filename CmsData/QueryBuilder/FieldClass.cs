@@ -102,6 +102,7 @@ namespace CmsData
                     case Param.OrgName:
                     case Param.Quarters:
                     case Param.FundIds:
+                    case Param.FundSet:
                         list.AddParamStr(attr, prop);
                         break;
                     case Param.Days:
@@ -110,6 +111,9 @@ namespace CmsData
                         break;
                     case Param.StartDate:
                     case Param.EndDate:
+                        list.AddParamDate(attr, prop);
+                        break;
+                    case Param.TaxNonTax:
                         list.AddParamDate(attr, prop);
                         break;
                 }
@@ -220,6 +224,7 @@ namespace CmsData
         EndDate,
         Quarters,
         FundIds,
+        FundSet,
         Age,
         Days,
         Ministry,
@@ -233,6 +238,7 @@ namespace CmsData
         PmmLabels,
         Tags,
         Tag,
+        TaxNonTax,
         SavedQueryIdDesc,
         MemberTypes,
         AttendTypes

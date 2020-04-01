@@ -24,7 +24,7 @@ namespace CmsData
                 BundleHeaderTypeId = BundleTypeCode.PreprintedEnvelope,
                 BundleStatusId = opentype,
                 ContributionDate = date,
-                CreatedBy = Util.UserId,
+                CreatedBy = db.UserId,
                 CreatedDate = now,
                 FundId = db.Setting("DefaultFundId", "1").ToInt(),
                 DepositDate = depositDate,
@@ -92,13 +92,13 @@ namespace CmsData
         {
             var bd = new BundleDetail
             {
-                CreatedBy = Util.UserId,
+                CreatedBy = db.UserId,
                 CreatedDate = DateTime.Now
             };
             var value = amount.GetAmount();
             bd.Contribution = new Contribution
             {
-                CreatedBy = Util.UserId,
+                CreatedBy = db.UserId,
                 CreatedDate = DateTime.Now,
                 ContributionDate = date,
                 FundId = fundid,
@@ -126,6 +126,7 @@ namespace CmsData
                 && (!includeReturnedReversed ? c.ContributionStatusId != ContributionStatusCode.Returned : 1 == 1)
                 && (!includeReturnedReversed ? c.ContributionStatusId != ContributionStatusCode.Reversed : 1 == 1)
                 && (!includePledges ? c.ContributionTypeId != ContributionTypeCode.Pledge : 1 == 1)
+                && (c.ContributionDate != null)
 
                 select c
                    );

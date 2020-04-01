@@ -146,7 +146,7 @@ namespace CmsWeb.Areas.Dialog.Controllers
             mt = new Meeting
             {
                 CreatedDate = Util.Now,
-                CreatedBy = Util.UserId1,
+                CreatedBy = CurrentDatabase.UserId1,
                 Description = Request["DescriptionList.Value"] ?? Request["Description"],
                 OrganizationId = organization.OrganizationId,
                 GroupMeetingFlag = model.ByGroup,

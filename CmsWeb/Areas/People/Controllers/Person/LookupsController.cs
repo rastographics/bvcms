@@ -22,7 +22,7 @@ namespace CmsWeb.Areas.People.Controllers
                         }).ToList();
             list.Insert(0, new { value = 0, text = "(not specified)" });
             if (CurrentDatabase.Setting("CampusRequired")
-                && Util.UserPeopleId == Util2.CurrentPeopleId
+                && CurrentDatabase.UserPeopleId == Util2.CurrentPeopleId
                 && !User.IsInRole("Admin"))
                 list.RemoveAt(0);
             return Json(list.ToArray(), JsonRequestBehavior.AllowGet);

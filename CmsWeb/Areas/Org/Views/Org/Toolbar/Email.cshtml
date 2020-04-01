@@ -4,12 +4,12 @@
 @using CmsData.Codes
 @using CmsData;
 @{
-    var twilio = TwilioHelper.userSendSMS(Util.UserId);
+    var twilio = TwilioHelper.userSendSMS(ViewExtensions2.CurrentDatabase.UserId);
     var oid = ViewBag.oid;
     var model = (OrganizationModel)ViewBag.model;
     var o = model.Org;
     var edit = User.IsInRole("Edit");
-    var qb = DbUtil.Db.QueryIsCurrentUser();
+    var qb = ViewExtensions2.CurrentDatabase.QueryIsCurrentUser();
 }
 <ul class="dropdown-menu dropdown-menu-large dropdown-menu-right container bluebar-menu-col-1">
     <li class="col-sm-12">

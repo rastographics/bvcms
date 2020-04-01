@@ -55,7 +55,7 @@ namespace CmsWeb.Areas.People.Controllers
             else
             {
                 Util2.CurrentPeopleId = 0;
-                Session.Remove("ActivePerson");
+                Util.ActivePerson = null;
             }
             CurrentDatabase.PurgePerson(id);
             DbUtil.LogActivity($"Deleted Record {i.person.Name} ({i.person.PeopleId})");
@@ -88,11 +88,11 @@ namespace CmsWeb.Areas.People.Controllers
         {
             if (all)
             {
-                Session["showallmeetings"] = true;
+                Util.ShowAllMeetings = true;
             }
             else
             {
-                Session.Remove("showallmeetings");
+                Util.ShowAllMeetings = null;
             }
 
             return Redirect("/Person2/" + id);

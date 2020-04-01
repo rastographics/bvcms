@@ -86,10 +86,16 @@ namespace CmsWeb.Areas.Search.Models
 
         public bool IsPublic { get; set; }
         public string Days { get; set; }
+        public string TaxNonTax { get; set; }
         public int? Age { get; set; }
         public string Quarters { get; set; }
         public string FundIds { get; set; }
-
+        private string _fundset;
+        public string FundSet
+        {
+            get => _fundset ?? "(not specified)";
+            set => _fundset = value;
+        }
         public string QuartersLabel
         {
             get { return QuartersVisible ? fieldMap.QuartersTitle : ""; }
@@ -198,7 +204,7 @@ namespace CmsWeb.Areas.Search.Models
             {
                 tagname = Util.SessionId; // not specifying an explicit name, so use the session id as a default
             }
-            var tag = Db.FetchOrCreateTag(tagname, Util.UserPeopleId, DbUtil.TagTypeId_Personal);
+            var tag = Db.FetchOrCreateTag(tagname, CurrentDatabase.UserPeopleId, DbUtil.TagTypeId_Personal);
             return TagAll(tag);
         }
 
@@ -241,7 +247,7 @@ namespace CmsWeb.Areas.Search.Models
             {
                 tagname = Util2.CurrentTag; // not specifying an explicit name, so use the current tag name as default
             }
-            var tag = Db.FetchOrCreateTag(tagname, Util.UserPeopleId, DbUtil.TagTypeId_Personal);
+            var tag = Db.FetchOrCreateTag(tagname, CurrentDatabase.UserPeopleId, DbUtil.TagTypeId_Personal);
             return UntagAll(tag);
         }
 
@@ -326,5 +332,16 @@ namespace CmsWeb.Areas.Search.Models
         }
         public bool UseEmployerNotTeacher => Db?.Setting("UseEmployerNotTeacher") ?? false;
         public bool ShowAltNameOnSearchResults => Db?.Setting("ShowAltNameOnSearchResults") ?? false;
+
+        public SelectList TaxTypes()
+        {
+            return new SelectList(
+                new List<CodeValueItem>
+                {
+                    new CodeValueItem { Code = "TaxDed", Value = "Tax Deductible" },
+                    new CodeValueItem { Code = "NonTaxDed", Value = "Non-Tax Deductible" },
+                    new CodeValueItem { Code = "Both", Value = "Both Tax & Non-Tax" },                    
+                }, "Code", "Value", TaxNonTax);
+        }
     }
 }

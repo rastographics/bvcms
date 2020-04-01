@@ -1,0 +1,247 @@
+﻿@using CmsData
+@using CmsData.Codes
+@using CmsWeb.Models
+@model Content
+@{
+    var templatedraft = Model.TypeID == ContentTypeCode.TypeUnlayerTemplate ? "Template" : "Draft";
+    var backtolist = Model.TypeID == ContentTypeCode.TypeUnlayerTemplate ? "emailTemplates" : "savedDrafts";
+    ViewBag.Title = "Edit Template";
+    ViewBag.PageHeader = "Compose Email " + templatedraft;
+    Layout = ViewExtensions2.TouchPointLayout();
+    int tid = ViewBag.TemplateID;
+    var rolelist = ContentModel.fetchRoles(ViewExtensions2.CurrentDatabase);
+}
+@section head
+{
+    @Fingerprint.Css("/Content/touchpoint/lib/select2/css/select2.css")
+    @Fingerprint.Css("/Content/touchpoint/lib/select2/css/select2-bootstrap.css")
+    <style>
+        .vertical-center {
+            height: 100%;
+            width: 100%;
+            text-align: center; /* align the inline(-block) elements horizontally */
+        }
+
+            .vertical-center:before { /* create a full-height inline block pseudo=element */
+                content: " ";
+                display: inline-block;
+                vertical-align: middle; /* vertical alignment of the inline element */
+                height: 100%;
+            }
+
+            .vertical-center > .container {
+                max-width: 100%;
+                display: inline-block;
+                vertical-align: middle; /* vertical alignment of the inline element */
+            }
+        .bvedit {
+            max-width: 600px;
+        }
+    </style>
+}
+
+<div class="row" id="Edit-VueApp">
+    <div class="col-md-9">
+        <div class="box box-responsive Edit-VueApp-box-responsive">
+            <div class="box-content Edit-VueApp-box-content">
+                @using (Html.BeginForm("SaveUnlayerTemplate", "Display", FormMethod.Post, new { @class="unlayer-form" }))
+                {
+                    <input type="hidden" id="UnlayerDesign" name="UnlayerDesign" />
+                    <input type="hidden" id="body" name="body" />
+                    <input type="hidden" id="UseUnlayer" name="UseUnlayer" value="true" />
+                    <input type="hidden" id="saveid" name="saveid" value="@Model.Id" />
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label for="name" class="control-label">Template Name</label>
+                                @{
+                                    IDictionary<string, object> attr = new Dictionary<string, object>() { { "class", "form-control" }, { @"v-model", @"editName" } };
+                                }
+                                @Html.TextBox("name", Model.Name, attr)
+                            </div>
+                            <div class="form-group">
+                                <label for="title" class="control-label">Title</label>
+                                @Html.TextBox("title", Model.Title, new { @class = "form-control" })
+                            </div>
+                            <div class="form-group">
+                                <label for="role" class="control-label">Role</label>
+                                @Html.DropDownList("roleid", new SelectList(rolelist, "RoleId", "RoleName"), new { @class = "form-control" })
+                            </div>
+                        </div>
+                        <div class="col-sm-4 pull-right" style="margin-bottom: 5px;">
+                            <a href="https://docs.touchpointsoftware.com/EmailTexting/EmailReplacements.html" target="_blank" class="btn btn-default btn-sm"><i class="fa fa-question-circle"></i> Email Replacement Codes</a>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group">
+                            <div class="col-sm-offset-2 col-sm-9 col-sm-offset-1">
+                                <iframe src="/Manage/Display/EmailBody?id=@tid" frameborder="0" class="unlayer-email-body" id="email-body" name="email-body"></iframe>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" style="margin-left:0px;">
+                        <a href="/Display/#tab_@(backtolist)" class="btn btn-default">Back to List</a>
+                        <a href="#" class="btn btn-danger delete"><i class="fa fa-trash"></i> Delete</a>
+                        <input id="SaveTemplateButton" type="submit" class="btn btn-primary" value="Save @templatedraft" />
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="unlayer-editor-modal" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content unlayer-modal-editor-content">
+            <div class="modal-body unlayer-modal-editor-body">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="pull-right" style="margin-bottom: 5px;">
+                            <a class="create-special-link btn btn-default btn-sm"><i class="fa fa-link"></i> Insert Special Link</a>
+                            <a href="https://docs.touchpointsoftware.com/EmailTexting/EmailReplacements.html" target="_blank" class="btn btn-default btn-sm"><i class="fa fa-question-circle"></i> Email Replacement Codes</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div id="unlayerEditor" class="unlayer-modal-editor"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <input type="button" value="Cancel" class="btn btn-default" id="unlayer-cancel-edit" />
+                <input type="submit" value="Save" class="btn btn-primary" id="unlayer-save-edit" />
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="special-links-modal">
+    <div class="modal-dialog" style="margin-top: 60px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Add Special Link</h4>
+            </div>
+            <div class="modal-body">
+                <form id="special_links_form">
+                    <div class="row form-group">
+                        <div class="col-sm-4">
+                            <label for="special_links_type">Type</label>
+                        </div>
+                        <div class="col-sm-8">
+                            <select class="form-control" id="special_links_type" name="special_links_type">
+                                <option value="0" selected>&lt;not set&gt;</option>
+                                <option value="registerlink">Register Link (Individual)</option>
+                                <option value="registerlink2">Register Link 2 (Family)</option>
+                                <option value="regretslink">Regrets Link</option>
+                                <option value="rsvplink">RSVP Link</option>
+                                <option value="sendlink">Send Link (Individual)</option>
+                                <option value="sendlink2">Send Link 2 (Family)</option>
+                                <option value="supportlink">Support Link</option>
+                                <option value="votelink">Vote Link</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div id="org_id" class="row form-group">
+                        <div class="col-sm-4">
+                            <label for="org_id">Org ID</label>
+                        </div>
+                        <div class="col-sm-8">
+                            <input type="number" class="form-control" name="org_id" />
+                        </div>
+                    </div>
+                    <div id="meeting_id" class="row form-group">
+                        <div class="col-sm-4">
+                            <label for="meeting_id">Meeting ID</label>
+                        </div>
+                        <div class="col-sm-8">
+                            <input type="number" class="form-control" name="meeting_id" />
+                        </div>
+                    </div>
+                    <div id="message" class="row form-group">
+                        <div class="col-sm-4">
+                            <label for="message">Message</label>
+                        </div>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" name="message" />
+                        </div>
+                    </div>
+                    <div id="small_group" class="row form-group">
+                        <div class="col-sm-4">
+                            <label for="small_group">Small Group</label>
+                        </div>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" name="small_group" />
+                        </div>
+                    </div>
+                    <div id="confirmation" class="row form-group">
+                        <div class="col-sm-4">
+                            <label for="confirmation">Confirmation</label>
+                        </div>
+                        <div class="col-sm-8">
+                            <select class="form-control" name="confirmation">
+                                <option value="true" selected>Yes, send confirmation</option>
+                                <option value="false">No, do not send confirmation</option>
+                            </select>
+                        </div>
+                    </div>
+                </form>
+                <div id="result" class="row form-group">
+                    <div class="col-sm-12">
+                        <label for="tag">Copy and paste this into the link URL field:</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" name="tag" style="cursor: text;" readonly />
+                            <span class="input-group-btn">
+                                <button class="btn btn-primary done-special-links-modal" type="button">Copy and Close</button>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <input type="button" value="Cancel" class="btn btn-default close-special-links-modal" />
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts
+{
+    @Fingerprint.Script("/Content/touchpoint/lib/select2/js/select2.min.js")
+    @ViewExtensions2.UnlayerEditor()
+    @Fingerprint.Script("/Content/touchpoint/js/email/compose.js")
+    <script type="text/javascript">
+    $(function () {
+        $("a.delete").click(function (ev) {
+            ev.preventDefault();
+            var href = this.href;
+
+            swal({
+                title: "Are you sure?",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonClass: "btn-danger",
+                confirmButtonText: "Yes, delete it!",
+                closeOnConfirm: false
+            },
+                function () {
+                    $.post("/Display/ContentDelete", { id: "@Model.Id" }, function (ret) {
+                        if (ret && ret.error)
+                            swal("Error!", ret.error, "error");
+                        else {
+                            swal({
+                                title: "Deleted!",
+                                type: "success"
+                            },
+                                function () {
+                                    window.location = "/Manage/Display";
+                                });
+                        }
+                    });
+                });
+        });
+        $('[data-toggle="popover"]').popover({ html: true });
+        $('[data-toggle="popover"]').click(function (ev) {
+            ev.preventDefault();
+        });
+    });
+    </script>
+}
