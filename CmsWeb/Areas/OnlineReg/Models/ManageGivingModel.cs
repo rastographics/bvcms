@@ -27,6 +27,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
     {
         [NonSerialized]
         private CMSDataContext _currentDatabase;
+        [JsonIgnore]
         public CMSDataContext CurrentDatabase
         {
             get => _currentDatabase ?? (CurrentDatabase = DbUtil.Db);
@@ -106,6 +107,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
         public string recaptchaSiteKey => CurrentDatabase.Setting("googleReCaptchaSiteKey", ConfigurationManager.AppSettings["googleReCaptchaSiteKey"]);
         public bool useRecaptcha => CurrentDatabase.Setting("UseRecaptchaForManageGiving") && recaptchaSiteKey.HasValue();
 
+        [JsonIgnore]
         public IEnumerable<SelectListItem> Countries
         {
             get
@@ -135,29 +137,36 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         [NonSerialized]
         private Person _person;
+        [JsonIgnore]
         public Person person => _person ?? (_person = CurrentDatabase.LoadPersonById(pid));
 
         [NonSerialized]
         private Organization _organization;
+        [JsonIgnore]
         public Organization Organization => _organization ?? (_organization = CurrentDatabase.Organizations.Single(d => d.OrganizationId == orgid));
 
         [NonSerialized]
         private Settings _setting;
+        [JsonIgnore]
         public Settings Setting => _setting ?? (_setting = CurrentDatabase.CreateRegistrationSettings(orgid));
 
+        [JsonIgnore]
         public bool NoCreditCardsAllowed
         {
             get => CurrentDatabase.Setting("NoCreditCardGiving", "false").ToBool();
             set { }
         }
+        [JsonIgnore]
         public bool NoEChecksAllowed
         {
             get => CurrentDatabase.Setting("NoEChecksAllowed", "false").ToBool();
             set { }
         }
 
+        [JsonIgnore]
         public string SpecialGivingFundsHeader => CurrentDatabase.Setting("SpecialGivingFundsHeader", "Special Giving Funds");
 
+        [JsonIgnore]
         public bool HasManagedGiving => person?.ManagedGiving() != null;
 
         [Obsolete(Errors.ModelBindingConstructorError, true)]
@@ -593,6 +602,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             }
         }
 
+        [JsonIgnore]
         public string Instructions
         {
             get

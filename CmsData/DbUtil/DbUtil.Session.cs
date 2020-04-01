@@ -58,14 +58,14 @@ namespace CmsData
 
         public static int CurrentGroupsMode
         {
-            get => (int)Util.GetFromSession(STR_ActiveGroupMode, 0);
-            set => Util.SetValueInSession(STR_ActiveGroupMode, value);
+            get => Util.GetFromSession(STR_ActiveGroupMode, "0").ToInt();
+            set => Util.SetValueInSession(STR_ActiveGroupMode, value.ToString());
         }
 
         public static int CurrentPeopleId
         {
-            get => Util.GetFromSession(STR_ActivePersonId, 0).ToInt();
-            set => Util.SetValueInSession(STR_ActivePersonId, value);
+            get => Util.GetFromSession(STR_ActivePersonId, "0").ToInt();
+            set => Util.SetValueInSession(STR_ActivePersonId, value.ToString());
         }
 
         public static string FromMobile => Util.GetFromSession<string>(STR_FromMobile, null);
@@ -126,8 +126,8 @@ namespace CmsData
 
         public static int VisitLookbackDays
         {
-            get => Util.GetFromSession(STR_VisitLookbackDays, 180).ToInt();
-            set => Util.SetValueInSession(STR_VisitLookbackDays, value);
+            get => Util.GetFromSession(STR_VisitLookbackDays, "180").ToInt();
+            set => Util.SetValueInSession(STR_VisitLookbackDays, value.ToString());
         }
 
         [Serializable]
@@ -151,6 +151,10 @@ namespace CmsData
                 }
                 return mru;
             }
+            set
+            {
+                Util.SetValueInSession(STR_MostRecentOrgs, value);
+            }
         }
 
         public static List<MostRecentItem> MostRecentPeople
@@ -166,6 +170,10 @@ namespace CmsData
                     Util.SetValueInSession(STR_MostRecentPeople, mru);
                 }
                 return mru;
+            }
+            set
+            {
+                Util.SetValueInSession(STR_MostRecentPeople, value);
             }
         }
 

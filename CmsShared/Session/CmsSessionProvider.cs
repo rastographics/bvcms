@@ -12,7 +12,18 @@ namespace CMSShared.Session
     {
         private CMSDataContext db { get; set; }
         private Dictionary<string, string> LocalCache { get; set; }
-        public string CurrentSessionId { get; set; } = HttpContextFactory.Current?.Session?.SessionID;
+        public string CurrentSessionId { get; set; } = GetSessionId();
+
+        private static string GetSessionId()
+        {
+            var context = HttpContextFactory.Current;
+            if (context != null)
+            {
+                return context.Session?.SessionID ?? context.Request?.Cookies?["_sess"]?.Value;
+            }
+            return null;
+        }
+
         public IEnumerable<string> Keys => LocalCache.Keys;
 
         public CmsSessionProvider()
@@ -119,7 +130,17 @@ namespace CMSShared.Session
                     }
                     sv.Value = value;
                 }
-                db.SubmitChanges();
+                try
+                {
+                    db.SubmitChanges();
+                }
+                catch (Exception)
+                {
+                    if (Util.IsDebug())
+                    {
+                        throw;
+                    }
+                }
             }
             return sv;
         }

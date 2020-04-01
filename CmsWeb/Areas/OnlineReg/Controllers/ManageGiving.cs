@@ -150,7 +150,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 return View("ManageGiving/Setup", m);
             }
 
-            TempData["managegiving"] = m;
+            RequestManager.SessionProvider.Add("managegiving", m);
             return Redirect("/OnlineReg/ConfirmRecurringGiving");
         }
 
@@ -168,7 +168,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 
         public ActionResult ConfirmRecurringGiving()
         {
-            var m = TempData["managegiving"] as ManageGivingModel;
+            var m = RequestManager.SessionProvider.Get<ManageGivingModel>("managegiving");
             if (m == null)
             {
                 return Content("No active registration");
@@ -214,7 +214,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             m.ThankYouMessage = "Your recurring giving has been stopped.";
 
             m.Log("Remove");
-            TempData["managegiving"] = m;
+            RequestManager.SessionProvider.Add("managegiving", m);
             return Json(new { Url = Url.Action("ConfirmRecurringGiving") });
         }
 

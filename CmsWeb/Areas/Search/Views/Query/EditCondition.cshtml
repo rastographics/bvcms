@@ -72,7 +72,20 @@
         @if (Model.FundIdsVisible)
         {
             <div class="col-sm-6">
+
                 @Html.EditorFor(m => m.FundIds)
+            </div>
+        }
+        @if (Model.FundSetVisible)
+        {
+            <div class="col-sm-6">
+                @Html.EditorFor(m => m.FundSet, "DropDown", new { items = Model.CustomFundsList() })
+            </div>
+        }
+        @if (Model.TaxNonTaxVisible)
+        {
+            <div class="col-sm-6">
+                @Html.EditorFor(m => m.TaxNonTax, "DropDown", new { items = Model.TaxTypes() })
             </div>
         }
         @if (Model.DaysVisible)

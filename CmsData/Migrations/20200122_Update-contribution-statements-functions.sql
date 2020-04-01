@@ -1,4 +1,4 @@
-IF NOT EXISTS(SELECT 1 FROM sys.columns WHERE Name = N'UUId' AND Object_ID = Object_ID(N'dbo.ContributionsRun'))
+IF NOT EXISTS(SELECT 1 FROM sys.columns WHERE Name = N'Sets' AND Object_ID = Object_ID(N'dbo.ContributionsRun'))
 ALTER TABLE [dbo].[ContributionsRun] ALTER COLUMN [Sets] nvarchar(150)
 GO
 
