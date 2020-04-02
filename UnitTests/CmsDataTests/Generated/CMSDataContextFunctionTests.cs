@@ -127,8 +127,10 @@ namespace CmsDataTests
             }
         }
 
-        [Fact]
-        public void GetTotalContributionsDonor2Test()
+        [Theory]
+        [InlineData(1)] //Generic Envelopes  
+        [InlineData(4)] //Online
+        public void GetTotalContributionsDonor2Test(int BundleType)
         {
             var fromDate = new DateTime(2016, 4, 4);
             var toDate = new DateTime(2016, 7, 31);
@@ -136,6 +138,9 @@ namespace CmsDataTests
             using (var db = CMSDataContext.Create(Util.Host))
             {
                 var bundleHeader = MockContributions.CreateSaveBundle(db);
+                bundleHeader.BundleHeaderTypeId = BundleType;
+                db.SubmitChanges();
+
                 var Contribution = MockContributions.CreateSaveContribution(db, bundleHeader, fromDate, 120, peopleId: 1);
 
                 var TotalContributionsDonor = db.GetTotalContributionsDonor2(fromDate, toDate, null, null, true, null, null).ToList();
