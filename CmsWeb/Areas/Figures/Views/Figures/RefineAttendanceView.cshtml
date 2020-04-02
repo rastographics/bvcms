@@ -80,7 +80,11 @@
             $('#DrawChart').click(function () {
                 var e = document.getElementById('Attendance_chart_display');
                 e.style.display = 'block';
-                var selectedValues = $('#Organization-DropdownId').val();
+                var selectedValues = new Array();
+                var selectedOptions = document.getElementById('Selected-Organizations-DropdownId');
+                for (i = 0; i < selectedOptions.options.length; i++) {
+                    selectedValues[i] = selectedOptions.options[i].value;
+                }
                 $("#Attendance_chart_display").load('/Figures/Figures/AttendanceChartDisplayView', { orgIdsArr: selectedValues });
             });
         });
