@@ -274,7 +274,7 @@ namespace CmsWeb.Models
                 (uu.Username == userName ||
                 uu.Person.EmailAddress == userName ||
                 uu.Person.EmailAddress2 == userName) &&
-                uu.Person.Deceased != true
+                uu.Person.DeceasedDate == null
                 );
 
             var impersonating = false;
