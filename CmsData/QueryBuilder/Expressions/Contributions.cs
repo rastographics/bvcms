@@ -721,7 +721,7 @@ namespace CmsData
             var amt = TextValue.ToDecimal() ?? 0;
             return ContributionAmount2(StartDate, EndDate, fund, amt, false);
         }
-        internal Expression NonTaxDedAmount()
+        internal Expression NonTaxDedAmountBothJoint()
         {
             var fund = Quarters.AllDigits() ? Quarters.ToInt() : db.Setting(Quarters, "").ToInt();
             var amt = TextValue.ToDecimal() ?? 0;
