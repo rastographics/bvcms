@@ -164,7 +164,7 @@ namespace CmsData
         MiddleName,
         NeedAttendance,
         NickName,
-        NonTaxDedAmount,
+        NonTaxDedAmountBothJoint,
         NonTaxDedAmountDonorOnly,
         NumberOfMemberships,
         NumberOfFamilyMembers,
