@@ -305,8 +305,26 @@ namespace CmsWeb.Areas.Search.Models
             }
             else
             {
-                queryable = CurrentDatabase.OrgSearch(Name, ProgramId, DivisionId, TypeId, CampusId, ScheduleId, StatusId, OnlineReg,
-                 CurrentDatabase.CurrentUser.UserId, TagDiv);
+                queryable = CurrentDatabase.OrgSearch(Name, ProgramId, DivisionId, TypeId, CampusId, ScheduleId, StatusId, OnlineReg, CurrentDatabase.CurrentUser.UserId, TagDiv);
+                //queryable = from o in CurrentDatabase.Organizations
+                //            join d in CurrentDatabase.Divisions on o.DivisionId equals d.Id
+                //            join p in CurrentDatabase.Programs on d.ProgId equals p.Id
+                //            join sc in CurrentDatabase.OrgSchedules on o.OrganizationId equals sc.OrganizationId
+                //            where SqlMethods.Like(o.OrganizationName, "%" + Name + "%")
+                //            where (d.Id == DivisionId)
+                //            select new
+                //            {
+                //                OrganizationId = o.OrganizationId,
+                //                OrganizationName = o.OrganizationName,
+                //                OrganizationStatusId = o.OrganizationStatusId,
+                //                Program = p.Name,
+                //                ProgramId = ProgramId,
+                //                Division = d.Id,
+                //                Divisions = d.Name,
+                //                ScheduleDescription =
+
+                //            };
+                //var test = CurrentDatabase.Organizations.Where(o => o.OrganizationId != 1).ToArray();
             }
 
             if (ExtraValuesDict != null && ExtraValuesDict.Any())
