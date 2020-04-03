@@ -149,3 +149,7 @@ Vue.component("search-add", {
 new Vue({
     el: "#search-add-component"
 })
+
+new Vue({
+    el: "#search-add-component-mobile"
+})

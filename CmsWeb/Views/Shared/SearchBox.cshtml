@@ -16,7 +16,9 @@
                         <div class="visible-xs-block">
                             <div class="input-group">
                                 <span class="input-group-addon"><i class="fa fa-search fa-fw"></i></span>
-                                <input type="text" class="form-control search-box-input mousetrap" placeholder="People or organizations...">
+                                <div id="search-add-component-mobile">
+                                    <search-add v-on:display-results="updateResults(results, context)" :target="'#search-box-search-person'" :context="'search'" :placeholder="'People or organizations...'"></search-add>
+                                </div>
                             </div>
                         </div>
                     </div>
