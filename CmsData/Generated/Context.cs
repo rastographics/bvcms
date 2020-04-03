@@ -6036,14 +6036,16 @@ namespace CmsData
             [Parameter(Name = "top", DbType = "int")] int? top,
             [Parameter(Name = "sdate", DbType = "datetime")] DateTime? sdate,
             [Parameter(Name = "edate", DbType = "datetime")] DateTime? edate,
-            [Parameter(DbType = "varchar")] string fundids
+            [Parameter(DbType = "varchar")] string fundids,
+            [Parameter(DbType = "bit")] bool? nontaxded
             )
         {
             IExecuteResult result = ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 top,
                 sdate,
                 edate,
-                fundids
+                fundids,
+                nontaxded
             );
             return ((ISingleResult<TopGiver>)(result.ReturnValue));
         }
