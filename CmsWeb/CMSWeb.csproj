@@ -1909,6 +1909,7 @@
     <Content Include="Areas\Org\Views\Org\DisplayTemplates\ESpaceEventId.cshtml" />
     <Content Include="Areas\Org\Views\Org\Other\eSpaceResults.cshtml" />
     <Content Include="Areas\Manage\Views\Batch\RetrieveBatchData.cshtml" />
+    <Content Include="Content\touchpoint\src\less\figures.less" />
     <Content Include="Areas\Manage\Views\Display\UnLayerCompose.cshtml" />
     <Content Include="Areas\Manage\Views\Display\EmailBody.cshtml" />
     <Content Include="Content\touchpoint\src\less\unlayer-editor.less" />
