@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using RestSharp;
 using System;
+using System.Linq;
 using System.Net;
 using System.Web.Mvc;
 using UtilityExtensions;
@@ -10,7 +11,7 @@ namespace CmsWeb.Areas.Finance.Models
 {
     public class RemoteDepositCapture
     {
-        public static ActionResult Export (CMSDataContext db, int bundleId, string service, string token)
+        public static ActionResult Export(CMSDataContext db, int bundleId, string accountNumber, string service, string token)
         {
             db.LogActivity($"Downloading RDC file for bundle {bundleId}", pid: db.CurrentUser.PeopleId, uid: db.CurrentUser.UserId);
             var client = new RestClient
@@ -19,14 +20,17 @@ namespace CmsWeb.Areas.Finance.Models
                 Timeout = 120000,
             };
             var request = new RestRequest("api/export", Method.POST);
-            request.AddJsonBody(new { Db = Util.Host, Id = bundleId });
+            request.AddJsonBody(new { Db = Util.Host, Id = bundleId, AccountNumber = accountNumber });
             request.AddHeader("Authorization", $"Bearer {token}");
             var response = client.Execute(request);
             if (response.StatusCode == HttpStatusCode.OK)
             {
-                return new FileContentResult(response.RawBytes, "application/x-icl")
+                var fileNameFormat = db.Setting("RemoteDepositFilename", "RemoteDeposit-{host}-{bundleid}.icl");
+                var fileDownloadName = CreateFileDownloadName(fileNameFormat, bundleId);
+                var ext = fileDownloadName.Split('.').Last();
+                return new FileContentResult(response.RawBytes, $"application/x-{ext}")
                 {
-                    FileDownloadName = $"RemoteDeposit-{Util.Host}-{bundleId}.icl"
+                    FileDownloadName = fileDownloadName
                 };
             }
             else
@@ -43,6 +47,18 @@ namespace CmsWeb.Areas.Finance.Models
                 }
                 throw exception;
             }
+        }
+
+        private static string CreateFileDownloadName(string format, int bundleId)
+        {
+            var filename = format.Replace("{host}", Util.Host, true)
+                                 .Replace("{bundleid}", $"{bundleId}", true)
+                                 .Replace("{date", "{0", true);
+            if (filename.Contains("{0"))
+            {
+                filename = string.Format(filename, DateTime.Now);
+            }
+            return filename;
         }
     }
 }

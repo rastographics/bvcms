@@ -106,7 +106,7 @@ namespace CmsWeb.Areas.Public.Models.MobileAPIv2
                 return Error.MALFORMED_BASE64;
             }
 
-            string[] userAndPassword = credentials.SplitStr(":");
+            string[] userAndPassword = credentials.SplitStr(":", 2);
 
             if (userAndPassword.Length != 2)
             {

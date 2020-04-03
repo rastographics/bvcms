@@ -1,14 +1,14 @@
 Vue.component("search-add", {
     props: ["target", "context", "placeholder"],
     template:
-        "<input v-on:keyup='searchInput($event)' v-model='searchVal' type='text' class='form-control search-box-input mousetrap' :placeholder='placeholder'>",
-    data() {
+        '<input v-on:keyup="searchInput($event)" v-model="searchVal" type="text" class="form-control search-box-input mousetrap" :placeholder="placeholder">',
+    data: function() {
         return {
             selectedIndex: null,
             searchVal: ""
         }
     },
-    created() {
+    created: function() {
         var self = this;
         this.selectedIndex = -1;
 
@@ -58,10 +58,10 @@ Vue.component("search-add", {
             });
     },
     methods: {
-        updateResults(results, context) {
+        updateResults: function(results, context) {
             this.$emit("display-results", results, context);
         },
-        prefetch() {
+        prefetch: function() {
             var self = this;
             $.ajax({
                 type: "GET",
@@ -71,7 +71,7 @@ Vue.component("search-add", {
                 }
             });
         },
-        keyboardSelectSearchResult(direction) {
+        keyboardSelectSearchResult: function(direction) {
             var searchResultCount = $(".search-results:visible .dropdown-search-result").length;
             var $lastSelected = $(".dropdown-search-result:nth(" + this.selectedIndex + ")");
             $lastSelected.removeClass("dropdown-search-result-selected");
@@ -112,7 +112,7 @@ Vue.component("search-add", {
                 }
             }
         },
-        chooseSearchResult() {
+        chooseSearchResult: function() {
             // if a user hasn't selected anything at this point, select the first item in the list
             if (this.selectedIndex === -1) {
                 this.selectedIndex = 0;

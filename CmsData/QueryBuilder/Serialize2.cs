@@ -114,7 +114,9 @@ namespace CmsData
             w.WriteAttr("OrgType", OrgType);
             w.WriteAttr("Days", Days);
             w.WriteAttr("Quarters", Quarters);
+            w.WriteAttr("TaxNonTax", TaxNonTax);
             w.WriteAttr("FundIds", FundIds);
+            w.WriteAttr("FundSet", FundSet);
             w.WriteAttr("Tags", Tags);
             w.WriteAttr("Schedule", Schedule);
             w.WriteAttr("Campus", Campus);
@@ -164,6 +166,7 @@ namespace CmsData
                 Days = Attribute(r, "Days").ToInt(),
                 Quarters = Attribute(r, "Quarters"),
                 FundIds = Attribute(r, "FundIds"),
+                FundSet = Attribute(r, "FundSet"),
                 Tags = Attribute(r, "Tags"),
                 Ministry = Attribute(r, "Ministry"),
                 Schedule = Attribute(r, "Schedule"),
@@ -177,6 +180,7 @@ namespace CmsData
                 OrgType2 = Attribute(r, "OrgType2").ToInt(),
                 MemberTypes = Attribute(r, "MemberTypes"),
                 AttendTypes = Attribute(r, "AttendTypes"),
+                TaxNonTax = Attribute(r, "TaxNonTax"),
                 AllConditions = allClauses
             };
             if (p == null)

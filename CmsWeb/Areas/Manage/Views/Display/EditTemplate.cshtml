@@ -5,53 +5,54 @@
     ViewBag.Title = "Edit Template";
     ViewBag.PageHeader = "Edit Template";
     Layout = ViewExtensions2.TouchPointLayout();
+    var rolelist = ContentModel.fetchRoles(ViewExtensions2.CurrentDatabase);
 }
 @using (Html.BeginForm("ContentUpdate", "Display", FormMethod.Post))
 {
     <div class="row" id="Edit-VueApp">
-      <div class="col-md-9">
-        <div class="box box-responsive">
-          <div class="box-content">
-            <div class="row">
-              <div class="col-sm-4">
-                <div class="@((Model.Name == "Empty Template") ? "hidden" : "form-group")">
-                  <label for="name" class="control-label">Name</label>
-                  @{
-                    IDictionary<string, object> attr = new Dictionary<string, object>() { { "class", "form-control" }, { @"v-model", @"editName" } };
-                  }
-                  @Html.TextBox("name", Model.Name, attr)
-                  <small v-if="notValidName" class="red-empty">"Empty Template" name cannot be used</small> 
+        <div class="col-md-9">
+            <div class="box box-responsive">
+                <div class="box-content">
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <div class="@((Model.Name == "Empty Template") ? "hidden" : "form-group")">
+                                <label for="name" class="control-label">Template Name</label>
+                                @{
+                                    IDictionary<string, object> attr = new Dictionary<string, object>() { { "class", "form-control" }, { @"v-model", @"editName" } };
+                                }
+                                @Html.TextBox("name", Model.Name, attr)
+                                <small v-if="notValidName" class="red-empty">"Empty Template" name cannot be used</small>
+                            </div>
+                            <div class="form-group">
+                                <label for="title" class="control-label">Title</label>
+                                @Html.TextBox("title", Model.Title, new { @class = "form-control" })
+                            </div>
+                            <div class="@((Model.Name == "Empty Template") ? "hidden" : "form-group")">
+                                <label for="role" class="control-label">Role</label>
+                                @Html.DropDownList("roleid", new SelectList(rolelist, "RoleId", "RoleName"), new { @class = "form-control" })
+                            </div>
+                        </div>
+                        <div class="col-sm-4 pull-right" style="margin-bottom: 5px;">
+                            <a href="https://docs.touchpointsoftware.com/EmailTexting/EmailReplacements.html" target="_blank" class="btn btn-default btn-sm"><i class="fa fa-question-circle"></i> Email Replacement Codes</a>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.TextArea("body", new { @class = "form-control", rows = "26" })
+                    </div>
+                    <small v-if="isEmptyTemplate" class="red-empty">"Empty Template" cannot be deleted or renamed</small><br /><br />
+                    <a href="/Display/#tab_emailTemplates" class="btn btn-default">Back to List</a>
+                    <a href="#" v-bind:class="'btn btn-danger delete ' + (isEmptyTemplate ? 'disabled' : '')"><i class="fa fa-trash"></i> Delete</a>
+                    <input type="submit" v-bind:class="'btn btn-primary ' + (notValidName ? 'disabled' : '')" value="Save Template" />
                 </div>
-                <div class="form-group">
-                  <label for="title" class="control-label">Title</label>
-                  @Html.TextBox("title", Model.Title, new { @class = "form-control" })
-                </div>
-                <div class="@((Model.Name == "Empty Template") ? "hidden" : "form-group")">
-                  <label for="role" class="control-label">Role</label>
-                  @Html.DropDownList("roleid", new SelectList(ContentModel.fetchRoles(), "RoleId", "RoleName"), new { @class = "form-control" })
-                </div>
-              </div>
-              <div class="col-sm-4 pull-right" style="margin-bottom: 5px;">
-                <a href="https://docs.touchpointsoftware.com/EmailTexting/EmailReplacements.html" target="_blank" class="btn btn-default btn-sm"><i class="fa fa-question-circle"></i> Email Replacement Codes</a>
-              </div>
             </div>
-            <div class="form-group">
-              @Html.TextArea("body", new { @class = "form-control", rows = "26" })
-            </div>
-            <small v-if="isEmptyTemplate" class="red-empty">"Empty Template" cannot be deleted or renamed</small><br /><br />
-            <a href="/Display/#tab_emailTemplates" class="btn btn-default">Back to List</a>
-            <a href="#" v-bind:class="'btn btn-danger delete ' + (isEmptyTemplate ? 'disabled' : '')"><i class="fa fa-trash"></i> Delete</a>
-            <input type="submit" v-bind:class="'btn btn-primary ' + (notValidName ? 'disabled' : '')" value="Save Template" />
-          </div>
         </div>
-      </div>
     </div>
     @Html.Hidden("id");
 }
 @section scripts
 {
-  @ViewExtensions2.CkEditor()
-  <script type="text/javascript">
+    @ViewExtensions2.CkEditor()
+    <script type="text/javascript">
 
     function getParameterByName(name) {
       name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
@@ -120,7 +121,7 @@
 
       });
     });
-  </script>
+    </script>
 
     <script type="text/javascript">
         const EditlApp = new Vue({
