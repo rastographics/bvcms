@@ -185,7 +185,10 @@ namespace CmsWeb.Areas.Setup.Models
             var m = new PythonScriptModel(CurrentDatabase);
             m.pythonModel.HttpMethod = "get";
             m.pythonModel.DictionaryAdd("HTMLContent", HTMLContent.Body);
-            m.pythonModel.DictionaryAdd("SQLContent", SQLContent.Body);
+            if (SQLContent != null)
+            {
+                m.pythonModel.DictionaryAdd("SQLContent", SQLContent.Body);
+            }
             m.pythonModel.DictionaryAdd("CurrentUser", CurrentDatabase.CurrentUser);
             m.pythonModel.DictionaryAdd("CurrentPerson", CurrentDatabase.CurrentUserPerson);
             return m.RunPythonScript(PythonContent.Body);

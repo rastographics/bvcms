@@ -10,13 +10,30 @@
         .form-group .control-label {
             display: none;
         }
-        .widget-preview .box.loading {
+        .widget-preview .embed.loading {
             opacity: 0.5;
         }
         .widget-preview ul.list-group {
             max-height: 215px;
             overflow-y: auto;
             margin-bottom: 0;
+        }
+        .widget-preview ul.list-group li {
+            border-left: none;
+            border-right: none;
+            padding-left: 20px;
+        }
+
+        .widget-preview ul.list-group li.section {
+            font-weight: bold;
+        }
+
+        .widget-preview ul.list-group li.indent {
+            padding-left: 25px;
+        }
+
+        .list-group-item > .label {
+            float: right;
         }
         .widget-preview .box > .center {
             display: flex;
@@ -125,7 +142,7 @@
             <div>
                 <span class="h4">Widget Preview</span> <a href="#" class="load-preview" data-url="/HomeWidgets/Embed/@Model.Id.ToString()"><i class="fa fa-refresh"></i></a>
             </div>
-            <div class="box">
+            <div class="embed">
             </div>
         </div>
     }
@@ -151,11 +168,11 @@
             e.preventDefault();
             var icon = $(this).children('i');
             var url = $(this).data('url');
-            var el = $('.widget-preview .box');
+            var el = $('.widget-preview .embed');
             el.addClass('loading');
             icon.addClass('fa-spin');
             $.get(url, function (data) {
-                el.replaceWith(data);
+                el.html(data);
                 el.removeClass('loading');
                 icon.removeClass('fa-spin');
             });
