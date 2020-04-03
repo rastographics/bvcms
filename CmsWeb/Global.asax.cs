@@ -55,11 +55,6 @@ namespace CmsWeb
                 return;
             }
 
-            if (Request.Url.Authority.StartsWith("direct"))
-            {
-                return;
-            }
-
             if (User.Identity.IsAuthenticated)
             {
                 var host = CMSDataContext.GetHost(new HttpContextWrapper(Context));
@@ -73,6 +68,7 @@ namespace CmsWeb
 
                 var db = CMSDataContext.Create(HttpContextFactory.Current);
                 var idb = CMSImageDataContext.Create(HttpContextFactory.Current);
+                HttpContextFactory.Current.Items["SessionProvider"] = new CMSShared.Session.CmsSessionProvider(db);
                 AccountModel.SetUserInfo(db, idb, Util.UserName);
             }
             Util.Version = Assembly.GetExecutingAssembly().GetName().Version.ToString();
@@ -182,7 +178,7 @@ namespace CmsWeb
 
             if (Context.User != null && Context.User.Identity.IsAuthenticated)
             {
-                var db = CMSDataContext.Create(new HttpContextWrapper(Context));
+                var db = CMSDataContext.Create(HttpContextFactory.Current);
                 var user = db.CurrentUser;
                 if (user != null)
                 {

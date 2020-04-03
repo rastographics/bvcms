@@ -128,6 +128,7 @@
     <Compile Include="Extensions\ContributionTests.cs" />
     <Compile Include="Finance\AcceptivaGatewayTests.cs" />
     <Compile Include="Finance\Acceptiva\Core\Helpers\ISO3166Tests.cs" />
+    <Compile Include="Finance\MultipleGatewayUtilsTests.cs" />
     <Compile Include="Generated\CMSDataContextFunctionTests.cs" />
     <Compile Include="Generated\ContextTests.cs" />
     <Compile Include="Organization\OrganizationTests.cs" />

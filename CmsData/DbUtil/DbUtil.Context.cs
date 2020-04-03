@@ -2077,7 +2077,7 @@ This search uses multiple steps which cannot be duplicated in a single query.
             DateTime? dateTo = (enddt != null) ? (DateTime?)DateTime.Parse(enddt) : null;
 
             var rangeTo = dateTo ?? DateTime.Now;
-            var rangeFrom = dateFrom ?? rangeTo.AddDays(0 - Setting("AutoSyncBatchDatesWindow").ToInt());
+            var rangeFrom = dateFrom ?? rangeTo.AddDays(0 - Math.Max(1, Setting("AutoSyncBatchDatesWindow").ToInt()));
 
             var transactions
                 = from t in ViewTransactionLists

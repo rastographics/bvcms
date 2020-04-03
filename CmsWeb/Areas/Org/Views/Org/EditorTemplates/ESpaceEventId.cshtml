@@ -55,6 +55,7 @@
             $menu = $('#espace-event-menu'),
             $unlink = $('#espace-event-unlink'),
             $list = $('#espace-event-list'),
+            listMaxWidth = 400,
             listMinWidth = 200,
             timer;
 
@@ -64,8 +65,10 @@
             $.get('/Org/EspaceSearch/', { q: q }, function (result) {
                 $list.find('li:not(.input-group)').remove();
                 $list.append(result);
-                listMinWidth = Math.max(listMinWidth, $list.width());
-                $list.css({ minWidth: listMinWidth + 'px' });
+                listMaxWidth = $menu.offset().left + $menu.width();
+                listMinWidth = Math.min(listMaxWidth, Math.max(listMinWidth, $list.width()));
+
+                $list.css({ minWidth: listMinWidth + 'px', maxWidth:listMaxWidth + 'px' });
                 $search.find('i').removeClass('fa-refresh fa-spin').addClass('fa-search').parent().removeAttr('disabled');
             });
         }

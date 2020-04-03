@@ -124,7 +124,7 @@ namespace CmsData
             return expr;
         }
         public Expression IsRecentGiverFunds()
-        {
+        {            
             if (!db.FromBatch)
             {
                 if (db.CurrentUser == null || db.CurrentUser.Roles.All(rr => rr != "Finance"))
@@ -134,14 +134,19 @@ namespace CmsData
             }
 
             var tf = CodeIds == "1";
-            var fundcsv = APIContributionSearchModel.GetCustomFundSetList(db, Quarters);
+            var fundcsv = APIContributionSearchModel.GetCustomFundSetList(db, FundSet);
             if (fundcsv == null)
             {
-                return AlwaysFalse();
+                fundcsv = db.ContributionFunds.Select(cc => cc.FundId).ToList();                
             }
             //throw new Exception($"fundset '{Quarters}' was not found");
             var fundlist = string.Join(",", fundcsv);
-            var q = db.RecentGiverFunds(Days, fundlist).Select(v => v.PeopleId.Value);
+
+            if (TaxNonTax.IsNotNull() && !TaxNonTax.Contains("Both")) TaxNonTaxBool = TaxNonTax == "TaxDed" ? false : true;
+            else
+                TaxNonTaxBool = null;
+
+            var q = db.RecentGiverFunds(Days, fundlist, TaxNonTaxBool).Select(v => v.PeopleId.Value);
             var tag = db.PopulateTemporaryTag(q);
             Expression<Func<Person, bool>> pred = null;
 
@@ -716,7 +721,7 @@ namespace CmsData
             var amt = TextValue.ToDecimal() ?? 0;
             return ContributionAmount2(StartDate, EndDate, fund, amt, false);
         }
-        internal Expression NonTaxDedAmount()
+        internal Expression NonTaxDedAmountBothJoint()
         {
             var fund = Quarters.AllDigits() ? Quarters.ToInt() : db.Setting(Quarters, "").ToInt();
             var amt = TextValue.ToDecimal() ?? 0;
