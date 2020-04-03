@@ -271,9 +271,10 @@ namespace CmsWeb.Models
         public static UserValidationResult AuthenticateLogon(string userName, string password, string url, CMSDataContext db)
         {
             var userQuery = db.Users.Where(uu =>
-                uu.Username == userName ||
+                (uu.Username == userName ||
                 uu.Person.EmailAddress == userName ||
-                uu.Person.EmailAddress2 == userName
+                uu.Person.EmailAddress2 == userName) &&
+                uu.Person.DeceasedDate == null
                 );
 
             var impersonating = false;
