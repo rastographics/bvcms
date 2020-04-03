@@ -181,7 +181,7 @@ namespace CmsWeb.Areas.Setup.Models
 
         public string Generate()
         {
-            // todo: use default python script if none assigned, caching
+            // todo: caching
             var m = new PythonScriptModel(CurrentDatabase);
             m.pythonModel.HttpMethod = "get";
             m.pythonModel.DictionaryAdd("HTMLContent", HTMLContent.Body);
@@ -191,6 +191,10 @@ namespace CmsWeb.Areas.Setup.Models
             }
             m.pythonModel.DictionaryAdd("CurrentUser", CurrentDatabase.CurrentUser);
             m.pythonModel.DictionaryAdd("CurrentPerson", CurrentDatabase.CurrentUserPerson);
+            if (PythonContent == null)
+            {
+                return m.RunPythonScript("print model.RenderTemplate(Data.HTMLContent)");
+            }
             return m.RunPythonScript(PythonContent.Body);
         }
     }

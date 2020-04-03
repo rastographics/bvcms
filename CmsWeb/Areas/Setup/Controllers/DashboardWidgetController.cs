@@ -57,7 +57,7 @@ namespace CmsWeb.Areas.Setup.Controllers
             {
                 return Content("This widget can't be deleted. Try disabling it instead.");
             }
-
+            CurrentDatabase.DashboardWidgetRoles.DeleteAllOnSubmit(widget.DashboardWidgetRoles);
             CurrentDatabase.DashboardWidgets.DeleteOnSubmit(widget);
             CurrentDatabase.SubmitChanges();
             return Content("success");
