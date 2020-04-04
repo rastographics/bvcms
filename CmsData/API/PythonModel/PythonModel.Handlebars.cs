@@ -18,13 +18,13 @@ namespace CmsData
             handlebars.RegisterHelper("DataStyle", (writer, context, args) => { writer.Write(CssStyle.DataStyle); });
 
             handlebars.RegisterHelper("ServerLink", (writer, context, args) => { writer.Write(db.ServerLink().TrimEnd('/')); });
-            handlebars.RegisterHelper("FmtZip", (writer, context, args) => { writer.Write(args[0].ToString().FmtZip()); });
+            handlebars.RegisterHelper("FmtZip", (writer, context, args) => { writer.Write(args[0]?.ToString().FmtZip()); });
             handlebars.RegisterHelper("HtmlComment", (writer, context, args) =>
             {
 #if DEBUG
-                writer.Write($"<h6>{args[0].ToString()} {args[1].ToString()}</h6>");
+                writer.Write($"<h6>{args[0]?.ToString()} {args[1]?.ToString()}</h6>");
 #else
-                writer.Write($"<!--{args[0].ToString()} {args[1].ToString()}-->");
+                writer.Write($"<!--{args[0]?.ToString()} {args[1]?.ToString()}-->");
 #endif
             });
             handlebars.RegisterHelper("IfEqual", (writer, options, context, args) =>
@@ -43,7 +43,7 @@ namespace CmsData
             });
             handlebars.RegisterHelper("IfCond", (writer, options, context, args) =>
             {
-                var op = HttpUtility.HtmlDecode(args[1].ToString());
+                var op = HttpUtility.HtmlDecode(args[1]?.ToString());
                 bool b = false;
                 switch (op)
                 {
@@ -107,7 +107,7 @@ namespace CmsData
             });
             handlebars.RegisterHelper("GetToken", (writer, context, args) =>
             {
-                var s = args[0].ToString();
+                var s = args[0]?.ToString();
                 var n = args[1].ToInt();
                 var ntoks = args.Length > 2 ? args[2].ToInt() : 2;
                 var sep = args.Length > 3 ? args[3].ToString() : " ";
@@ -117,19 +117,19 @@ namespace CmsData
 
             handlebars.RegisterHelper("FmtMDY", (writer, context, args) =>
             {
-                var s = args[0].ToString();
+                var s = args[0]?.ToString();
                 if(DateTime.TryParse(s, out DateTime dt))
                     writer.Write(dt.ToShortDateString());
             });
             handlebars.RegisterHelper("FmtDate", (writer, context, args) =>
             {
-                var s = args[0].ToString();
+                var s = args[0]?.ToString();
                 if(DateTime.TryParse(s, out DateTime dt))
                     writer.Write(dt.ToShortDateString());
             });
             handlebars.RegisterHelper("FmtMoney", (writer, context, args) =>
             {
-                var s = args[0].ToString();
+                var s = args[0]?.ToString();
                 if(decimal.TryParse(s, out decimal d))
                     writer.Write(d.ToString("C"));
             });
@@ -144,13 +144,13 @@ namespace CmsData
             });
 
             // FmtPhone helper in form of:  {{FmtPhone phone# "prefix"}}
-            handlebars.RegisterHelper("FmtPhone", (writer, context, args) => { writer.Write(args[0].ToString().FmtFone($"{args[1]}")); });
+            handlebars.RegisterHelper("FmtPhone", (writer, context, args) => { writer.Write(args[0]?.ToString().FmtFone($"{args[1]}")); });
 
             handlebars.RegisterHelper("ReplaceCode", (writer, context, args) =>
             {
                 EmailReplacements r = context.Replacements as EmailReplacements
                     ?? (context.Replacements = new EmailReplacements(db));
-                var code = args[0].ToString();
+                var code = args[0]?.ToString();
                 var p = db.LoadPersonById(args[1].ToInt());
                 int? oid = null;
                 if (args.Length == 3)
@@ -159,7 +159,7 @@ namespace CmsData
             });
             handlebars.RegisterHelper("Json", (writer, options, context, args) =>
             {
-                dynamic a = JsonDeserialize2(args[0].ToString());
+                dynamic a = JsonDeserialize2(args[0]?.ToString());
                 foreach (var item in a)
                 {
                     options.Template(writer, item);
@@ -168,7 +168,7 @@ namespace CmsData
 
             handlebars.RegisterHelper("Calc", (writer, context, args) =>
             {
-                var calcAmt = args[0].ToDouble() - args[1].ToDouble();
+                var calcAmt = args[0].ToDouble() - args[1]?.ToDouble();
                 var calcAmtfmt = $"{{0:{'c'}}}";
                 writer.Write(calcAmtfmt, calcAmt);
             });
@@ -195,7 +195,7 @@ namespace CmsData
             // at this point both are not null
             var eq = args[0].Equals(args[n2]);
             if (!eq && args[0] is int)
-                eq = args[0].ToString() == args[n2]?.ToString();
+                eq = args[0]?.ToString() == args[n2]?.ToString();
             return eq;
         }
         private static int? Compare(object[] args)
@@ -218,9 +218,9 @@ namespace CmsData
             var a1 = args[0];
             var a2 = args[1];
             if (a1 is int)
-                a2 = args[1].ToInt();
+                a2 = args[1]?.ToInt();
             if (a1 is decimal)
-                a2 = args[1].ToNullableDecimal() ?? 0m;
+                a2 = args[1]?.ToNullableDecimal() ?? 0m;
 
             var a1C = a1 as IComparable;
             var a2C = a2 as IComparable;

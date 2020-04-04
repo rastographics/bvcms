@@ -69,8 +69,11 @@ namespace CmsWeb.Areas.Finance.Models.Report
 
         public static StatementSpecification GetStatementSpecification(CMSDataContext db, string name)
         {
-            var standardheader = db.ContentHtml("StatementHeader", Resource1.ContributionStatementHeader);
-            var standardnotice = db.ContentHtml("StatementNotice", Resource1.ContributionStatementNotice);
+            string nameOfChurch = db.Setting("NameOfChurch", "Name of Church");
+            string startAddress = db.Setting("StartAddress", "Start Address");
+            string churchPhone = db.Setting("ChurchPhone", "(000) 000-0000");
+            var standardheader = db.ContentHtml("StatementHeader", string.Format(Resource1.ContributionStatementHeader, nameOfChurch, startAddress, churchPhone));
+            var standardnotice = db.ContentHtml("StatementNotice", string.Format(Resource1.ContributionStatementNotice, nameOfChurch));
 
             if (name == null || name == "all")
             {
@@ -94,27 +97,34 @@ namespace CmsWeb.Areas.Finance.Models.Report
                 };
             }
             var xd = XDocument.Parse(Util.PickFirst(db.ContentOfTypeText("CustomStatements"), "<CustomStatement/>"));
-            var ele = xd.XPathSelectElement($"//Statement[@description='{name}']");
-            if (ele == null)
+            var statementSpec = xd.XPathSelectElement($"//Statement[@description='{name}']");
+            if (statementSpec == null)
             {
                 return null;
             }
 
-            var desc = ele.Attribute("description")?.Value;
+            var desc = statementSpec.Attribute("description")?.Value;
             var cs = new StatementSpecification
             {
                 Description = desc
             };
-            var headerele = ele.Element("Header");
-            cs.Header = headerele != null
-                ? string.Concat(headerele.Nodes().Select(x => x.ToString()).ToArray())
-                : standardheader;
-            var noticeele = ele.Element("Notice");
-            cs.Notice = noticeele != null
-                ? string.Concat(noticeele.Nodes().Select(x => x.ToString()).ToArray())
-                : standardnotice;
+
             cs.Funds = APIContributionSearchModel.GetCustomStatementsList(db, desc);
+            cs.Header = GetSectionHTML("Header", statementSpec, standardheader);
+            cs.Notice = GetSectionHTML("Notice", statementSpec, standardnotice);
+            cs.Template = GetSectionHTML("Template", statementSpec);
+            cs.TemplateBody = GetSectionHTML("TemplateBody", statementSpec);
+            cs.Footer = GetSectionHTML("Footer", statementSpec);
+
             return cs;
+        }
+
+        private static string GetSectionHTML(string elementName, XElement statementSpec, string defaultValue = null)
+        {
+            var element = statementSpec.Element(elementName);
+            return element != null
+                ? string.Concat(element.Nodes().Select(x => x.ToString()).ToArray())
+                : defaultValue;
         }
 
         public static string Output(string fn, int set)

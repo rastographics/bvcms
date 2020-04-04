@@ -60,11 +60,14 @@ namespace CmsWeb.Areas.Finance.Models.Report
         private void HtmlToPdfMethod(Stream stream, CMSDataContext db, IEnumerable<ContributorInfo> q, StatementSpecification cs, int set)
         {
             IConverter converter = GetConverter();
-            string html = db.Content("StatementTemplate", ContentTypeCode.TypeText)?.Body ?? Resource1.ContributionStatementTemplate;
-            string bodyHtml = db.Content("StatementTemplateBody", ContentTypeCode.TypeText)?.Body ?? Resource1.ContributionStatementTemplateBody;
-            string header = cs.Header ?? db.ContentHtml("StatementHeader", Resource1.ContributionStatementHeader);
-            string notice = cs.Notice ?? db.ContentHtml("StatementNotice", Resource1.ContributionStatementNotice);
-            string footer = db.ContentHtml("StatementTemplateFooter", "");
+            string nameOfChurch = db.Setting("NameOfChurch", "Name of Church");
+            string startAddress = db.Setting("StartAddress", "Start Address");
+            string churchPhone = db.Setting("ChurchPhone", "(000) 000-0000");
+            string html = cs.Template ?? db.Content("StatementTemplate", Resource1.ContributionStatementTemplate, ContentTypeCode.TypeText).Body;
+            string bodyHtml = cs.TemplateBody ?? db.Content("StatementTemplateBody", Resource1.ContributionStatementTemplateBody, ContentTypeCode.TypeText).Body;
+            string header = cs.Header ?? db.Content("StatementHeader", string.Format(Resource1.ContributionStatementHeader, nameOfChurch, startAddress, churchPhone), ContentTypeCode.TypeHtml).Body;
+            string notice = cs.Notice ?? db.Content("StatementNotice", string.Format(Resource1.ContributionStatementNotice, nameOfChurch), ContentTypeCode.TypeHtml).Body;
+            string footer = cs.Footer ?? db.Content("StatementTemplateFooter", "", ContentTypeCode.TypeText).Body;
             ContributionsRun runningtotals = db.ContributionsRuns.Where(mm => mm.UUId == UUId).SingleOrDefault();
             StatementOptions options;
             if (!GetStatementOptions(bodyHtml, out options))
@@ -79,7 +82,7 @@ namespace CmsWeb.Areas.Finance.Models.Report
                 GlobalSettings =
                 {
                     DocumentTitle = cs.Description ?? $"Contribution Statement {toDate:d}",
-                    Margins = options.Margins,
+                    Margins = options.Margins.Settings,
                     PaperSize = options.PaperSize,
                     ProduceOutline = false,
                 }
@@ -148,9 +151,14 @@ namespace CmsWeb.Areas.Finance.Models.Report
                     var htmlDocument = db.RenderTemplate(html, data);
                     document.Objects.Add(new ObjectSettings {
                         CountPages = true,
-                        FooterSettings = options.Footer,
-                        HeaderSettings = options.Header ?? new HeaderSettings(),
+                        FooterSettings = options.Footer.Settings,
+                        HeaderSettings = options.Header.Settings,
                         HtmlText = htmlDocument,
+                        WebSettings = new WebSettings
+                        {
+                            EnableJavascript = false,
+                            PrintBackground = true
+                        },
                         LoadSettings = new LoadSettings { BlockLocalFileAccess = true }
                     });
                 }
@@ -184,29 +192,12 @@ namespace CmsWeb.Areas.Finance.Models.Report
             var node = doc.DocumentNode.SelectSingleNode("//script[@id=\"options\"]");
             if (node != null)
             {
-                options = JsonConvert.DeserializeObject<StatementOptions>(node.InnerText);
+                options = JsonConvert.DeserializeObject<StatementOptions>(node.InnerText.Trim());
                 found = true;
-            }
-            if (options.Margins == null)
-            {
-                options.Margins = new MarginSettings
-                {
-                    All = 0.5,
-                    Unit = Unit.Inches
-                };
             }
             if (options.PaperSize == 0)
             {
                 options.PaperSize = PaperKind.Letter;
-            }
-            if (options.Footer == null)
-            {
-                options.Footer = new FooterSettings
-                {
-                    RightText = "Page [page] of [topage]",
-                    FontName = "Helvetica",
-                    FontSize = 10
-                };
             }
             return found;
         }
@@ -332,8 +323,11 @@ p { font-size: 11px; }
                     TotalWidth = 72f * 5f
                 };
                 t1.DefaultCell.Border = Rectangle.NO_BORDER;
-                var html1 = cs.Header ?? db.ContentHtml("StatementHeader", Resource1.ContributionStatementHeader);
-                var html2 = cs.Notice ?? db.ContentHtml("StatementNotice", Resource1.ContributionStatementNotice);
+                string nameOfChurch = db.Setting("NameOfChurch", "Name of Church");
+                string startAddress = db.Setting("StartAddress", "Start Address");
+                string churchPhone = db.Setting("ChurchPhone", "(000) 000-0000");
+                var html1 = cs.Header ?? db.ContentHtml("StatementHeader", string.Format(Resource1.ContributionStatementHeader, nameOfChurch, startAddress, churchPhone));
+                var html2 = cs.Notice ?? db.ContentHtml("StatementNotice", string.Format(Resource1.ContributionStatementNotice, nameOfChurch));
 
                 var mh = new MyHandler();
                 using (var sr = new StringReader(css + html1))
