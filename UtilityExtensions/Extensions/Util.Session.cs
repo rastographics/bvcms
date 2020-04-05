@@ -92,6 +92,21 @@ namespace UtilityExtensions
             set => SetValueInSession(STR_ActivePerson, value);
         }
 
+        private const string STR_TempPeopleId = "TempPeopleId";
+        public static int? TempPeopleId
+        {
+            get
+            {
+                var value = GetFromSession<string>(STR_TempPeopleId).ToInt2();
+                if (value.HasValue)
+                {
+                    SetValueInSession(STR_TempPeopleId, null);
+                }
+                return value;
+            }
+            set => SetValueInSession(STR_TempPeopleId, value.ToString());
+        }
+
         private const string STR_ContentKeywordFilter = "ContentKeywordFilter";
         public static string ContentKeywordFilter
         {

@@ -135,7 +135,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 
             VolunteerModel m = null;
 
-            var td = TempData["PeopleId"];
+            var td = Util.TempPeopleId;
             if (td != null)
             {
                 m = new VolunteerModel(id.ToInt(), td.ToInt());

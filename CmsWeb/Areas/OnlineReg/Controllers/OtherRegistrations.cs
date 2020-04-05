@@ -502,7 +502,7 @@ or contact the church if you need help.</p>
         private const string otherRegisterlinkmaster = "Other/RegisterLinkMaster";
         public ActionResult RegisterLinkMaster(int id)
         {
-            var pid = TempData["PeopleId"] as int?;
+            var pid = Util.TempPeopleId as int?;
             ViewBag.Token = TempData["token"];
 
             var m = new OnlineRegModel(CurrentDatabase) { Orgid = id };

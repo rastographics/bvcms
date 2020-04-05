@@ -85,11 +85,11 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                     if (m.registerLinkType.StartsWith("registerlink") || m.registerLinkType == "masterlink" || User.Identity.IsAuthenticated)
                     {
                         TempData["token"] = m.registertag;
-                        TempData["PeopleId"] = m.UserPeopleId ?? CurrentDatabase.UserPeopleId;
+                        Util.TempPeopleId = m.UserPeopleId ?? CurrentDatabase.UserPeopleId;
                     }
                 return $"/OnlineReg/RegisterLinkMaster/{m.Orgid}";
             }
-            TempData["PeopleId"] = m.UserPeopleId ?? CurrentDatabase.UserPeopleId;
+            Util.TempPeopleId = m.UserPeopleId ?? CurrentDatabase.UserPeopleId;
             if (m.ManagingSubscriptions())
                 return $"/OnlineReg/ManageSubscriptions/{m.masterorgid}";
             if (m.ManageGiving())
@@ -110,7 +110,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             if (existingRegistration == null)
                 return null;
             m.Log("Existing");
-            TempData["PeopleId"] = existingRegistration.UserPeopleId;
+            Util.TempPeopleId = existingRegistration.UserPeopleId;
             return "/OnlineReg/Existing/" + existingRegistration.DatumId;
         }
 
