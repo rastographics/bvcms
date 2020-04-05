@@ -1,4 +1,5 @@
-﻿@using CmsWeb.Models
+﻿@using CmsData
+@using CmsWeb.Models
 @using UtilityExtensions
 @model ContentModel
 
@@ -7,8 +8,7 @@
     ViewBag.Title = "Special Content";
     ViewBag.PageHeader = "Special Content";
     var ContentKeywordFilter = Util.ContentKeywordFilter;
-
-    var roleList = ContentModel.fetchRoles();
+    var roleList = ContentModel.fetchRoles(Model.CurrentDatabase);
 }
 @section head{
     @Fingerprint.Css("/Content/touchpoint/lib/bootstrap-tabdrop/css/tabdrop.css")
@@ -118,6 +118,11 @@
                                             <div class="col-xs-8">
                                                 <a href="/Display/ContentEdit/@t.Id"><strong>@t.Name</strong></a><br/>
                                                 Limited to Role: @(ro != null ? ro.RoleName : "missing role!")
+                                                @if (t.IsUnLayer())
+                                                {
+                                                    <div><img src="@Url.Content("~/Content/touchpoint/img/Responsive_Design-512.svg")" style="height:25%;width:25%;" /></div>
+                                                }
+
                                             </div>
                                         </div>
                                     </div>
@@ -157,6 +162,10 @@
                                                 </td>
                                                 <td>
                                                     @Helper.AnchorLink(item.name.HasValue() ? item.name : "notnamed", "/Display/ContentEdit/" + item.id)
+                                                    @if (item.isUnlayer)
+                                                    {
+                                                        <img src="@Url.Content("~/Content/touchpoint/img/Responsive_Design-512.svg")" style="height:10%;width:10%;" />
+                                                    }
                                                 </td>
                                                 <td>
                                                     @item.owner
@@ -284,14 +293,27 @@
                             <div class="col-sm-6">
                                 <div class="form-group">
                                     <label for="newRole" class="control-label">Role</label>
-                                    @Html.DropDownList("newRole", new SelectList(ContentModel.fetchRoles(), "RoleId", "RoleName"), new { @class = "form-control" })
+                                    @Html.DropDownList("newRole", new SelectList(roleList, "RoleId", "RoleName"), new { @class = "form-control" })
                                 </div>
                             </div>
+                            @if (User.IsInRole("Admin") || User.IsInRole("Design"))
+                            {
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <div class="use-mobile-checkbox">
+                                        <label for="useUnlayer" class="control-label">Use Mobile Responsive</label>
+                                    </div>
+                                    <div style="text-align:center">
+                                        @Html.CheckBox("useUnLayer", false, new { @class = "new-email-unlayer-template-checkbox" })
+                                    </div>
+                                </div>
+                            </div>
+                            }
                         </div>
                         <div class="row">
                             <div class="col-sm-12">
                                 <div class="form-group">
-                                    <label for="newName-role" class="control-label">File Name</label>
+                                    <label for="newName-role" class="control-label">Template Name</label>
                                     <input type="text" id="newName-role" v-model="newName" name="newName" class="form-control" />
                                     <small v-if="notValidName" class="red-empty">"Empty Template" name cannot be used</small>
                                 </div>

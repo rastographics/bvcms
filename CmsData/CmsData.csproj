@@ -1182,15 +1182,18 @@
     </Resource>
     <Content Include="Migrations\20200224_Add_CreatedDate_OrgMemberDocuments_Column.sql" />
     <Content Include="Migrations\20200319_alter_GetContributionsDetails_func.sql" />
-    <Content Include="Migrations\20200318_alter_GetTotalContributionsDonorFund_func.sql" />
+    <Content Include="Migrations\20200326_alter_GetTotalContributionsDonorFund_func.sql" />
     <Content Include="Migrations\20200318_alter_ContributionSearch_func.sql" />
     <Content Include="Migrations\20200224_Create_OrgTemporaryDocuments_Table.sql" />
+    <Content Include="Migrations\20200306_Alter_RecentGiverFunds.sql" />
     <Content Include="Migrations\20200312_AddSettingMetaData_ContributionsCampusColumn.sql" />
     <Content Include="Migrations\20200312_Add_FK_Contribution_Campus.sql" />
     <Content Include="Migrations\20200311_AddSettingMetaData_BundleEntryCampusCode.sql" />
+    <Content Include="Migrations\20200401_alter-Contributions0.sql" />
     <Content Include="Migrations\20200326_alter-GetTotalContributionsRange-func.sql" />
     <Content Include="Migrations\20200326_alter-GetTotalContributionsAgeRange-func.sql" />
     <Content Include="Migrations\20200326_alter-GetContributionsRange-func.sql" />
+    <Content Include="Migrations\20200331_alter_GetTotalContributionsDonor2_func.sql" />
     <Content Include="QueryBuilder\CompareMap.xml">
       <SubType>Designer</SubType>
     </Content>

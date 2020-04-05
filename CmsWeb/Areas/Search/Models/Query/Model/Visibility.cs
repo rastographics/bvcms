@@ -30,6 +30,7 @@ namespace CmsWeb.Areas.Search.Models
         public bool MinistryVisible => fieldMap.HasParam("Ministry");
         public bool QuartersVisible => fieldMap.HasParam("Quarters");
         public bool FundIdsVisible => fieldMap.HasParam("FundIds");
+        public bool FundSetVisible => fieldMap.HasParam("FundSet");
         public bool TagsVisible => fieldMap.HasParam("Tags");
         public bool PmmLabelsVisible => fieldMap.HasParam("PmmLabels");
         public bool OrgNameVisible => fieldMap.HasParam("OrgName");
@@ -37,6 +38,7 @@ namespace CmsWeb.Areas.Search.Models
         public bool OnlineRegVisible => fieldMap.HasParam("OnlineReg");
         public bool MemberTypesVisible => fieldMap.HasParam("MemberTypes");
         public bool AttendTypesVisible => fieldMap.HasParam("AttendTypes");
+        public bool TaxNonTaxVisible => fieldMap.HasParam("TaxNonTax");
 
         public bool AutoRun => (Db?.UserPreference("QueryAutoRun", "false") ?? "").ToBool();
 

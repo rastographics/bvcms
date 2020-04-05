@@ -1266,6 +1266,7 @@
     <Content Include="Content\select2-3.5.2\select2x2.png" />
     <Content Include="Content\touchpoint\img\male_sm.png" />
     <Content Include="Content\touchpoint\img\powered-by.png" />
+    <Content Include="Content\touchpoint\img\Responsive_Design-512.svg" />
     <Content Include="Content\touchpoint\img\spinner.gif" />
     <Content Include="Content\touchpoint\img\unknown.png" />
     <Content Include="Content\touchpoint\img\unknown_sm.png" />
@@ -1801,7 +1802,6 @@
     <Content Include="Areas\Manage\Views\Batch\OtherDeveloperActions.cshtml" />
     <Content Include="Content\touchpoint\src\less\badges.less" />
     <Content Include="Areas\Manage\Views\Display\EditDraft.cshtml" />
-    <Content Include="Areas\Manage\Views\Display\EmailBody.cshtml" />
     <Content Include="Areas\Reports\Views\Reports\Application.cshtml" />
     <Content Include="Areas\Manage\Views\Batch\FindTagPeople.cshtml" />
     <Content Include="Areas\Org\Views\OrgSearch\DisplayAttendanceNotices.cshtml" />
@@ -1909,6 +1909,10 @@
     <Content Include="Areas\Org\Views\Org\DisplayTemplates\ESpaceEventId.cshtml" />
     <Content Include="Areas\Org\Views\Org\Other\eSpaceResults.cshtml" />
     <Content Include="Areas\Manage\Views\Batch\RetrieveBatchData.cshtml" />
+    <Content Include="Content\touchpoint\src\less\figures.less" />
+    <Content Include="Areas\Manage\Views\Display\UnLayerCompose.cshtml" />
+    <Content Include="Areas\Manage\Views\Display\EmailBody.cshtml" />
+    <Content Include="Content\touchpoint\src\less\unlayer-editor.less" />
     <Content Include="Areas\Dialog\Views\RemoteDeposit\Index.cshtml" />
     <Content Include="Areas\Dialog\Views\RemoteDeposit\NotConfigured.cshtml" />
     <None Include="packages.config">

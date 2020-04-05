@@ -83,6 +83,15 @@ namespace CmsData
             var right = Expression.Constant(days, typeof(int?));
             return Compare(left, right);
         }
+        internal Expression DoNotPublishPhones()
+        {
+            var tf = CodeIds == "1";
+            Expression<Func<Person, bool>> pred = p => (p.DoNotPublishPhones ?? false);
+            Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
+            if (op == CompareType.Equal ^ tf)
+                expr = Expression.Not(expr);
+            return expr;
+        }
         internal Expression DaysTillAnniversary()
         {
             var days = TextValue.ToInt();
