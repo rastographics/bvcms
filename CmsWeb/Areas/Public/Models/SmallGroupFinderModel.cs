@@ -414,22 +414,10 @@ namespace CmsWeb.Areas.Public.Models
             return _gutter;
         }
 
-        public string RenderViewToString(string viewName, object model)
-        {
-            _controller.ViewData.Model = model;
-            using (var sw = new StringWriter())
-            {
-                var viewResult = ViewEngines.Engines.FindPartialView(_controller.ControllerContext, viewName);
-                var viewContext = new ViewContext(_controller.ControllerContext, viewResult.View, _controller.ViewData, _controller.TempData, sw);
-                viewResult.View.Render(viewContext, sw);
-                viewResult.ViewEngine.ReleaseView(_controller.ControllerContext, viewResult.View);
-                return sw.GetStringBuilder().ToString();
-            }
-        }
-
         public string getForm()
         {
-            return RenderViewToString("MapForm", this);
+            _controller.ViewData.Model = this;
+            return ViewExtensions2.RenderPartialViewToString(_controller, "MapForm", this);
         }
 
         public string getGroupList()

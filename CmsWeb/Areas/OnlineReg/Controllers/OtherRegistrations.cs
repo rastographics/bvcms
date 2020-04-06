@@ -503,7 +503,7 @@ or contact the church if you need help.</p>
         public ActionResult RegisterLinkMaster(int id)
         {
             var pid = Util.TempPeopleId as int?;
-            ViewBag.Token = TempData["token"];
+            ViewBag.Token = Util.GetFromSession<string>("token");
 
             var m = new OnlineRegModel(CurrentDatabase) { Orgid = id };
             if (User.Identity.IsAuthenticated)
