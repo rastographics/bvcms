@@ -52,8 +52,21 @@ Vue.component("search-add", {
             });
 
         Mousetrap.bind("/",
-            function() {
-                $("#search-box-search-person").modal();
+            function () {
+                $.ajax({
+                    type: "GET",
+                    dataType: "json",
+                    url: "/GetCurrentUser",
+                    success: function (result) {
+                        switch(result) {
+                            case "good":
+                                $("#search-box-search-person").modal();
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                });
                 return false;
             });
     },
