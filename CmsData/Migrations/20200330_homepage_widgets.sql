@@ -146,7 +146,7 @@ BEGIN
         {{#ifGT results.Count 0}}
             <ul class="list-group">
                 {{#each results}}
-                    <li class="list-group-item"><a href="/Tags?tag={{Id}},{{PeopleId}}!{{Name}}">{{Name}}</a></li>
+                    <li class="list-group-item"><a href="/Tags?tag={{Id}}%2c{{PeopleId}}!{{Name}}">{{DisplayName}}</a></li>
                 {{/each}}
             </ul>
         {{else}}
@@ -168,9 +168,7 @@ INSERT INTO [dbo].[Content]
 		   [DateCreated],[TypeID],[ThumbID],[RoleID],[OwnerID],[CreatedBy])
      VALUES
            ('WidgetTagsPython','Edit Python Script',
-           'import datetime
-
-def Get():
+           'def Get():
     sql = Data.SQLContent
     template = Data.HTMLContent
     params = { ''pid'': Data.CurrentPerson.PeopleId }
@@ -192,16 +190,17 @@ INSERT INTO [dbo].[Content]
 		   [DateCreated],[TypeID],[ThumbID],[RoleID],[OwnerID],[CreatedBy])
      VALUES
            ('WidgetTagsSQL','Edit Sql Script',
-           'select * from Tag t
+           'select * from (select top 100 t.Id, t.PeopleId, t.Name, t.Name as DisplayName, 1 as [Order] from Tag t
 where t.PeopleId = @pid
 and t.TypeId = 1
+order by Name) as set1
 union all
-select t.* from Tag t
+select * from (select top 100 t.Id, t.PeopleId, t.Name, t.OwnerName + ''!'' + t.Name as DisplayName, 2 as [Order] from Tag t
 join TagShare ts on t.Id = ts.TagId
 where t.PeopleId != @pid
 and t.TypeId = 1
 and ts.PeopleId = @pid
-order by t.Name',
+order by Name) as set2',
            GETDATE(),4,0,0,0,'admin')
            
 INSERT INTO [dbo].[ContentKeyWords]
