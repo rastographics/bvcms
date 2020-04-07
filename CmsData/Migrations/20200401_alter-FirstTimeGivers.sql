@@ -1,4 +1,4 @@
-ALTER FUNCTION [dbo].[FirstTimeGivers] ( @days INT, @fundid INT )
+ALTER FUNCTION [dbo].[FirstTimeGivers] ( @days INT, @fundid INT, @TaxNonTax BIT )
 RETURNS TABLE 
 AS
 RETURN 
@@ -6,7 +6,7 @@ RETURN
 	FROM
 	(
 		SELECT CreditGiverId, SUM(Amount) AS Amt, MIN(Date) as FirstDate
-		FROM dbo.Contributions2('1/1/1900', GETDATE(), 0, 0, null, 1, null) c
+		FROM dbo.Contributions2('1/1/1900', GETDATE(), 0, 0, @TaxNonTax, 1, null) c
 		WHERE c.FundId = @fundid OR @fundid = 0
 		GROUP BY CreditGiverId
 	) tt

@@ -980,7 +980,11 @@ namespace CmsData
                 }
             }
 
-            var q = db.FirstTimeGivers(Days, fund).Select(p => p.PeopleId);
+            if (TaxNonTax.IsNotNull() && !TaxNonTax.Contains("Both")) TaxNonTaxBool = TaxNonTax == "TaxDed" ? false : true;
+            else
+                TaxNonTaxBool = null;
+
+            var q = db.FirstTimeGivers(Days, fund, TaxNonTaxBool).Select(p => p.PeopleId);
 
             Expression<Func<Person, bool>> pred;
             if (op == CompareType.Equal ^ tf)
