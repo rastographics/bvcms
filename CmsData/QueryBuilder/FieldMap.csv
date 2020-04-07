@@ -191,7 +191,7 @@ GivingChange,Number,,,Days in Period,Contributions,Giving Change,Quarters,"Enter
 RecentHasIndContributions,Bit,,,,Contributions,Recent Has Individual Contributions,Days,Enter a number of days to look back and specify True or False.
 HadIndContributions,Bit,,,,Contributions,Had Individual Contributions,"StartDate,EndDate",Individual Had Contributions during Date Range
 RecentHasFailedRecurringGiving,Bit,,,,Contributions,Recent Has Failed Recurring Giving,Days,Individual Had a failed Recurring Gift within the past number of days
-RecentFirstTimeGiver,Bit,,,Fund Id (or blank for all),Contributions,Recent First Time Giver,"Days,Quarters","Enter a number of days to look back, enter a Fund ID (or leave blank for all funds) and specify True or False."
+RecentFirstTimeGiver,Bit,,,Fund Id (or blank for all),Contributions,Recent First Time Giver,"Days,Quarters,TaxNonTax","Enter a number of days to look back, enter a Fund ID (or leave blank for all funds) and specify True or False."
 IsRecentGiver,Bit,,,Fund Id (or blank for all),Contributions,Recent Giver,"Days,Quarters",Enter a number of days to look back and specify True or False.
 IsRecentGiverFunds,Bit,,,,Contributions,Recent Giver to Funds,"Days,FundSet,TaxNonTax", Enter a number of days to look back and a Fund Set name and specify True or False.
 IsTopGiver,Bit,,,Top number,Contributions,Recent Top Giver,"Days,Quarters,FundIds,TaxNonTax","Enter a number of days to look back, enter the top number (ex. 100 for the top 100 givers) and specify True or False."
