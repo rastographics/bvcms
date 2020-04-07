@@ -254,11 +254,11 @@ BEGIN
            ('WidgetNewsHTML','Edit Text Content',
            '<div class="box">
     <div class="box-title hidden-xs">
-        <h5><a href="http://blog.touchpointsoftware.com/" target="_blank">TouchPoint News</a></h5>
+        <h5><a href="{{blogurl}}" target="_blank">{{blogtitle}}</a></h5>
     </div>
     <a class="visible-xs-block" id="news-collapse" data-toggle="collapse" href="#news-section" aria-expanded="true" aria-controls="news-section">
         <div class="box-title">
-            <h5><i class="fa fa-chevron-circle-right"></i>&nbsp;&nbsp;TouchPoint News</h5>
+            <h5><i class="fa fa-chevron-circle-right"></i>&nbsp;&nbsp;{{blogtitle}}</h5>
         </div>
     </a>
     <div class="collapse in" id="news-section">
@@ -269,7 +269,7 @@ BEGIN
                         {{#ifEqual new "New"}}
                             <span class="label label-danger">New</span>
                         {{/ifEqual}}
-                        <a href="{{link}}">{{title}}</a>
+                        <a target="_blank" href="{{link}}">{{title}}</a>
                     </li>
                 {{/each}}
             </ul>
@@ -298,12 +298,14 @@ from datetime import timedelta
 import xml.etree.ElementTree as ET 
 
 def Get():
-    url = ''http://www.touchpointsoftware.com/feed/''
+    feedurl = ''https://www.touchpointsoftware.com/feed/''
+    blogurl = ''http://blog.touchpointsoftware.com''
+    blogtitle = ''TouchPoint News''
     highlightNew = 7 # days to show new badge on article
     
     headers = { ''content-type'': ''application/json'' }
     template = Data.HTMLContent
-    response = model.RestGet(url, headers)
+    response = model.RestGet(feedurl, headers)
     
     tree = ET.fromstring(response) 
   
@@ -322,6 +324,8 @@ def Get():
             
         newsitems.append(model.DynamicData(news)) 
     Data.news = newsitems
+    Data.blogurl = blogurl
+    Data.blogtitle = blogtitle
     print model.RenderTemplate(template)
 
 Get()',
@@ -350,9 +354,97 @@ INSERT INTO [dbo].[DashboardWidgets]
            ,[System])
      VALUES
            ('TouchPoint News'
-           ,'Displays a list of recent posts from the TouchPoint blog. This widget can be easily duplicated and modified to show posts from your church blog as well.'
+           ,'Displays a list of recent posts from the TouchPoint blog.'
            ,(select max(Id) from Content where [Name] like 'WidgetNewsHTML')
            ,(select max(Id) from Content where [Name] like 'WidgetNewsPython')
+           ,NULL
+           ,1
+           ,(select isnull(max([Order]), 0)+1 from DashboardWidgets)
+           ,1)
+
+INSERT INTO [dbo].[DashboardWidgetRoles]
+           ([WidgetId]
+           ,[RoleId])
+     VALUES
+           ((select SCOPE_IDENTITY())
+           ,(select min(RoleId) from Roles where RoleName like 'Access'))
+END
+GO
+
+-- add blog widget
+IF (select count(*) from DashboardWidgets where [Name] like 'Church News' and [System] = 1) = 0
+BEGIN
+
+INSERT INTO [dbo].[Content]
+           ([Name],[Title],
+		   [Body],
+		   [DateCreated],[TypeID],[ThumbID],[RoleID],[OwnerID],[CreatedBy])
+     VALUES
+           ('WidgetBlogPython','Edit Python Script',
+           'from datetime import datetime
+from datetime import timedelta
+import xml.etree.ElementTree as ET 
+
+def Get():
+    feedurl = model.Setting(''ChurchFeedUrl'')
+    blogurl = model.Setting(''ChurchBlogUrl'')
+    blogtitle = ''Church News''
+    highlightNew = 7 # days to show new badge on article
+    
+    headers = { ''content-type'': ''application/json'' }
+    template = Data.HTMLContent
+    response = model.RestGet(feedurl, headers)
+    
+    tree = ET.fromstring(response) 
+  
+    newsitems = list()
+  
+    for item in tree.findall(''./channel/item''): 
+        news = {}
+        for child in item: 
+            if ''{'' not in child.tag: 
+                news[child.tag] = child.text.encode(''utf8'') 
+        
+        published = datetime.strptime(news[''pubDate''][0:17], "%a, %d %b %Y")
+        present = datetime.now()
+        if published.date() > (present - timedelta(days=highlightNew+1)).date():
+            news[''new''] = ''New''
+            
+        newsitems.append(model.DynamicData(news)) 
+    Data.news = newsitems
+    Data.blogurl = blogurl
+    Data.blogtitle = blogtitle
+    print model.RenderTemplate(template)
+
+Get()',
+           GETDATE(),5,0,0,0,'admin')
+          
+INSERT INTO [dbo].[ContentKeyWords]
+           ([Id]
+           ,[Word])
+     VALUES
+           ((select SCOPE_IDENTITY())
+           ,'widget')
+           
+END
+GO
+
+IF (select count(*) from DashboardWidgets where [Name] like 'Church News' and [System] = 1) = 0
+BEGIN
+INSERT INTO [dbo].[DashboardWidgets]
+           ([Name]
+           ,[Description]
+           ,[HTMLContentId]
+           ,[PythonContentId]
+           ,[SQLContentId]
+           ,[Enabled]
+           ,[Order]
+           ,[System])
+     VALUES
+           ('Church News'
+           ,'Displays a list of recent posts from your church blog. Configure your feed and blog URLs in Settings > System > Church Info'
+           ,(select max(Id) from Content where [Name] like 'WidgetNewsHTML')
+           ,(select max(Id) from Content where [Name] like 'WidgetBlogPython')
            ,NULL
            ,1
            ,(select isnull(max([Order]), 0)+1 from DashboardWidgets)
