@@ -53,20 +53,6 @@ Vue.component("search-add", {
 
         Mousetrap.bind("/",
             function () {
-                //$.ajax({
-                //    type: "GET",
-                //    dataType: "json",
-                //    url: "/GetCurrentUser",
-                //    success: function (result) {
-                //        switch(result) {
-                //            case "good":
-                //                $("#search-box-search-person").modal();
-                //                break;
-                //            default:
-                //                break;
-                //        }
-                //    }
-                //});
                 $("#search-box-search-person").modal();
                 return false;
             });
