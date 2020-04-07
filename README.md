@@ -23,6 +23,7 @@ BVCMS is maintained by TouchPoint Software, Inc.
     - Be sure to install the ASP.NET and web development Workload option.
     - Install the Python development option if you want to debug Python scripts.
     - Update NodeJS to the latest version by downloading the installer from [nodejs.org](https://nodejs.org/) Run the Node installer using all default options.
+    - If you don't already have Gulp installed, go to Command Prompt and type:  npm install -g gulp
     
 1. **[SQL Server Express 2017][SQL]**
 
@@ -49,6 +50,7 @@ BVCMS is maintained by TouchPoint Software, Inc.
 1. Find and edit the web.config file in the **CMSWeb** folder.
 
     - In the `appSettings` section, configure the `host` value to point to the name you would like to call your database (without the CMS_). This value will become part of your connection string.
+    - For example, you could change \<add key="host" value="" /> to \<add key="host" value="myBvcms" />.
     - In the `mailSettings` section, configure the pickupDirectoryLocation to a directory on your development machine (for testing purposes).
     - If you want to create a database with 150 test records in it, just use ``testdb`` for the host value.
 
