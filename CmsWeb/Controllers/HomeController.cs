@@ -172,21 +172,6 @@ namespace CmsWeb.Controllers
             return Content(JsonConvert.SerializeObject(qq));
         }
 
-        [HttpGet, Route("~/GetCurrentUser")]
-        public ActionResult GetCurrentUser()
-        {
-            Response.NoCache();
-            var user = new HomeModel().GetCurrentUser();
-            if(user.UserRoles.Count > 0)
-            {
-                return Json("good", JsonRequestBehavior.AllowGet);
-            }
-            else
-            {
-                return Json("bad", JsonRequestBehavior.AllowGet);
-            }
-        }
-
         public ActionResult SwitchTag(string tag)
         {
             var m = new TagsModel(CurrentDatabase) { tag = tag };

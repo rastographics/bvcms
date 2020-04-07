@@ -595,12 +595,6 @@ namespace CmsWeb.Models
             return list;
         }
 
-        public User GetCurrentUser()
-        {
-            var user = CurrentDatabase.CurrentUser;
-            return user;
-        }
-
         public string ChurchBlogUrl => CurrentDatabase.Setting("ChurchBlogUrl", "#");
         public bool ShowTip => !CurrentDatabase.UserPreference("hide-tip-home", "false").ToBool();
         public string BlogAppUrl => CurrentDatabase.Setting("BlogAppUrl", "#");
