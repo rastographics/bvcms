@@ -20,7 +20,7 @@ namespace CmsWeb.Areas.Finance.Models
                 Timeout = 120000,
             };
             var request = new RestRequest("api/export", Method.POST);
-            request.AddJsonBody(new { Db = Util.Host, Id = bundleId, AccountNumber = accountNumber });
+            request.AddJsonBody(new { Db = Util.Host, Id = bundleId, AccountNumber = accountNumber ?? "" });
             request.AddHeader("Authorization", $"Bearer {token}");
             var response = client.Execute(request);
             if (response.StatusCode == HttpStatusCode.OK)
@@ -30,7 +30,7 @@ namespace CmsWeb.Areas.Finance.Models
                 var ext = fileDownloadName.Split('.').Last();
                 return new FileContentResult(response.RawBytes, $"application/x-{ext}")
                 {
-                    FileDownloadName = fileDownloadName
+                    FileDownloadName = fileDownloadName.ToSuitableId()
                 };
             }
             else

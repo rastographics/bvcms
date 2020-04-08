@@ -67,5 +67,23 @@ namespace UtilityExtensionsTests
         {
             value.GetAmount().ShouldBeNull();
         }
+
+        [Theory]
+        [InlineData("", "")]
+        [InlineData(null, "")]
+        [InlineData("this is my string", "dMN2gIrTSP_plBfwlkEalvdQMEartKhb0")]
+        public void EncryptForUrlTest(string value, string expected)
+        {
+            Util.EncryptForUrl(value).ShouldBe(expected);
+        }
+
+        [Theory]
+        [InlineData("", "")]
+        [InlineData("", null)]
+        [InlineData("this is my string", "dMN2gIrTSP_plBfwlkEalvdQMEartKhb0")]
+        public void DecryptFromUrlTest(string expected, string value)
+        {
+            Util.DecryptFromUrl(value).ShouldBe(expected);
+        }
     }
 }

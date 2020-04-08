@@ -56,7 +56,7 @@ namespace CmsWeb.Areas.Setup.Controllers
             CurrentDatabase.ExecuteCommand("UPDATE dbo.EnrollmentTransaction SET MemberTypeId = {0} WHERE MemberTypeId = {1}", toid, fromid);
             CurrentDatabase.ExecuteCommand("UPDATE dbo.Attend SET MemberTypeId = {0} WHERE MemberTypeId = {1}", toid, fromid);
 
-            TempData["SuccessMessage"] = "Member type and associated members were successfully migrated.";
+            Util.TempSuccessMessage = "Member type and associated members were successfully migrated.";
             return Redirect("/MemberType/");
         }
 
