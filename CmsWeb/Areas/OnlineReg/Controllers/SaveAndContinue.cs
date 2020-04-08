@@ -30,7 +30,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         [HttpGet]
         public ActionResult StartOver(int id)
         {
-            var pid = (int?)TempData["PeopleId"];
+            var pid = (int?)Util.TempPeopleId;
             if (!pid.HasValue || pid == 0)
                 return Message("not logged in");
             var m = OnlineRegModel.GetRegistrationFromDatum(id, CurrentDatabase);
@@ -87,9 +87,7 @@ We have saved your progress. An email with a link to finish this registration wi
         [HttpGet]
         public ActionResult Existing(int id)
         {
-            if (!TempData.ContainsKey("PeopleId"))
-                return Message("not logged in");
-            var pid = (int?)TempData["PeopleId"];
+            var pid = Util.TempPeopleId;
             if (!pid.HasValue || pid == 0)
                 return Message("not logged in");
             var m = OnlineRegModel.GetRegistrationFromDatum(id, CurrentDatabase);
@@ -97,7 +95,7 @@ We have saved your progress. An email with a link to finish this registration wi
                 return Message("no Existing registration available");
             if (m.UserPeopleId != m.Datum.UserPeopleId)
                 return Message("incorrect user");
-            TempData["PeopleId"] = pid;
+            Util.TempPeopleId = pid;
             return View("Continue/Existing", m);
         }
 

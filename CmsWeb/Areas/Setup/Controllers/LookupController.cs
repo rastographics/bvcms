@@ -71,11 +71,7 @@ namespace CmsWeb.Areas.Setup.Controllers
         [HttpPost]
         public ActionResult Create(int? id, string type)
         {
-            if (!id.HasValue)
-            {
-                TempData["ErrorMessage"] = "Id must be a number.";
-            }
-            else
+            if (id.HasValue)
             {
                 var q = CurrentDatabase.ExecuteQuery<Row>("select * from lookup." + type + " where id = {0}", id);
                 if (!q.Any())

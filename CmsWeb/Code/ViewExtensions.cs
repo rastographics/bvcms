@@ -786,18 +786,6 @@ namespace CmsWeb
             }
         }
 
-        public static string RenderPartialViewToString2(Controller controller, string viewName, object model)
-        {
-            controller.ViewData.Model = model;
-            using (var sw = new StringWriter())
-            {
-                var viewResult = ViewEngines.Engines.FindPartialView(controller.ControllerContext, viewName);
-                var viewContext = new ViewContext(controller.ControllerContext, viewResult.View, controller.ViewData, controller.TempData, sw);
-                viewResult.View.Render(viewContext, sw);
-                return sw.GetStringBuilder().ToString();
-            }
-        }
-
         public static IHtmlString TextBoxFor2<TModel, TProperty>(
             this HtmlHelper<TModel> htmlHelper,
             Expression<Func<TModel, TProperty>> expression,

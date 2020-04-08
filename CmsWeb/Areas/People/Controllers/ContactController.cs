@@ -24,17 +24,18 @@ namespace CmsWeb.Areas.People.Controllers
 
             if (edit)
             {
-                TempData["ContactEdit"] = true;
+                Util.TempContactEdit = true;
                 return Redirect($"/Contact2/{cid}");
             }
             else
             {
-                if (TempData.ContainsKey("SetRole"))
+                var setRole = Util.TempSetRole;
+                if (setRole.HasValue())
                 {
-                    m.LimitToRole = TempData["SetRole"].ToString();
+                    m.LimitToRole = Util.TempSetRole;
                 }
 
-                var showEdit = (bool?)TempData["ContactEdit"] == true;
+                var showEdit = Util.TempContactEdit;
                 ViewBag.edit = showEdit;
                 return View(m);
             }
