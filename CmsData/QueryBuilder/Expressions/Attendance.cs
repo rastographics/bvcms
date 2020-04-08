@@ -166,6 +166,24 @@ namespace CmsData
                 expr = Expression.Not(expr);
             return expr;
         }
+        internal Expression RecentVisitNumberOrgs()
+        {
+            var tf = CodeIds == "1";
+
+            int n = Quarters.ToInt2() ?? 1;
+            var dt = Util.Now.AddDays(-Days);
+            var cdt = db.Setting("DbConvertedDate", "1/1/1900").ToDate();
+
+            var q = from v in db.RecentVisitNumberOrgs(ProgramInt, DivisionInt, OrganizationInt, dt, cdt)
+                where v.SeqNo == n
+                select v.PeopleId;
+            var tag = db.PopulateTemporaryTag(q);
+            Expression<Func<Person, bool>> pred = p => p.Tags.Any(t => t.Id == tag.Id);
+            Expression expr = Expression.Invoke(pred, parm);
+            if (op == CompareType.Equal ^ tf)
+                expr = Expression.Not(expr);
+            return expr;
+        }
 
         internal Expression HasRecentNewAttend()
         {

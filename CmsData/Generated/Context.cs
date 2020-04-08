@@ -3721,6 +3721,25 @@ namespace CmsData
                 );
         }
 
+        [Function(Name = "dbo.RecentVisitNumberOrgs", IsComposable = true)]
+        public IQueryable<View.RecentVisitNumberOrgs> RecentVisitNumberOrgs(
+            [Parameter(DbType = "int")] int? progid,
+            [Parameter(DbType = "int")] int? divid,
+            [Parameter(DbType = "int")] int? org,
+            [Parameter(DbType = "datetime")] DateTime? mindate,
+            [Parameter(DbType = "datetime")] DateTime? 	minpersoncreatedt
+            )
+        {
+            return CreateMethodCallQuery<View.RecentVisitNumberOrgs>(this,
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                progid,
+                divid,
+                org,
+                mindate,
+                minpersoncreatedt
+            );
+        }
+
         [Function(Name = "dbo.RecentGiver", IsComposable = true)]
         public IQueryable<View.RecentGiver> RecentGiver(
             [Parameter(DbType = "int")] int? days
