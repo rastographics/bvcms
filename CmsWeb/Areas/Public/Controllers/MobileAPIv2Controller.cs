@@ -854,10 +854,10 @@ namespace CmsWeb.Areas.Public.Controllers
             int lastYear = thisYear - 1;
 
             var q = GetContributionsFor(person);
-            decimal lastYearTotal = (from c in q
+            decimal? lastYearTotal = (from c in q
                                      where c.ContributionDate.Value.Year == lastYear
                                      orderby c.ContributionDate descending
-                                     select c).Sum(c => c.ContributionAmount ?? 0);
+                                     select c).Sum(c => c.ContributionAmount) ?? 0;
 
             List<MobileGivingEntry> entries = (from c in q
                                                let online = c.BundleDetails.Single().BundleHeader.BundleHeaderType.Description.Contains("Online")
@@ -900,6 +900,7 @@ namespace CmsWeb.Areas.Public.Controllers
                            && (person.ContributionOptionsId ?? StatementOptionCode.Joint) == StatementOptionCode.Joint
                    where !ContributionTypeCode.ReturnedReversedTypes.Contains(c.ContributionTypeId)
                    where c.ContributionStatusId == ContributionStatusCode.Recorded
+                   where c.ContributionAmount != null
                    select c;
         }
 

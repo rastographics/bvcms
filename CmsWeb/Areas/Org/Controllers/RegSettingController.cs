@@ -2,6 +2,7 @@ using CmsData;
 using CmsWeb.Lifecycle;
 using System;
 using System.Web.Mvc;
+using UtilityExtensions;
 
 namespace CmsWeb.Areas.Org.Controllers
 {
@@ -35,14 +36,12 @@ namespace CmsWeb.Areas.Org.Controllers
             {
                 var os = CurrentDatabase.CreateRegistrationSettings(text, id);
                 org.UpdateRegSetting(os);
+                CurrentDatabase.SubmitChanges();
             }
             catch (Exception ex)
             {
-                TempData["error"] = ex.Message;
-                TempData["regsetting"] = text;
-                return Redirect("/RegSettings/" + id);
+                Util.TempError = ex.Message;
             }
-            CurrentDatabase.SubmitChanges();
             return Redirect("/RegSettings/" + id);
         }
     }

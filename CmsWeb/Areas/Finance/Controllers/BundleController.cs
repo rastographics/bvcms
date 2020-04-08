@@ -19,9 +19,11 @@ namespace CmsWeb.Areas.Finance.Controllers
         }
 
         [Route("~/Bundle/{id:int}")]
-        public ActionResult Index(int id, bool? create)
+        public ActionResult Index(int id, bool? create, bool? edit)
         {
             var m = new Models.BundleModel(id, CurrentDatabase);
+            ViewBag.createbundle = create;
+            ViewBag.editbundle = edit;
             if (User.IsInRole("FinanceDataEntry") && m.BundleStatusId != BundleStatusCode.OpenForDataEntry)
             {
                 return Redirect("/Bundles");
@@ -50,8 +52,7 @@ namespace CmsWeb.Areas.Finance.Controllers
 
         public ActionResult Edit(int id)
         {
-            TempData["editbundle"] = true;
-            return RedirectToAction("Index", new { id = id });
+            return RedirectToAction("Index", new { id, edit = true });
         }
 
         [HttpPost]
