@@ -37,7 +37,7 @@ namespace CmsWeb.Areas.Setup.Controllers
 
             if (resourceType == null)
             {
-                TempData["Error"] = "You need to configure at least one Resource Type first.";
+                Util.TempError = "You need to configure at least one Resource Type first.";
                 return Redirect("~/ResourceCategories");
             }
 

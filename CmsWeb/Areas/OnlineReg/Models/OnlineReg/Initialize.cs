@@ -96,13 +96,13 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 {
                     throw new Exception("invalid link");
                 }
-#if DEBUG
-#else
-                if (ot.Used)
-                    throw new Exception("link used");
-                if (ot.Expires.HasValue && ot.Expires < DateTime.Now)
-                    throw new Exception("link expired");
-#endif
+                if (!Util.IsDebug())
+                {
+                    if (ot.Used)
+                        throw new Exception("link used");
+                    if (ot.Expires.HasValue && ot.Expires < DateTime.Now)
+                        throw new Exception("link expired");
+                }
 
                 registertag = regtag;
                 if (registertag.HasValue() && !registerLinkType.HasValue())

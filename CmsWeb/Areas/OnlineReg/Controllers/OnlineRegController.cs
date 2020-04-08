@@ -528,7 +528,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             {
                 m.UpdateDatum();
                 m.Log(fromMethod);
-                var content = ViewExtensions2.RenderPartialViewToString2(this, "Flow2/List", m);
+                var content = ViewExtensions2.RenderPartialViewToString(this, "Flow2/List", m);
                 return Content(content);
             }
             catch (Exception ex)
@@ -551,8 +551,8 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             var ex2 = new Exception($"{errorDisplay}, {CurrentDatabase.ServerLink("/OnlineReg/RegPeople/") + m.DatumId}", ex);
             ErrorSignal.FromCurrentContext().Raise(ex2);
             m.Log(ex2.Message);
-            TempData["error"] = errorDisplay;
-            TempData["stack"] = ex.StackTrace;
+            Util.TempError = errorDisplay;
+            ViewBag.stack = ex.StackTrace;
             return Content("/Error/");
         }
 
