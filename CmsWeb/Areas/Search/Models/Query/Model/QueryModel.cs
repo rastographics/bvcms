@@ -3,6 +3,7 @@ using CmsWeb.Code;
 using CmsWeb.Constants;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web.Mvc;
 using UtilityExtensions;
@@ -86,6 +87,7 @@ namespace CmsWeb.Areas.Search.Models
 
         public bool IsPublic { get; set; }
         public string Days { get; set; }
+        [Display(Name = "Tax Status")]
         public string TaxNonTax { get; set; }
         public int? Age { get; set; }
         public string Quarters { get; set; }
@@ -341,7 +343,7 @@ namespace CmsWeb.Areas.Search.Models
                     new CodeValueItem { Code = "TaxDed", Value = "Tax Deductible" },
                     new CodeValueItem { Code = "NonTaxDed", Value = "Non-Tax Deductible" },
                     new CodeValueItem { Code = "Both", Value = "Both Tax & Non-Tax" },                    
-                }, "Code", "Value", TaxNonTax);
+                }, "Code", "Value", (TaxNonTax ?? "Both"));
         }
     }
 }
