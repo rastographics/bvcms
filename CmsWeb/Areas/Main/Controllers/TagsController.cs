@@ -206,7 +206,7 @@ namespace CmsWeb.Areas.Main.Controllers
         {
             if (Request.HttpMethod.ToUpper() == "GET")
             {
-                var success = (string)TempData["success"];
+                var success = Util.TempSuccessMessage;
                 if (success.HasValue())
                 {
                     ViewData["success"] = success;
@@ -221,7 +221,7 @@ namespace CmsWeb.Areas.Main.Controllers
                 tt.Name == tag && tt.PeopleId == CurrentDatabase.UserPeopleId && tt.TypeId == DbUtil.TagTypeId_Personal);
             if (t == null)
             {
-                TempData["message"] = "tag not found";
+                Util.TempSuccessMessage = "tag not found";
                 return Redirect("/Tags/ConvertTagToExtraValue");
             }
 
@@ -231,7 +231,7 @@ namespace CmsWeb.Areas.Main.Controllers
                 p.AddEditExtraCode(field, value);
                 CurrentDatabase.SubmitChanges();
             }
-            TempData["message"] = "success";
+            Util.TempSuccessMessage = "success";
             return Redirect("/Tags/ConvertTagToExtraValue");
         }
     }

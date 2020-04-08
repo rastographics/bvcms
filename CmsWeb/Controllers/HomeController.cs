@@ -97,7 +97,7 @@ namespace CmsWeb.Controllers
             }
             cc.Description = name;
             cc.Save(CurrentDatabase, owner: "System");
-            TempData["autorun"] = true;
+            Util.TempAutorun = true;
             return Redirect("/Query/" + cc.Id);
         }
 
@@ -106,13 +106,11 @@ namespace CmsWeb.Controllers
         {
             if (dt.HasValue)
             {
-                TempData["ActiveRecords"] = CurrentDatabase.ActiveRecordsdt(dt.Value);
-                TempData["ActiveRecords2"] = CurrentDatabase.ActiveRecords2dt(dt.Value);
+                ViewBag.ActiveRecords2 = CurrentDatabase.ActiveRecords2dt(dt.Value);
             }
             else
             {
-                TempData["ActiveRecords"] = CurrentDatabase.ActiveRecords();
-                TempData["ActiveRecords2"] = CurrentDatabase.ActiveRecords2();
+                ViewBag.ActiveRecords2 = CurrentDatabase.ActiveRecords2();
             }
             return View("Support2");
         }
@@ -191,13 +189,8 @@ namespace CmsWeb.Controllers
         }
 
         [HttpGet, Route("~/Home/Support2")]
-        public ActionResult Support2(string helplink)
+        public ActionResult Support2()
         {
-            if (helplink.HasValue())
-            {
-                TempData["HelpLink"] = HttpUtility.UrlDecode(helplink);
-            }
-
             return View();
         }
     }

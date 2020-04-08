@@ -171,9 +171,11 @@ namespace CmsWeb.Areas.Org.Controllers
 
             var defaultRole = CurrentDatabase.Setting("Contacts-DefaultRole", null);
             if (!string.IsNullOrEmpty(defaultRole) && CurrentDatabase.Roles.Any(x => x.RoleName == defaultRole))
-                TempData["SetRole"] = defaultRole;
+            {
+                Util.TempSetRole = defaultRole;
+            }
 
-            TempData["ContactEdit"] = true;
+            Util.TempContactEdit = true;
             return Content($"/Contact2/{c.ContactId}");
         }
     }

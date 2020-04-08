@@ -31,7 +31,7 @@ namespace CmsWeb.Areas.Main.Controllers
         {
             if (!body.HasValue())
             {
-                body = TempData["body"] as string;
+                body = Util.GetFromSessionTemp("emailreminderbody");
             }
 
             if (!subj.HasValue() && templateID != 0)
