@@ -146,7 +146,7 @@ namespace CmsWeb.Areas.Manage.Controllers
         public ActionResult UpdateFields() // UpdateForATag
         {
             var m = new UpdateFieldsModel();
-            var success = (string)TempData["success"];
+            var success = Util.TempSuccessMessage;
             if (success.HasValue())
             {
                 ViewData["success"] = success;
@@ -177,7 +177,7 @@ namespace CmsWeb.Areas.Manage.Controllers
                 return View("UpdateFields", m);
             }
 
-            TempData["success"] = $"{m.Field} updated with the value '{m.NewValue}' for {m.Count} records ";
+            Util.TempSuccessMessage = $"{m.Field} updated with the value '{m.NewValue}' for {m.Count} records ";
             return RedirectToAction("UpdateFields");
         }
 
