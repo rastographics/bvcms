@@ -11,8 +11,6 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 {
     public partial class OnlineRegController
     {
-        private const string Fromcalendar = "fromcalendar";
-
         public OnlineRegController(IRequestManager requestManager) : base(requestManager)
         {
         }
@@ -56,7 +54,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         [Route("GetVolSub/{aid:int}/{pid:int}")]
         public ActionResult GetVolSub(int aid, int pid, string token)
         {
-            if (token.HasValue() && token == Fromcalendar)
+            if (token == "fromcalendar")
             {
                 var vs = new VolSubModel(CurrentDatabase, aid, pid);
                 SetHeaders(vs.org.OrganizationId);
@@ -135,7 +133,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 
             VolunteerModel m = null;
 
-            var td = TempData["PeopleId"];
+            var td = Util.TempPeopleId;
             if (td != null)
             {
                 m = new VolunteerModel(id.ToInt(), td.ToInt());
@@ -216,7 +214,6 @@ The following Commitments:<br/>
             SetHeaders(m.OrgId);
             if (m.IsLeader)
             {
-                TempData[Fromcalendar] = true;
                 return View("ManageVolunteer/PickSlots", m);
             }
             return View("ManageVolunteer/ConfirmVolunteerSlots", m);
