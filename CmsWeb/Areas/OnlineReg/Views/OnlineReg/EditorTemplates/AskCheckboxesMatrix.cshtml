@@ -1,14 +1,16 @@
 ﻿@using CmsData.Registration
+@using UtilityExtensions
 @model CmsWeb.Areas.OnlineReg.Models.OnlineRegPersonModel
 @{
     var ask = (AskCheckboxes)ViewBag.ask;
     var name = Html.NameFor2(m => m.Checkbox);
+    var totalChecks = ask.list.Count;
 }
 <div class="form-group">
     <label class="control-label col-sm-3 labelsize">@ask.Label</label>
     <div class="col-sm-9">
         <table class="table table-striped">
-            <thead>
+            @*<thead>
                 <tr>
                     @for (var n = 0; n < ask.Columns; n++)
                     {
@@ -19,41 +21,39 @@
                         }
                     }
                 </tr>
-            </thead>
+            </thead>*@
             <tbody>
-                @for (var n = ask.Columns ?? 1; n < ask.list.Count; n++)
+                @{ var checks = 0;}
+                @do
                 {
-                    var a = ask.list[n];
-                    if (n % ask.Columns == 0)
-                    {
-                        @Html.Raw("<tr>")
-                    }
-                    if (a.SmallGroup == "nocheckbox")
-                    {
-                    <td>@Html.Raw(a.Description)</td>
-                    }
-                    else
-                    {
-                        if (a.SmallGroup != "comment")
+                    <tr>
+                        @for (var col = 0; col < ask.Columns; col++)
                         {
-                            if (a.IsSmallGroupFilled(Model.GroupTags))
+                            var check = ask.list[checks];
+                            var filled = check.IsSmallGroupFilled(Model.GroupTags);
+                            <td>
+                                <div class="checkbox">
+                                    <label>
+                                        <input id="@check.SmallGroup.ToSuitableId()" type="checkbox" value="@check.SmallGroup" name="@name" @(filled ? "disabled='disabled'" : "")
+                                               @(Model.CheckboxChecked(check.SmallGroup) ? "checked='checked'" : "") />
+                                        <span @(filled ? " class=strike" : "")>
+                                            @Html.Raw(check.Description)
+                                        </span>
+                                        @if (check.Fee > 0)
+                                        {
+                                            @:&nbsp;($@check.Fee.ToString2("N2"))
+                                        }
+                                    </label>
+                                </div>
+                            </td>
+                            checks++;
+                            if (checks >= totalChecks)
                             {
-                                <td><i>filled</i></td>
-                            }
-                            else
-                            {
-                                <td>
-                                    <input type="checkbox" value="@a.SmallGroup" name="@name"
-                                           @(Model.CheckboxChecked(a.SmallGroup) ? "checked='checked'" : "") />
-                                </td>
+                                col = ask.Columns.Value;
                             }
                         }
-                    }
-                    if (n % ask.Columns == ask.Columns - 1)
-                    {
-                        @Html.Raw("</tr>")
-                    }
-                }
+                    </tr>
+                } while (checks < totalChecks);
             </tbody>
         </table>
         <div>@Html.ValidationMessageFor(m => m.Checkbox[ask.UniqueId])</div>

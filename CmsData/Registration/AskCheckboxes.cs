@@ -31,6 +31,7 @@ For each checkbox, you can specify the following:
         public bool HasLabel => Label.HasValue();
         public int? Minimum { get; set; }
         public int? Maximum { get; set; }
+        [Range(0, 3)]
         public int? Columns { get; set; }
         public List<CheckboxItem> list { get; set; }
 
