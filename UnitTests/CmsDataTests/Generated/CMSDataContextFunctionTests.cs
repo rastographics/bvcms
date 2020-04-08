@@ -4,6 +4,7 @@ using SharedTestFixtures;
 using Shouldly;
 using System;
 using System.Linq;
+using System.Linq.Expressions;
 using UtilityExtensions;
 using Xunit;
 
@@ -12,6 +13,16 @@ namespace CmsDataTests
     [Collection(Collections.Database)]
     public class CMSDataContextFunctionTests : FinanceTestBase
     {
+        [Theory]
+        [InlineData("319, Ministry Description 1")]
+        [InlineData("null, Ministry Description 2")]
+        [InlineData("-585, Ministry Description 3")]
+        public void MadeContactTypeAsOf_MinistryInt_should_read_int(string ministryStr)
+        {
+            var con = new Condition();
+            con.Ministry = ministryStr;
+            con.MinistryInt.ShouldBeOfType(typeof(int));
+        }
         [Fact]
         public void GetTotalContributionsDonorTest()
         {
