@@ -118,6 +118,7 @@
     </Compile>
     <Compile Include="API\APIContributionSearchModelTests.cs" />
     <Compile Include="API\PythonModel\PythonModelTests.cs" />
+    <Compile Include="API\QueryFunctions\QueryFunctionsTests.cs" />
     <Compile Include="Charts\GoogleChartsDataTest.cs" />
     <Compile Include="Classes\ExtraValues\ViewsTests.cs" />
     <Compile Include="Classes\PeopleUtilsTests.cs" />
