@@ -980,7 +980,11 @@ namespace CmsData
                 }
             }
 
-            var q = db.FirstTimeGivers(Days, fund).Select(p => p.PeopleId);
+            if (TaxNonTax.IsNotNull() && !TaxNonTax.Contains("Both")) TaxNonTaxBool = TaxNonTax == "TaxDed" ? false : true;
+            else
+                TaxNonTaxBool = null;
+
+            var q = db.FirstTimeGivers(Days, fund, TaxNonTaxBool).Select(p => p.PeopleId);
 
             Expression<Func<Person, bool>> pred;
             if (op == CompareType.Equal ^ tf)
@@ -999,6 +1003,9 @@ namespace CmsData
         {
             var top = Quarters.ToInt();
             var fundids = FundIds?.Replace(' ', ',');
+            if (TaxNonTax.IsNotNull() && !TaxNonTax.Contains("Both")) TaxNonTaxBool = TaxNonTax == "TaxDed" ? false : true;
+            else
+                TaxNonTaxBool = null;
             var tf = CodeIds == "1";
             if (db.CurrentUser == null || db.CurrentUser.Roles.All(rr => rr != "Finance"))
             {
@@ -1006,7 +1013,7 @@ namespace CmsData
             }
 
             var mindt = Util.Now.AddDays(-Days).Date;
-            var r = db.TopGivers(top, mindt, Util.Now, fundids).ToList();
+            var r = db.TopGivers(top, mindt, Util.Now, fundids, TaxNonTaxBool).ToList();
             var topgivers = r.Select(g => g.PeopleId).ToList();
             Expression<Func<Person, bool>> pred = p =>
                 topgivers.Contains(p.PeopleId);
