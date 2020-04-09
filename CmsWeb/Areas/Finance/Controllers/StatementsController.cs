@@ -131,8 +131,6 @@ namespace CmsWeb.Areas.Finance.Controllers
             return Content(result);
         }
 
-        //TODO: This filename is too predictable and can cause one request to be blocked by another
-        //      Create a more unique filename and add it to the contributionsrun that is creating this file to be downloaded later
         private static string Output(string host, string id)
         {
             var path = Path.Combine(Environment.ExpandEnvironmentVariables(ConfigurationManager.AppSettings["SharedFolder"]), "Statements");
@@ -144,12 +142,15 @@ namespace CmsWeb.Areas.Finance.Controllers
         [HttpGet, Route("~/Statements/Progress/{id?}")]
         public ActionResult Progress(string id)
         {
-            Guid? uuid = id == null ? (Guid?)null : Guid.Parse(id);
-            var r = CurrentDatabase.ContributionsRuns.Where(mm => id == null || mm.UUId == uuid).OrderByDescending(mm => mm.Id).First();
+            Guid? uuid = id.HasValue() ? Guid.Parse(id) : (Guid?)null;
+            var r = CurrentDatabase.ContributionsRuns
+                .Where(mm => uuid == null || mm.UUId == uuid)
+                .Where(mm => mm.UserId == CurrentDatabase.CurrentUser.UserId)
+                .OrderByDescending(mm => mm.Started).First();
             var html = new StringBuilder();
             if (r.CurrSet > 0)
             {
-                html.Append($"<a href=\"/Statements/Download/{id}\">PDF with all households</a><br>");
+                html.Append($"<a href=\"/Statements/Download/{r.UUId:n}\">PDF with all households</a><br>");
             }
 
             if (r.Sets.HasValue())
@@ -157,7 +158,7 @@ namespace CmsWeb.Areas.Finance.Controllers
                 var sets = r.Sets.Split(',').Select(ss => ss.ToInt()).ToList();
                 foreach (var set in sets)
                 {
-                    html.Append($"<a href=\"/Statements/Download/{id}/{set}\">Download PDF {set}</a><br>");
+                    html.Append($"<a href=\"/Statements/Download/{r.UUId:n}/{set}\">Download PDF {set}</a><br>");
                 }
             }
             ViewBag.download = html.ToString();
