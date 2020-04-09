@@ -1,6 +1,5 @@
 ﻿using CmsData;
 using CmsData.Codes;
-using CmsWeb.Areas.Dialog.Models;
 using CmsWeb.Membership;
 using ImageData;
 using System;
@@ -65,6 +64,7 @@ namespace SharedTestFixtures
             return user;
         }
 
+
         protected Person CreatePerson(Family family = null)
         {
             if (family == null)
@@ -81,6 +81,7 @@ namespace SharedTestFixtures
                 EmailAddress = RandomString() + "@example.com",
                 MemberStatusId = MemberStatusCode.Member,
                 PositionInFamilyId = PositionInFamily.PrimaryAdult,
+                CreatedDate = DateTime.Now
             };
 
             db.People.InsertOnSubmit(person);
@@ -88,6 +89,7 @@ namespace SharedTestFixtures
 
             return person;
         }
+
 
         protected Organization CreateOrganization(string name = null, int? fromId = null, int? type = null, int? campus = null)
         {
@@ -116,6 +118,58 @@ namespace SharedTestFixtures
 
             return newOrg;
         }
+        protected void DeleteOrganization(Organization organization)
+        {
+            db.Organizations.DeleteOnSubmit(organization);
+            db.SubmitChanges();
+        }
+
+
+        protected OrgFilter CreateOrgFilter(int organizationId, int peopleId)
+        {
+            var filter = new OrgFilter
+            {
+                QueryId = Guid.NewGuid(),
+                Id = organizationId,
+                GroupSelect = "10",
+                FirstName = peopleId.ToString(),
+                LastName = null,
+                SgFilter = null,
+                ShowHidden = false,
+                FilterIndividuals = false,
+                FilterTag = false,
+                LastUpdated = DateTime.Now,
+                UserId = null,
+            };
+            db.OrgFilters.InsertOnSubmit(filter);
+            db.SubmitChanges();
+            return filter;
+        }
+        protected void DeleteOrgFilter(OrgFilter orgFilter)
+        {
+            db.OrgFilters.DeleteOnSubmit(orgFilter);
+            db.SubmitChanges();
+        }
+
+
+        protected OrganizationMember CreateOrganizationMember(int organizationId, int peopleId)
+        {
+            var organizationMember = new OrganizationMember()
+            {
+                OrganizationId = organizationId,
+                PeopleId = peopleId,
+                MemberTypeId = MemberTypeCode.Member
+            };
+            db.OrganizationMembers.InsertOnSubmit(organizationMember);
+            db.SubmitChanges();
+            return organizationMember;
+        }
+        protected void DeleteOrganizationMember(OrganizationMember organizationMember)
+        {
+            db.OrganizationMembers.DeleteOnSubmit(organizationMember);
+            db.SubmitChanges();
+        }
+
 
         private string GetValidationKeyFromWebConfig()
         {
