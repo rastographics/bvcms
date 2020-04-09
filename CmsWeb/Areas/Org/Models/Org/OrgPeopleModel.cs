@@ -68,10 +68,9 @@ namespace CmsWeb.Areas.Org.Models
             filter.TagId = (int?)Db.TagCurrent().Id;
             filter.LastUpdated = DateTime.Now;
             Db.SubmitChanges();
-            IQueryable<OrgFilterPerson> q = from p in Db.OrgFilterPeople(QueryId, ShowMinistryInfo)
+            var q = from p in Db.OrgFilterPeople(QueryId, ShowMinistryInfo)
                                             select p;
             return q;
-
         }
 
         private Tag orgTag;
