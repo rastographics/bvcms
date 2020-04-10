@@ -25,9 +25,9 @@ namespace CmsDataTests
         [Fact]
         public void SessionValues_Insert_Fetch_Delete()
         {
-            var sessionId = DatabaseTestBase.RandomString();
-            var name = DatabaseTestBase.RandomString();
-            var value = DatabaseTestBase.RandomString();
+            var sessionId = RandomString();
+            var name = RandomString();
+            var value = RandomString();
             db.SessionValues.DeleteAllOnSubmit(
                 db.SessionValues.Where(v => v.SessionId == sessionId && v.Name == name));
             db.SessionValues.FirstOrDefault(v => v.Name == name && v.SessionId == sessionId).ShouldBeNull();
@@ -55,13 +55,10 @@ namespace CmsDataTests
         [Fact]
         public void Should_Get_Setting()
         {
-            using (var db = CMSDataContext.Create(DatabaseFixture.Host))
-            {
-                var expected = "1";
-                var setting = MockSettings.CreateSaveSetting(db, "PostContributionPledgeFunds", "1");
-                var actual = db.GetSetting("PostContributionPledgeFunds", "");
-                actual.ShouldBe(expected);
-            }
+            var expected = "1";
+            var setting = MockSettings.CreateSaveSetting(db, "PostContributionPledgeFunds", "1");
+            var actual = db.GetSetting("PostContributionPledgeFunds", "");
+            actual.ShouldBe(expected);
         }
 
         [Fact]
@@ -105,22 +102,19 @@ namespace CmsDataTests
         [Theory]
         public void Should_Insert_EV_Only_If_does_not_Exist(string key, string value, string text, int? intvalue, bool? bitvalue)
         {
-            using (var db = CMSDataContext.Create(DatabaseFixture.Host))
-            {
-                var datevalue = DateTime.Now;
-                var person = db.People.FirstOrDefault();
-                int extraValId = db.AddExtraValueDataIfNotExist(person.PeopleId, key, value, datevalue, text, intvalue, bitvalue);
-                db.SubmitChanges();
-                int attempt2 = db.AddExtraValueDataIfNotExist(person.PeopleId, key, value, datevalue, text, intvalue, bitvalue);
-                attempt2.ShouldBe(0);
-                db.SubmitChanges();
+            var datevalue = DateTime.Now;
+            var person = db.People.FirstOrDefault();
+            int extraValId = db.AddExtraValueDataIfNotExist(person.PeopleId, key, value, datevalue, text, intvalue, bitvalue);
+            db.SubmitChanges();
+            int attempt2 = db.AddExtraValueDataIfNotExist(person.PeopleId, key, value, datevalue, text, intvalue, bitvalue);
+            attempt2.ShouldBe(0);
+            db.SubmitChanges();
 
-                var extraValue = db.PeopleExtras.SingleOrDefault(p => p.PeopleId == person.PeopleId && p.Field == key && p.Instance == extraValId);
-                extraValue.ShouldNotBe(null);
+            var extraValue = db.PeopleExtras.SingleOrDefault(p => p.PeopleId == person.PeopleId && p.Field == key && p.Instance == extraValId);
+            extraValue.ShouldNotBe(null);
 
-                db.PeopleExtras.DeleteOnSubmit(extraValue);
-                db.SubmitChanges();
-            }
+            db.PeopleExtras.DeleteOnSubmit(extraValue);
+            db.SubmitChanges();
         }
 
         [Fact]
@@ -128,9 +122,9 @@ namespace CmsDataTests
         {
             var currentDate = Util.Now;
 
-            var randomName = DatabaseTestBase.RandomString();
-            var randomFirst = DatabaseTestBase.RandomString();
-            var randomLast = DatabaseTestBase.RandomString();
+            var randomName = RandomString();
+            var randomFirst = RandomString();
+            var randomLast = RandomString();
 
             using (var db = CMSDataContext.Create(DatabaseFixture.Host))
             {
@@ -213,11 +207,11 @@ namespace CmsDataTests
         [InlineData("2,4,6,,8,,,10", 5)]
         [InlineData("1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100,", 100)]
         [InlineData("0,2147483647", 2)]
+        [InlineData("1999,Feast", 1)]
         public void SplitIntsTest(string list, int count)
         {
             var ints = db.SplitInts(list).ToList();
             ints.Count().ShouldBe(count);
-
         }
     }
 }

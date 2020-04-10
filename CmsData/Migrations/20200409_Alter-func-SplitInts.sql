@@ -6,7 +6,7 @@ AS
         SELECT DISTINCT CAST([Value] as int) [Value]
         FROM
             STRING_SPLIT(@List, ',')
-        WHERE
-        RTRIM(LTRIM([Value])) <> ''
+        WHERE TRY_CONVERT(int, [Value]) IS NOT NULL 
+          AND RTRIM(LTRIM([Value])) <> ''
     );
 GO
