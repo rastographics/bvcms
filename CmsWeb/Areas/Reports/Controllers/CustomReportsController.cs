@@ -4,6 +4,7 @@ using System;
 using System.Linq;
 using System.Security;
 using System.Web.Mvc;
+using UtilityExtensions;
 
 namespace CmsWeb.Areas.Reports.Controllers
 {
@@ -169,20 +170,20 @@ namespace CmsWeb.Areas.Reports.Controllers
 
         private CustomReportViewModel TempDataCustomReport
         {
-            get => TempData["tempdataReport"] as CustomReportViewModel;
-            set => TempData["tempdataReport"] = value;
+            get => Util.GetFromSession<CustomReportViewModel>("tempdataReport");
+            set => Util.SetValueInSession("tempdataReport", value);
         }
 
         private ModelStateDictionary TempDataModelState
         {
-            get => TempData["tempdataState"] as ModelStateDictionary;
-            set => TempData["tempdataState"] = value;
+            get => Util.GetFromSession<ModelStateDictionary>("tempdataState");
+            set => Util.SetValueInSession("tempdataState", value);
         }
 
-        private bool? TempDataSaved
+        private bool TempDataSaved
         {
-            get => TempData["tempdataSaved"] as bool?;
-            set => TempData["tempdataSaved"] = value;
+            get => Util.GetFromSession("tempdataSaved", false);
+            set => Util.SetValueInSession("tempdataSaved", (bool)value);
         }
     }
 }

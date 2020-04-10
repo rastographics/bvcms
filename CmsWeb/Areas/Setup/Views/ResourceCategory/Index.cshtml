@@ -1,18 +1,20 @@
-﻿@model IEnumerable<CmsData.ResourceCategory>
+﻿@using UtilityExtensions
+@model IEnumerable<CmsData.ResourceCategory>
 @{
     Layout = ViewExtensions2.TouchPointLayout();
     ViewBag.Title = "Resource Categories";
     ViewBag.PageHeader = "Resource Categories";
+    var error = Util.TempError;
 }
 @section head{
     @Fingerprint.Css("/Content/touchpoint/lib/bootstrap-editable/css/bootstrap-editable.css")
 }
 <div class="row">
     <div class="col-md-9">
-        @if (TempData.ContainsKey("Error"))
+        @if (error.HasValue())
         {
             <div class="alert alert-danger">
-                @TempData["Error"]
+                @error
             </div>
         }
         <div class="box box-responsive">
