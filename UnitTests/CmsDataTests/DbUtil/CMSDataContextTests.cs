@@ -9,7 +9,7 @@ using Xunit;
 namespace CmsDataTests
 {
     [Collection(Collections.Database)]
-    public class CMSDataContextTests
+    public class CMSDataContextTests : DatabaseTestBase
     {
         [Fact]
         public void PeopleQuery2_Parse_Test()
@@ -19,45 +19,41 @@ namespace CmsDataTests
     AND HasManagedGiving( FundIdOrBlank='10102' ) = 1[True]
     AND HasPeopleExtraField <> 'RiseRecurAutoStopped'
     AND CampusId = 2[West Side]";
-            var db = CMSDataContext.Create(DatabaseFixture.Host);
             db.PeopleQuery2(query);
         }
 
         [Fact]
-        public static void SessionValues_Insert_Fetch_Delete()
+        public void SessionValues_Insert_Fetch_Delete()
         {
-            using (var db = CMSDataContext.Create(DatabaseFixture.Host))
+            var sessionId = DatabaseTestBase.RandomString();
+            var name = DatabaseTestBase.RandomString();
+            var value = DatabaseTestBase.RandomString();
+            db.SessionValues.DeleteAllOnSubmit(
+                db.SessionValues.Where(v => v.SessionId == sessionId && v.Name == name));
+            db.SessionValues.FirstOrDefault(v => v.Name == name && v.SessionId == sessionId).ShouldBeNull();
+            db.SessionValues.InsertOnSubmit(new SessionValue
             {
-                var sessionId = DatabaseTestBase.RandomString();
-                var name = DatabaseTestBase.RandomString();
-                var value = DatabaseTestBase.RandomString();
-                db.SessionValues.DeleteAllOnSubmit(
-                    db.SessionValues.Where(v => v.SessionId == sessionId && v.Name == name));
-                db.SessionValues.FirstOrDefault(v => v.Name == name && v.SessionId == sessionId).ShouldBeNull();
-                db.SessionValues.InsertOnSubmit(new SessionValue
-                {
-                    SessionId = sessionId,
-                    Name = name,
-                    Value = value
-                });
-                db.SubmitChanges();
+                SessionId = sessionId,
+                Name = name,
+                Value = value
+            });
+            db.SubmitChanges();
 
-                var newdb = db.Copy();
-                var sessionValue = newdb.SessionValues.FirstOrDefault(v => v.Name == name && v.SessionId == sessionId);
-                sessionValue.ShouldNotBeNull();
-                sessionValue.Value.ShouldBe(value);
+            var newdb = db.Copy();
+            var sessionValue = newdb.SessionValues.FirstOrDefault(v => v.Name == name && v.SessionId == sessionId);
+            sessionValue.ShouldNotBeNull();
+            sessionValue.Value.ShouldBe(value);
 
-                newdb.SessionValues.DeleteAllOnSubmit(
-                    newdb.SessionValues.Where(v => v.SessionId == sessionId && v.Name == name));
-                newdb.SubmitChanges();
+            newdb.SessionValues.DeleteAllOnSubmit(
+                newdb.SessionValues.Where(v => v.SessionId == sessionId && v.Name == name));
+            newdb.SubmitChanges();
 
-                sessionValue = newdb.SessionValues.FirstOrDefault(v => v.Name == name && v.SessionId == sessionId);
-                sessionValue.ShouldBeNull();
-            }
+            sessionValue = newdb.SessionValues.FirstOrDefault(v => v.Name == name && v.SessionId == sessionId);
+            sessionValue.ShouldBeNull();
         }
 
         [Fact]
-        public static void Should_Get_Setting()
+        public void Should_Get_Setting()
         {
             using (var db = CMSDataContext.Create(DatabaseFixture.Host))
             {
@@ -127,9 +123,9 @@ namespace CmsDataTests
             }
         }
 
-        [Fact]        
+        [Fact]
         public void Should_Return_Null_Transaction()
-       {
+        {
             var currentDate = Util.Now;
 
             var randomName = DatabaseTestBase.RandomString();
@@ -202,11 +198,26 @@ namespace CmsDataTests
                     PaymentType = "C",
                     LastFourCC = "1234",
                     LastFourACH = null
-                };                
+                };
 
                 var tran2 = db.CreateTransaction(t2, 10, 0, "transnational");
                 tran2.ShouldBeNull();
             }
+        }
+
+        [Theory]
+        [InlineData("", 0)]
+        [InlineData("1337", 1)]
+        [InlineData("2,4,6,", 3)]
+        [InlineData("2,147,483,647", 4)]
+        [InlineData("2,4,6,,8,,,10", 5)]
+        [InlineData("1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100,", 100)]
+        [InlineData("0,2147483647", 2)]
+        public void SplitIntsTest(string list, int count)
+        {
+            var ints = db.SplitInts(list).ToList();
+            ints.Count().ShouldBe(count);
+
         }
     }
 }
