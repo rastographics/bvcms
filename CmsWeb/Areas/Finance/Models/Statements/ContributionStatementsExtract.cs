@@ -110,21 +110,32 @@ namespace CmsWeb.Areas.Finance.Models.Report
             };
 
             cs.Funds = APIContributionSearchModel.GetCustomStatementsList(db, desc);
-            cs.Header = GetSectionHTML("Header", statementSpec, standardheader);
-            cs.Notice = GetSectionHTML("Notice", statementSpec, standardnotice);
-            cs.Template = GetSectionHTML("Template", statementSpec);
-            cs.TemplateBody = GetSectionHTML("TemplateBody", statementSpec);
-            cs.Footer = GetSectionHTML("Footer", statementSpec);
+            cs.Header = GetSectionHTML(db, "Header", statementSpec, standardheader);
+            cs.Notice = GetSectionHTML(db, "Notice", statementSpec, standardnotice);
+            cs.Template = GetSectionHTML(db, "Template", statementSpec);
+            cs.TemplateBody = GetSectionHTML(db, "TemplateBody", statementSpec);
+            cs.Footer = GetSectionHTML(db, "Footer", statementSpec);
 
             return cs;
         }
 
-        private static string GetSectionHTML(string elementName, XElement statementSpec, string defaultValue = null)
+        private static string GetSectionHTML(CMSDataContext db, string elementName, XElement statementSpec, string defaultValue = null)
         {
             var element = statementSpec.Element(elementName);
-            return element != null
-                ? string.Concat(element.Nodes().Select(x => x.ToString()).ToArray())
-                : defaultValue;
+            string content = null;
+            if (element != null)
+            {
+                var contentFile = element.GetAttr("content", null);
+                if (contentFile.HasValue())
+                {
+                    content = db.Content(contentFile)?.Body;
+                }
+                if (content == null)
+                {
+                    content = string.Concat(element.Nodes().Select(x => x.ToString()).ToArray());
+                }
+            }
+            return content.HasValue() ? content : defaultValue;
         }
 
         public static string Output(string fn, int set)

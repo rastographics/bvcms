@@ -81,7 +81,7 @@ namespace CmsWeb.Areas.Finance.Models.Report
             {
                 GlobalSettings =
                 {
-                    DocumentTitle = cs.Description ?? $"Contribution Statement {toDate:d}",
+                    DocumentTitle = (cs.Description ?? "Contribution Statement {date}").Replace("{date}", $"{toDate:d}"),
                     Margins = options.Margins.Settings,
                     PaperSize = options.PaperSize,
                     ProduceOutline = false,
