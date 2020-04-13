@@ -984,7 +984,6 @@ namespace CmsData
             else
                 TaxNonTaxBool = null;
 
-
             if (TaxNonTax.IsNotNull() && !TaxNonTax.Contains("Both")) TaxNonTaxBool = TaxNonTax == "TaxDed" ? false : true;
             else
                 TaxNonTaxBool = null;
