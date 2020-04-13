@@ -39,12 +39,12 @@ namespace CmsWeb.Areas.People.Controllers
             CurrentDatabase.SubmitChanges();
 
             var defaultRole = CurrentDatabase.Setting("Contacts-DefaultRole", null);
-            if (!string.IsNullOrEmpty(defaultRole) && CurrentDatabase.Roles.Any(x => x.RoleName == defaultRole))
+            if (defaultRole.HasValue() && CurrentDatabase.Roles.Any(x => x.RoleName == defaultRole))
             {
-                TempData["SetRole"] = defaultRole;
+                Util.TempSetRole = defaultRole;
             }
 
-            TempData["ContactEdit"] = true;
+            Util.TempContactEdit = true;
             return Content("/Contact2/" + c.ContactId);
         }
 
@@ -74,12 +74,12 @@ namespace CmsWeb.Areas.People.Controllers
             CurrentDatabase.SubmitChanges();
 
             var defaultRole = CurrentDatabase.Setting("Contacts-DefaultRole", null);
-            if (!string.IsNullOrEmpty(defaultRole) && CurrentDatabase.Roles.Any(x => x.RoleName == defaultRole))
+            if (defaultRole.HasValue() && CurrentDatabase.Roles.Any(x => x.RoleName == defaultRole))
             {
-                TempData["SetRole"] = defaultRole;
+                Util.TempSetRole = defaultRole;
             }
 
-            TempData["ContactEdit"] = true;
+            Util.TempContactEdit = true;
             return Content($"/Contact2/{c.ContactId}");
         }
 

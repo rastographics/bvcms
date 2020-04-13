@@ -74,8 +74,9 @@
     <Reference Include="RestSharp, Version=106.6.9.0, Culture=neutral, PublicKeyToken=598062e77f915f75, processorArchitecture=MSIL">
       <HintPath>..\..\packages\RestSharp.106.6.9\lib\net452\RestSharp.dll</HintPath>
     </Reference>
-    <Reference Include="Shouldly, Version=3.0.2.0, Culture=neutral, PublicKeyToken=6042cbcb05cbc941, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Shouldly.3.0.2\lib\net451\Shouldly.dll</HintPath>
+    <Reference Include="Shouldly, Version=4.0.0.0, Culture=neutral, PublicKeyToken=6042cbcb05cbc941, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Shouldly.4.0.0-beta0002\lib\net451\Shouldly.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Annotations, Version=4.2.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
@@ -118,6 +119,7 @@
     </Compile>
     <Compile Include="API\APIContributionSearchModelTests.cs" />
     <Compile Include="API\PythonModel\PythonModelTests.cs" />
+    <Compile Include="API\QueryFunctions\QueryFunctionsTests.cs" />
     <Compile Include="Charts\GoogleChartsDataTest.cs" />
     <Compile Include="Classes\ExtraValues\ViewsTests.cs" />
     <Compile Include="Classes\PeopleUtilsTests.cs" />
@@ -128,6 +130,7 @@
     <Compile Include="Extensions\ContributionTests.cs" />
     <Compile Include="Finance\AcceptivaGatewayTests.cs" />
     <Compile Include="Finance\Acceptiva\Core\Helpers\ISO3166Tests.cs" />
+    <Compile Include="Finance\MultipleGatewayUtilsTests.cs" />
     <Compile Include="Generated\CMSDataContextFunctionTests.cs" />
     <Compile Include="Generated\ContextTests.cs" />
     <Compile Include="Organization\OrganizationTests.cs" />
@@ -137,6 +140,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="QueryBuilder\AttendTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config">

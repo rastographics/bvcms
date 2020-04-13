@@ -3,14 +3,11 @@ using CmsWeb.Areas.Public.Models.MobileAPIv2;
 using CMSWebTests.Support;
 using Shouldly;
 using Xunit;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using SharedTestFixtures;
 
 namespace CMSWebTests.Areas.Public.Models.MobileAPIv2
 {
+    [Collection(Collections.Database)]
     public class MobileAccountTests : ControllerTestBase
     {
         [Fact]

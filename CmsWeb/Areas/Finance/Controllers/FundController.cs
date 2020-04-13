@@ -142,7 +142,7 @@ namespace CmsWeb.Areas.Finance.Controllers
             if (ModelState.IsValid)
             {
                 CurrentDatabase.SubmitChanges();
-                TempData["SuccessMessage"] = "Fund was successfully saved.";
+                Util.TempSuccessMessage = "Fund was successfully saved.";
                 return RedirectToAction("Index");
             }
             return View("Edit", fund);

@@ -3,6 +3,7 @@ using SharedTestFixtures;
 using Shouldly;
 using System;
 using System.Linq;
+using UtilityExtensions;
 using Xunit;
 
 namespace CmsDataTests
@@ -123,6 +124,88 @@ namespace CmsDataTests
 
                 db.PeopleExtras.DeleteOnSubmit(extraValue);
                 db.SubmitChanges();
+            }
+        }
+
+        [Fact]        
+        public void Should_Return_Null_Transaction()
+       {
+            var currentDate = Util.Now;
+
+            var randomName = DatabaseTestBase.RandomString();
+            var randomFirst = DatabaseTestBase.RandomString();
+            var randomLast = DatabaseTestBase.RandomString();
+
+            using (var db = CMSDataContext.Create(DatabaseFixture.Host))
+            {
+                var t1 = new Transaction
+                {
+                    Name = randomName,
+                    First = randomFirst,
+                    MiddleInitial = "m",
+                    Last = randomLast,
+                    Suffix = "sufix",
+                    Donate = 0,
+                    Amtdue = 0,
+                    Amt = 10,
+                    Emails = Util.FirstAddress("email@gmail.com").Address,
+                    Testing = true,
+                    Description = "description",
+                    OrgId = 1,
+                    Url = "url",
+                    Address = "address",
+                    TransactionGateway = "transnational",
+                    City = "city",
+                    State = "state",
+                    Zip = "12345",
+                    DatumId = 0,
+                    Phone = "1234567890",
+                    OriginalId = null,
+                    Financeonly = false,
+                    TransactionDate = currentDate,
+                    PaymentType = "C",
+                    LastFourCC = "1234",
+                    LastFourACH = null
+                };
+
+                var tran = db.CreateTransaction(t1, 10, 0, "transnational");
+                tran.ShouldNotBeNull();
+            }
+
+            using (var db = CMSDataContext.Create(DatabaseFixture.Host))
+            {
+                var t2 = new Transaction
+                {
+                    Name = randomName,
+                    First = randomFirst,
+                    MiddleInitial = "m",
+                    Last = randomLast,
+                    Suffix = "sufix",
+                    Donate = 0,
+                    Amtdue = 0,
+                    Amt = 10,
+                    Emails = Util.FirstAddress("email@gmail.com").Address,
+                    Testing = true,
+                    Description = "description",
+                    OrgId = 1,
+                    Url = "url",
+                    Address = "address",
+                    TransactionGateway = "transnational",
+                    City = "city",
+                    State = "state",
+                    Zip = "12345",
+                    DatumId = 0,
+                    Phone = "1234567890",
+                    OriginalId = null,
+                    Financeonly = false,
+                    TransactionDate = currentDate.AddMinutes(1),
+                    PaymentType = "C",
+                    LastFourCC = "1234",
+                    LastFourACH = null
+                };                
+
+                var tran2 = db.CreateTransaction(t2, 10, 0, "transnational");
+                tran2.ShouldBeNull();
             }
         }
     }

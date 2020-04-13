@@ -984,6 +984,11 @@ namespace CmsData
             else
                 TaxNonTaxBool = null;
 
+
+            if (TaxNonTax.IsNotNull() && !TaxNonTax.Contains("Both")) TaxNonTaxBool = TaxNonTax == "TaxDed" ? false : true;
+            else
+                TaxNonTaxBool = null;
+
             var q = db.FirstTimeGivers(Days, fund, TaxNonTaxBool).Select(p => p.PeopleId);
 
             Expression<Func<Person, bool>> pred;
@@ -1003,6 +1008,9 @@ namespace CmsData
         {
             var top = Quarters.ToInt();
             var fundids = FundIds?.Replace(' ', ',');
+            if (TaxNonTax.IsNotNull() && !TaxNonTax.Contains("Both")) TaxNonTaxBool = TaxNonTax == "TaxDed" ? false : true;
+            else
+                TaxNonTaxBool = null;
             var tf = CodeIds == "1";
             if (TaxNonTax.IsNotNull() && !TaxNonTax.Contains("Both")) TaxNonTaxBool = TaxNonTax == "TaxDed" ? false : true;
             else

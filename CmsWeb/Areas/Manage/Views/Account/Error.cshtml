@@ -1,21 +1,9 @@
-﻿@using System.Security.Cryptography
-@using System.Threading
-@using UtilityExtensions
+﻿@using UtilityExtensions
 @{
   Layout = null;
-  byte[] delay = new byte[1];
-  RandomNumberGenerator prng = new RNGCryptoServiceProvider();
-
-  prng.GetBytes(delay);
-  Thread.Sleep((int)delay[0]);
-
-  var disposable = prng as IDisposable;
-  if (disposable != null)
-  {
-    disposable.Dispose();
-  }
-  var error = TempData["error"] as string;
-  var stack = TempData["stack"] as string;
+  
+  var error = Util.TempError;
+  var stack = ViewBag.stack as string;
   if (!error.HasValue() && ViewBag.Message != null)
   {
     error = ViewBag.Message;
