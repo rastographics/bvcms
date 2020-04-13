@@ -64,7 +64,6 @@ namespace SharedTestFixtures
             return user;
         }
 
-
         protected Person CreatePerson(Family family = null)
         {
             if (family == null)
@@ -89,7 +88,6 @@ namespace SharedTestFixtures
 
             return person;
         }
-
 
         protected Organization CreateOrganization(string name = null, int? fromId = null, int? type = null, int? campus = null)
         {
@@ -124,7 +122,6 @@ namespace SharedTestFixtures
             db.SubmitChanges();
         }
 
-
         protected OrgFilter CreateOrgFilter(int organizationId, int peopleId)
         {
             var filter = new OrgFilter
@@ -151,7 +148,6 @@ namespace SharedTestFixtures
             db.SubmitChanges();
         }
 
-
         protected OrganizationMember CreateOrganizationMember(int organizationId, int peopleId)
         {
             var organizationMember = new OrganizationMember()
@@ -169,7 +165,6 @@ namespace SharedTestFixtures
             db.OrganizationMembers.DeleteOnSubmit(organizationMember);
             db.SubmitChanges();
         }
-
 
         private string GetValidationKeyFromWebConfig()
         {
