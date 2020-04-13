@@ -2,7 +2,6 @@
 using CmsData.Codes;
 using CmsData.View;
 using CmsWeb.Code;
-using FluentAssertions;
 using SharedTestFixtures;
 using Shouldly;
 using System;
@@ -27,7 +26,7 @@ namespace CMSWebTests
         public void PledgesSummaryByFundListTest(List<PledgesSummary> pledgesSummary, List<int> fundIdList, List<PledgesSummary> expected)
         {
             var actual = PledgesHelper.PledgesSummaryByFundList(pledgesSummary, fundIdList);
-            actual.Should().BeEquivalentTo(expected);
+            actual.ShouldBeEquivalentTo(expected);
         }
 
         [Theory]
@@ -48,7 +47,7 @@ namespace CMSWebTests
 
                 var expected = MockContributions.CustomFilteredPledgesSummary(fund.FundId, fund.FundName, contributed, pledged);
                 var actual = PledgesHelper.GetFilteredPledgesSummary(db, 1);
-                actual.Should().BeEquivalentTo(expected);
+                actual.ShouldBeEquivalentTo(expected);
 
                 MockSettings.CreateSaveSetting(db, "PostContributionPledgeFunds", "1");
                 MockContributions.DeleteAllFromBundle(db, bundleHeader);

@@ -1190,6 +1190,8 @@
     <Content Include="Migrations\20200312_Add_FK_Contribution_Campus.sql" />
     <Content Include="Migrations\20200311_AddSettingMetaData_BundleEntryCampusCode.sql" />
     <Content Include="Migrations\20200413_alter-OrgFilterPeople-Function.sql" />
+    <Content Include="Migrations\20200401_alter-TopGivers.sql" />
+    <Content Include="Migrations\20200401_alter-FirstTimeGivers.sql" />
     <Content Include="Migrations\20200401_alter-Contributions0.sql" />
     <Content Include="Migrations\20200326_alter-GetTotalContributionsRange-func.sql" />
     <Content Include="Migrations\20200326_alter-GetTotalContributionsAgeRange-func.sql" />
