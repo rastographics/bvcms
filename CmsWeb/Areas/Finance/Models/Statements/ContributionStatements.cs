@@ -90,97 +90,122 @@ namespace CmsWeb.Areas.Finance.Models.Report
 
             var familiesInSet = pageEvents.FamilySet.Where(k => k.Value == set).Select(k => k.Key);
             var contributors = q.Where(c => set == 0 || familiesInSet.Contains(c.FamilyId));
-            var count = 0;
-            if (runningtotals != null)
-            {
-                runningtotals.Processed = 0;
-            }
-            db.SubmitChanges();
-
-            var currentSet = 1;
-            foreach (var contributor in contributors)
-            {
-                count++;
-                if (set == 0)
-                {
-                    pageEvents.FamilySet[contributor.FamilyId] = currentSet;
-                    if (count % 10 == 0)
-                    {
-                        currentSet++;
-                    }
-                }
-
-                var contributions = APIContribution.Contributions(db, contributor, FromDate, toDate, cs.Funds).ToList();
-                var pledges = APIContribution.Pledges(db, contributor, toDate, cs.Funds).ToList();
-                var giftsinkind = APIContribution.GiftsInKind(db, contributor, FromDate, toDate, cs.Funds).ToList();
-                var nontaxitems = APIContribution.NonTaxItems(db, contributor, FromDate, toDate, cs.Funds).ToList();
-
-                if ((contributions.Count + pledges.Count + giftsinkind.Count + nontaxitems.Count) > 0)
-                {
-                    contributor.MailingAddress = string.Join("<br/>", contributor.MailingAddress.SplitLines());
-                    var taxSummary = SumByFund(contributions);
-                    var nontaxSummary = SumByFund(nontaxitems.Select(i => new NormalContribution(i)).ToList());
-                    if (options.CombinedTaxSummary)
-                    {
-                        taxSummary.Combine(SumByFund(giftsinkind.Select(i => new NormalContribution(i)).ToList()));
-                    }
-
-                    var data = new StatementContext
-                    {
-                        fromDate = FromDate,
-                        toDate = toDate,
-                        header = "",
-                        notice = "",
-                        now = DateTime.Now,
-                        body = "",
-                        footer = "",
-                        contributor = contributor,
-                        envelopeNumber = Convert.ToString(Person.GetExtraValue(db, contributor.PeopleId, "EnvelopeNumber")?.IntValue),
-                        contributions = new ListOfNormalContributions(contributions),
-                        pledges = pledges,
-                        giftsinkind = giftsinkind,
-                        nontaxitems = nontaxitems,
-                        taxSummary = taxSummary,
-                        nontaxSummary = nontaxSummary,
-                        totalGiven = taxSummary.Total + nontaxSummary.Total
-                    };
-                    data.header = db.RenderTemplate(header, data);
-                    data.notice = db.RenderTemplate(notice, data);
-                    data.body = db.RenderTemplate(bodyHtml, data);
-                    data.footer = db.RenderTemplate(footer, data);
-                    var htmlDocument = db.RenderTemplate(html, data);
-                    document.Objects.Add(new ObjectSettings {
-                        CountPages = true,
-                        FooterSettings = options.Footer.Settings,
-                        HeaderSettings = options.Header.Settings,
-                        HtmlText = htmlDocument,
-                        WebSettings = new WebSettings
-                        {
-                            EnableJavascript = false,
-                            PrintBackground = true
-                        },
-                        LoadSettings = new LoadSettings { BlockLocalFileAccess = true }
-                    });
-                }
-
-                if (runningtotals != null)
-                {
-                    runningtotals.Processed += 1;
-                    runningtotals.CurrSet = set;
-                    db.SubmitChanges();
-                }
-            }
-
+            var count = contributors.Count();
             if (count == 0)
             {
                 document.Objects.Add(new ObjectSettings { HtmlText = @"<p>no data</p>
                     <a href=""https://docs.touchpointsoftware.com/Finance/ContributionStatements.html#troubleshooting"">
                     See this help document docs.touchpointsoftware.com/Finance/ContributionStatements.html
                     </a>" });
+                var bytes = converter.Convert(document);
+                stream.Write(bytes, 0, bytes.Length);
+                return;
             }
 
-            byte[] bytes = converter.Convert(document);
-            stream.Write(bytes, 0, bytes.Length);
+            if (runningtotals != null)
+            {
+                runningtotals.Processed = 0;
+            }
+            db.SubmitChanges();
+
+            Document combinedPDF = new Document();
+            var combinedPDFName = Path.Combine(Path.GetTempPath(), $"{Guid.NewGuid()}.pdf");
+            using (FileStream combinedStream = new FileStream(combinedPDFName, FileMode.Create))
+            {
+                using (PdfCopy writer = new PdfCopy(combinedPDF, combinedStream))
+                {
+                    combinedPDF.Open();
+
+                    var currentSet = 1;
+                    foreach (var contributor in contributors)
+                    {
+                        count++;
+                        if (set == 0)
+                        {
+                            pageEvents.FamilySet[contributor.FamilyId] = currentSet;
+                            if (count % 10 == 0)
+                            {
+                                currentSet++;
+                            }
+                        }
+
+                        var contributions = APIContribution.Contributions(db, contributor, FromDate, toDate, cs.Funds).ToList();
+                        var pledges = APIContribution.Pledges(db, contributor, toDate, cs.Funds).ToList();
+                        var giftsinkind = APIContribution.GiftsInKind(db, contributor, FromDate, toDate, cs.Funds).ToList();
+                        var nontaxitems = APIContribution.NonTaxItems(db, contributor, FromDate, toDate, cs.Funds).ToList();
+
+                        if ((contributions.Count + pledges.Count + giftsinkind.Count + nontaxitems.Count) > 0)
+                        {
+                            contributor.MailingAddress = string.Join("<br/>", contributor.MailingAddress.SplitLines());
+                            var taxSummary = SumByFund(contributions);
+                            var nontaxSummary = SumByFund(nontaxitems.Select(i => new NormalContribution(i)).ToList());
+                            if (options.CombinedTaxSummary)
+                            {
+                                taxSummary.Combine(SumByFund(giftsinkind.Select(i => new NormalContribution(i)).ToList()));
+                            }
+
+                            var data = new StatementContext
+                            {
+                                fromDate = FromDate,
+                                toDate = toDate,
+                                header = "",
+                                notice = "",
+                                now = DateTime.Now,
+                                body = "",
+                                footer = "",
+                                contributor = contributor,
+                                envelopeNumber = Convert.ToString(Person.GetExtraValue(db, contributor.PeopleId, "EnvelopeNumber")?.IntValue),
+                                contributions = new ListOfNormalContributions(contributions),
+                                pledges = pledges,
+                                giftsinkind = giftsinkind,
+                                nontaxitems = nontaxitems,
+                                taxSummary = taxSummary,
+                                nontaxSummary = nontaxSummary,
+                                totalGiven = taxSummary.Total + nontaxSummary.Total
+                            };
+                            data.header = db.RenderTemplate(header, data);
+                            data.notice = db.RenderTemplate(notice, data);
+                            data.body = db.RenderTemplate(bodyHtml, data);
+                            data.footer = db.RenderTemplate(footer, data);
+                            var htmlDocument = db.RenderTemplate(html, data);
+                            document.Objects.Clear();
+                            document.Objects.Add(new ObjectSettings
+                            {
+                                CountPages = true,
+                                FooterSettings = options.Footer.Settings,
+                                HeaderSettings = options.Header.Settings,
+                                HtmlText = htmlDocument,
+                                WebSettings = new WebSettings
+                                {
+                                    EnableJavascript = false,
+                                    PrintBackground = true
+                                },
+                                LoadSettings = new LoadSettings { BlockLocalFileAccess = true }
+                            });
+                        }
+
+                        if (runningtotals != null)
+                        {
+                            runningtotals.Processed += 1;
+                            runningtotals.CurrSet = set;
+                            db.SubmitChanges();
+                        }
+                        var bytes = converter.Convert(document);
+                        using (PdfReader reader = new PdfReader(bytes))
+                        {
+                            for (int p = 0; p < reader.NumberOfPages; p++)
+                            {
+                                var page = writer.GetImportedPage(reader, p + 1);
+                                writer.AddPage(page);
+                            }
+                        }
+                    }
+                }
+            }
+            using (var combined = File.OpenRead(combinedPDFName))
+            {
+                combined.CopyTo(stream);
+            }
         }
 
         private bool GetStatementOptions(string html, out StatementOptions options)
