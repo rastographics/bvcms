@@ -36,7 +36,7 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
             bool conditionalRemovedEntry = false;
 			typeID = formatEntry.typeID;
 
-            if (formatEntry.orgEV != null) {
+            if (formatEntry.orgEV.HasValue()) {
                 Organization org = cacheSet.getOrganization(group.groupID);
                 if (org != null)
                 {
@@ -50,7 +50,7 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
                     conditionalRemovedEntry = true;
                 }
             }
-            if (formatEntry.personFlag != null && conditionalRemovedEntry == false)
+            if (formatEntry.personFlag.HasValue() && conditionalRemovedEntry == false)
             {
                 CmsData.Person person = cacheSet.getPerson(attendance.peopleID);
                 if (person != null)

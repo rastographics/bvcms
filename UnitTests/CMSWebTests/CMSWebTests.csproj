@@ -134,6 +134,7 @@
     <Compile Include="Areas\People\Models\Person\Profile\MemberDocModelTests.cs" />
     <Compile Include="Areas\Public\Controllers\CheckInAPIControllerTests.cs" />
     <Compile Include="Areas\Public\Controllers\APIPersonControllerTests.cs" />
+    <Compile Include="Areas\Public\Controllers\CheckInAPIv2ControllerTests.cs" />
     <Compile Include="Areas\Public\Controllers\MobileAPIControllerTests.cs" />
     <Compile Include="Areas\Public\Controllers\MobileAPIv2ControllerTests.cs" />
     <Compile Include="Areas\Manage\Models\VolunteerCommitmentsModelTest.cs" />
