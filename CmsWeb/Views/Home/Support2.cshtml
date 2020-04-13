@@ -3,7 +3,7 @@
     ViewBag.Title = "Support";
     ViewBag.PageHeader = "Need help using this software?";
     Layout = ViewExtensions2.TouchPointLayout();
-    var active2 = (int)ViewBag.ActiveRecords2;
+    var active2 = (int)(ViewBag.ActiveRecords2 ?? 0);
 }
 @section head{
     @Fingerprint.Css("/Content/touchpoint/lib/bootstrap-tabdrop/css/tabdrop.css")
