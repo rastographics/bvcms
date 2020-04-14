@@ -657,6 +657,8 @@
     <Compile Include="Generated\GatewayDetails.cs" />
     <Compile Include="Generated\Gateways.cs" />
     <Compile Include="Generated\GatewayServiceType.cs" />
+    <Compile Include="Generated\GivingPage.cs" />
+    <Compile Include="Generated\GivingPageFund.cs" />
     <Compile Include="Generated\IpLog.cs" />
     <Compile Include="Generated\IpLog2.cs" />
     <Compile Include="Generated\IpWarmup.cs" />

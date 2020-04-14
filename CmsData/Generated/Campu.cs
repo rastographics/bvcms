@@ -20,8 +20,11 @@ namespace CmsData
 
         private bool? _Hardwired;
 
-   		private EntitySet<Contribution> _Contributions;
+        private EntitySet<Contribution> _Contributions;
+
         private EntitySet<Organization> _Organizations;
+
+        private EntitySet<GivingPage> _GivingPages;
 
         private EntitySet<Person> _People;
 
@@ -51,8 +54,11 @@ namespace CmsData
 
         public Campu()
         {
-			_Contributions = new EntitySet<Contribution>(new Action< Contribution>(attach_Contributions), new Action< Contribution>(detach_Contributions)); 
+            _Contributions = new EntitySet<Contribution>(new Action<Contribution>(attach_Contributions), new Action<Contribution>(detach_Contributions));
+
             _Organizations = new EntitySet<Organization>(new Action<Organization>(attach_Organizations), new Action<Organization>(detach_Organizations));
+
+            _GivingPages = new EntitySet<GivingPage>(new Action<GivingPage>(attach_GivingPages), new Action<GivingPage>(detach_GivingPages));
 
             _People = new EntitySet<Person>(new Action<Person>(attach_People), new Action<Person>(detach_People));
 
@@ -138,39 +144,48 @@ namespace CmsData
         #endregion
 
         #region Foreign Key Tables
-   		[Association(Name="FK_Contribution_Campus", Storage="_Contributions", OtherKey="CampusId")]
-   		public EntitySet<Contribution> Contributions
-   		{
-   		    get { return _Contributions; }
+        [Association(Name = "FK_Contribution_Campus", Storage = "_Contributions", OtherKey = "CampusId")]
+        public EntitySet<Contribution> Contributions
+        {
+            get { return _Contributions; }
 
-			set	{ _Contributions.Assign(value); }
-   		}
+            set { _Contributions.Assign(value); }
+        }
+
         [Association(Name = "FK_Organizations_Campus", Storage = "_Organizations", OtherKey = "CampusId")]
         public EntitySet<Organization> Organizations
-           {
-               get => _Organizations;
+        {
+            get => _Organizations;
 
             set => _Organizations.Assign(value);
 
-           }
+        }
 
         [Association(Name = "FK_People_Campus", Storage = "_People", OtherKey = "CampusId")]
         public EntitySet<Person> People
-           {
-               get => _People;
+        {
+            get => _People;
 
             set => _People.Assign(value);
 
-           }
+        }
 
         [Association(Name = "FK_Resource_Campus", Storage = "_Resources", OtherKey = "CampusId")]
         public EntitySet<Resource> Resources
-           {
-               get => _Resources;
+        {
+            get => _Resources;
 
             set => _Resources.Assign(value);
 
-           }
+        }
+
+        [Association(Name = "FK_GivingPages_Campus", Storage = "_GivingPages", OtherKey = "CampusId")]
+        public EntitySet<GivingPage> GivingPages
+        {
+            get => _GivingPages;
+
+            set => _GivingPages.Assign(value);
+        }
 
         #endregion
 
@@ -190,20 +205,20 @@ namespace CmsData
         public event PropertyChangedEventHandler PropertyChanged;
         protected virtual void SendPropertyChanged(string propertyName)
         {
-			if ((PropertyChanged != null))
-			{
-				PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-			}
-		}
-		private void attach_Contributions(Contribution entity)
+            if ((PropertyChanged != null))
             {
-			SendPropertyChanging();
-			entity.Campu = this;
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
-		private void detach_Contributions(Contribution entity)
-		{
-			SendPropertyChanging();
-			entity.Campu = null;
+        }
+        private void attach_Contributions(Contribution entity)
+        {
+            SendPropertyChanging();
+            entity.Campu = this;
+        }
+        private void detach_Contributions(Contribution entity)
+        {
+            SendPropertyChanging();
+            entity.Campu = null;
         }
 
         private void attach_Organizations(Organization entity)
@@ -213,6 +228,18 @@ namespace CmsData
         }
 
         private void detach_Organizations(Organization entity)
+        {
+            SendPropertyChanging();
+            entity.Campu = null;
+        }
+
+        private void attach_GivingPages(GivingPage entity)
+        {
+            SendPropertyChanging();
+            entity.Campu = this;
+        }
+
+        private void detach_GivingPages(GivingPage entity)
         {
             SendPropertyChanging();
             entity.Campu = null;

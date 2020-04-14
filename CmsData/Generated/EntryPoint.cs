@@ -22,6 +22,8 @@ namespace CmsData
 
         private EntitySet<Organization> _Organizations;
 
+        private EntitySet<GivingPage> _GivingPages;
+
         private EntitySet<Person> _People;
 
         #endregion
@@ -49,6 +51,8 @@ namespace CmsData
         public EntryPoint()
         {
             _Organizations = new EntitySet<Organization>(new Action<Organization>(attach_Organizations), new Action<Organization>(detach_Organizations));
+
+            _GivingPages = new EntitySet<GivingPage>(new Action<GivingPage>(attach_GivingPages), new Action<GivingPage>(detach_GivingPages));
 
             _People = new EntitySet<Person>(new Action<Person>(attach_People), new Action<Person>(detach_People));
 
@@ -135,21 +139,29 @@ namespace CmsData
 
         [Association(Name = "FK_ORGANIZATIONS_TBL_EntryPoint", Storage = "_Organizations", OtherKey = "EntryPointId")]
         public EntitySet<Organization> Organizations
-           {
-               get => _Organizations;
+        {
+            get => _Organizations;
 
             set => _Organizations.Assign(value);
 
-           }
+        }
 
         [Association(Name = "FK_People_EntryPoint", Storage = "_People", OtherKey = "EntryPointId")]
         public EntitySet<Person> People
-           {
-               get => _People;
+        {
+            get => _People;
 
             set => _People.Assign(value);
 
-           }
+        }
+
+        [Association(Name = "FK_GivingPages_EntryPoint", Storage = "_GivingPages", OtherKey = "EntryPointId")]
+        public EntitySet<GivingPage> GivingPages
+        {
+            get => _GivingPages;
+
+            set => _GivingPages.Assign(value);
+        }
 
         #endregion
 
@@ -182,6 +194,18 @@ namespace CmsData
         }
 
         private void detach_Organizations(Organization entity)
+        {
+            SendPropertyChanging();
+            entity.EntryPoint = null;
+        }
+
+        private void attach_GivingPages(GivingPage entity)
+        {
+            SendPropertyChanging();
+            entity.EntryPoint = this;
+        }
+
+        private void detach_GivingPages(GivingPage entity)
         {
             SendPropertyChanging();
             entity.EntryPoint = null;
