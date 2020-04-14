@@ -97,8 +97,11 @@ namespace CmsWeb.Areas.Finance.Controllers
                 ShowCheckNo = showCheckNo,
                 ShowNotes = showNotes,
             };
-            // Must do this before entering the background worker because it relies on the Application context
-            statements.GetConverter();
+            if (CurrentDatabase.Setting("UseNewStatementsFormat"))
+            { 
+                // Must do this before entering the background worker because it relies on the Application context
+                statements.GetConverter();
+            }
 
             var elmah = Elmah.ErrorLog.GetDefault(System.Web.HttpContext.Current);
             HostingEnvironment.QueueBackgroundWorkItem(ct =>
@@ -158,7 +161,7 @@ namespace CmsWeb.Areas.Finance.Controllers
                 var sets = r.Sets.Split(',').Select(ss => ss.ToInt()).ToList();
                 foreach (var set in sets)
                 {
-                    html.Append($"<a href=\"/Statements/Download/{r.UUId:n}/{set}\">Download PDF {set}</a><br>");
+                    html.Append($"<a href=\"/Statements/Download/{r.UUId:n}/{set}\">Download PDF ({set} page format)</a><br>");
                 }
             }
             ViewBag.download = html.ToString();

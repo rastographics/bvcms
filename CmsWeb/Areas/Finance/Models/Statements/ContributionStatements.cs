@@ -116,16 +116,23 @@ namespace CmsWeb.Areas.Finance.Models.Report
                 {
                     combinedPDF.Open();
 
-                    var currentSet = 1;
+                    var lastFamilyId = 0;
                     foreach (var contributor in contributors)
                     {
-                        count++;
-                        if (set == 0)
+                        if (runningtotals != null)
                         {
-                            pageEvents.FamilySet[contributor.FamilyId] = currentSet;
-                            if (count % 10 == 0)
+                            runningtotals.Processed += 1;
+                            runningtotals.CurrSet = set;
+                            db.SubmitChanges();
+                        }
+
+                        if (lastFamilyId != contributor.FamilyId)
+                        {
+                            lastFamilyId = contributor.FamilyId;
+
+                            if (set == 0)
                             {
-                                currentSet++;
+                                pageEvents.FamilySet[contributor.FamilyId] = 0;
                             }
                         }
 
@@ -183,21 +190,26 @@ namespace CmsWeb.Areas.Finance.Models.Report
                                 LoadSettings = new LoadSettings { BlockLocalFileAccess = true }
                             });
                         }
-
-                        if (runningtotals != null)
+                        else
                         {
-                            runningtotals.Processed += 1;
-                            runningtotals.CurrSet = set;
-                            db.SubmitChanges();
+                            continue;
                         }
+
                         var bytes = converter.Convert(document);
+                        var pageCount = 0;
                         using (PdfReader reader = new PdfReader(bytes))
                         {
-                            for (int p = 0; p < reader.NumberOfPages; p++)
+                            pageCount = reader.NumberOfPages;
+                            for (int p = 0; p < pageCount; p++)
                             {
                                 var page = writer.GetImportedPage(reader, p + 1);
                                 writer.AddPage(page);
                             }
+                        }
+
+                        if (set == 0)
+                        {
+                            pageEvents.FamilySet[contributor.FamilyId] += pageCount;
                         }
                     }
                 }
