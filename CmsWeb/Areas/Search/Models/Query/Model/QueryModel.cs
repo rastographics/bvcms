@@ -87,8 +87,7 @@ namespace CmsWeb.Areas.Search.Models
 
         public bool IsPublic { get; set; }
         public string Days { get; set; }
-
-        
+                
         private string _taxStatus;
         [DisplayName("Tax Status")]
         public string TaxNonTax {
