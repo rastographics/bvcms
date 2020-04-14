@@ -647,3 +647,140 @@ INSERT INTO [dbo].[DashboardWidgetRoles]
            ,(select min(RoleId) from Roles where RoleName like 'Access'))
 END
 GO
+
+-- add involvement widget
+IF (select count(*) from DashboardWidgets where [Name] like 'My Involvement' and [System] = 1) = 0
+BEGIN
+  INSERT INTO [dbo].[Content]
+           ([Name],[Title],
+		   [Body],
+		   [DateCreated],[TypeID],[ThumbID],[RoleID],[OwnerID],[CreatedBy])
+     VALUES
+           ('WidgetInvolvementHTML','Edit Text Content',
+           '<div class="box">
+    <div class="box-title hidden-xs">
+        <h5><a href="/Person2/{{CurrentPerson.PeopleId}}#enrollment">My Involvement</a></h5>
+    </div>
+    <a class="visible-xs-block" id="involvements-collapse" data-toggle="collapse" href="#involvements-section" aria-expanded="true" aria-controls="involvements-section">
+        <div class="box-title">
+            <h5>
+                <i class="fa fa-chevron-circle-right"></i>&nbsp;&nbsp;My Involvement
+            </h5>
+            {{#ifGT results.Count 0}}
+                <div class="pull-right">
+                    <span class="badge badge-primary">{{results.Count}}</span>
+                </div>
+            {{/ifGT}}
+        </div>
+    </a>
+    <div class="collapse in" id="involvements-section">
+        {{#ifGT results.Count 0}}
+            <ul class="list-group">
+                {{#each results}}
+                    {{#ifEqual New "New"}}
+                        <li class="list-group-item section">{{Description}}</li>
+                    {{/ifEqual}}
+                    <li class="list-group-item indent"><a href="/Org/{{OrganizationId}}">{{OrganizationName}}</a></li>
+                {{/each}}
+            </ul>
+        {{else}}
+            <div class="box-content"></div>
+        {{/ifGT}}
+    </div>
+</div>',
+           GETDATE(),1,0,0,0,'admin')
+           
+INSERT INTO [dbo].[ContentKeyWords]
+           ([Id]
+           ,[Word])
+     VALUES
+           ((select SCOPE_IDENTITY())
+           ,'widget')
+
+INSERT INTO [dbo].[Content]
+           ([Name],[Title],
+		   [Body],
+		   [DateCreated],[TypeID],[ThumbID],[RoleID],[OwnerID],[CreatedBy])
+     VALUES
+           ('WidgetInvolvementPython','Edit Python Script',
+           'def Get():
+    sql = Data.SQLContent
+    template = Data.HTMLContent
+    orgleadersonly = False
+    
+    for item in Data.CurrentUser.UserRoles:
+        if item.Role.RoleName == ''OrgLeadersOnly'':
+            orgleadersonly = True
+
+    params = { ''olo'': orgleadersonly, ''pid'': Data.CurrentPerson.PeopleId }
+    results = q.QuerySql(sql, params)
+    currentOrgType = "Other"
+    for item in results:
+        if item.OrgType != currentOrgType:
+            item.New = ''New''
+        
+    Data.results = results
+    print model.RenderTemplate(template)
+Get()',
+           GETDATE(),5,0,0,0,'admin')
+          
+INSERT INTO [dbo].[ContentKeyWords]
+           ([Id]
+           ,[Word])
+     VALUES
+           ((select SCOPE_IDENTITY())
+           ,'widget')
+INSERT INTO [dbo].[Content]
+           ([Name],[Title],
+		   [Body],
+		   [DateCreated],[TypeID],[ThumbID],[RoleID],[OwnerID],[CreatedBy])
+     VALUES
+           ('WidgetInvolvementSQL','Edit Sql Script',
+           'select org.OrganizationName, mt.Description, om.OrganizationId, ISNULL(ot.Description, ''Other'') as Description from OrganizationMembers om
+join Organizations org on om.OrganizationId = org.OrganizationId
+left join lookup.OrganizationType ot on org.OrganizationTypeId = ot.Id
+left join lookup.MemberType mt on om.MemberTypeId = mt.Id
+where om.PeopleId = @pid
+and om.Pending != 1
+and org.SecurityTypeId != 3
+order by ot.Code, org.OrganizationName',
+           GETDATE(),4,0,0,0,'admin')
+           
+INSERT INTO [dbo].[ContentKeyWords]
+           ([Id]
+           ,[Word])
+     VALUES
+           ((select SCOPE_IDENTITY())
+           ,'widget')           
+END
+GO
+
+IF (select count(*) from DashboardWidgets where [Name] like 'My Involvement' and [System] = 1) = 0
+BEGIN
+INSERT INTO [dbo].[DashboardWidgets]
+           ([Name]
+           ,[Description]
+           ,[HTMLContentId]
+           ,[PythonContentId]
+           ,[SQLContentId]
+           ,[Enabled]
+           ,[Order]
+           ,[System])
+     VALUES
+           ('My Involvement'
+           ,'Shows a list of organizations the current user is a member of'
+           ,(select max(Id) from Content where [Name] like 'WidgetInvolvementHTML')
+           ,(select max(Id) from Content where [Name] like 'WidgetInvolvementPython')
+           ,(select max(Id) from Content where [Name] like 'WidgetInvolvementSQL')
+           ,1
+           ,(select isnull(max([Order]), 0)+1 from DashboardWidgets)
+           ,1)
+
+INSERT INTO [dbo].[DashboardWidgetRoles]
+           ([WidgetId]
+           ,[RoleId])
+     VALUES
+           ((select SCOPE_IDENTITY())
+           ,(select min(RoleId) from Roles where RoleName like 'Access'))
+END
+GO
