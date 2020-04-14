@@ -60,6 +60,10 @@ namespace CmsData
 
         private EntitySet<Contribution> _Contributions;
 
+        private EntitySet<GivingPage> _GivingPages;
+
+        private EntitySet<GivingPageFund> _GivingPageFunds;
+
         private EntitySet<RecurringAmount> _RecurringAmounts;
 
         #endregion
@@ -143,6 +147,10 @@ namespace CmsData
             _BundleHeaders = new EntitySet<BundleHeader>(new Action<BundleHeader>(attach_BundleHeaders), new Action<BundleHeader>(detach_BundleHeaders));
 
             _Contributions = new EntitySet<Contribution>(new Action<Contribution>(attach_Contributions), new Action<Contribution>(detach_Contributions));
+
+            _GivingPages = new EntitySet<GivingPage>(new Action<GivingPage>(attach_GivingPages), new Action<GivingPage>(detach_GivingPages));
+
+            _GivingPageFunds = new EntitySet<GivingPageFund>(new Action<GivingPageFund>(attach_GivingPageFunds), new Action<GivingPageFund>(detach_GivingPageFunds));
 
             _RecurringAmounts = new EntitySet<RecurringAmount>(new Action<RecurringAmount>(attach_RecurringAmounts), new Action<RecurringAmount>(detach_RecurringAmounts));
 
@@ -534,7 +542,6 @@ namespace CmsData
         {
             get => _BundleHeaders;
             set => _BundleHeaders.Assign(value);
-
         }
 
         [Association(Name = "FK_Contribution_ContributionFund", Storage = "_Contributions", OtherKey = "FundId")]
@@ -542,7 +549,20 @@ namespace CmsData
         {
             get => _Contributions;
             set => _Contributions.Assign(value);
+        }
 
+        [Association(Name = "FK_GivingPages_ContributionFund", Storage = "_GivingPages", OtherKey = "FundId")]
+        public EntitySet<GivingPage> GivingPages
+        {
+            get => _GivingPages;
+            set => _GivingPages.Assign(value);
+        }
+
+        [Association(Name = "FK_GivingPageFunds_ContributionFund", Storage = "_GivingPageFunds", OtherKey = "FundId")]
+        public EntitySet<GivingPageFund> GivingPageFunds
+        {
+            get => _GivingPageFunds;
+            set => _GivingPageFunds.Assign(value);
         }
 
         [Association(Name = "FK_RecurringAmounts_ContributionFund", Storage = "_RecurringAmounts", OtherKey = "FundId")]
@@ -550,7 +570,6 @@ namespace CmsData
         {
             get => _RecurringAmounts;
             set => _RecurringAmounts.Assign(value);
-
         }
 
         #endregion
@@ -596,6 +615,30 @@ namespace CmsData
         }
 
         private void detach_Contributions(Contribution entity)
+        {
+            SendPropertyChanging();
+            entity.ContributionFund = null;
+        }
+
+        private void attach_GivingPages(GivingPage entity)
+        {
+            SendPropertyChanging();
+            entity.ContributionFund = this;
+        }
+
+        private void detach_GivingPages(GivingPage entity)
+        {
+            SendPropertyChanging();
+            entity.ContributionFund = null;
+        }
+
+        private void attach_GivingPageFunds(GivingPageFund entity)
+        {
+            SendPropertyChanging();
+            entity.ContributionFund = this;
+        }
+
+        private void detach_GivingPageFunds(GivingPageFund entity)
         {
             SendPropertyChanging();
             entity.ContributionFund = null;

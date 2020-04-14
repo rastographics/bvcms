@@ -553,7 +553,6 @@ namespace CmsData
 
             _OrganizationMembers = new EntitySet<OrganizationMember>(new Action<OrganizationMember>(attach_OrganizationMembers), new Action<OrganizationMember>(detach_OrganizationMembers));
 
-
             _ParentOrg = default(EntityRef<Organization>);
 
             _Campu = default(EntityRef<Campu>);
@@ -2442,20 +2441,16 @@ namespace CmsData
                         _Campu.Entity = null;
                         previousValue.Organizations.Remove(this);
                     }
-
                     _Campu.Entity = value;
                     if (value != null)
                     {
                         value.Organizations.Add(this);
-
                         _CampusId = value.Id;
                     }
                     else
                     {
                         _CampusId = default(int?);
-
                     }
-
                     SendPropertyChanged("Campu");
                 }
             }
@@ -2565,7 +2560,6 @@ namespace CmsData
                 }
             }
         }
-
 
         [Association(Name = "FK_ORGANIZATIONS_TBL_EntryPoint", Storage = "_EntryPoint", ThisKey = "EntryPointId", IsForeignKey = true)]
         public EntryPoint EntryPoint
