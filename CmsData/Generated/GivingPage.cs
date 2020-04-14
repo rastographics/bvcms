@@ -17,7 +17,6 @@ namespace CmsData
         private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
 
         #region Private Fields
-
         private int _GivingPageId;
 
         private string _PageName;
@@ -55,7 +54,6 @@ namespace CmsData
         private EntityRef<ContributionFund> _ContributionFund;
 
         private EntityRef<EntryPoint> _EntryPoint;
-
         #endregion
 
         #region Extensibility Method Definitions
@@ -107,8 +105,8 @@ namespace CmsData
 
         partial void OnEntryPointIdChanging(int? value);
         partial void OnEntryPointIdChanged();
-
         #endregion
+
         public GivingPage()
         {
             _GivingPageFunds = new EntitySet<GivingPageFund>(new Action<GivingPageFund>(attach_GivingPageFunds), new Action<GivingPageFund>(detach_GivingPageFunds));
@@ -123,7 +121,6 @@ namespace CmsData
         }
 
         #region Columns
-
         [Column(Name = "GivingPageId", UpdateCheck = UpdateCheck.Never, Storage = "_GivingPageId", AutoSync = AutoSync.OnInsert, DbType = "int NOT NULL IDENTITY", IsPrimaryKey = true, IsDbGenerated = true)]
         public int GivingPageId
         {
@@ -133,18 +130,14 @@ namespace CmsData
             {
                 if (_GivingPageId != value)
                 {
-
                     OnGivingPageIdChanging(value);
                     SendPropertyChanging();
                     _GivingPageId = value;
                     SendPropertyChanged("GivingPageId");
                     OnGivingPageIdChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "PageName", UpdateCheck = UpdateCheck.Never, Storage = "_PageName", DbType = "nvarchar NOT NULL")]
         public string PageName
@@ -155,18 +148,14 @@ namespace CmsData
             {
                 if (_PageName != value)
                 {
-
                     OnPageNameChanging(value);
                     SendPropertyChanging();
                     _PageName = value;
                     SendPropertyChanged("PageName");
                     OnPageNameChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "PageTitle", UpdateCheck = UpdateCheck.Never, Storage = "_PageTitle", DbType = "nvarchar NOT NULL")]
         public string PageTitle
@@ -177,18 +166,14 @@ namespace CmsData
             {
                 if (_PageTitle != value)
                 {
-
                     OnPageTitleChanging(value);
                     SendPropertyChanging();
                     _PageTitle = value;
                     SendPropertyChanged("PageTitle");
                     OnPageTitleChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "PageType", UpdateCheck = UpdateCheck.Never, Storage = "_PageType", DbType = "int NOT NULL")]
         public int PageType
@@ -199,18 +184,14 @@ namespace CmsData
             {
                 if (_PageType != value)
                 {
-
                     OnPageTypeChanging(value);
                     SendPropertyChanging();
                     _PageType = value;
                     SendPropertyChanged("PageType");
                     OnPageTypeChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "FundId", UpdateCheck = UpdateCheck.Never, Storage = "_FundId", DbType = "int NOT NULL")]
         [IsForeignKey]
@@ -235,7 +216,6 @@ namespace CmsData
             }
         }
 
-
         [Column(Name = "Enabled", UpdateCheck = UpdateCheck.Never, Storage = "_Enabled", DbType = "bit NOT NULL")]
         public bool Enabled
         {
@@ -245,18 +225,14 @@ namespace CmsData
             {
                 if (_Enabled != value)
                 {
-
                     OnEnabledChanging(value);
                     SendPropertyChanging();
                     _Enabled = value;
                     SendPropertyChanged("Enabled");
                     OnEnabledChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "DisabledReDirect", UpdateCheck = UpdateCheck.Never, Storage = "_DisabledReDirect", DbType = "nvarchar NOT NULL")]
         public string DisabledReDirect
@@ -267,18 +243,14 @@ namespace CmsData
             {
                 if (_DisabledReDirect != value)
                 {
-
                     OnDisabledReDirectChanging(value);
                     SendPropertyChanging();
                     _DisabledReDirect = value;
                     SendPropertyChanged("DisabledReDirect");
                     OnDisabledReDirectChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "SkinFile", UpdateCheck = UpdateCheck.Never, Storage = "_SkinFile", DbType = "nvarchar")]
         public string SkinFile
@@ -289,18 +261,14 @@ namespace CmsData
             {
                 if (_SkinFile != value)
                 {
-
                     OnSkinFileChanging(value);
                     SendPropertyChanging();
                     _SkinFile = value;
                     SendPropertyChanged("SkinFile");
                     OnSkinFileChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "TopText", UpdateCheck = UpdateCheck.Never, Storage = "_TopText", DbType = "nvarchar")]
         public string TopText
@@ -311,18 +279,14 @@ namespace CmsData
             {
                 if (_TopText != value)
                 {
-
                     OnTopTextChanging(value);
                     SendPropertyChanging();
                     _TopText = value;
                     SendPropertyChanged("TopText");
                     OnTopTextChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "ThankYouText", UpdateCheck = UpdateCheck.Never, Storage = "_ThankYouText", DbType = "nvarchar")]
         public string ThankYouText
@@ -333,18 +297,14 @@ namespace CmsData
             {
                 if (_ThankYouText != value)
                 {
-
                     OnThankYouTextChanging(value);
                     SendPropertyChanging();
                     _ThankYouText = value;
                     SendPropertyChanged("ThankYouText");
                     OnThankYouTextChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "ConfirmationEmail_Pledge", UpdateCheck = UpdateCheck.Never, Storage = "_ConfirmationEmailPledge", DbType = "nvarchar")]
         public string ConfirmationEmailPledge
@@ -355,18 +315,14 @@ namespace CmsData
             {
                 if (_ConfirmationEmailPledge != value)
                 {
-
                     OnConfirmationEmailPledgeChanging(value);
                     SendPropertyChanging();
                     _ConfirmationEmailPledge = value;
                     SendPropertyChanged("ConfirmationEmailPledge");
                     OnConfirmationEmailPledgeChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "ConfirmationEmail_OneTime", UpdateCheck = UpdateCheck.Never, Storage = "_ConfirmationEmailOneTime", DbType = "nvarchar")]
         public string ConfirmationEmailOneTime
@@ -377,18 +333,14 @@ namespace CmsData
             {
                 if (_ConfirmationEmailOneTime != value)
                 {
-
                     OnConfirmationEmailOneTimeChanging(value);
                     SendPropertyChanging();
                     _ConfirmationEmailOneTime = value;
                     SendPropertyChanged("ConfirmationEmailOneTime");
                     OnConfirmationEmailOneTimeChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "ConfirmationEmail_Recurring", UpdateCheck = UpdateCheck.Never, Storage = "_ConfirmationEmailRecurring", DbType = "nvarchar")]
         public string ConfirmationEmailRecurring
@@ -399,18 +351,14 @@ namespace CmsData
             {
                 if (_ConfirmationEmailRecurring != value)
                 {
-
                     OnConfirmationEmailRecurringChanging(value);
                     SendPropertyChanging();
                     _ConfirmationEmailRecurring = value;
                     SendPropertyChanged("ConfirmationEmailRecurring");
                     OnConfirmationEmailRecurringChanged();
                 }
-
             }
-
         }
-
 
         [Column(Name = "CampusId", UpdateCheck = UpdateCheck.Never, Storage = "_CampusId", DbType = "int")]
         [IsForeignKey]
@@ -435,7 +383,6 @@ namespace CmsData
             }
         }
 
-
         [Column(Name = "EntryPointId", UpdateCheck = UpdateCheck.Never, Storage = "_EntryPointId", DbType = "int")]
         [IsForeignKey]
         public int? EntryPointId
@@ -458,25 +405,18 @@ namespace CmsData
                 }
             }
         }
-
-
         #endregion
 
         #region Foreign Key Tables
-
         [Association(Name = "FK_GivingPageFunds_GivingPages", Storage = "_GivingPageFunds", OtherKey = "GivingPageId")]
         public EntitySet<GivingPageFund> GivingPageFunds
         {
             get { return _GivingPageFunds; }
-
             set { _GivingPageFunds.Assign(value); }
-
         }
-
         #endregion
 
         #region Foreign Keys
-
         [Association(Name = "FK_GivingPages_Campus", Storage = "_Campu", ThisKey = "CampusId", IsForeignKey = true)]
         public Campu Campu
         {
@@ -507,7 +447,6 @@ namespace CmsData
                 }
             }
         }
-
 
         [Association(Name = "FK_GivingPages_ContributionFund", Storage = "_ContributionFund", ThisKey = "FundId", IsForeignKey = true)]
         public ContributionFund ContributionFund
@@ -540,7 +479,6 @@ namespace CmsData
             }
         }
 
-
         [Association(Name = "FK_GivingPages_EntryPoint", Storage = "_EntryPoint", ThisKey = "EntryPointId", IsForeignKey = true)]
         public EntryPoint EntryPoint
         {
@@ -571,8 +509,6 @@ namespace CmsData
                 }
             }
         }
-
-
         #endregion
 
         public event PropertyChangingEventHandler PropertyChanging;
@@ -604,6 +540,5 @@ namespace CmsData
             SendPropertyChanging();
             entity.GivingPage = null;
         }
-
     }
 }
