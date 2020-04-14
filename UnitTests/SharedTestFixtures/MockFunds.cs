@@ -39,5 +39,31 @@ namespace SharedTestFixtures
             db.ContributionFunds.DeleteAllOnSubmit(fund);
             db.SubmitChanges();
         }
+
+        public static ContributionFund CreateContributionFund(CMSDataContext db, string fundName = null)
+        {
+            if (fundName == null)
+            {
+                fundName = DatabaseTestBase.RandomString();
+            }
+            var contributionFund = new ContributionFund
+            {
+                FundId = DatabaseTestBase.RandomNumber(),
+                CreatedBy = DatabaseTestBase.RandomNumber(),
+                CreatedDate = DateTime.Now,
+                FundName = fundName,
+                FundStatusId = 1,
+                FundTypeId = 1,
+                FundPledgeFlag = true,
+                QBIncomeAccount = 0,
+                QBAssetAccount = 0,
+                FundManagerRoleId = 0,
+                ShowList = 1
+            };
+            db.ContributionFunds.InsertOnSubmit(contributionFund);
+            db.SubmitChanges();
+
+            return contributionFund;
+        }
     }
 }

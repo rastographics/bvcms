@@ -14,17 +14,17 @@ namespace CmsDataTests.GivingSettings
         [InlineData("Giving Page Three")]
         public void GivingPageCRUDTest(string givingPageName)
         {
-            var contributionFund = CreateContributionFund();
-            var givingPage = CreateGivingPage(givingPageName, contributionFund.FundId);
-            var givingPageFund = CreateGivingPageFund(givingPage.GivingPageId, contributionFund.FundId);
+            var contributionFund = MockFunds.CreateContributionFund(db, null);
+            var givingPage = MockGivingPage.CreateGivingPage(db, givingPageName, contributionFund.FundId);
+            var givingPageFund = MockGivingPage.CreateGivingPageFund(db, givingPage.GivingPageId, contributionFund.FundId);
 
             var expectedName = givingPageName;
             var actualName = givingPage.PageName;
             Assert.Equal(expectedName, actualName);
 
-            DeleteGivingPageFund(givingPageFund);
-            DeleteGivingPage(givingPage);
-            DeleteContributionFund(contributionFund);
+            MockGivingPage.DeleteGivingPageFund(db, givingPageFund);
+            MockGivingPage.DeleteGivingPage(db, givingPage);
+            MockFunds.DeleteFund(db, contributionFund.FundId);
         }
     }
 }
