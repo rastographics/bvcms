@@ -17,7 +17,6 @@ namespace CmsData
         private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
 
         #region Private Fields
-
         private int _GivingPageFundId;
 
         private int _GivingPageId;
@@ -27,7 +26,6 @@ namespace CmsData
         private EntityRef<ContributionFund> _ContributionFund;
 
         private EntityRef<GivingPage> _GivingPage;
-
         #endregion
 
         #region Extensibility Method Definitions
@@ -43,8 +41,8 @@ namespace CmsData
 
         partial void OnFundIdChanging(int value);
         partial void OnFundIdChanged();
-
         #endregion
+
         public GivingPageFund()
         {
             _ContributionFund = default(EntityRef<ContributionFund>);
@@ -55,7 +53,6 @@ namespace CmsData
         }
 
         #region Columns
-
         [Column(Name = "GivingPageFundId", UpdateCheck = UpdateCheck.Never, Storage = "_GivingPageFundId", AutoSync = AutoSync.OnInsert, DbType = "int NOT NULL IDENTITY", IsPrimaryKey = true, IsDbGenerated = true)]
         public int GivingPageFundId
         {
@@ -119,7 +116,6 @@ namespace CmsData
                 }
             }
         }
-
         #endregion
 
         #region Foreign Key Tables
@@ -127,7 +123,6 @@ namespace CmsData
         #endregion
 
         #region Foreign Keys
-
         [Association(Name = "FK_GivingPageFunds_ContributionFund", Storage = "_ContributionFund", ThisKey = "FundId", IsForeignKey = true)]
         public ContributionFund ContributionFund
         {
@@ -189,7 +184,6 @@ namespace CmsData
                 }
             }
         }
-
         #endregion
 
         public event PropertyChangingEventHandler PropertyChanging;
@@ -209,6 +203,5 @@ namespace CmsData
                 PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
         }
-
     }
 }
