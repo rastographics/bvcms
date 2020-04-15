@@ -48,6 +48,8 @@ Creating_dbo_Families.sql
 Creating_pk_FAMILIES_PK_dbo_Families.sql
 Creating_IX_Families_dbo_Families.sql
 Creating_dbo_SpouseOrHeadWithEmail.sql
+Creating_dbo_Numbers.sql
+Creating_n_dbo_Numbers.sql
 Creating_dbo_SplitInts.sql
 Creating_dbo_Setting.sql
 Creating_pk_PK_Setting_dbo_Setting.sql
@@ -495,7 +497,6 @@ Creating_dbo_MoveSchedule.sql
 Creating_dbo_OrgMemberQuestions.sql
 Creating_dbo_UpdateQuestion.sql
 Creating_dbo_PledgeFulfillment2.sql
-Creating_dbo_SetupNumbers.sql
 Creating_dbo_DeleteSpecialTags.sql
 Creating_dbo_OrgFilterCurrent.sql
 Creating_dbo_EnrollmentTransactionId.sql

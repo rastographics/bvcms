@@ -1,4 +1,4 @@
-CREATE PROCEDURE [dbo].[DeleteSpecialTags](@pid INT = null)
+ALTER PROCEDURE [dbo].[DeleteSpecialTags](@pid INT = null)
 AS
 BEGIN
 	SET NOCOUNT ON;
