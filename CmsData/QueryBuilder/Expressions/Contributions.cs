@@ -239,7 +239,7 @@ namespace CmsData
             return expr;
         }
 
-        private Expression ContributionAmount2(DateTime? start, DateTime? end, int fund, decimal amt, bool nontaxded, bool useCreditor = true)
+        private Expression ContributionAmount2(DateTime? start, DateTime? end, int? fund, decimal? amt, bool nontaxded, bool useCreditor = true)
         {
             if (!db.FromBatch)
             {
@@ -254,21 +254,21 @@ namespace CmsData
             {
                 case CompareType.GreaterEqual:
                     q = from c in db.Contributions2(start, end, 0, false, nontaxded, true, null)
-                        where fund == 0 || c.FundId == fund
+                        where fund == 0 || c.FundId == fund || fund == null
                         group c by (useCreditor ? c.CreditGiverId : c.PeopleId) into g
                         where g.Sum(cc => cc.Amount) >= amt
                         select g.Key ?? 0;
                     break;
                 case CompareType.Greater:
                     q = from c in db.Contributions2(start, end, 0, false, nontaxded, true, null)
-                        where fund == 0 || c.FundId == fund
+                        where fund == 0 || c.FundId == fund || fund == null
                         group c by (useCreditor ? c.CreditGiverId : c.PeopleId) into g
                         where g.Sum(cc => cc.Amount) > amt
                         select g.Key ?? 0;
                     break;
                 case CompareType.LessEqual:
                     q = from c in db.Contributions2(start, end, 0, false, nontaxded, true, null)
-                        where fund == 0 || c.FundId == fund
+                        where fund == 0 || c.FundId == fund || fund == null
                         where c.Amount > 0
                         group c by (useCreditor ? c.CreditGiverId : c.PeopleId) into g
                         where g.Sum(cc => cc.Amount) <= amt
@@ -276,7 +276,7 @@ namespace CmsData
                     break;
                 case CompareType.Less:
                     q = from c in db.Contributions2(start, end, 0, false, nontaxded, true, null)
-                        where fund == 0 || c.FundId == fund
+                        where fund == 0 || c.FundId == fund || fund == null
                         where c.Amount > 0
                         group c by (useCreditor ? c.CreditGiverId : c.PeopleId) into g
                         where g.Sum(cc => cc.Amount) < amt
@@ -291,16 +291,16 @@ namespace CmsData
                     else
                     {
                         q = from c in db.Contributions2(start, end, 0, false, nontaxded, true, null)
-                            where fund == 0 || c.FundId == fund
+                            where fund == 0 || c.FundId == fund || fund == null
                             group c by (useCreditor ? c.CreditGiverId : c.PeopleId) into g
-                            where g.Sum(cc => cc.Amount) == amt
+                            where g.Sum(cc => cc.Amount) == amt || g.Sum(cc => cc.Amount) > (decimal?)amt.ToDouble()
                             select g.Key ?? 0;
                     }
 
                     break;
                 case CompareType.NotEqual:
                     q = from c in db.Contributions2(start, end, 0, false, nontaxded, true, null)
-                        where fund == 0 || c.FundId == fund
+                        where fund == 0 || c.FundId == fund || fund == null
                         where c.Amount > 0
                         group c by (useCreditor ? c.CreditGiverId : c.PeopleId) into g
                         where g.Sum(cc => cc.Amount) != amt
@@ -735,8 +735,8 @@ namespace CmsData
         }
         internal Expression NonTaxDedAmountDonorOnly()
         {
-            var fund = Quarters.AllDigits() ? Quarters.ToInt() : db.Setting(Quarters, "").ToInt();
-            var amt = TextValue.ToDecimal() ?? 0;
+            int? fund = Quarters.IsNotNull() ? Quarters.AllDigits() ? Quarters.ToInt() : db.Setting(Quarters, "").ToInt() : (int?)null;
+            decimal? amt = TextValue.IsNotNull() ? TextValue.ToDecimal() ?? 0 : (decimal?)null;
             return ContributionAmount2(StartDate, EndDate, fund, amt, true, false);
         }
         internal Expression ContributionChange()
