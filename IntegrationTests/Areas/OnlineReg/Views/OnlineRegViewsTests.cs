@@ -31,29 +31,17 @@ namespace IntegrationTests.Areas.OnlineReg.Views
             var user = CreateUser(username, password, roles: new string[] { "Access", "Edit", "Admin" });
             Login();
 
-            createOrgWithFee();
+            CreateOrgWithFee();
 
-            Open($"{rootUrl}Org/{OrgId}#tab-Registrations-tab");
-            WaitForElementToDisappear(loadingUI, maxWaitTimeInSeconds: 10);
-
-            ScrollTo(css: "#Registration > form > h4:nth-child(3)");
-            Find(css: "#Fees-tab > a").Click();
-            WaitForElementToDisappear(loadingUI, maxWaitTimeInSeconds: 10);
-
-            Find(css: "#Fees .row .edit").Click();
-            WaitForElementToDisappear(loadingUI, maxWaitTimeInSeconds: 10);
-
-            ScrollTo(id: "Fee");
-            Find(id: "Fee").Clear();
-            Find(id: "Fee").SendKeys("5");
-            Find(css: ".pull-right:nth-child(1) > .validate").Click();
-            Wait(5);
+            SettingUtils.UpdateSetting("UseRecaptcha", "false");
 
             Open($"{rootUrl}OnlineReg/{OrgId}");
 
             Find(id: "otheredit").Click();
             WaitForElement("#submitit", 3);
             Find(id: "submitit").Click();
+
+            Wait(4);
 
             Find(id: "First").Clear();
             Find(id: "First").SendKeys("FName");
@@ -97,13 +85,68 @@ namespace IntegrationTests.Areas.OnlineReg.Views
             startNewTransaction.ShouldNotBeNull();
 
             var paymentInfo = db.PaymentInfos.SingleOrDefault(x => x.PeopleId == user.PeopleId);
-            if(paymentInfo != null)
+            if (paymentInfo != null)
             {
                 paymentInfo.PreferredPaymentType.ShouldBe("B");
             }
         }
 
-        private void createOrgWithFee()
+        [Fact]
+        public void Should_Payment_Form_Contain_Recaptcha()
+        {
+            MaximizeWindow();
+
+            username = RandomString();
+            password = RandomString();
+            string roleName = "role_" + RandomString();
+            var user = CreateUser(username, password, roles: new string[] { "Access", "Edit", "Admin" });
+            Login();
+
+            CreateOrgWithFee();
+
+            SettingUtils.UpdateSetting("UseRecaptcha", "true");
+            SettingUtils.UpdateSetting("googleReCaptchaSiteKey", RandomString());
+
+            Open($"{rootUrl}OnlineReg/{OrgId}");
+
+            Find(id: "otheredit").Click();
+            WaitForElement("#submitit", 3);
+            Find(id: "submitit").Click();
+
+            Wait(4);
+
+            var element = Find(css: ".recaptcha");
+            element.ShouldNotBeNull();
+        }
+
+        [Fact]
+        public void Should_Payment_Form_Contain_NoRecaptcha()
+        {
+            MaximizeWindow();
+
+            username = RandomString();
+            password = RandomString();
+            string roleName = "role_" + RandomString();
+            var user = CreateUser(username, password, roles: new string[] { "Access", "Edit", "Admin" });
+            Login();
+
+            CreateOrgWithFee();
+
+            SettingUtils.UpdateSetting("UseRecaptcha", "false");            
+
+            Open($"{rootUrl}OnlineReg/{OrgId}");
+
+            Find(id: "otheredit").Click();
+            WaitForElement("#submitit", 3);
+            Find(id: "submitit").Click();
+
+            Wait(4);
+
+            var element = Find(css: ".noRecaptcha");
+            element.ShouldNotBeNull();
+        }
+
+        private void CreateOrgWithFee()
         {
             var requestManager = FakeRequestManager.Create();
             var controller = new CmsWeb.Areas.OnlineReg.Controllers.OnlineRegController(requestManager);
@@ -119,6 +162,22 @@ namespace IntegrationTests.Areas.OnlineReg.Views
             });
 
             OrgId = FakeOrg.org.OrganizationId;
+
+            Open($"{rootUrl}Org/{OrgId}#tab-Registrations-tab");
+            WaitForElementToDisappear(loadingUI, maxWaitTimeInSeconds: 10);
+
+            ScrollTo(css: "#Registration > form > h4:nth-child(3)");
+            Find(css: "#Fees-tab > a").Click();
+            WaitForElementToDisappear(loadingUI, maxWaitTimeInSeconds: 10);
+
+            Find(css: "#Fees .row .edit").Click();
+            WaitForElementToDisappear(loadingUI, maxWaitTimeInSeconds: 10);
+
+            ScrollTo(id: "Fee");
+            Find(id: "Fee").Clear();
+            Find(id: "Fee").SendKeys("5");
+            Find(css: ".pull-right:nth-child(1) > .validate").Click();
+            Wait(5);
         }
 
         public override void Dispose()
