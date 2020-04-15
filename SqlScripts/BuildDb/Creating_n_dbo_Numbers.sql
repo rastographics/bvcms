@@ -1,4 +1,0 @@
-CREATE UNIQUE CLUSTERED INDEX [n] ON [dbo].[Numbers] ([Number]) ON [PRIMARY]
-GO
-IF @@ERROR <> 0 SET NOEXEC ON
-GO

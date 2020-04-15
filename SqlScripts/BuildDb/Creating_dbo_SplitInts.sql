@@ -22,16 +22,11 @@ RETURNS TABLE
 AS
     RETURN
     (
-        SELECT DISTINCT
-            [Value] = TRY_CONVERT(INT, LTRIM(RTRIM(CONVERT(
-                VARCHAR(12),
-                SUBSTRING(@List, Number,
-                CHARINDEX(',', @List + ',', Number) - Number)))))
+        SELECT DISTINCT CAST([Value] as int) [Value]
         FROM
-            dbo.Numbers
-        WHERE
-            Number <= CONVERT(INT, LEN(@List))
-            AND SUBSTRING(',' + @List, Number, 1) = ','
+            STRING_SPLIT(@List, ',')
+        WHERE TRY_CONVERT(int, [Value]) IS NOT NULL 
+          AND RTRIM(LTRIM([Value])) <> ''
     );
 
 GO

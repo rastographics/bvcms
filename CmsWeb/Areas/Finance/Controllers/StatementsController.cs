@@ -46,6 +46,11 @@ namespace CmsWeb.Areas.Finance.Controllers
                 return Content("<h3>Must have a Startdate and Enddate</h3>");
             }
 
+            if (fromDate.Value > endDate.Value)
+            { 
+                return Content("<h3>The Startdate must be earlier than the Enddate</h3>");
+            }
+
             var spec = ContributionStatementsExtract.GetStatementSpecification(CurrentDatabase, customstatement);
 
             if (!startswith.HasValue())
