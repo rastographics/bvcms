@@ -216,7 +216,7 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
                     return new RegionsImporter2();
             }
 
-            if (text.Substring(0, 40).Contains("Report Date,Report Requestor"))
+            if (text.Length > 40 && text.Substring(0, 40).Contains("Report Date,Report Requestor"))
                 return new RegionsImporter();
 
             if (text.StartsWith("From MICR :"))
@@ -228,7 +228,9 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
             if (text.StartsWith("TOTAL DEPOSIT AMOUNT"))
                 return new ChaseImporter();
 
-            if (text.Substring(0, text.IndexOf(Environment.NewLine, StringComparison.Ordinal)).Contains("TransmissionDate,MerchantName,DepositDate,Account,DepositTotal,DebitCount,DepositStatus,TrackingNo,SourceLocation,CreatedBy,submittedByValue,CaptureSequence,Sequence,AmountType,Amount,Serial,AccountNo,RoutingNumber,AnalysisStatus,OverrideIndicator"))
+            int newLinePos = text.IndexOf(Environment.NewLine, StringComparison.Ordinal);
+
+            if (newLinePos > 0 && text.Substring(0, newLinePos).Contains("TransmissionDate,MerchantName,DepositDate,Account,DepositTotal,DebitCount,DepositStatus,TrackingNo,SourceLocation,CreatedBy,submittedByValue,CaptureSequence,Sequence,AmountType,Amount,Serial,AccountNo,RoutingNumber,AnalysisStatus,OverrideIndicator"))
                 return new CapitalCityImporter();
 
             if (text.StartsWith("1") && text.Substring(0, text.IndexOf(Environment.NewLine, StringComparison.Ordinal)).Length == 94)
