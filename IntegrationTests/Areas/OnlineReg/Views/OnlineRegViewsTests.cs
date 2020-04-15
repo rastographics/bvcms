@@ -29,6 +29,7 @@ namespace IntegrationTests.Areas.OnlineReg.Views
             password = RandomString();
             string roleName = "role_" + RandomString();
             var user = CreateUser(username, password, roles: new string[] { "Access", "Edit", "Admin" });
+            FinanceTestUtils.CreateMockPaymentProcessor(db, PaymentProcessTypes.OnlineRegistration, GatewayTypes.Transnational);
             Login();
 
             CreateOrgWithFee();
@@ -42,12 +43,6 @@ namespace IntegrationTests.Areas.OnlineReg.Views
             Find(id: "submitit").Click();
 
             Wait(4);
-
-            Find(id: "First").Clear();
-            Find(id: "First").SendKeys("FName");
-
-            Find(id: "Last").Clear();
-            Find(id: "Last").SendKeys("LName");
 
             Find(id: "Address").Clear();
             Find(id: "Address").SendKeys("St 12");
@@ -100,6 +95,7 @@ namespace IntegrationTests.Areas.OnlineReg.Views
             password = RandomString();
             string roleName = "role_" + RandomString();
             var user = CreateUser(username, password, roles: new string[] { "Access", "Edit", "Admin" });
+            FinanceTestUtils.CreateMockPaymentProcessor(db, PaymentProcessTypes.OnlineRegistration, GatewayTypes.Transnational);
             Login();
 
             CreateOrgWithFee();
@@ -128,6 +124,7 @@ namespace IntegrationTests.Areas.OnlineReg.Views
             password = RandomString();
             string roleName = "role_" + RandomString();
             var user = CreateUser(username, password, roles: new string[] { "Access", "Edit", "Admin" });
+            FinanceTestUtils.CreateMockPaymentProcessor(db, PaymentProcessTypes.OnlineRegistration, GatewayTypes.Transnational);
             Login();
 
             CreateOrgWithFee();
@@ -175,7 +172,7 @@ namespace IntegrationTests.Areas.OnlineReg.Views
 
             ScrollTo(id: "Fee");
             Find(id: "Fee").Clear();
-            Find(id: "Fee").SendKeys("5");
+            Find(id: "Fee").SendKeys(RandomNumber(1,1000).ToString());
             Find(css: ".pull-right:nth-child(1) > .validate").Click();
             Wait(5);
         }
