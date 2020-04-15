@@ -48,8 +48,6 @@ Creating_dbo_Families.sql
 Creating_pk_FAMILIES_PK_dbo_Families.sql
 Creating_IX_Families_dbo_Families.sql
 Creating_dbo_SpouseOrHeadWithEmail.sql
-Creating_dbo_Numbers.sql
-Creating_n_dbo_Numbers.sql
 Creating_dbo_SplitInts.sql
 Creating_dbo_Setting.sql
 Creating_pk_PK_Setting_dbo_Setting.sql

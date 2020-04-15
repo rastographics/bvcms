@@ -77,8 +77,8 @@
     <Reference Include="RestSharp, Version=106.6.9.0, Culture=neutral, PublicKeyToken=598062e77f915f75, processorArchitecture=MSIL">
       <HintPath>..\..\packages\RestSharp.106.6.9\lib\net452\RestSharp.dll</HintPath>
     </Reference>
-    <Reference Include="Shouldly, Version=3.0.2.0, Culture=neutral, PublicKeyToken=6042cbcb05cbc941, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Shouldly.3.0.2\lib\net451\Shouldly.dll</HintPath>
+    <Reference Include="Shouldly, Version=4.0.0.0, Culture=neutral, PublicKeyToken=6042cbcb05cbc941, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Shouldly.4.0.0-beta0002\lib\net451\Shouldly.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
@@ -123,6 +123,7 @@
       <Link>DatabaseCollection.cs</Link>
     </Compile>
     <Compile Include="Areas\Finance\Models\PostBundleModelTests.cs" />
+    <Compile Include="Areas\Finance\Models\Statements\ContributionStatementsExtractTests.cs" />
     <Compile Include="Areas\Main\Controllers\EmailControllerTests.cs" />
     <Compile Include="Areas\Manage\Models\Involvement\InvolvementTabModelTests.cs" />
     <Compile Include="Areas\Manage\Models\AccountModelTests.cs" />
@@ -130,6 +131,7 @@
     <Compile Include="Areas\OnlineReg\Models\OnlineRegModelTest.cs" />
     <Compile Include="Areas\OnlineReg\Models\OnlineRegPerson\HelperTests.cs" />
     <Compile Include="Areas\OnlineReg\Models\OnlineRegPerson\OnlineRegPersonModelTests.cs" />
+    <Compile Include="Areas\Org\Models\OrgPeopleModelTests.cs" />
     <Compile Include="Areas\Org\Models\TestOrgGroupsModel.cs" />
     <Compile Include="Areas\People\Models\Person\Profile\MemberDocModelTests.cs" />
     <Compile Include="Areas\Public\Controllers\CheckInAPIControllerTests.cs" />
@@ -224,6 +226,12 @@
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>CMSWebTestsResources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Properties\Resources\DefaultHeader.txt" />
+    <Content Include="Properties\Resources\DefaultNotice.txt" />
+    <Content Include="Properties\Resources\StatementSpecification1.xml" />
+    <Content Include="Properties\Resources\StatementSpecification2.xml" />
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

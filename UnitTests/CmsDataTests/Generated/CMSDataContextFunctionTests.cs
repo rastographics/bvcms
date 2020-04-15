@@ -107,11 +107,11 @@ namespace CmsDataTests
                 db.SubmitChanges();
 
                 var bundleHeader = MockContributions.CreateSaveBundle(db);
-                var FirstContribution = MockContributions.CreateSaveContribution(db, bundleHeader, fromDate, 100, peopleId: person.PeopleId);
-                var SecondContribution = MockContributions.CreateSaveContribution(db, bundleHeader, fromDate, 20, peopleId: person.PeopleId);
+                var FirstContribution = MockContributions.CreateSaveContribution(db, bundleHeader, fromDate, 100, peopleId: person.PeopleId, contributionType: 1);
+                var SecondContribution = MockContributions.CreateSaveContribution(db, bundleHeader, fromDate, 20, peopleId: person.PeopleId, contributionType: 9);
 
                 var FundIds = $"{FirstContribution.FundId},{SecondContribution.FundId}";
-                var TopGiversResult = db.TopGivers(10, fromDate, toDate, FundIds).ToList();
+                var TopGiversResult = db.TopGivers(10, fromDate, toDate, FundIds, null).ToList();
 
                 if(TopGiversResult.Count > 0)
                 {

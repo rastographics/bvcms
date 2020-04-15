@@ -41,8 +41,16 @@
                 </div>
             </div>
             <div class="form-group">
+                <label for="file" class="control-label">Contribution</label>
                 @Html.TextArea("text", "", new { rows = "10", cols = "1000", wrap = "off", @class = "form-control" })
             </div>
+            @if (!Html.ViewData.ModelState.IsValid)
+            {
+                <div class="alert alert-danger">
+                    @Html.ValidationMessage("textarea")
+                </div>
+            }
+
             <button type="submit" class="btn btn-primary">Submit</button>
         </form>
     </div>

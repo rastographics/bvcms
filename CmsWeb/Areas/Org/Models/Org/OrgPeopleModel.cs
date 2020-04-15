@@ -69,7 +69,7 @@ namespace CmsWeb.Areas.Org.Models
             filter.LastUpdated = DateTime.Now;
             Db.SubmitChanges();
             var q = from p in Db.OrgFilterPeople(QueryId, ShowMinistryInfo)
-                    select p;
+                                            select p;
             return q;
         }
 

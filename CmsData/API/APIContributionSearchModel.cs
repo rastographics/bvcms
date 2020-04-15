@@ -415,9 +415,15 @@ namespace CmsData.API
                 if (range.HasValue())
                 {
                     var a = range.Split('-');
-                    for (var i = a[0].ToInt(); i < a[1].ToInt(); i++)
+                    var firstFund = a.First().ToInt();
+                    var lastFund = a.Last().ToInt();
+                    for (var i = firstFund; i <= lastFund; i++)
+                    {
                         if (allfunds.Contains(i))
+                        {
                             ret.Add(i);
+                        }
+                    }
                 }
                 var id = matchResult.Groups["id"].Value;
                 if (id.HasValue()) {

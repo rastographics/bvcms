@@ -29,7 +29,7 @@ namespace CmsWeb.Areas.Search.Controllers
             ViewBag.Title = "QueryBuilder";
             ViewBag.OrigQueryId = id;
             var m = new QueryModel(id, CurrentDatabase);
-            ViewBag.ForceAutoRun = TempData["autorun"];
+            ViewBag.ForceAutoRun = Util.TempAutorun;
             return ViewQuery(m);
         }
 
@@ -42,7 +42,7 @@ namespace CmsWeb.Areas.Search.Controllers
                 var cc = CurrentDatabase.ScratchPadCondition();
                 cc.Reset();
                 cc.Save(CurrentDatabase);
-                TempData["autorun"] = true;
+                Util.TempAutorun = true;
                 return Redirect("/Query");
             }
             var id = CurrentDatabase.QueryIdByName(name);
