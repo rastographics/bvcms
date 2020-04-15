@@ -49,21 +49,6 @@ namespace CmsDataTests
             }
         }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         [Fact]
         public void Should_CopySettings2()
         {
