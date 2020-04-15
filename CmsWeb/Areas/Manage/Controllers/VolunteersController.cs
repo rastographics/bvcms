@@ -126,9 +126,9 @@ namespace CmsWeb.Areas.Manage.Controllers
 
         public ActionResult AddVolunteers(int id, int? week, DateTime? time, string sg1, string sg2, bool? isWeek = false)
         {
-            TempData["selectedWeek"] = week?.ToInt();
-            TempData["selectedTime"] = time?.ToString("g");
-            TempData["isWeek"] = isWeek;
+            ViewBag.selectedWeek = week?.ToInt();
+            ViewBag.selectedTime = time?.ToString("g");
+            ViewBag.isWeek = isWeek;
             var m = new VolunteerCommitmentsModel(id);
             m.SmallGroup1 = sg1;
             m.SmallGroup2 = sg2;
@@ -152,7 +152,7 @@ namespace CmsWeb.Areas.Manage.Controllers
 <tr><td>Location:</td><td>{meeting.Organization.Location}</td></tr>
 </table></blockquote><p>{meeting.Organization.LeaderName}</p>";
 
-            TempData["body"] = body;
+            Util.SetValueInSession("emailreminderbody", body);
             return Redirect($"/Email/{qb.Id}?subj={Server.UrlEncode(subject)}&ishtml=true");
         }
 

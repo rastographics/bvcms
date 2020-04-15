@@ -237,7 +237,7 @@ namespace CmsWeb.Areas.Manage.Controllers
                 CurrentDatabase.Email(email.FromAddr, p, email.Subject, email.Body);
             }
 
-            TempData["message"] = "Mail Resent";
+            Util.TempSuccessMessage = "Mail Resent";
             return RedirectToAction("Details", new { id });
         }
 

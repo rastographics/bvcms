@@ -2257,13 +2257,15 @@ namespace CmsData
         [Function(Name = "dbo.FirstTimeGivers", IsComposable = true)]
         public IQueryable<View.FirstTimeGiver> FirstTimeGivers(
             [Parameter(DbType = "int")] int? days,
-            [Parameter(DbType = "int")] int? fundid
+            [Parameter(DbType = "int")] int? fundid,
+            [Parameter(DbType = "bit")] bool? TaxNonTax
             )
         {
             return CreateMethodCallQuery<View.FirstTimeGiver>(this,
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 days,
-                fundid
+                fundid,
+                TaxNonTax
                 );
         }
 
@@ -6040,14 +6042,16 @@ namespace CmsData
             [Parameter(Name = "top", DbType = "int")] int? top,
             [Parameter(Name = "sdate", DbType = "datetime")] DateTime? sdate,
             [Parameter(Name = "edate", DbType = "datetime")] DateTime? edate,
-            [Parameter(DbType = "varchar")] string fundids
+            [Parameter(DbType = "varchar")] string fundids,
+            [Parameter(DbType = "bit")] bool? nontaxded
             )
         {
             IExecuteResult result = ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 top,
                 sdate,
                 edate,
-                fundids
+                fundids,
+                nontaxded
             );
             return ((ISingleResult<TopGiver>)(result.ReturnValue));
         }

@@ -79,17 +79,16 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 
         private string RouteManageGivingSubscriptionsPledgeVolunteer(OnlineRegModel m)
         {
+            Util.TempPeopleId = m.UserPeopleId ?? CurrentDatabase.UserPeopleId;
             if (m.RegisterLinkMaster())
             {
                 if(m.registerLinkType.HasValue())
                     if (m.registerLinkType.StartsWith("registerlink") || m.registerLinkType == "masterlink" || User.Identity.IsAuthenticated)
                     {
-                        TempData["token"] = m.registertag;
-                        TempData["PeopleId"] = m.UserPeopleId ?? CurrentDatabase.UserPeopleId;
+                        Util.SetValueInSession("token", m.registertag);
                     }
                 return $"/OnlineReg/RegisterLinkMaster/{m.Orgid}";
             }
-            TempData["PeopleId"] = m.UserPeopleId ?? CurrentDatabase.UserPeopleId;
             if (m.ManagingSubscriptions())
                 return $"/OnlineReg/ManageSubscriptions/{m.masterorgid}";
             if (m.ManageGiving())
@@ -98,7 +97,6 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 return $"/OnlineReg/ManagePledge/{m.Orgid}";
             if (m.ChoosingSlots())
                 return $"/OnlineReg/ManageVolunteer/{m.Orgid}";
-            TempData.Remove("PeopleId");
             return null;
         }
 
@@ -110,7 +108,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             if (existingRegistration == null)
                 return null;
             m.Log("Existing");
-            TempData["PeopleId"] = existingRegistration.UserPeopleId;
+            Util.TempPeopleId = existingRegistration.UserPeopleId;
             return "/OnlineReg/Existing/" + existingRegistration.DatumId;
         }
 

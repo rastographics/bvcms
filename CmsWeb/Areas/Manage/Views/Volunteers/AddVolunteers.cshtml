@@ -3,12 +3,12 @@
 @using UtilityExtensions
 @Html.Hidden("OrgId", Model.OrgId)
 @Html.Hidden("SortByWeek", Model.SortByWeek)
-@Html.Hidden("Week", TempData["selectedWeek"])
-@Html.Hidden("Time", TempData["selectedTime"])
+@Html.Hidden("Week", (int)ViewBag.selectedWeek)
+@Html.Hidden("Time", (string)ViewBag.selectedTime)
 @{
     var isChecked = "checked";
     var isCheckedWeek = "";
-    if ((bool)TempData["isWeek"])
+    if ((bool)ViewBag.isWeek)
     {
         isCheckedWeek = "checked";
         isChecked = "";
@@ -22,7 +22,7 @@
         </div>
         <div class="modal-body" style="display: inline-block; width: 100%;overflow-y: auto; max-height: 400px">
             <div align="center">
-                <input type="radio" name="target" @isCheckedWeek value="week"> Week @TempData["selectedWeek"] &nbsp; <input type="radio" name="target" @isChecked value="meeting"> Meeting - @TempData["selectedTime"] &nbsp;<br/>
+                <input type="radio" name="target" @isCheckedWeek value="week"> Week @ViewBag.selectedWeek &nbsp; <input type="radio" name="target" @isChecked value="meeting"> Meeting - @ViewBag.selectedTime &nbsp;<br/>
             </div>
             <br/>
             @if (Model.IsLeader)

@@ -7,11 +7,11 @@
     ViewBag.PageHeader = $"Contribution Bundle #{Model.BundleId}";
     Layout = ViewExtensions2.TouchPointLayout();
 }
-@if ((bool?)TempData["createbundle"] == true)
+@if ((bool?)ViewBag.createbundle == true)
 {
     @Html.Partial("Create", Model)
 }
-else if ((bool?)TempData["editbundle"] == true)
+else if ((bool?)ViewBag.editbundle == true)
 {
     @Html.Partial("Edit", Model)
 }

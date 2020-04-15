@@ -118,10 +118,22 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="DefaultHeader" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>resources\defaultheader.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="DefaultNotice" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>resources\defaultnotice.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
   <data name="DocFormsTest1" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\DocFormsTest1.pdf;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="DocFormsTest2" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\DocFormsTest2.pdf;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="StatementSpecification1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>resources\statementspecification1.xml;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="StatementSpecification2" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>resources\statementspecification2.xml;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
 </root>
