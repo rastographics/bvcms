@@ -104,7 +104,9 @@ INSERT INTO [dbo].[DashboardWidgets]
            ,[SQLContentId]
            ,[Enabled]
            ,[Order]
-           ,[System])
+           ,[System]
+           ,[CachePolicy]
+           ,[CacheHours])
      VALUES
            ('My Tasks'
            ,'Shows a list of tasks for the current user'
@@ -113,6 +115,8 @@ INSERT INTO [dbo].[DashboardWidgets]
            ,(select max(Id) from Content where [Name] like 'WidgetTasksSQL')
            ,1
            ,(select isnull(max([Order]), 0)+1 from DashboardWidgets)
+           ,1
+           ,2
            ,1)
 
 INSERT INTO [dbo].[DashboardWidgetRoles]
@@ -222,7 +226,9 @@ INSERT INTO [dbo].[DashboardWidgets]
            ,[SQLContentId]
            ,[Enabled]
            ,[Order]
-           ,[System])
+           ,[System]
+           ,[CachePolicy]
+           ,[CacheHours])
      VALUES
            ('My Tags'
            ,'Shows a list of tags for the current user'
@@ -231,6 +237,8 @@ INSERT INTO [dbo].[DashboardWidgets]
            ,(select max(Id) from Content where [Name] like 'WidgetTagsSQL')
            ,1
            ,(select isnull(max([Order]), 0)+1 from DashboardWidgets)
+           ,1
+           ,2
            ,1)
 
 INSERT INTO [dbo].[DashboardWidgetRoles]
@@ -351,7 +359,9 @@ INSERT INTO [dbo].[DashboardWidgets]
            ,[SQLContentId]
            ,[Enabled]
            ,[Order]
-           ,[System])
+           ,[System]
+           ,[CachePolicy]
+           ,[CacheHours])
      VALUES
            ('TouchPoint News'
            ,'Displays a list of recent posts from the TouchPoint blog.'
@@ -360,7 +370,9 @@ INSERT INTO [dbo].[DashboardWidgets]
            ,NULL
            ,1
            ,(select isnull(max([Order]), 0)+1 from DashboardWidgets)
-           ,1)
+           ,1
+           ,1
+           ,24)
 
 INSERT INTO [dbo].[DashboardWidgetRoles]
            ([WidgetId]
@@ -439,7 +451,9 @@ INSERT INTO [dbo].[DashboardWidgets]
            ,[SQLContentId]
            ,[Enabled]
            ,[Order]
-           ,[System])
+           ,[System]
+           ,[CachePolicy]
+           ,[CacheHours])
      VALUES
            ('Church News'
            ,'Displays a list of recent posts from your church blog. Configure your feed and blog URLs in Settings > System > Church Info'
@@ -448,7 +462,9 @@ INSERT INTO [dbo].[DashboardWidgets]
            ,NULL
            ,1
            ,(select isnull(max([Order]), 0)+1 from DashboardWidgets)
-           ,1)
+           ,1
+           ,1
+           ,24)
 
 INSERT INTO [dbo].[DashboardWidgetRoles]
            ([WidgetId]
@@ -558,7 +574,9 @@ INSERT INTO [dbo].[DashboardWidgets]
            ,[SQLContentId]
            ,[Enabled]
            ,[Order]
-           ,[System])
+           ,[System]
+           ,[CachePolicy]
+           ,[CacheHours])
      VALUES
            ('My Searches'
            ,'Shows a list of searches for the current user'
@@ -567,6 +585,8 @@ INSERT INTO [dbo].[DashboardWidgets]
            ,(select max(Id) from Content where [Name] like 'WidgetSearchesSQL')
            ,1
            ,(select isnull(max([Order]), 0)+1 from DashboardWidgets)
+           ,1
+           ,2
            ,1)
 
 INSERT INTO [dbo].[DashboardWidgetRoles]
@@ -628,7 +648,9 @@ INSERT INTO [dbo].[DashboardWidgets]
            ,[SQLContentId]
            ,[Enabled]
            ,[Order]
-           ,[System])
+           ,[System]
+           ,[CachePolicy]
+           ,[CacheHours])
      VALUES
            ('Welcome to Touchpoint'
            ,'Helpful links to resources on Touchpoint.'
@@ -637,7 +659,9 @@ INSERT INTO [dbo].[DashboardWidgets]
            ,NULL
            ,1
            ,(select isnull(max([Order]), 0)+1 from DashboardWidgets)
-           ,0)
+           ,0
+           ,1
+           ,24)
 
 INSERT INTO [dbo].[DashboardWidgetRoles]
            ([WidgetId]
@@ -765,7 +789,9 @@ INSERT INTO [dbo].[DashboardWidgets]
            ,[SQLContentId]
            ,[Enabled]
            ,[Order]
-           ,[System])
+           ,[System]
+           ,[CachePolicy]
+           ,[CacheHours])
      VALUES
            ('My Involvement'
            ,'Shows a list of organizations the current user is a member of'
@@ -774,6 +800,8 @@ INSERT INTO [dbo].[DashboardWidgets]
            ,(select max(Id) from Content where [Name] like 'WidgetInvolvementSQL')
            ,1
            ,(select isnull(max([Order]), 0)+1 from DashboardWidgets)
+           ,1
+           ,2
            ,1)
 
 INSERT INTO [dbo].[DashboardWidgetRoles]
@@ -867,7 +895,9 @@ INSERT INTO [dbo].[DashboardWidgets]
            ,[SQLContentId]
            ,[Enabled]
            ,[Order]
-           ,[System])
+           ,[System]
+           ,[CachePolicy]
+           ,[CacheHours])
      VALUES
            ('Birthdays'
            ,'Displays a list of upcoming birthdays for the current user'
@@ -876,7 +906,9 @@ INSERT INTO [dbo].[DashboardWidgets]
            ,NULL
            ,1
            ,(select isnull(max([Order]), 0)+1 from DashboardWidgets)
-           ,1)
+           ,1
+           ,2
+           ,4)
 
 INSERT INTO [dbo].[DashboardWidgetRoles]
            ([WidgetId]

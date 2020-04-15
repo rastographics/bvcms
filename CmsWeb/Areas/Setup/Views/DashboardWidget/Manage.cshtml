@@ -127,6 +127,26 @@
                             </div>
                         </div>
                     </div>
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <label for="CacheHours" class="control-label">Refresh Frequency <a href="#" data-toggle="popover" data-placement="right" data-trigger="focus" data-title="Refresh Frequency" data-content="The amount of time the widget will show the same data before rerunning the script. If your data isn't changing often, set this to a higher frequency to make the widget load faster."><i class="fa fa-info-circle"></i></a></label>
+                        </div>
+                        <div class="col-sm-9">
+                            <div class="form-group">
+                                @Html.DropDownList("CacheHours", Model.CacheTimes(), new { @class = "form-control" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <label for="CachePolicy" class="control-label">Widget Caching <a href="#" data-toggle="popover" data-placement="right" data-trigger="focus" data-title="Widget Caching" data-content="This setting controls how we cache widget content. If you aren't showing user specific data in this widget, set this to Church Wide to make the widget load faster."><i class="fa fa-info-circle"></i></a></label>
+                        </div>
+                        <div class="col-sm-9">
+                            <div class="form-group">
+                                @Html.DropDownList("CachePolicy", Model.CachePolicyOptions(), new { @class = "form-control" })
+                            </div>
+                        </div>
+                    </div>
                     <div class="visible-xs-block">
                         <button type="submit" class="btn btn-primary btn-block">Save</button>
                         <a href="/HomeWidgets" class="btn btn-default btn-block">Cancel</a>
@@ -140,7 +160,7 @@
     {
         <div class="col-sm-4 col-md-4 col-lg-3 widget-preview">
             <div>
-                <span class="h4">Widget Preview</span> <a href="#" class="load-preview" data-url="/HomeWidgets/Embed/@Model.Id.ToString()"><i class="fa fa-refresh"></i></a>
+                <span class="h4">Widget Preview</span> <a href="#" class="load-preview" data-url="/HomeWidgets/Embed/@Model.Id.ToString()/?preview=true"><i class="fa fa-refresh"></i></a>
             </div>
             <div class="embed">
             </div>

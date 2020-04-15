@@ -35,10 +35,16 @@ namespace CmsData
 		private int _Order;
 		
 		private bool _System;
-		
-   		
-   		private EntitySet<DashboardWidgetRole> _DashboardWidgetRoles;
-		
+
+        private int _CachePolicy;
+
+        private int _CacheHours;
+
+        private DateTime? _CacheExpires;
+
+        private string _CachedContent;
+
+        private EntitySet<DashboardWidgetRole> _DashboardWidgetRoles;
     	
 		private EntityRef<Content> _HTMLContent;
 		
@@ -79,9 +85,21 @@ namespace CmsData
 		
 		partial void OnSystemChanging(bool value);
 		partial void OnSystemChanged();
-		
-    #endregion
-		public DashboardWidget()
+
+        partial void OnCachePolicyChanging(int value);
+        partial void OnCachePolicyChanged();
+
+        partial void OnCacheHoursChanging(int value);
+        partial void OnCacheHoursChanged();
+
+        partial void OnCacheExpiresChanging(DateTime? value);
+        partial void OnCacheExpiresChanged();
+
+        partial void OnCachedContentChanging(string value);
+        partial void OnCachedContentChanged();
+
+        #endregion
+        public DashboardWidget()
 		{
 			
 			this._DashboardWidgetRoles = new EntitySet<DashboardWidgetRole>(new Action< DashboardWidgetRole>(this.attach_DashboardWidgetRoles), new Action< DashboardWidgetRole>(this.detach_DashboardWidgetRoles)); 
@@ -306,12 +324,98 @@ namespace CmsData
 
 		}
 
-		
-    #endregion
-        
-    #region Foreign Key Tables
-   		
-   		[Association(Name="FK__Dashboard__Widge__63849411", Storage="_DashboardWidgetRoles", OtherKey="WidgetId")]
+
+        [Column(Name = "CachePolicy", UpdateCheck = UpdateCheck.Never, Storage = "_CachePolicy", DbType = "int NOT NULL")]
+        public int CachePolicy
+        {
+            get { return this._CachePolicy; }
+
+            set
+            {
+                if (this._CachePolicy != value)
+                {
+
+                    this.OnCachePolicyChanging(value);
+                    this.SendPropertyChanging();
+                    this._CachePolicy = value;
+                    this.SendPropertyChanged("CachePolicy");
+                    this.OnCachePolicyChanged();
+                }
+
+            }
+
+        }
+
+
+        [Column(Name = "CacheHours", UpdateCheck = UpdateCheck.Never, Storage = "_CacheHours", DbType = "int NOT NULL")]
+        public int CacheHours
+        {
+            get { return this._CacheHours; }
+
+            set
+            {
+                if (this._CacheHours != value)
+                {
+
+                    this.OnCacheHoursChanging(value);
+                    this.SendPropertyChanging();
+                    this._CacheHours = value;
+                    this.SendPropertyChanged("CacheHours");
+                    this.OnCacheHoursChanged();
+                }
+
+            }
+
+        }
+
+
+        [Column(Name = "CacheExpires", UpdateCheck = UpdateCheck.Never, Storage = "_CacheExpires", DbType = "datetime")]
+        public DateTime? CacheExpires
+        {
+            get { return this._CacheExpires; }
+
+            set
+            {
+                if (this._CacheExpires != value)
+                {
+
+                    this.OnCacheExpiresChanging(value);
+                    this.SendPropertyChanging();
+                    this._CacheExpires = value;
+                    this.SendPropertyChanged("CacheExpires");
+                    this.OnCacheExpiresChanged();
+                }
+
+            }
+
+        }
+
+
+        [Column(Name = "CachedContent", UpdateCheck = UpdateCheck.Never, Storage = "_CachedContent", DbType = "nvarchar")]
+        public string CachedContent
+        {
+            get { return this._CachedContent; }
+
+            set
+            {
+                if (this._CachedContent != value)
+                {
+
+                    this.OnCachedContentChanging(value);
+                    this.SendPropertyChanging();
+                    this._CachedContent = value;
+                    this.SendPropertyChanged("CachedContent");
+                    this.OnCachedContentChanged();
+                }
+
+            }
+
+        }
+        #endregion
+
+        #region Foreign Key Tables
+
+        [Association(Name="FK__Dashboard__Widge__63849411", Storage="_DashboardWidgetRoles", OtherKey="WidgetId")]
    		public EntitySet<DashboardWidgetRole> DashboardWidgetRoles
    		{
    		    get { return this._DashboardWidgetRoles; }

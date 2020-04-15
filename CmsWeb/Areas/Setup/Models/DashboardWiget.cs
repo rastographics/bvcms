@@ -26,6 +26,10 @@ namespace CmsWeb.Areas.Setup.Models
         public bool Enabled;
         public int Order;
         public bool System;
+        public int CachePolicy { get; set; }
+        public int CacheHours { get; set; }
+        public DateTime? CacheExpires;
+        public string CachedContent;
         
         public Content HTMLContent { get; set; }
         public Content PythonContent { get; set; }
@@ -95,7 +99,34 @@ namespace CmsWeb.Areas.Setup.Models
             return new SelectList(AllRoles, "RoleId", "RoleName");
         }
 
-        public void Fill(DashboardWidget widget)
+        public IEnumerable<SelectListItem> CacheTimes()
+        {
+            var options = new[]
+            {
+                new { Value = 0, Name = "Every page load" },
+                new { Value = 1, Name = "1 hour" },
+                new { Value = 2, Name = "2 hours" },
+                new { Value = 3, Name = "3 hours" },
+                new { Value = 4, Name = "4 hours" },
+                new { Value = 6, Name = "6 hours" },
+                new { Value = 12, Name = "12 hours" },
+                new { Value = 24, Name = "1 day" },
+                new { Value = 168, Name = "1 week" }
+            };
+            return new SelectList(options, "Value", "Name");
+        }
+
+        public IEnumerable<SelectListItem> CachePolicyOptions()
+        {
+            var options = new[]
+            {
+                new { Value = 1, Name = "Church Wide" },
+                new { Value = 2, Name = "User Specific" }
+            };
+            return new SelectList(options, "Value", "Name");
+        }
+
+        private void Fill(DashboardWidget widget)
         {
             Name = widget.Name;
             Description = widget.Description;
@@ -108,7 +139,15 @@ namespace CmsWeb.Areas.Setup.Models
             HTMLContent = widget.HTMLContent;
             PythonContent = widget.PythonContent;
             SQLContent = widget.SQLContent;
+            CachePolicy = widget.CachePolicy;
+            CacheHours = widget.CacheHours;
+            CacheExpires = widget.CacheExpires;
+            CachedContent = widget.CachedContent;
             Roles = widget.DashboardWidgetRoles.Select(r => r.RoleId).ToArray();
+            if (CacheHours == 0)
+            {
+                CachePolicy = CachePolicies.NeverCache.ToInt();
+            }
         }
 
         private void UpdateContent(DashboardWidget widget)
@@ -130,7 +169,6 @@ namespace CmsWeb.Areas.Setup.Models
                 // update existing widget
                 widget = CurrentDatabase.DashboardWidgets.Where(w => w.Id == Id).Single();
                 UpdateContent(widget);
-                SetRoles(Roles);
             }
             else
             {
@@ -141,8 +179,9 @@ namespace CmsWeb.Areas.Setup.Models
                 CurrentDatabase.DashboardWidgets.InsertOnSubmit(widget);
                 CurrentDatabase.SubmitChanges();
                 Id = widget.Id;
-                SetRoles(Roles);
             }
+            SetRoles(Roles);
+            SetCachePolicy(widget);
         }
 
         public static void UpdateWidgetOrder(CMSDataContext db, List<int> widgetIds)
@@ -161,7 +200,7 @@ namespace CmsWeb.Areas.Setup.Models
             db.SubmitChanges();
         }
 
-        public void SetRoles(int[] roleIds)
+        private void SetRoles(int[] roleIds)
         {
             var existing = CurrentDatabase.DashboardWidgetRoles.Where(r => r.WidgetId == Id);
             CurrentDatabase.DashboardWidgetRoles.DeleteAllOnSubmit(existing);
@@ -178,9 +217,29 @@ namespace CmsWeb.Areas.Setup.Models
             CurrentDatabase.SubmitChanges();
         }
 
-        public string Generate()
+        private void SetCachePolicy(DashboardWidget widget)
         {
-            // todo: caching
+            // flush the cache whenever a change is made
+            widget.CachedContent = null;
+            widget.CacheExpires = null;
+            if (CacheHours == 0)
+            {
+                widget.CachePolicy = CachePolicies.NeverCache.ToInt();
+            }
+            CurrentDatabase.SubmitChanges();
+        }
+
+        private string CacheForDB()
+        {
+            var widget = CurrentDatabase.DashboardWidgets.Where(w => w.Id == Id).Single();
+            widget.CacheExpires = DateTime.Now.AddHours(CacheHours);
+            widget.CachedContent = Generate();
+            CurrentDatabase.SubmitChanges();
+            return widget.CachedContent;
+        }
+
+        private string Generate()
+        {
             var m = new PythonScriptModel(CurrentDatabase);
             m.pythonModel.HttpMethod = "get";
             m.pythonModel.DictionaryAdd("HTMLContent", HTMLContent.Body);
@@ -195,6 +254,28 @@ namespace CmsWeb.Areas.Setup.Models
                 return m.RunPythonScript("print model.RenderTemplate(Data.HTMLContent)");
             }
             return m.RunPythonScript(PythonContent.Body);
+        }
+
+        public string Embed()
+        {
+            if (CachePolicy == CachePolicies.PerDB.ToInt())
+            {
+                if (CachedContent.IsNotNull() && DateTime.Now < CacheExpires)
+                {
+                    return CachedContent;
+                } else
+                {
+                    return CacheForDB();
+                }
+            }
+            return Generate();
+        }
+
+        public enum CachePolicies
+        {
+            NeverCache = 0,
+            PerDB = 1,
+            PerUser = 2     // cached client side only
         }
     }
 }

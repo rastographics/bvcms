@@ -10,7 +10,11 @@ BEGIN
         SQLContentId INT CONSTRAINT [FK_Dashboard_SQLContent] FOREIGN KEY REFERENCES [dbo].[Content]([Id]),
         Enabled BIT NOT NULL DEFAULT 1,
         [Order] INT NOT NULL DEFAULT 0,
-        System BIT NOT NULL DEFAULT 0
+        System BIT NOT NULL DEFAULT 0,
+        CachePolicy INT NOT NULL DEFAULT 0,
+        CacheHours INT NOT NULL DEFAULT 0,
+        CacheExpires DATETIME DEFAULT NULL,
+        CachedContent NVARCHAR(MAX) DEFAULT NULL
     )
 END
 GO

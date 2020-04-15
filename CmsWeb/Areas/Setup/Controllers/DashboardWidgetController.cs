@@ -90,12 +90,20 @@ namespace CmsWeb.Areas.Setup.Controllers
             return Content(widget.Name + " has been " + (widget.Enabled ? "enabled" : "disabled"));
         }
 
-        public ActionResult Embed(string id)
+        public ActionResult Embed(string id, bool preview = false)
         {
             try
             {
                 var widget = new DashboardWidgetModel(id, CurrentDatabase);
-                string html = widget.Generate();
+                if (preview == true)
+                {
+                    widget.CachePolicy = DashboardWidgetModel.CachePolicies.NeverCache.ToInt();
+                }
+                if (widget.CachePolicy != DashboardWidgetModel.CachePolicies.NeverCache.ToInt())
+                {
+                    Response.SetCacheMinutes(widget.CacheHours * 60);
+                }
+                string html = widget.Embed();
                 return Content(html, "text/html");
             }
             catch(Exception e)
