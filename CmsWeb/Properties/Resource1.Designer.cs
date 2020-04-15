@@ -19,7 +19,7 @@ namespace CmsWeb.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class Resource1 {
@@ -257,8 +257,7 @@ namespace CmsWeb.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &lt;h1&gt;Sample Church&lt;/h1&gt;
-        ///&lt;h2&gt;2000 Appling Rd. | Cordova | TN 38088-1210 | (901) 347-2000&lt;/h2&gt;.
+        ///   Looks up a localized string similar to &lt;h1&gt;{0}&lt;/h1&gt;&lt;h2&gt;{1} | {2}&lt;/h2&gt;.
         /// </summary>
         public static string ContributionStatementHeader {
             get {
@@ -268,10 +267,9 @@ namespace CmsWeb.Properties {
         
         /// <summary>
         ///   Looks up a localized string similar to &lt;p&gt;&lt;i&gt;
-        ///NOTE: No goods or services were provided to you by the church in connection with any contibution;
+        ///NOTE: No goods or services were provided to you by the church in connection with any contribution;
         ///any value received consisted entirely of intangible religious benefits.
-        ///Sample Church, FEIN # 1234, is a 501(c)(3) organization and
-        ///qualifies as a part of the Southern Baptist Convention&apos;s group tax exemption ruling number GEN #1674.
+        ///{0}, FEIN # 0000, is a 501(c)(3) organization and qualifies as a part of the Southern Baptist Convention&apos;s group tax exemption ruling number GEN #1674.
         ///&lt;/i&gt;&lt;/p&gt;
         ///&lt;p&gt;&lt;i&gt;
         ///Thank you for your faithfulness in the giving of your time, talents, and resources. Together we can share the love of Jesus with our city.
@@ -289,11 +287,14 @@ namespace CmsWeb.Properties {
         ///&lt;head&gt;
         ///    &lt;style type=&quot;text/css&quot;&gt;
         ///        * {
+        ///            font-family: Helvetica, Helv;
+        ///            font-size: 11pt;
         ///            margin: 0;
         ///            padding: 0;
+        ///            text-align: left;
         ///            text-indent: 0;
-        ///            font-family: Arial;
-        ///            font-size: 11pt;
+        ///            vertical-align: top;
+        ///            -webkit-border-horizontal-spacing: 0;
         ///        }
         ///
         ///        thead {
@@ -304,13 +305,7 @@ namespace CmsWeb.Properties {
         ///            display: table-header-group;
         ///        }
         ///
-        ///        table,
-        ///        tbody {
-        ///            page-break-inside: auto;
-        ///        }
-        ///
-        ///        tr {
-        ///            page-break-inside: avoid !imp [rest of string was truncated]&quot;;.
+        ///        table [rest of string was truncated]&quot;;.
         /// </summary>
         public static string ContributionStatementTemplate {
             get {
@@ -319,16 +314,24 @@ namespace CmsWeb.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &lt;!DOCTYPE html&gt;
-        ///&lt;html&gt;
-        ///&lt;head&gt;
-        ///    &lt;meta charset=&quot;utf-8&quot; /&gt;
-        ///    &lt;title&gt;&lt;/title&gt;
-        ///&lt;/head&gt;
-        ///&lt;body&gt;
-        ///
-        ///&lt;/body&gt;
-        ///&lt;/html&gt;.
+        ///   Looks up a localized string similar to &lt;script id=&quot;options&quot;&gt;
+        ///    {
+        ///        &quot;header&quot;: {
+        ///            &quot;rightText&quot;: &quot;&quot;,
+        ///            &quot;fontName&quot;: &quot;&quot;,
+        ///            &quot;fontSize&quot;: null,
+        ///            &quot;centerText&quot;: &quot;&quot;,
+        ///            &quot;contentSpacing&quot;: null,
+        ///            &quot;leftText&quot;: &quot;&quot;
+        ///            &quot;useLineSeparator&quot;: false
+        ///        },
+        ///        &quot;footer&quot;: {
+        ///            &quot;rightText&quot;: &quot;Page [page] of [topage]&quot;,
+        ///            &quot;fontName&quot;: &quot;Helvetica&quot;,
+        ///            &quot;fontSize&quot;: 10,
+        ///            &quot;centerText&quot;: &quot;&quot;,
+        ///            &quot;contentSpacing&quot;: null,
+        ///            &quot;le [rest of string was truncated]&quot;;.
         /// </summary>
         public static string ContributionStatementTemplateBody {
             get {
