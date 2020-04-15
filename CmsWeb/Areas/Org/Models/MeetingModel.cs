@@ -90,11 +90,13 @@ namespace CmsWeb.Areas.Org.Models
                 : RollsheetModel.RollListHighlight(meeting.MeetingId, meeting.OrganizationId, meeting.MeetingDate.Value, sorted, currmembers, highlight, CommitsOnly);
             return rm;
         }
+
         public IEnumerable<RollsheetModel.AttendInfo> VisitAttends(bool sorted = false)
         {
             var q = RollsheetModel.RollList(meeting.MeetingId, meeting.OrganizationId, meeting.MeetingDate.Value, sorted);
             return q.Where(vv => !vv.Member && vv.Attended);
         }
+
         public string AttendCreditType()
         {
             if (meeting.AttendCredit == null)
@@ -104,15 +106,18 @@ namespace CmsWeb.Areas.Org.Models
 
             return meeting.AttendCredit.Description;
         }
+
         public bool HasRegistered()
         {
             return meeting.Attends.Any(aa => aa.Commitment != null);
         }
+
         public static IEnumerable AttendCommitments()
         {
             var q = CmsData.Codes.AttendCommitmentCode.GetCodePairs();
             return q.ToDictionary(k => k.Key.ToString(), v => v.Value);
         }
+
         public class NamesInfo
         {
             public string Name => name + (age.HasValue ? $" ({Person.AgeDisplay(age, Pid)})" : "");
@@ -121,13 +126,15 @@ namespace CmsWeb.Areas.Org.Models
             public string Addr { get; set; }
             public int Pid { get; set; }
         }
+
         public static IEnumerable<NamesInfo> Names(string text, int limit)
         {
             string First, Last;
-            var qp = DbUtil.Db.People.AsQueryable();
+            var db = DbUtil.Db;
+            var qp = db.People.AsQueryable();
             if (Util2.OrgLeadersOnly)
             {
-                qp = DbUtil.Db.OrgLeadersOnlyTag2().People(DbUtil.Db);
+                qp = db.OrgLeadersOnlyTag2().People(db);
             }
 
             qp = from p in qp
