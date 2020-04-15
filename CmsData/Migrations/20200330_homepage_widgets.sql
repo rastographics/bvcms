@@ -784,3 +784,105 @@ INSERT INTO [dbo].[DashboardWidgetRoles]
            ,(select min(RoleId) from Roles where RoleName like 'Access'))
 END
 GO
+
+-- add birthdays widget
+IF (select count(*) from DashboardWidgets where [Name] like 'Birthdays' and [System] = 1) = 0
+BEGIN
+  INSERT INTO [dbo].[Content]
+           ([Name],[Title],
+		   [Body],
+		   [DateCreated],[TypeID],[ThumbID],[RoleID],[OwnerID],[CreatedBy])
+     VALUES
+           ('WidgetBirthdaysHTML','Edit Text Content',
+           '<div class="box">
+    <div class="box-title hidden-xs">
+        <h5><a href="/Tags?tag=TrackBirthdays">Birthdays</a></h5>
+    </div>
+    <a class="visible-xs-block" id="birthdays-collapse" data-toggle="collapse" href="#birthdays-section" aria-expanded="true" aria-controls="birthdays-section">
+        <div class="box-title">
+            <h5>
+                <i class="fa fa-chevron-circle-right"></i>&nbsp;&nbsp;Birthdays
+            </h5>
+            {{#ifGT results.Count 0}}
+                <div class="pull-right">
+                    <span class="badge badge-primary">{{results.Count}}</span>
+                </div>
+            {{/ifGT}}
+        </div>
+    </a>
+    <div class="collapse in" id="birthdays-section">
+        {{#ifGT results.Count 0}}
+            <ul class="list-group">
+                {{#each results}}
+                    <li class="list-group-item"><a href="/Person2/{{PeopleId}}" class="target">
+                        {{Name}} ({{Birthday}})
+                    </a></li>
+                {{/each}}
+            </ul>
+        {{else}}
+            <div class="box-content"></div>
+        {{/ifGT}}
+    </div>
+</div>',
+           GETDATE(),1,0,0,0,'admin')
+           
+INSERT INTO [dbo].[ContentKeyWords]
+           ([Id]
+           ,[Word])
+     VALUES
+           ((select SCOPE_IDENTITY())
+           ,'widget')
+
+INSERT INTO [dbo].[Content]
+           ([Name],[Title],
+		   [Body],
+		   [DateCreated],[TypeID],[ThumbID],[RoleID],[OwnerID],[CreatedBy])
+     VALUES
+           ('WidgetBirthdaysPython','Edit Python Script',
+           'def Get():
+    template = Data.HTMLContent
+    Data.results = model.BirthdayList()
+    print model.RenderTemplate(template)
+
+Get()',
+           GETDATE(),5,0,0,0,'admin')
+          
+INSERT INTO [dbo].[ContentKeyWords]
+           ([Id]
+           ,[Word])
+     VALUES
+           ((select SCOPE_IDENTITY())
+           ,'widget')
+           
+END
+GO
+
+IF (select count(*) from DashboardWidgets where [Name] like 'Birthdays' and [System] = 1) = 0
+BEGIN
+INSERT INTO [dbo].[DashboardWidgets]
+           ([Name]
+           ,[Description]
+           ,[HTMLContentId]
+           ,[PythonContentId]
+           ,[SQLContentId]
+           ,[Enabled]
+           ,[Order]
+           ,[System])
+     VALUES
+           ('Birthdays'
+           ,'Displays a list of upcoming birthdays for the current user'
+           ,(select max(Id) from Content where [Name] like 'WidgetBirthdaysHTML')
+           ,(select max(Id) from Content where [Name] like 'WidgetBirthdaysPython')
+           ,NULL
+           ,1
+           ,(select isnull(max([Order]), 0)+1 from DashboardWidgets)
+           ,1)
+
+INSERT INTO [dbo].[DashboardWidgetRoles]
+           ([WidgetId]
+           ,[RoleId])
+     VALUES
+           ((select SCOPE_IDENTITY())
+           ,(select min(RoleId) from Roles where RoleName like 'Access'))
+END
+GO

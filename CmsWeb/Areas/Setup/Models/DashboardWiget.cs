@@ -111,6 +111,17 @@ namespace CmsWeb.Areas.Setup.Models
             Roles = widget.DashboardWidgetRoles.Select(r => r.RoleId).ToArray();
         }
 
+        private void UpdateContent(DashboardWidget widget)
+        {
+            widget.CopyPropertiesFrom(this, excludefields: "HTMLContentId,PythonContentId,SQLContentId");
+            widget.HTMLContent = CurrentDatabase.Contents.Where(c => c.Id == HTMLContentId).SingleOrDefault();
+            widget.HTMLContentId = (HTMLContentId == 0) ? (int?)null : HTMLContentId;
+            widget.PythonContent = CurrentDatabase.Contents.Where(c => c.Id == PythonContentId).SingleOrDefault();
+            widget.PythonContentId = (PythonContentId == 0) ? (int?)null : PythonContentId;
+            widget.SQLContent = CurrentDatabase.Contents.Where(c => c.Id == SQLContentId).SingleOrDefault();
+            widget.SQLContentId = (SQLContentId == 0) ? (int?)null : SQLContentId;
+        }
+
         public void UpdateModel()
         {
             DashboardWidget widget;
@@ -118,31 +129,19 @@ namespace CmsWeb.Areas.Setup.Models
             {
                 // update existing widget
                 widget = CurrentDatabase.DashboardWidgets.Where(w => w.Id == Id).Single();
-                widget.CopyPropertiesFrom(this);
-                widget.HTMLContent = CurrentDatabase.Contents.Where(c => c.Id == HTMLContentId).SingleOrDefault();
-                widget.HTMLContentId = (HTMLContentId == 0) ? (int?)null : HTMLContentId;
-                widget.PythonContent = CurrentDatabase.Contents.Where(c => c.Id == PythonContentId).SingleOrDefault();
-                widget.PythonContentId = (PythonContentId == 0) ? (int?)null : PythonContentId;
-                widget.SQLContent = CurrentDatabase.Contents.Where(c => c.Id == SQLContentId).SingleOrDefault();
-                widget.SQLContentId = (SQLContentId == 0) ? (int?)null : SQLContentId;
+                UpdateContent(widget);
                 SetRoles(Roles);
             }
             else
             {
                 // create new widget
                 widget = new DashboardWidget();
-                widget.CopyPropertiesFrom(this);
-                if (Roles != null)
-                {
-                    foreach (int roleId in Roles)
-                    {
-                        widget.DashboardWidgetRoles.Add(new DashboardWidgetRole()
-                        {
-                            RoleId = roleId
-                        });
-                    }
-                }
+                UpdateContent(widget);
+                widget.Order = CurrentDatabase.DashboardWidgets.Max(w => w.Order) + 1;
                 CurrentDatabase.DashboardWidgets.InsertOnSubmit(widget);
+                CurrentDatabase.SubmitChanges();
+                Id = widget.Id;
+                SetRoles(Roles);
             }
         }
 
