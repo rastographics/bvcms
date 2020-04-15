@@ -46,11 +46,40 @@
     $('#tmed').text(tmed);
     $('#tlow').text(tlow);
 
-    $('#tpboys').text((tboys / ttotal * 100).toFixed(0) + '%');
-    $('#tpgirls').text((tgirls / ttotal * 100).toFixed(0) + '%');
-    $('#tphigh').text((thigh / ttotal * 100).toFixed(0) + '%');
-    $('#tpmed').text((tmed / ttotal * 100).toFixed(0) + '%');
-    $('#tplow').text((tlow / ttotal * 100).toFixed(0) + '%');
+    var totboys = (tboys / ttotal * 100).toFixed(0);
+    if (isNaN(totboys)) {
+        $('#tpboys').text('0%');
+    } else {
+        $('#tpboys').text(totboys + '%');
+    }
+
+    var totgirls = (tgirls / ttotal * 100).toFixed(0);
+    if (isNaN(totgirls)) {
+        $('#tpgirls').text('0%');
+    } else {
+        $('#tpgirls').text(totgirls + '%');
+    }
+
+    var tothigh = (thigh / ttotal * 100).toFixed(0);
+    if (isNaN(tothigh)) {
+        $('#tphigh').text('0%');
+    } else {
+        $('#tphigh').text(tothigh + '%');
+    }
+
+    var totmed = (tmed / ttotal * 100).toFixed(0);
+    if (isNaN(totmed)) {
+        $('#tpmed').text('0%');
+    } else {
+        $('#tpmed').text(totmed + '%');
+    }
+
+    var totlow = (tlow / ttotal * 100).toFixed(0);
+    if (isNaN(totlow)) {
+        $('#tplow').text('0%');
+    } else {
+        $('#tplow').text(totlow + '%');
+    }
 
     $.RefreshPage = function () {
         var q = $('#form').serialize();

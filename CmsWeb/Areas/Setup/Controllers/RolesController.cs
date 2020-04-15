@@ -36,7 +36,7 @@ namespace CmsWeb.Areas.Setup.Controllers
             var role = CurrentDatabase.Roles.SingleOrDefault(m => m.RoleId == id.ToInt());
             if (role == null)
             {
-                TempData["error"] = "Invalid role";
+                Util.TempError = "Invalid role";
                 return Content("/Error/");
             }
             else

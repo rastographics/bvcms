@@ -52,8 +52,8 @@ Vue.component("search-add", {
             });
 
         Mousetrap.bind("/",
-            function() {
-                $("#search-box").modal();
+            function () {
+                $("#search-box-search-person").modal();
                 return false;
             });
     },

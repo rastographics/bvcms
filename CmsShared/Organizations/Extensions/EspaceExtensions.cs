@@ -29,7 +29,7 @@ namespace CmsShared.Organizations.Extensions
                 {
                     var occurrenceId = occurrence.OccurrenceId.ToString();
                     var meeting = db.MeetingExtras
-                        .Where(m => m.Meeting.OrganizationId == org.OrganizationId)
+                        .Where(m => m.Meeting.OrganizationId == id)
                         .Where(m => m.Field == extraValueField && m.Data == occurrenceId)
                         .Select(m => m.Meeting).FirstOrDefault();
                     if (meeting == null)
@@ -43,7 +43,7 @@ namespace CmsShared.Organizations.Extensions
 
                 var current = list.Select(o => o.OccurrenceId.ToString());
                 var meetingsToDelete = db.MeetingExtras
-                    .Where(e => e.Meeting.OrganizationId == org.OrganizationId)
+                    .Where(e => e.Meeting.OrganizationId == id)
                     .Where(e => e.Field == extraValueField && e.Data.Length > 0)
                     .Where(e => !current.Contains(e.Data))
                     .Where(e => e.Meeting.MeetingDate > DateTime.Now)
