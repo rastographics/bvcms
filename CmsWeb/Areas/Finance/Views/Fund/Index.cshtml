@@ -1,8 +1,10 @@
-﻿@model IEnumerable<CmsData.ContributionFund>
+﻿@using UtilityExtensions
+@model IEnumerable<CmsData.ContributionFund>
 @{
     Layout = ViewExtensions2.TouchPointLayout();
     ViewBag.Title = "Funds";
     ViewBag.PageHeader = "Funds";
+    var message = Util.TempSuccessMessage;
 }
 @section head{
     @Fingerprint.Css("/Content/touchpoint/lib/bootstrap-editable/css/bootstrap-editable.css")
@@ -10,11 +12,11 @@
 
 <div class="row">
     <div class="col-md-9">
-        @if (TempData["SuccessMessage"] != null)
+        @if (message != null)
         {
             <div class="alert alert-success alert-dismissible">
                 <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                <strong>Success!</strong>&nbsp;&nbsp;@TempData["SuccessMessage"]
+                <strong>Success!</strong>&nbsp;&nbsp;@message
             </div>
         }
         <div id="errormessage" class="alert alert-danger" style="display: none;"></div>

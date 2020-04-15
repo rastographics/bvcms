@@ -54,6 +54,16 @@ namespace UtilityExtensions
             return value ?? defaultValue;
         }
 
+        public static string GetFromSessionTemp(string name, string defaultValue = null)
+        {
+            var value = GetFromSession<string>(name);
+            if (value.HasValue())
+            {
+                SetValueInSession(name, null);
+            }
+            return value;
+        }
+
         public static bool GetFromSession(string name, bool defaultValue = false)
         {
             var strValue = GetFromSession<string>(name);
@@ -195,6 +205,55 @@ namespace UtilityExtensions
         {
             get => GetFromSession(STR_ShowCheckImages, false);
             set => SetValueInSession(STR_ShowCheckImages, value);
+        }
+
+        private const string STR_TempAutorun = "TempAutorun";
+        public static bool TempAutorun
+        {
+            get => GetFromSessionTemp(STR_TempAutorun).ToBool();
+            set => SetValueInSession(STR_TempAutorun, value.ToString());
+        }
+
+        private const string STR_TempCodeList = "TempCodeList";
+        public static string TempCodeList
+        {
+            get => GetFromSessionTemp(STR_TempCodeList);
+            set => SetValueInSession(STR_TempCodeList, value?.ToString());
+        }
+
+        private const string STR_TempContactEdit = "TempContactEdit";
+        public static bool TempContactEdit
+        {
+            get => GetFromSessionTemp(STR_TempContactEdit).ToBool();
+            set => SetValueInSession(STR_TempContactEdit, value.ToString());
+        }
+
+        private const string STR_TempError = "TempError";
+        public static string TempError
+        {
+            get => GetFromSessionTemp(STR_TempError);
+            set => SetValueInSession(STR_TempError, value?.ToString());
+        }
+
+        private const string STR_TempPeopleId = "TempPeopleId";
+        public static int? TempPeopleId
+        {
+            get => GetFromSessionTemp(STR_TempPeopleId).ToInt2();
+            set => SetValueInSession(STR_TempPeopleId, value.ToString());
+        }
+
+        private const string STR_TempSetRole = "TempSetRole";
+        public static string TempSetRole
+        {
+            get => GetFromSessionTemp(STR_TempSetRole);
+            set => SetValueInSession(STR_TempSetRole, value?.ToString());
+        }
+
+        private const string STR_TempSuccessMessage = "TempSuccessMessage";
+        public static string TempSuccessMessage
+        {
+            get => GetFromSessionTemp(STR_TempSuccessMessage);
+            set => SetValueInSession(STR_TempSuccessMessage, value?.ToString());
         }
 
         private const string STR_TestNoFinance = "TestNoFinance";
