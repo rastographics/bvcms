@@ -154,6 +154,7 @@
     <Compile Include="Areas\Setup\Controllers\DivisionControllerTests.cs" />
     <Compile Include="Code\PledgesHelperTests.cs" />
     <Compile Include="Controllers\Api\CustomControllerTests.cs" />
+    <Compile Include="Controllers\HomeControllerTests.cs" />
     <Compile Include="Models\IDbBinderTests.cs" />
     <Compile Include="Properties\CMSWebTestsResources.Designer.cs">
       <AutoGen>True</AutoGen>

@@ -176,6 +176,19 @@
         return v;
     };
 
+    $.DateRangeValid = function (df, dt, displayError)
+    {
+        var d1 = new Date(df);
+        var d2 = new Date(dt);
+        var v = true;
+        if (d1 > d2) {
+            if (displayError == true)
+                swal("Error!", "The From date must be less than the To date.", "error");
+            v = false;
+        }
+        return v;
+    };
+
     $.SortableDate = function (s) {
         var dt;
         if ($.dateFormat.startsWith('d'))
