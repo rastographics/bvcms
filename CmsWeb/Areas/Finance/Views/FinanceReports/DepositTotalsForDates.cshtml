@@ -55,6 +55,8 @@
                     return;
                 if (!$.DateValid($("#Dt2").val(), true))
                     return;
+                if (!$.DateRangeValid($("#Dt1").val(), $("#Dt2").val(), true))
+                    return;
 
                 $.block();
                 // set hidden print form elements

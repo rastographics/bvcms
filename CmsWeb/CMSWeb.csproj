@@ -539,14 +539,16 @@
     </Compile>
     <Compile Include="Areas\Finance\Models\BatchImport\BatchImportContributions.cs" />
     <Compile Include="Areas\Finance\Models\Statements\ContributionStatementsExtract.cs" />
-    <Compile Include="Areas\Finance\Models\Statements\CustomStatements.cs" />
     <Compile Include="Areas\Finance\Models\DonorTotalsOptions.cs" />
     <Compile Include="Areas\Finance\Models\FundTotalInfo.cs" />
     <Compile Include="Areas\Finance\Models\GLExportResult.cs" />
     <Compile Include="Areas\Finance\Models\DepositsModel.cs" />
     <Compile Include="Areas\Finance\Models\DepositTotalsModel.cs" />
     <Compile Include="Areas\Finance\Models\StatementSpecification.cs" />
+    <Compile Include="Areas\Finance\Models\Statements\FooterOptions.cs" />
+    <Compile Include="Areas\Finance\Models\Statements\HeaderOptions.cs" />
     <Compile Include="Areas\Finance\Models\Statements\ListOfNormalContributions.cs" />
+    <Compile Include="Areas\Finance\Models\Statements\MarginOptions.cs" />
     <Compile Include="Areas\Finance\Models\Statements\StatementContext.cs" />
     <Compile Include="Areas\Finance\Models\Statements\StatementOptions.cs" />
     <Compile Include="Areas\Finance\Models\RemoteDepositCapture.cs" />

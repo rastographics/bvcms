@@ -868,7 +868,7 @@ This search uses multiple steps which cannot be duplicated in a single query.
             {
                 tag = new Tag
                 {
-                    Name = tagname?.Replace('!', '*') ?? Util.SessionId, // if by chance, you end up here and tagname is empty... use the session id... 
+                    Name = tagname?.Replace('!', '*') ?? Guid.NewGuid().ToString(),
                     PeopleId = ownerId,
                     TypeId = tagtypeid,
                     Created = Util.Now
