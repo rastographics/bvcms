@@ -9,8 +9,25 @@ using Xunit;
 namespace CmsDataTests
 {
     [Collection(Collections.Database)]
-    public class OrganizationTests : IDisposable
+    public class OrganizationTests : DatabaseTestBase
     {
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         [Fact]
         public void Should_CopySettings2()
         {
@@ -34,10 +51,6 @@ namespace CmsDataTests
             org2.BirthDayStart.ShouldBe(org.BirthDayStart);
             org2.BirthDayEnd.ShouldBe(org.BirthDayEnd);
             org2.RegSetting.ShouldBe(org.RegSetting);
-        }
-
-        public void Dispose()
-        {
         }
     }
 }
