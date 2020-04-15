@@ -5,15 +5,16 @@
     ViewBag.PageHeader = "Registration Settings";
     ViewBag.PageSubHeader = $"<a href=\"/Org/{ViewData["OrganizationId"]}\">{ViewData["orgname"]}</a>";
     Layout = ViewExtensions2.TouchPointLayout();
+    var error = Util.TempError;
 }
 <div class="row">
   <div class="col-md-9">
     <div class="box box-responsive">
       <div class="box-content">
-        @if (TempData["error"] != null)
+        @if (error != null)
         {
             <div class="alert alert-danger">
-              @TempData["error"]
+              @error
             </div>
         }
         <form action="/RegSettings/Update/@ViewData["OrganizationId"]" method="post">

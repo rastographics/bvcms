@@ -868,7 +868,7 @@ This search uses multiple steps which cannot be duplicated in a single query.
             {
                 tag = new Tag
                 {
-                    Name = tagname?.Replace('!', '*') ?? Util.SessionId, // if by chance, you end up here and tagname is empty... use the session id... 
+                    Name = tagname?.Replace('!', '*') ?? Guid.NewGuid().ToString(),
                     PeopleId = ownerId,
                     TypeId = tagtypeid,
                     Created = Util.Now
@@ -1857,6 +1857,75 @@ This search uses multiple steps which cannot be duplicated in a single query.
         public ContributionFund FetchOrCreateFund(string Description)
         {
             return FetchOrCreateFund(0, Description);
+        }
+
+        public Transaction CreateTransaction(Transaction t, decimal? amount, decimal? amtdue, string transactionGateway)
+        {
+            bool isDuplicateTransaction = false;
+            int? originalId = null;
+            TimeSpan? timeDifference = null;
+
+            if (t.Id != 0)
+                originalId = t.Id;
+
+            var posDuplicatedTran = Transactions
+                .Where(x =>
+                x.Name == t.Name &&
+                x.First == t.First &&
+                x.Last == t.Last &&
+                x.Amtdue == amtdue &&
+                x.Amt == amount &&
+                x.Emails == Util.FirstAddress(t.Emails).Address &&
+                x.Testing == t.Testing &&
+                x.Description == t.Description &&
+                x.OrgId == t.OrgId &&
+                x.TransactionGateway == transactionGateway &&
+                x.PaymentType == t.PaymentType && (t.PaymentType == "C" ? x.LastFourCC == t.LastFourCC : x.LastFourACH == t.LastFourACH))
+                .OrderByDescending(x => x.TransactionDate)
+                .FirstOrDefault();
+
+            if (posDuplicatedTran != null)            
+                timeDifference = DateTime.Now - posDuplicatedTran.TransactionDate;                            
+
+            if (timeDifference.HasValue && timeDifference.Value.TotalMinutes < 19)
+                isDuplicateTransaction = true;
+
+            if (isDuplicateTransaction)
+                return null;
+
+            var ti = new Transaction
+            {
+                Name = t.Name,
+                First = t.First,
+                MiddleInitial = t.MiddleInitial,
+                Last = t.Last,
+                Suffix = t.Suffix,
+                Donate = t.Donate,
+                Amtdue = amtdue,
+                Amt = amount,
+                Emails = Util.FirstAddress(t.Emails).Address,
+                Testing = t.Testing,
+                Description = t.Description,
+                OrgId = t.OrgId,
+                Url = t.Url,
+                Address = t.Address,
+                TransactionGateway = transactionGateway,
+                City = t.City,
+                State = t.State,
+                Zip = t.Zip,
+                DatumId = t.DatumId,
+                Phone = t.Phone,
+                OriginalId = t.OriginalId ?? originalId,
+                Financeonly = t.Financeonly,
+                TransactionDate = Util.Now,
+                PaymentType = t.PaymentType,
+                LastFourCC = t.LastFourCC,
+                LastFourACH = t.LastFourACH
+            };
+            Transactions.InsertOnSubmit(ti);
+            SubmitChanges();
+
+            return ti;
         }
 
         public EntryPoint FetchOrCreateEntryPoint(string type)

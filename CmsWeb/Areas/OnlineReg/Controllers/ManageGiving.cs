@@ -15,7 +15,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             if (!id.HasValue())
                 return Content("bad link");
             ManagePledgesModel m = null;
-            var td = TempData["PeopleId"];
+            var td = Util.TempPeopleId;
             if (td != null)
                 m = new ManagePledgesModel(td.ToInt(), id.ToInt());
             else
@@ -49,7 +49,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             }
             var orgId = id;
             ManageGivingModel m = null;
-            var td = TempData["PeopleId"];
+            var td = Util.TempPeopleId;
 
             SetCampusAndDefaultFunds(campus, funds, orgId.ToInt());
 
