@@ -241,6 +241,24 @@ $(function () {
         return false;
     });
 
+    $("form.noRecaptcha").submit(function () {
+        if (!agreeterms) {
+            alert("must agree to terms");
+            return false;
+        }
+        var submitit = $("#submitit", this);
+        if (!submitit.val()) {
+            return false;
+        }
+
+        var isFormValid = $(this).valid();
+        if (isFormValid) {
+            submitit.attr("disabled", "disabled");
+            return true;
+        }
+        return false;
+    });
+
     var IAgreeButton = $('#IAgreeButton');
     var IAgreeInput = $('#IAgreeInput');
     var signature = $('#TermsSignature');
