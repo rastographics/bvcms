@@ -1,4 +1,4 @@
-CREATE PROCEDURE [dbo].[NextSecurityCode]
+ALTER PROCEDURE [dbo].[NextSecurityCode]
 AS
 BEGIN
 	SET NOCOUNT ON;
