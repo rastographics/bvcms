@@ -15,7 +15,6 @@ BEGIN
 								   ELSE 0 END)
 	IF (@needcodes = 1)
 	BEGIN
-		EXEC dbo.SetupNumbers
 		DELETE dbo.SecurityCodes WHERE Id IS NOT NULL
 		IF(@4code = 1)
 			INSERT dbo.SecurityCodes ( Id, Code, DateUsed )

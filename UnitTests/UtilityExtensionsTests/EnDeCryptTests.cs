@@ -1,11 +1,13 @@
-﻿using System;
+﻿using SharedTestFixtures;
+using Shouldly;
+using System;
 using System.Linq;
 using UtilityExtensions;
 using Xunit;
 
 namespace UtilityExtensionsTests
 {
-    [Collection("EnDeCrypt Tests")]
+    [Collection(Collections.Miscellaneous)]
     public class EnDeCryptTests
     {
         [Fact]
@@ -15,7 +17,10 @@ namespace UtilityExtensionsTests
             string sEncrypted = Util.Encrypt(randomString);
             string sDecrypted = Util.Decrypt(sEncrypted);
 
-            Assert.Equal(randomString, sDecrypted);
+            randomString.ShouldBe(sDecrypted);
+
+
+            Util.Encrypt("").ShouldBe("");
         }
 
         private static Random random = new Random();

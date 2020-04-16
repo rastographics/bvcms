@@ -202,7 +202,7 @@ namespace CmsWeb.Areas.Search.Models
         {
             if (string.IsNullOrEmpty(tagname))
             {
-                tagname = Util.SessionId; // not specifying an explicit name, so use the session id as a default
+                tagname = CurrentDatabase.CurrentSessionId; // not specifying an explicit name, so use the session id as a default
             }
             var tag = Db.FetchOrCreateTag(tagname, CurrentDatabase.UserPeopleId, DbUtil.TagTypeId_Personal);
             return TagAll(tag);

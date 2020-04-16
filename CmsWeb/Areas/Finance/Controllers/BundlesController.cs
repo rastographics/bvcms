@@ -48,8 +48,8 @@ namespace CmsWeb.Areas.Finance.Controllers
 
             CurrentDatabase.BundleHeaders.InsertOnSubmit(b);
             CurrentDatabase.SubmitChanges();
-            TempData["createbundle"] = true;
-            return Redirect("/Bundle/" + b.BundleHeaderId);
+
+            return Redirect($"/Bundle/{b.BundleHeaderId}?create=true");
         }
     }
 }

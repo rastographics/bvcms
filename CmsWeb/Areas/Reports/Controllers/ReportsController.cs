@@ -422,7 +422,7 @@ namespace CmsWeb.Areas.Reports.Controllers
         public ActionResult MeetingsToQuery(string type, MeetingsModel m)
         {
             var r = m.ConvertToSearch(type);
-            TempData["autorun"] = true;
+            Util.TempAutorun = true;
             return Redirect(r);
         }
 
