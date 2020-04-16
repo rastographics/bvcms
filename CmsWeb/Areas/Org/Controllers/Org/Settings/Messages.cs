@@ -3,7 +3,6 @@ using System.Linq;
 using System.Web.Mvc;
 using CmsData;
 using CmsData.API;
-using CmsData.Codes;
 using CmsWeb.Areas.Org.Models;
 using CmsWeb.Lifecycle;
 using UtilityExtensions;
@@ -62,7 +61,7 @@ namespace CmsWeb.Areas.Org.Controllers
         public ActionResult NotifyIds(int id, string field)
         {
             Response.NoCache();
-            var t = CurrentDatabase.FetchOrCreateTag(Util.SessionId, CurrentDatabase.UserPeopleId, DbUtil.TagTypeId_AddSelected);
+            var t = CurrentDatabase.FetchOrCreateTag(CurrentDatabase.CurrentSessionId, CurrentDatabase.UserPeopleId, DbUtil.TagTypeId_AddSelected);
             CurrentDatabase.TagPeople.DeleteAllOnSubmit(t.PersonTags);
             CurrentDatabase.SetCurrentOrgId(id);
             CurrentDatabase.SubmitChanges();
@@ -87,7 +86,7 @@ namespace CmsWeb.Areas.Org.Controllers
         [HttpPost]
         public ActionResult UpdateNotifyIds(int id, int topid, string field)
         {
-            var t = CurrentDatabase.FetchOrCreateTag(Util.SessionId, CurrentDatabase.UserPeopleId, DbUtil.TagTypeId_AddSelected);
+            var t = CurrentDatabase.FetchOrCreateTag(CurrentDatabase.CurrentSessionId, CurrentDatabase.UserPeopleId, DbUtil.TagTypeId_AddSelected);
             var selected_pids = (from p in t.People(CurrentDatabase)
                                  orderby p.PeopleId == topid ? "0" : "1"
                                  select p.PeopleId).ToArray();
