@@ -1,6 +1,5 @@
 ﻿using CmsData;
 using CmsData.Codes;
-using CmsData.Registration;
 using CmsData.View;
 using CmsWeb.Areas.Main.Models;
 using CmsWeb.Properties;
@@ -202,7 +201,7 @@ Sorry, I cannot be there.</a>";
         public void SendEmails(int? additional)
         {
             var db = DbUtil.Db;
-            var tag = db.FetchOrCreateTag(Util.SessionId, db.UserPeopleId, db.NextTagId);
+            var tag = db.FetchOrCreateTag(db.CurrentSessionId, db.UserPeopleId, db.NextTagId);
             db.ExecuteCommand("delete TagPerson where Id = {0}", tag.Id);
             db.TagAll(pids, tag);
             var dt = new DateTime(ticks);

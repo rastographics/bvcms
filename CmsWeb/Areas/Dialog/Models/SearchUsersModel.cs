@@ -77,7 +77,7 @@ namespace CmsWeb.Areas.Dialog.Models
             if (!singlemode)
             {
                 var db = DbUtil.Db;
-                var t = db.FetchOrCreateTag(Util.SessionId, db.UserPeopleId, DbUtil.TagTypeId_AddSelected);
+                var t = db.FetchOrCreateTag(db.CurrentSessionId, db.UserPeopleId, DbUtil.TagTypeId_AddSelected);
                 n = t.People(db).Count();
                 list = CheckedPeopleList(
                         from p in t.People(db)
