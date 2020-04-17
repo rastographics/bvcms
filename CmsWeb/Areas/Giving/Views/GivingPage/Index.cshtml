@@ -36,12 +36,12 @@
                     <table class="table table-striped">
                         <thead>
                             <tr>
-                                <th v:onclick="sort('codiceCliente')">Enabled</th>
-                                <th v:onclick="sort('ragioneSociale')">Page Name</th>
-                                <th v:onclick="sort('provincia')">Skin</th>
-                                <th v:onclick="sort('indirizzo')">Page Type</th>
-                                <th v:onclick="sort('provincia')">Default Fund</th>
-                                <th v:onclick="sort('provincia')">Action</th>
+                                <th><a v:onclick="sort('codiceCliente')" style="cursor:pointer">Enabled</a></th>
+                                <th><a v:onclick="sort('ragioneSociale')" style="cursor:pointer">Page Name</a></th>
+                                <th><a v:onclick="sort('provincia')" style="cursor:pointer">Skin</a></th>
+                                <th><a v:onclick="sort('indirizzo')" style="cursor:pointer">Page Type</a></th>
+                                <th><a v:onclick="sort('provincia')" style="cursor:pointer">Default Fund</a></th>
+                                <th><a v:onclick="sort('provincia')" style="cursor:pointer">Action</a></th>
                             </tr>
                         </thead>
                         <tbody id="giving-page-table-body">
@@ -55,7 +55,6 @@
                                     <a v-bind:href="'/GivingPage/Edit?givingPageId=' + items.GivingPageId" class="btn btn-sm btn-default">
                                         <i class="fa fa-pencil"></i> Edit
                                     </a>
-                                    {{ items.GivingPageId }}
                                 </td>
                             </tr>
                         </tbody>
