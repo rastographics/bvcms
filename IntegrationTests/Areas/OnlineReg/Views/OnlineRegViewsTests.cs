@@ -32,7 +32,7 @@ namespace IntegrationTests.Areas.OnlineReg.Views
             FinanceTestUtils.CreateMockPaymentProcessor(db, PaymentProcessTypes.OnlineRegistration, GatewayTypes.Transnational);
             Login();
 
-            CreateOrgWithFee();
+            OrgId = CreateOrgWithFee();
 
             SettingUtils.UpdateSetting("UseRecaptcha", "false");
 
@@ -98,7 +98,7 @@ namespace IntegrationTests.Areas.OnlineReg.Views
             FinanceTestUtils.CreateMockPaymentProcessor(db, PaymentProcessTypes.OnlineRegistration, GatewayTypes.Transnational);
             Login();
 
-            CreateOrgWithFee();
+            OrgId = CreateOrgWithFee();
 
             SettingUtils.UpdateSetting("UseRecaptcha", "true");
             SettingUtils.UpdateSetting("googleReCaptchaSiteKey", RandomString());
@@ -143,39 +143,39 @@ namespace IntegrationTests.Areas.OnlineReg.Views
             element.ShouldNotBeNull();
         }
 
-        private void CreateOrgWithFee()
-        {
-            var requestManager = FakeRequestManager.Create();
-            var controller = new CmsWeb.Areas.OnlineReg.Controllers.OnlineRegController(requestManager);
-            var routeDataValues = new Dictionary<string, string> { { "controller", "OnlineReg" } };
-            controller.ControllerContext = ControllerTestUtils.FakeControllerContext(controller, routeDataValues);
+        //private void CreateOrgWithFee()
+        //{
+        //    var requestManager = FakeRequestManager.Create();
+        //    var controller = new CmsWeb.Areas.OnlineReg.Controllers.OnlineRegController(requestManager);
+        //    var routeDataValues = new Dictionary<string, string> { { "controller", "OnlineReg" } };
+        //    controller.ControllerContext = ControllerTestUtils.FakeControllerContext(controller, routeDataValues);
 
-            var FakeOrg = FakeOrganizationUtils.MakeFakeOrganization(requestManager, new Organization()
-            {
-                OrganizationName = "MockName",
-                RegistrationTitle = "MockTitle",
-                Location = "MockLocation",
-                RegistrationTypeId = RegistrationTypeCode.JoinOrganization
-            });
+        //    var FakeOrg = FakeOrganizationUtils.MakeFakeOrganization(requestManager, new Organization()
+        //    {
+        //        OrganizationName = "MockName",
+        //        RegistrationTitle = "MockTitle",
+        //        Location = "MockLocation",
+        //        RegistrationTypeId = RegistrationTypeCode.JoinOrganization
+        //    });
 
-            OrgId = FakeOrg.org.OrganizationId;
+        //    OrgId = FakeOrg.org.OrganizationId;
 
-            Open($"{rootUrl}Org/{OrgId}#tab-Registrations-tab");
-            WaitForElementToDisappear(loadingUI, maxWaitTimeInSeconds: 10);
+        //    Open($"{rootUrl}Org/{OrgId}#tab-Registrations-tab");
+        //    WaitForElementToDisappear(loadingUI, maxWaitTimeInSeconds: 10);
 
-            ScrollTo(css: "#Registration > form > h4:nth-child(3)");
-            Find(css: "#Fees-tab > a").Click();
-            WaitForElementToDisappear(loadingUI, maxWaitTimeInSeconds: 10);
+        //    ScrollTo(css: "#Registration > form > h4:nth-child(3)");
+        //    Find(css: "#Fees-tab > a").Click();
+        //    WaitForElementToDisappear(loadingUI, maxWaitTimeInSeconds: 10);
 
-            Find(css: "#Fees .row .edit").Click();
-            WaitForElementToDisappear(loadingUI, maxWaitTimeInSeconds: 10);
+        //    Find(css: "#Fees .row .edit").Click();
+        //    WaitForElementToDisappear(loadingUI, maxWaitTimeInSeconds: 10);
 
-            ScrollTo(id: "Fee");
-            Find(id: "Fee").Clear();
-            Find(id: "Fee").SendKeys(RandomNumber(1,1000).ToString());
-            Find(css: ".pull-right:nth-child(1) > .validate").Click();
-            Wait(5);
-        }
+        //    ScrollTo(id: "Fee");
+        //    Find(id: "Fee").Clear();
+        //    Find(id: "Fee").SendKeys(RandomNumber(1,1000).ToString());
+        //    Find(css: ".pull-right:nth-child(1) > .validate").Click();
+        //    Wait(5);
+        //}
 
         public override void Dispose()
         {

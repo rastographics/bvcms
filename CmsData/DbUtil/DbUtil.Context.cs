@@ -2133,12 +2133,12 @@ This search uses multiple steps which cannot be duplicated in a single query.
             ExecuteCommand("dbo.DeleteOldQueryBitTags");
         }
 
-        public void RetrieveBatchData(string startdt = null, string enddt = null)  // code has mostly been moved over from CmsWeb.Models.TransactionsModel.cs with some cleanup
-        {
+        public void RetrieveBatchData(string startdt = null, string enddt = null, bool testing = false)  // code has mostly been moved over from CmsWeb.Models.TransactionsModel.cs with some cleanup
+        {            
             IGateway[] gateways = {
-                Gateway(false, null, PaymentProcessTypes.OneTimeGiving, false),
-                Gateway(false, null, PaymentProcessTypes.OnlineRegistration, false),
-                Gateway(false, null, PaymentProcessTypes.RecurringGiving, false)
+                Gateway(testing, null, PaymentProcessTypes.OneTimeGiving, false),
+                Gateway(testing, null, PaymentProcessTypes.OnlineRegistration, false),
+                Gateway(testing, null, PaymentProcessTypes.RecurringGiving, false)
             };
 
             DateTime? dateFrom = (startdt != null) ? (DateTime?)DateTime.Parse(startdt) : null;
@@ -2166,7 +2166,7 @@ This search uses multiple steps which cannot be duplicated in a single query.
                                    where t.TransactionDate <= rangeTo
                                    where t.Settled == null
                                    where t.Moneytran == true
-                                   select t.TransactionId).ToList();
+                                   select t.TransactionId.Replace("(testing)","")).ToList();
                     gateway.CheckBatchSettlements(tranids);
                 }
                 else
