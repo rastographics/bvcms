@@ -161,7 +161,7 @@ namespace CmsWeb.Areas.Main.Controllers
 
         public ActionResult SharedTags()
         {
-            var t = CurrentDatabase.FetchOrCreateTag(Util.SessionId, CurrentDatabase.UserPeopleId, DbUtil.TagTypeId_AddSelected);
+            var t = CurrentDatabase.FetchOrCreateTag(CurrentDatabase.CurrentSessionId, CurrentDatabase.UserPeopleId, DbUtil.TagTypeId_AddSelected);
             CurrentDatabase.TagPeople.DeleteAllOnSubmit(t.PersonTags);
             CurrentDatabase.SubmitChanges();
             var tag = CurrentDatabase.TagCurrent();
@@ -177,7 +177,7 @@ namespace CmsWeb.Areas.Main.Controllers
         [HttpPost]
         public ActionResult UpdateShared()
         {
-            var t = CurrentDatabase.FetchOrCreateTag(Util.SessionId, CurrentDatabase.UserPeopleId, DbUtil.TagTypeId_AddSelected);
+            var t = CurrentDatabase.FetchOrCreateTag(CurrentDatabase.CurrentSessionId, CurrentDatabase.UserPeopleId, DbUtil.TagTypeId_AddSelected);
             var tag = CurrentDatabase.TagCurrent();
             var selected_pids = (from p in t.People(CurrentDatabase)
                                  where p.PeopleId != CurrentDatabase.UserPeopleId

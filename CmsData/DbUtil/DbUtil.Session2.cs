@@ -1,5 +1,4 @@
 using Dapper;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -36,7 +35,7 @@ namespace CmsData
         public int? UserPeopleId => CurrentUser?.PeopleId;
 
         public int UserId1 => UserId == 0 ? 1 : UserId;
-        public string CurrentSessionId => HttpContextFactory.Current?.Session?.SessionID;
+        public string CurrentSessionId => HttpContextFactory.Current?.Session?.SessionID ?? Guid.NewGuid().ToString();
 
         public string CmsHost
         {
