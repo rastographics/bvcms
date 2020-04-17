@@ -171,6 +171,12 @@ namespace CmsWeb.Areas.Finance.Controllers
             }
             else
             {
+                if (String.IsNullOrWhiteSpace(text))
+                {
+                    ModelState.AddModelError("textarea", "Text is required when no file is uploaded.");
+                    return View("Batch");
+                }
+
                 s = text;
             }
 

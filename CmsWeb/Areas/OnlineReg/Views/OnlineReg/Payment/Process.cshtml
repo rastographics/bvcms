@@ -13,7 +13,7 @@
 
     var recaptchaSiteKey = db.Setting("googleReCaptchaSiteKey", ConfigurationManager.AppSettings["googleReCaptchaSiteKey"]);
     var useRecaptcha = db.Setting("UseRecaptcha") && recaptchaSiteKey.HasValue();
-    var useRecaptchaClass = useRecaptcha ? "recaptcha" : null;
+    var useRecaptchaClass = useRecaptcha ? "recaptcha" : "noRecaptcha";
 }
 @section scripts
 {

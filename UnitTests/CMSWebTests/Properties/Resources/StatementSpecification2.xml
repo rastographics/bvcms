@@ -1,0 +1,18 @@
+﻿<CustomStatements>
+    <Statement description="CustomStatement3">
+        <Funds></Funds>
+        <Header content="CustomHeader" />
+        <Notice content="CustomNotice" />
+        <Template content="CustomTemplate" />
+        <TemplateBody content="CustomTemplateBody" />
+        <Footer content="CustomTemplateFooter" />
+    </Statement>
+    <Statement description="CustomStatement4">
+        <Funds>1-3</Funds>
+        <Header><header4 /></Header>
+        <Notice><notice4 /></Notice>
+        <Template><template4 /></Template>
+        <TemplateBody><templatebody4 /></TemplateBody>
+        <Footer><footer4 /></Footer>
+    </Statement>
+</CustomStatements>
