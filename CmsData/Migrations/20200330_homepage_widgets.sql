@@ -740,8 +740,9 @@ INSERT INTO [dbo].[Content]
     results = q.QuerySql(sql, params)
     currentOrgType = "Other"
     for item in results:
-        if item.OrgType != currentOrgType:
+        if item.Description != currentOrgType:
             item.New = ''New''
+            currentOrgType = item.Description
         
     Data.results = results
     print model.RenderTemplate(template)
@@ -760,14 +761,14 @@ INSERT INTO [dbo].[Content]
 		   [DateCreated],[TypeID],[ThumbID],[RoleID],[OwnerID],[CreatedBy])
      VALUES
            ('WidgetInvolvementSQL','Edit Sql Script',
-           'select org.OrganizationName, mt.Description, om.OrganizationId, ISNULL(ot.Description, ''Other'') as Description from OrganizationMembers om
+           'select org.OrganizationName, om.OrganizationId, ISNULL(ot.Description, ''Other'') as Description from OrganizationMembers om
 join Organizations org on om.OrganizationId = org.OrganizationId
 left join lookup.OrganizationType ot on org.OrganizationTypeId = ot.Id
 left join lookup.MemberType mt on om.MemberTypeId = mt.Id
 where om.PeopleId = @pid
 and om.Pending != 1
 and org.SecurityTypeId != 3
-order by ot.Code, org.OrganizationName',
+order by ISNULL(ot.Description, ''ZZ''), org.OrganizationName',
            GETDATE(),4,0,0,0,'admin')
            
 INSERT INTO [dbo].[ContentKeyWords]
