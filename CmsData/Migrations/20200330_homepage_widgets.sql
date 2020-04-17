@@ -843,7 +843,7 @@ BEGIN
         {{#ifGT results.Count 0}}
             <ul class="list-group">
                 {{#each results}}
-                    <li class="list-group-item"><a href="/Person2/{{PeopleId}}" class="target">
+                    <li class="list-group-item"><a target="_blank" href="/Person2/{{PeopleId}}">
                         {{Name}} ({{Birthday}})
                     </a></li>
                 {{/each}}
