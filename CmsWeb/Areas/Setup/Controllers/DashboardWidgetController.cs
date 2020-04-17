@@ -95,7 +95,7 @@ namespace CmsWeb.Areas.Setup.Controllers
             try
             {
                 var widget = new DashboardWidgetModel(id, CurrentDatabase);
-                if (preview == true)
+                if (preview == true || widget.CacheHours == 0)
                 {
                     widget.CachePolicy = DashboardWidgetModel.CachePolicies.NeverCache.ToInt();
                 }

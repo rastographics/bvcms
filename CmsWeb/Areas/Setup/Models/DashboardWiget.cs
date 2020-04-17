@@ -113,17 +113,17 @@ namespace CmsWeb.Areas.Setup.Models
                 new { Value = 24, Name = "1 day" },
                 new { Value = 168, Name = "1 week" }
             };
-            return new SelectList(options, "Value", "Name");
+            return new SelectList(options, "Value", "Name", CacheHours);
         }
 
         public IEnumerable<SelectListItem> CachePolicyOptions()
         {
             var options = new[]
             {
-                new { Value = 1, Name = "Church Wide" },
-                new { Value = 2, Name = "User Specific" }
+                new { Value = 2, Name = "User Specific" },
+                new { Value = 1, Name = "Church Wide" }
             };
-            return new SelectList(options, "Value", "Name");
+            return new SelectList(options, "Value", "Name", CachePolicy);
         }
 
         private void Fill(DashboardWidget widget)
@@ -144,10 +144,6 @@ namespace CmsWeb.Areas.Setup.Models
             CacheExpires = widget.CacheExpires;
             CachedContent = widget.CachedContent;
             Roles = widget.DashboardWidgetRoles.Select(r => r.RoleId).ToArray();
-            if (CacheHours == 0)
-            {
-                CachePolicy = CachePolicies.NeverCache.ToInt();
-            }
         }
 
         private void UpdateContent(DashboardWidget widget)
@@ -222,10 +218,6 @@ namespace CmsWeb.Areas.Setup.Models
             // flush the cache whenever a change is made
             widget.CachedContent = null;
             widget.CacheExpires = null;
-            if (CacheHours == 0)
-            {
-                widget.CachePolicy = CachePolicies.NeverCache.ToInt();
-            }
             CurrentDatabase.SubmitChanges();
         }
 
