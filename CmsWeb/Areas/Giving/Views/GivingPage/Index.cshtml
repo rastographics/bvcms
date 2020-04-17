@@ -1,0 +1,97 @@
+﻿@using UtilityExtensions
+@model IEnumerable<CmsData.GivingPage>
+@{
+    Layout = ViewExtensions2.TouchPointLayout();
+    ViewBag.Title = "Online Giving Setup";
+    ViewBag.PageHeader = "Online Giving Setup";
+    var message = Util.TempSuccessMessage;
+}
+@section head{
+    @Fingerprint.Css("/Content/touchpoint/lib/bootstrap-editable/css/bootstrap-editable.css")
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+}
+
+<div class="row">
+    <div class="col-md-9">
+        @if (message != null)
+        {
+            <div class="alert alert-success alert-dismissible">
+                <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <strong>Success!</strong>&nbsp;&nbsp;@message
+            </div>
+        }
+        <div id="errorMessage" class="alert alert-danger" style="display: none;">
+
+        </div>
+        <div class="box box-responsive">
+            <div class="box-content">
+                <div class="row hidden-xs">
+                    <div class="col-sm-12">
+                        <div class="pull-right">
+                            <a href="#" class="btn btn-success create-new"><i class="fa fa-plus-circle"></i> Giving Page</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th v:onclick="sort('codiceCliente')">Enabled</th>
+                                <th v:onclick="sort('ragioneSociale')">Page Name</th>
+                                <th v:onclick="sort('provincia')">Skin</th>
+                                <th v:onclick="sort('indirizzo')">Page Type</th>
+                                <th v:onclick="sort('provincia')">Default Fund</th>
+                                <th v:onclick="sort('provincia')">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="giving-page-table-body">
+                            <tr v-for="items in list">
+                                <td>{{ items.Enabled }}</td>
+                                <td>{{ items.PageName }}</td>
+                                <td>{{ items.Skin }}</td>
+                                <td>{{ items.PageType }}</td>
+                                <td>{{ items.DefaultFund }}</td>
+                                <td>
+                                    <a v-bind:href="'/GivingPage/Edit?givingPageId=' + items.GivingPageId" class="btn btn-sm btn-default">
+                                        <i class="fa fa-pencil"></i> Edit
+                                    </a>
+                                    {{ items.GivingPageId }}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <a href="#" class="btn btn-success btn-block visible-xs-block create-new"><i class="fa fa-plus-circle"></i> Giving Page</a>
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts
+{
+    @Fingerprint.Script("/Content/touchpoint/lib/bootstrap-editable/js/bootstrap-editable.min.js")
+    <script>
+        $(document).ready(function () {
+            GetGivingPageList();
+        });
+        function GetGivingPageList() {
+            $.ajax({
+                type: "GET",
+                dataType: "json",
+                url: "/GetGivingPageList",
+                success: function (list) {
+                    new Vue({
+                        el: "#giving-page-table-body",
+                        data: {
+                            list
+                        }
+                    })
+                },
+                error: function (data) {
+                    var asd = 1;
+                    //alert("fail");
+                }
+            });
+        }
+        
+    </script>
+}

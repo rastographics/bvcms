@@ -561,6 +561,8 @@
     <Compile Include="Areas\Finance\Models\RemoteDepositCaptureError.cs" />
     <Compile Include="Areas\Finance\Models\TotalsByFundRange.cs" />
     <Compile Include="Areas\Finance\Models\TotalsByFundAgeRangeModel.cs" />
+    <Compile Include="Areas\Giving\Controllers\GivingPageController.cs" />
+    <Compile Include="Areas\Giving\Models\GivingPageModel.cs" />
     <Compile Include="Areas\Main\Models\Other\CouponResponseModel.cs" />
     <Compile Include="Areas\Manage\Controllers\ActivityController.cs" />
     <Compile Include="Areas\Manage\Controllers\BatchMoveAndDelete.cs" />
@@ -1961,6 +1963,11 @@
     <Content Include="Areas\Manage\Views\Sms\DisplayTemplates\Int32.cshtml" />
     <Content Include="Areas\People\Views\Person\Communications\Sms.cshtml" />
     <Content Include="Views\SpecialLinks\Index.cshtml" />
+    <Content Include="Areas\Giving\Views\Web.config">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Areas\Giving\Views\GivingPage\Edit.cshtml" />
+    <Content Include="Areas\Giving\Views\GivingPage\Index.cshtml" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
