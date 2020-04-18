@@ -170,12 +170,18 @@ namespace CmsWeb.Areas.Public.Controllers
                 return MobileMessage.createErrorReturn("Invalid email address", (int)MobileMessage.Error.INVALID_EMAIL);
             }
 
-            bool useMobileMessages = CurrentDatabase.Setting("UseMobileMessages", "false") == "true";
+            bool useMobileMessages = CurrentDatabase.Setting("UseMobileMessages");
 
             MobileAccount account = new MobileAccount(CurrentDatabase);
             account.setDeepLinkFields(message.device, message.instance, message.key, message.argString);
-            account.sendDeepLink();
-
+            if (CurrentDatabase.Setting("UseMobileQuickSignInCodes"))
+            {
+                account.sendLoginCode();
+            }
+            else
+            { 
+                account.sendDeepLink();
+            }
             return account.getMobileResponse(useMobileMessages);
         }
 
@@ -201,7 +207,9 @@ namespace CmsWeb.Areas.Public.Controllers
             }
 
             List<Person> people = (from p in CurrentDatabase.People
-                                   where p.EmailAddress == device.CodeEmail || p.EmailAddress2 == device.CodeEmail
+                                   where p.EmailAddress == device.CodeEmail
+                                      || p.EmailAddress2 == device.CodeEmail
+                                      || p.CellPhone == device.CodeEmail
                                    orderby p.FirstName, p.LastName
                                    select p).ToList();
 

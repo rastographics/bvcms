@@ -235,7 +235,8 @@ namespace CmsWeb.Areas.Public.Models.MobileAPIv2
                 return Error.MISSING_CREDENTIALS;
             }
 
-            device = db.MobileAppDevices.FirstOrDefault(d => d.InstanceID == instanceID && d.Code == code);
+            string hash = MobileAccount.createHash($"{code}{instanceID}");
+            device = db.MobileAppDevices.FirstOrDefault(d => d.InstanceID == instanceID && (d.Code == code || d.Code == hash));
 
             if (device == null)
             {

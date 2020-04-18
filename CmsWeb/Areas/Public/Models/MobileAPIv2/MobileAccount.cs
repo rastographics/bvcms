@@ -1,4 +1,5 @@
 ﻿using CmsData;
+using CmsData.Classes.Twilio;
 using CmsWeb.Constants;
 using CmsWeb.Membership;
 using CmsWeb.Models;
@@ -22,6 +23,9 @@ namespace CmsWeb.Areas.Public.Models.MobileAPIv2
             CommonEmailSent,
             CommonInvalidEmail,
             CommonInvalidDeepLink,
+            CommonSMSNotConfigured,
+            CommonSMSSent,
+            CommonSMSSendFailed,
             CreateFoundSimiliar,
             CreateMultipleMatches,
             CreateFoundPersonNewUser,
@@ -140,6 +144,71 @@ namespace CmsWeb.Areas.Public.Models.MobileAPIv2
             this.instance = instance;
             this.key = key;
             this.email = email?.Trim();
+            if (!email.Contains("@"))
+            {
+                this.phone = email.GetDigits();
+            }
+        }
+
+        public void sendLoginCode()
+        {
+            if (Db.People.Any(
+                p => p.EmailAddress == email || p.EmailAddress2 == email ||
+                    (p.CellPhone.Length > 0 && p.CellPhone == phone)
+                ))
+            {
+                var code = createQuickSignInCode(device, instance, key, email);
+
+                if (!code.HasValue())
+                {
+                    results = Results.CommonCodeCreationFailed;
+                    return;
+                }
+
+                var church = Db.Setting("NameOfChurch", Db.Host);
+
+                if (phone.HasValue())
+                {
+                    var systemSMSGroup = TwilioHelper.GetSystemSMSGroup(Db);
+                    if (TwilioHelper.IsConfigured(Db) && systemSMSGroup?.Count > 0)
+                    {
+                        var index = new Random().Next(0, systemSMSGroup.Count);
+                        var fromNumber = systemSMSGroup[index];
+                        var message = Db.ContentHtml("MobileQuickSignInCodeSMS", "{code} is your one-time sign in code for {church}");
+                        message = message.Replace("{code}", code).Replace("{church}", church);
+                        if (!TwilioHelper.SendSMS(Db, phone, fromNumber, message))
+                        {
+                            Db.LogActivity($"SMS send failed to {phone} from {fromNumber.Number}");
+                            results = Results.CommonSMSSendFailed;
+                        }
+                        else
+                        {
+                            results = Results.CommonSMSSent;
+                        }
+                    }
+                    else
+                    {
+                        results = Results.CommonSMSNotConfigured;
+                    }
+                }
+                else
+                {
+                    List<MailAddress> mailAddresses = new List<MailAddress>();
+                    mailAddresses.Add(new MailAddress(email));
+
+                    var message = @"<h3>Here's your one-time mobile sign in code for {church}:</h3><h4 style=""text-align:center;font-family:monospace"">{code}</h4>";
+                    var body = Db.ContentHtml("MobileQuickSignInCodeEmailBody", message);
+
+                    body = body.Replace("{code}", code).Replace("{church}", church);
+
+                    Db.SendEmail(new MailAddress(DbUtil.AdminMail, DbUtil.AdminMailName), Db.Setting("MobileQuickSignInCodeSubject", "Mobile Sign In Code"), body, mailAddresses);
+                    results = Results.CommonEmailSent;
+                }
+            }
+            else
+            {
+                results = Results.DeepLinkNoPeopleFound;
+            }
         }
 
         public void sendDeepLink()
@@ -167,12 +236,12 @@ namespace CmsWeb.Areas.Public.Models.MobileAPIv2
                 mailAddresses.Add(new MailAddress(email));
 
                 string link = $"{deepLink}/signin/quick/{code}";
-                string message = $"<a href='{link}'>Click here to sign in</a>";
+                string message = @"<a href=""{link}"">Click here to sign in</a>";
 
                 string body = Db.ContentHtml("NewMobileUserDeepLink", message);
                 body = body.Replace("{link}", link);
 
-                Db.SendEmail(new MailAddress(DbUtil.AdminMail, DbUtil.AdminMailName), Db.Setting("MobileQuickSignInSubject", "Quick Sign In Link"), body, mailAddresses);
+                Db.SendEmail(new MailAddress(DbUtil.AdminMail, DbUtil.AdminMailName), Db.Setting("MobileQuickSignInSubject", "Mobile Sign In Link"), body, mailAddresses);
 
                 results = Results.CommonEmailSent;
             }
@@ -443,7 +512,9 @@ namespace CmsWeb.Areas.Public.Models.MobileAPIv2
 
         private string createQuickSignInCode(int device, string instanceID, string key, string email)
         {
-            string hash = createHash(DateTime.Now + email);
+            var rng = new Random();
+            string code = rng.Next(0, 999999).ToString("D6");
+            string hash = createHash($"{code}{instanceID}");
 
             MobileAppDevice appDevice = new MobileAppDevice
             {
@@ -461,10 +532,10 @@ namespace CmsWeb.Areas.Public.Models.MobileAPIv2
             Db.MobileAppDevices.InsertOnSubmit(appDevice);
             Db.SubmitChanges();
 
-            return appDevice.Id > 0 ? hash : "";
+            return code;
         }
 
-        private static string createHash(string value)
+        public static string createHash(string value)
         {
             byte[] bytes = Encoding.UTF8.GetBytes(value);
 
