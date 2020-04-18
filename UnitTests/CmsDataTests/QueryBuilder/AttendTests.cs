@@ -17,7 +17,7 @@ namespace CmsDataTests.QueryBuilder
             
             var org = 36;
             var pid = 2;
-            var dt = DateTime.Today.AddHours(10);
+            var dt = DateTime.Today.AddHours(-6);
 
             Attend.RecordAttend(db, pid, org, true, dt);
             db.SubmitChanges();
