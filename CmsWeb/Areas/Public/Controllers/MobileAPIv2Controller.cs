@@ -179,7 +179,7 @@ namespace CmsWeb.Areas.Public.Controllers
                 account.sendLoginCode();
             }
             else
-            { 
+            {
                 account.sendDeepLink();
             }
             return account.getMobileResponse(useMobileMessages);

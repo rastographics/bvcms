@@ -15,6 +15,8 @@ using Newtonsoft.Json;
 using CmsData.Codes;
 using CmsData;
 using UtilityExtensions;
+using CmsData.Classes.Twilio;
+using Twilio.Rest.Api.V2010.Account;
 
 namespace CmsWeb.Areas.Public.ControllersTests
 {
@@ -265,6 +267,68 @@ namespace CmsWeb.Areas.Public.ControllersTests
             result.ShouldNotBeNull();
             result.error.ShouldBe(0);
             result.data.ShouldEndWith($"/Logon?otltoken={token}&ReturnUrl=%2fPerson2%2f{user.PeopleId}%2fResources%3fsource%3dAndroid");
+        }
+
+        [Fact]
+        public void QuickSignInTest()
+        {
+            var requestManager = FakeRequestManager.Create();
+            var membershipProvider = new MockCMSMembershipProvider { ValidUser = true };
+            var roleProvider = new MockCMSRoleProvider();
+            CMSMembershipProvider.SetCurrentProvider(membershipProvider);
+            CMSRoleProvider.SetCurrentProvider(roleProvider);
+            var person = CreatePerson();
+            person.CellPhone = RandomPhoneNumber();
+            db.SetSetting("UseMobileQuickSignInCodes", "true");
+            db.SetSetting("TwilioToken", RandomString());
+            db.SetSetting("TwilioSid", RandomString());
+            var group = db.SMSGroups.FirstOrDefault(g => g.SystemFlag == true);
+            if (group == null)
+            {
+                group = new SMSGroup { SystemFlag = true, Name = "System Group", Description = "" };
+                db.SMSGroups.InsertOnSubmit(group);
+                db.SubmitChanges();
+            }
+            db.SMSNumbers.InsertOnSubmit(new SMSNumber { GroupID = group.Id, Number = RandomPhoneNumber(), LastUpdated = DateTime.Now });
+            db.SubmitChanges();
+            string smsBody = "";
+            TwilioHelper.MockSender = (to, from, body, statusCallback) => {
+                smsBody = body;
+                return new TwilioMessageResult { Status = "Sent" };
+            };
+            var controller = new MobileAPIv2Controller(requestManager);
+            var message = new MobileMessage
+            {
+                device = (int)MobileMessage.Device.ANDROID,
+                instance = RandomString(),
+                argString = person.CellPhone
+            };
+
+            var data = message.ToString();
+            var result = controller.QuickSignIn(data) as MobileMessage;
+            result.ShouldNotBeNull();
+            result.error.ShouldBe(0);
+            smsBody.ShouldNotBeEmpty();
+
+            requestManager.CurrentHttpContext.Request.Headers["Authorization"] = "quick " + smsBody.GetDigits().Substring(0, 6);
+            message = new MobileMessage
+            {
+                device = (int)MobileMessage.Device.ANDROID,
+                instance = message.instance,
+            };
+            data = message.ToString();
+            result = controller.QuickSignInUsers(data) as MobileMessage;
+            result.ShouldNotBeNull();
+            result.error.ShouldBe(0);
+            result.count.ShouldBeGreaterThan(0);
+            result.data.ShouldNotBeEmpty();
+            //result.data.ShouldBe($"[{{""userID"":0,"peopleID":158,"name":"A0SF6Udv AfxHaTA7","user":"Create User"}}]")
+            var list = JsonConvert.DeserializeObject<IEnumerable<MobileQuickSignInUser>>(result.data);
+            var user = list.First();
+            user.userID.ShouldBe(0);
+            user.peopleID.ShouldBe(person.PeopleId);
+            user.name.ShouldBe(person.Name);
+            user.user.ShouldBe("Create User");
         }
     }
 }

@@ -258,156 +258,140 @@ namespace CmsWeb.Areas.Public.Models.MobileAPIv2
             switch (results)
             {
                 case Results.CommonEmailSent:
-                    {
-                        response.argBool = true;
-                        response.setNoError();
-
-                        break;
-                    }
+                    response.argBool = true;
+                    response.setNoError();
+                    break;
 
                 case Results.CommonCodeCreationFailed:
-                    {
-                        response.setError((int)MobileMessage.Error.CREATE_CODE_FAILED);
-
-                        break;
-                    }
+                    response.setError((int)MobileMessage.Error.CREATE_CODE_FAILED);
+                    break;
 
                 case Results.CommonInvalidDeepLink:
-                    {
-                        response.setError((int)MobileMessage.Error.INVALID_DEEP_LINK);
-
-                        break;
-                    }
+                    response.setError((int)MobileMessage.Error.INVALID_DEEP_LINK);
+                    break;
 
                 case Results.CommonInvalidEmail:
-                    {
-                        response.setError((int)MobileMessage.Error.INVALID_EMAIL);
-
-                        break;
-                    }
+                    response.setError((int)MobileMessage.Error.INVALID_EMAIL);
+                    break;
 
                 case Results.CreateMultipleMatches:
+                    if (useMobileMesages)
                     {
-                        if (useMobileMesages)
-                        {
-                            sendDeepLink();
+                        sendDeepLink();
 
-                            if (results == Results.CommonEmailSent)
-                            {
-                                response.setNoError();
-                                response.argBool = true;
-                            }
-                            else
-                            {
-                                response.setError((int)MobileMessage.Error.EMAIL_NOT_SENT);
-                            }
+                        if (results == Results.CommonEmailSent)
+                        {
+                            response.setNoError();
+                            response.argBool = true;
                         }
                         else
                         {
-                            response.setError((int)MobileMessage.Error.CREATE_FAILED);
+                            response.setError((int)MobileMessage.Error.EMAIL_NOT_SENT);
                         }
-
-                        break;
                     }
+                    else
+                    {
+                        response.setError((int)MobileMessage.Error.CREATE_FAILED);
+                    }
+                    break;
 
                 case Results.CreateFoundSimiliar:
+                    if (useMobileMesages)
                     {
-                        if (useMobileMesages)
-                        {
-                            notifyAboutDuplicate();
-                            notifyNewUserWithDeepLink(device, instance, key);
+                        notifyAboutDuplicate();
+                        notifyNewUserWithDeepLink(device, instance, key);
 
-                            if (results == Results.CommonEmailSent)
-                            {
-                                response.setNoError();
-                                response.argBool = true;
-                            }
-                            else
-                            {
-                                response.setError((int)MobileMessage.Error.EMAIL_NOT_SENT);
-                            }
+                        if (results == Results.CommonEmailSent)
+                        {
+                            response.setNoError();
+                            response.argBool = true;
                         }
                         else
                         {
-                            notifyAboutDuplicate();
-                            notifyNewUser();
-
-                            response.setNoError();
-                            response.data = user.Username;
+                            response.setError((int)MobileMessage.Error.EMAIL_NOT_SENT);
                         }
-
-                        break;
                     }
+                    else
+                    {
+                        notifyAboutDuplicate();
+                        notifyNewUser();
+
+                        response.setNoError();
+                        response.data = user.Username;
+                    }
+                    break;
 
                 case Results.CreateFoundPersonExistingUser:
+                    if (useMobileMesages)
                     {
-                        if (useMobileMesages)
-                        {
-                            notifyNewUserWithDeepLink(device, instance, key);
+                        notifyNewUserWithDeepLink(device, instance, key);
 
-                            if (results == Results.CommonEmailSent)
-                            {
-                                response.setNoError();
-                                response.argBool = true;
-                            }
-                            else
-                            {
-                                response.setError((int)MobileMessage.Error.EMAIL_NOT_SENT);
-                            }
+                        if (results == Results.CommonEmailSent)
+                        {
+                            response.setNoError();
+                            response.argBool = true;
                         }
                         else
                         {
-                            notifyAboutExisting();
-
-                            response.setNoError();
-                            response.data = user.Username;
+                            response.setError((int)MobileMessage.Error.EMAIL_NOT_SENT);
                         }
-
-                        break;
                     }
+                    else
+                    {
+                        notifyAboutExisting();
+
+                        response.setNoError();
+                        response.data = user.Username;
+                    }
+                    break;
 
                 case Results.CreateNewPersonAndUser:
                 case Results.CreateFoundPersonNewUser:
+                    if (useMobileMesages)
                     {
-                        if (useMobileMesages)
-                        {
-                            notifyNewUserWithDeepLink(device, instance, key);
+                        notifyNewUserWithDeepLink(device, instance, key);
 
-                            if (results == Results.CommonEmailSent)
-                            {
-                                response.setNoError();
-                                response.argBool = true;
-                            }
-                            else
-                            {
-                                response.setError((int)MobileMessage.Error.EMAIL_NOT_SENT);
-                            }
+                        if (results == Results.CommonEmailSent)
+                        {
+                            response.setNoError();
+                            response.argBool = true;
                         }
                         else
                         {
-                            notifyNewUser();
-
-                            response.setNoError();
-                            response.data = user.Username;
+                            response.setError((int)MobileMessage.Error.EMAIL_NOT_SENT);
                         }
-
-                        break;
                     }
+                    else
+                    {
+                        notifyNewUser();
+                        response.setNoError();
+                        response.data = user.Username;
+                    }
+                    break;
 
                 case Results.DeepLinkNoPeopleFound:
-                    {
-                        response.argBool = false;
-                        response.setNoError();
+                    response.argBool = false;
+                    response.setNoError();
+                    break;
 
-                        break;
-                    }
+                case Results.CommonSMSNotConfigured:
+                    response.argBool = false;
+                    response.setError((int)MobileMessage.Error.SMS_NOT_CONFIGURED);
+                    break;
+
+                case Results.CommonSMSSendFailed:
+                    response.argBool = false;
+                    response.setError((int)MobileMessage.Error.SMS_SEND_FAILED);
+                    break;
+
+                case Results.CommonSMSSent:
+                    response.argBool = true;
+                    response.setNoError();
+                    break;
 
                 default:
-                    {
-                        response.setError((int)MobileMessage.Error.UNKNOWN);
-
-                        break;
-                    }
+                    response.setError((int)MobileMessage.Error.UNKNOWN);
+                    break;
             }
 
             return response;

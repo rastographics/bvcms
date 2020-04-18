@@ -363,6 +363,7 @@
     <Compile Include="Classes\PeopleUtils.cs" />
     <Compile Include="Classes\RoleChecker\RoleChecker.cs" />
     <Compile Include="Classes\style.cs" />
+    <Compile Include="Classes\Twilio\TwilioMessageResult.cs" />
     <Compile Include="DbUtil\DbUtil.CurrentOrg.cs" />
     <Compile Include="Classes\ModelViewModel.cs" />
     <Compile Include="Email\ReplacementCodes\Links\UnlayerLink.cs" />
