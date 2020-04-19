@@ -1,14 +1,25 @@
 ﻿using CmsData;
+using CmsWeb.Constants;
+using CmsWeb.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace CmsWeb.MobileAPI
 {
-    public class MobilePostEditField
+    public class MobilePostEditField : IDbBinder
     {
         public int type = 0;
         public string value = "";
+
+        public CMSDataContext CurrentDatabase { get; set; }
+
+        [Obsolete(Errors.ModelBindingConstructorError, true)]
+        public MobilePostEditField() { }
+        public MobilePostEditField(CMSDataContext db)
+        {
+            CurrentDatabase = db;
+        }
 
         public bool? getBoolValue(bool? defaultValue)
         {

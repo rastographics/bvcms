@@ -16,7 +16,8 @@ using CmsData.Codes;
 using CmsData;
 using UtilityExtensions;
 using CmsData.Classes.Twilio;
-using Twilio.Rest.Api.V2010.Account;
+using CmsWeb.Common.Extensions;
+using System.Data.Linq;
 
 namespace CmsWeb.Areas.Public.ControllersTests
 {
@@ -329,6 +330,38 @@ namespace CmsWeb.Areas.Public.ControllersTests
             user.peopleID.ShouldBe(person.PeopleId);
             user.name.ShouldBe(person.Name);
             user.user.ShouldBe("Create User");
+        }
+
+        [Theory]
+        [InlineData(1, 1, 2)]
+        [InlineData(0, 2, 1)]
+        public void UpdatePersonTest(int electronic, int statement, int envelope)
+        {
+            var username = RandomString();
+            var password = RandomString();
+            var user = CreateUser(username, password);
+            var requestManager = FakeRequestManager.Create();
+            var membershipProvider = new MockCMSMembershipProvider { ValidUser = true };
+            var roleProvider = new MockCMSRoleProvider();
+            CMSMembershipProvider.SetCurrentProvider(membershipProvider);
+            CMSRoleProvider.SetCurrentProvider(roleProvider);
+            requestManager.CurrentHttpContext.Request.Headers["Authorization"] = BasicAuthenticationString(username, password);
+            var controller = new MobileAPIv2Controller(requestManager);
+            var message = new MobileMessage
+            {
+                argInt = user.PeopleId.Value,
+                instance = RandomString(),
+                data = $@"[{{""type"":62,""value"":{electronic}}},{{""type"":63,""value"":{statement}}},{{""type"":64,""value"":{envelope}}}]",
+            };
+            var data = message.ToString();
+            var result = controller.UpdatePerson(data) as MobileMessage;
+            result.ShouldNotBeNull();
+            result.count.ShouldBe(1);
+            result.error.ShouldBe(0);
+            db.Refresh(RefreshMode.OverwriteCurrentValues, user.Person);
+            user.Person.EnvelopeOptionsId.ShouldBe(envelope);
+            user.Person.ElectronicStatement.ShouldBe(electronic != 0);
+            user.Person.ContributionOptionsId.ShouldBe(statement);
         }
     }
 }
