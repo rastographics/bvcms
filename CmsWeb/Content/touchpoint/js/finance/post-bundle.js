@@ -387,7 +387,6 @@
             action = "/PostBundle/UpdateRow/";
         }
         $.post(action, options.q).done(function(ret){
-            debugger;
             keyallowed = true;
             if (!ret)
                 return;
