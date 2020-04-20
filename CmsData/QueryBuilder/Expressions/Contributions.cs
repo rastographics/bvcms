@@ -789,7 +789,7 @@ namespace CmsData
         internal Expression NonTaxDedAmountBothJoint()
         {
             int? fund = Quarters.AllDigits() ? Quarters.ToInt() : db.Setting(Quarters, "").ToInt();
-            decimal? amt = TextValue.ToDecimal() ?? 0;
+            decimal? amt = TextValue.ToDecimal();
             return ContributionAmount2(StartDate, EndDate, fund, amt, true);
         }
         internal Expression ContributionAmountDonorOnly()
