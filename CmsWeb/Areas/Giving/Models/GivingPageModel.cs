@@ -56,40 +56,14 @@ namespace CmsWeb.Areas.Giving.Models
             }
             return outputHashSet;
         }
-        //public HashSet<GivingPageItem> GetGivingPageHashSet()
-        //{
-        //    var givingPageHashSet = new HashSet<GivingPage>();
-        //    //var outputHashSet = new HashSet<GivingPageItem>();
+        public List<GivingPage> GetGivingPageList()
+        {
+            var givingPageList = new List<GivingPage>();
 
-        //    //givingPageHashSet = CurrentDatabase.GivingPages.ToHashSet();
-        //    //var sql = "select * from [dbo].[GivingPages];";
-        //    //var response = CurrentDatabase.ExecuteQuery<List<GivingPage>>(sql);
-        //    var response = from gp in CurrentDatabase.GivingPages
-        //                   select new
-        //                   {
-        //                       GivingPageId = gp.GivingPageId,
-        //                       Enabled = gp.Enabled,
-        //                       PageName = gp.PageName,
-        //                       Skin = gp.SkinFile,
-        //                       PageType = gp.PageType,
-        //                       DefaultFund = gp.ContributionFund.FundName
-        //                   };
-        //    var outputHashSet = response.ToHashSet();
-        //    //foreach(var item in givingPageHashSet)
-        //    //{
-        //    //    var givingPage = new GivingPageItem
-        //    //    {
-        //    //        GivingPageId = item.GivingPageId,
-        //    //        Enabled = item.Enabled,
-        //    //        PageName = item.PageName,
-        //    //        Skin = item.SkinFile,
-        //    //        PageType = item.PageType.ToString(),
-        //    //        DefaultFund = item.ContributionFund.FundName
-        //    //    };
-        //    //    outputHashSet.Add(givingPage);
-        //    //}
-        //    return outputHashSet;
-        //}
+            givingPageList = CurrentDatabase.GivingPages.ToList();
+
+            return givingPageList;
+        }
     }
 
     public class GivingPageItem

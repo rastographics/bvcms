@@ -1,21 +1,168 @@
-﻿@using UtilityExtensions
-@model IEnumerable<CmsData.GivingPage>
+﻿@model IEnumerable<CmsData.GivingPage>
 @{
     Layout = ViewExtensions2.TouchPointLayout();
-    ViewBag.Title = "Funds";
-    ViewBag.PageHeader = "Funds";
-    var message = Util.TempSuccessMessage;
+    ViewBag.Title = "Edit Giving";
+    ViewBag.PageHeader = "Edit Giving";
+}
+@section head{
+    @Fingerprint.Css("/Content/touchpoint/lib/bootstrap-editable/css/bootstrap-editable.css")
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 }
 
-<!DOCTYPE html>
+<div class="row">
+    <div class="col-md-12">
+        <div class="box box-responsive">
+            <div class="box-content">
+                <div class="row">
+                    <div class="col-md-8">
+                        <div class="row">
+                            <div class="col-lg-5 col-md-5 col-sm-5">
+                                <div class="form-group">
+                                    <label class="control-label">Page Name</label>
+                                    <input type="text" id="givingPageName" class="form-control" />
+                                </div>
+                            </div>
+                            <div class="col-lg-5 col-md-5 col-sm-5">
+                                <div class="form-group">
+                                    <label class="control-label">Page Title</label>
+                                    <input type="text" id="givingPageTitle" class="form-control" />
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-md-2 col-sm-2">
+                                <div class="form-group">
+                                    <label class="control-label">Enabled</label>
+                                    <input type="checkbox" id="givingEnabled" class="form-control" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-5 col-md-5 col-sm-5">
+                                <div class="form-group">
+                                    <label class="control-label">Skin</label>
+                                    <input type="text" id="givingSkin" class="form-control" />
+                                </div>
+                            </div>
+                            <div class="col-lg-5 col-md-5 col-sm-5">
+                                <div class="form-group">
+                                    <label class="control-label">Page Type</label>
+                                    <input type="text" id="givingPageType" class="form-control" />
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-md-2 col-sm-2">
 
-<html>
-<head>
-    <meta name="viewport" content="width=device-width" />
-    <title>Edit</title>
-</head>
-<body>
-    <div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-5 col-md-5 col-sm-5">
+                                <div class="form-group">
+                                    <label class="control-label">Default Fund</label>
+                                    <input type="text" id="givingDefaultFund" class="form-control" />
+                                </div>
+                            </div>
+                            <div class="col-lg-5 col-md-5 col-sm-5">
+                                <div class="form-group">
+                                    <label class="control-label">Available Funds</label>
+                                    <input type="text" id="givingAvailableFunds" class="form-control" />
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-md-2 col-sm-2">
+
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-9 col-md-9 col-sm-9">
+                                <div class="form-group">
+                                    <label class="control-label">Disabled Redirect</label>
+                                    <input type="text" id="givingSkin" class="form-control" />
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-md-3 col-sm-3">
+
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-5 col-md-5 col-sm-5">
+                                <div class="form-group">
+                                    <label class="control-label">Entry Point</label>
+                                    <input type="text" id="givingSkin" class="form-control" style="width:90%;" />
+                                </div>
+                            </div>
+                            <div class="col-lg-7 col-md-7 col-sm-7">
+
+                            </div>
+                        </div>
+                        <br />
+                        <a href="/Giving" class="btn btn-default" style="border-radius:5px;">Cancel</a>
+                        <button type="button" class="btn btn-primary" style="border-radius:5px;">Save</button>
+                    </div>
+                    <div class="col-md-4" style="border-left: 2px solid black;">
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12">
+                                <div class="form-group">
+                                    <label class="control-label">Top Text</label>
+                                    <input type="text" id="givingTopText" class="form-control" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12">
+                                <div class="form-group">
+                                    <label class="control-label">Thank you text</label>
+                                    <input type="text" id="givingThankYouText" class="form-control" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-10 col-md-10 col-sm-10">
+                                <div class="form-group">
+                                    <label class="control-label">Online Notify Person</label>
+                                    <input type="text" id="givingOnlineNotifyPerson" class="form-control" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12">
+                                <div class="form-group">
+                                    <label class="control-label">Confirmation Email - pledge</label>
+                                    <input type="text" id="givingConfirmationEmailPledge" class="form-control" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12">
+                                <div class="form-group">
+                                    <label class="control-label">Confirmation Email - One time</label>
+                                    <input type="text" id="givingConfirmationEmailOneTime" class="form-control" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12">
+                                <div class="form-group">
+                                    <label class="control-label">Confirmation Email - recurring</label>
+                                    <input type="text" id="givingConfirmationEmailRecurring" class="form-control" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-</body>
-</html>
+
+    <div style="display:none;">
+        <input id="currentGivingPageId" value="@ViewBag.CurrentGivingPageId" />
+    </div>
+</div>
+
+@section scripts
+{
+    @Fingerprint.Script("/Content/touchpoint/lib/bootstrap-editable/js/bootstrap-editable.min.js")
+    <script>
+        $(document).ready(function () {
+            //var currentGivingPageId = document.getElementById("currentGivingPageId").value;
+            //alert(currentGivingPageId);
+        });
+
+    </script>
+}

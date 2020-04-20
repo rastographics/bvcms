@@ -11,7 +11,7 @@ using CmsWeb.Areas.Giving.Models;
 namespace CmsWeb.Areas.Giving.Controllers
 {
     [Authorize(Roles = "Admin,Finance,FinanceViewOnly")]
-    [RouteArea("Giving", AreaPrefix = "GivingPage"), Route("{action}/{id?}")]
+    [RouteArea("Giving", AreaPrefix = "Giving"), Route("{action}/{id?}")]
     public class GivingPageController : CmsStaffController
     {
         public GivingPageController(IRequestManager requestManager) : base(requestManager)
@@ -24,9 +24,15 @@ namespace CmsWeb.Areas.Giving.Controllers
             return View();
         }
 
-        //[Route("~/Giving/Edit")]
-        public ActionResult Edit(int givingPageId)
+        [Route("~/CreateNewGivingPage")]
+        public ActionResult CreateNewGivingPage(string pageName)
         {
+            return Json(pageName, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult Edit(int id)
+        {
+            ViewBag.CurrentGivingPageId = id;
             return View();
         }
 
