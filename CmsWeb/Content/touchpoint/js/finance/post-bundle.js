@@ -383,9 +383,11 @@
         }
         var action = "/PostBundle/PostRow/";
         var cid = $('#editid').val();
-        if (cid)
+        if (cid) {
             action = "/PostBundle/UpdateRow/";
-        $.post(action, options.q, function (ret) {
+        }
+        $.post(action, options.q).done(function(ret){
+            debugger;
             keyallowed = true;
             if (!ret)
                 return;
