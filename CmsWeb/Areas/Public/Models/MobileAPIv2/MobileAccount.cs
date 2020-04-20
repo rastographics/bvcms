@@ -21,6 +21,7 @@ namespace CmsWeb.Areas.Public.Models.MobileAPIv2
             None,
             CommonCodeCreationFailed,
             CommonEmailSent,
+            CommonEmailSentCode,
             CommonInvalidEmail,
             CommonInvalidDeepLink,
             CommonSMSNotConfigured,
@@ -202,7 +203,7 @@ namespace CmsWeb.Areas.Public.Models.MobileAPIv2
                     body = body.Replace("{code}", code).Replace("{church}", church);
 
                     Db.SendEmail(new MailAddress(DbUtil.AdminMail, DbUtil.AdminMailName), Db.Setting("MobileQuickSignInCodeSubject", "Mobile Sign In Code"), body, mailAddresses);
-                    results = Results.CommonEmailSent;
+                    results = Results.CommonEmailSentCode;
                 }
             }
             else
