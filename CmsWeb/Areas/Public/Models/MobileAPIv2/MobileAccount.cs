@@ -259,6 +259,13 @@ namespace CmsWeb.Areas.Public.Models.MobileAPIv2
             switch (results)
             {
                 case Results.CommonEmailSent:
+                    response.argString = "email";
+                    response.argBool = true;
+                    response.setNoError();
+                    break;
+
+                case Results.CommonEmailSentCode:
+                    response.argString = "code";
                     response.argBool = true;
                     response.setNoError();
                     break;
