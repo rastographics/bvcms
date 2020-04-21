@@ -1062,9 +1062,9 @@ namespace CmsData
                 case "Both":
                     return null;
                 case "TaxDed":
-                    return true;
-                default:
                     return false;
+                default:
+                    return true;
             }            
         }
         internal Expression IsTopGiver()
