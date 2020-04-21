@@ -111,6 +111,7 @@
     <Compile Include="MockGateways.cs" />
     <Compile Include="MockGivingPage.cs" />
     <Compile Include="MockHttpContext.cs" />
+    <Compile Include="MockOrganizations.cs" />
     <Compile Include="MockPeople.cs" />
     <Compile Include="MockSettings.cs" />
     <Compile Include="FamilyUtils.cs" />

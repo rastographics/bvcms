@@ -686,7 +686,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         public string AutocompleteOnOff => Util.IsDebug() ? "on" : "off";
 
-        public bool ManagedGivingStopped { get; private set; }        
+        public bool ManagedGivingStopped { get; set; }
 
         public void CancelManagedGiving(int peopleId)
         {
