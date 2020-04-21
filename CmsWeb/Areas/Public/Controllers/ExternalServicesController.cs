@@ -165,7 +165,7 @@ namespace CmsWeb.Areas.Public.Controllers
                 }, JsonRequestBehavior.AllowGet);
             }
 
-            var authorization = getAuthInfo.Split(':');
+            var authorization = getAuthInfo.Split(new[] { ':' }, 2);
             if (authorization.Count() != 2)
             {
                 return Json(new
