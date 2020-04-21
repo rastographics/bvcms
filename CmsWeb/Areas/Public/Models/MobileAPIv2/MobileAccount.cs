@@ -175,7 +175,7 @@ namespace CmsWeb.Areas.Public.Models.MobileAPIv2
                     {
                         var index = new Random().Next(0, systemSMSGroup.Count);
                         var fromNumber = systemSMSGroup[index];
-                        var message = Db.ContentHtml("MobileQuickSignInCodeSMS", "{code} is your one-time sign in code for {church}");
+                        var message = Db.Setting("MobileQuickSignInCodeSMS", "{code} is your one-time sign in code for {church}");
                         message = message.Replace("{code}", code).Replace("{church}", church);
                         if (!TwilioHelper.SendSMS(Db, phone, fromNumber, message))
                         {
