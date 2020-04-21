@@ -113,6 +113,7 @@
     <Compile Include="MockPeople.cs" />
     <Compile Include="MockSettings.cs" />
     <Compile Include="FamilyUtils.cs" />
+    <Compile Include="MockTransactions.cs" />
     <Compile Include="Network\MockHttpHeaders.cs" />
     <Compile Include="Network\MockHttpResponse.cs" />
     <Compile Include="Network\NetworkCollection.cs" />
