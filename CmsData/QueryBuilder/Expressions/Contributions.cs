@@ -1,6 +1,8 @@
 using CmsData.API;
 using CmsData.Codes;
 using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text.RegularExpressions;
@@ -210,8 +212,45 @@ namespace CmsData
                 case CompareType.Equal:
                     if (amt == 0)
                     {
+                        var families = (from f in db.Families
+                                        join p in db.People.DefaultIfEmpty() on f.FamilyId equals p.FamilyId
+                                        join c in db.Contributions.DefaultIfEmpty() on p.PeopleId equals c.PeopleId
+                                        where c.CreatedDate > dt
+                                        orderby f.FamilyId
+                                        select new { familyId = f.FamilyId, people = f.People, hoh = f.HeadOfHousehold }).ToList();//.ToDictionary(t => t.f.FamilyId, t => t);
+                        var thisCount = families.Count();
+                        var abc = 0;
+                        IDictionary<int, string> dict = new Dictionary<int, string>();
+                        Stopwatch timer = new Stopwatch();
+                        timer.Start();
+                        foreach (var item in families)
+                        {
+                            
+                            abc++;
+                            //if (!item.c.ContributionAmount.HasValue)
+                            //{
+                            //    abc++;
+                            //}
+                        }
+                        timer.Stop();
+                        abc = 0;
+
                         q = from pid in db.Contributions0(dt, now, fund, 0, false, taxnontax, true)
                             select pid.PeopleId.Value;
+                        //if (fund == 0)
+                        //{
+                        //    q = from c in db.Contributions2(dt, now, 0, false, taxnontax, true, null)
+                        //        group c by c.CreditGiverId into g
+                        //        where g.Sum(cc => cc.Amount) == amt
+                        //        select g.Key ?? 0;
+                        //}
+                        //else
+                        //{
+                        //    q = from c in db.Contributions2(dt, now, 0, false, taxnontax, true, fund.ToString())
+                        //        group c by c.CreditGiverId into g
+                        //        where g.Sum(cc => cc.Amount) == amt
+                        //        select g.Key ?? 0;
+                        //}
                     }
                     else
                     {
