@@ -142,10 +142,6 @@ namespace CmsData
             //throw new Exception($"fundset '{Quarters}' was not found");
             var fundlist = string.Join(",", fundcsv);
 
-            if (TaxNonTax.IsNotNull() && !TaxNonTax.Contains("Both")) TaxNonTaxBool = TaxNonTax == "TaxDed" ? false : true;
-            else
-                TaxNonTaxBool = null;
-
             var q = db.RecentGiverFunds(Days, fundlist, TaxNonTaxBool).Select(v => v.PeopleId.Value);
             var tag = db.PopulateTemporaryTag(q);
             Expression<Func<Person, bool>> pred = null;
@@ -1044,17 +1040,7 @@ namespace CmsData
                     return AlwaysFalse();
                 }
             }
-                        
-            if (TaxNonTax.IsNotNull() && !TaxNonTax.Contains("Both")) TaxNonTaxBool = TaxNonTax == "TaxDed" ? false : true;
-            else
-                TaxNonTaxBool = null;
-
-            if (TaxNonTax.IsNotNull() && !TaxNonTax.Contains("Both")) TaxNonTaxBool = TaxNonTax == "TaxDed" ? false : true;
-            else
-                TaxNonTaxBool = null;
-
             var q = db.FirstTimeGivers(Days, fund, TaxNonTaxBool).Select(p => p.PeopleId);
-
             Expression<Func<Person, bool>> pred;
             if (op == CompareType.Equal ^ tf)
             {
@@ -1068,17 +1054,24 @@ namespace CmsData
             Expression expr = Expression.Invoke(pred, parm);
             return expr;
         }
+        private bool? GetTaxStatusBool(string TaxNonTax)
+        {
+            switch(TaxNonTax)
+            {
+                case null:
+                case "Both":
+                    return null;
+                case "TaxDed":
+                    return true;
+                default:
+                    return false;
+            }            
+        }
         internal Expression IsTopGiver()
         {
             var top = Quarters.ToInt();
-            var fundids = FundIds?.Replace(' ', ',');
-            if (TaxNonTax.IsNotNull() && !TaxNonTax.Contains("Both")) TaxNonTaxBool = TaxNonTax == "TaxDed" ? false : true;
-            else
-                TaxNonTaxBool = null;
-            var tf = CodeIds == "1";
-            if (TaxNonTax.IsNotNull() && !TaxNonTax.Contains("Both")) TaxNonTaxBool = TaxNonTax == "TaxDed" ? false : true;
-            else
-                TaxNonTaxBool = null;
+            var fundids = FundIds?.Replace(' ', ',');            
+            var tf = CodeIds == "1";            
             if (db.CurrentUser == null || db.CurrentUser.Roles.All(rr => rr != "Finance"))
             {
                 return CompareConstant(parm, "PeopleId", CompareType.Equal, 0);
