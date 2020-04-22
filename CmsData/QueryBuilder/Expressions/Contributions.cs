@@ -212,29 +212,26 @@ namespace CmsData
                 case CompareType.Equal:
                     if (amt == 0)
                     {
-                        var families = (from f in db.Families
-                                        join p in db.People.DefaultIfEmpty() on f.FamilyId equals p.FamilyId
-                                        join c in db.Contributions.DefaultIfEmpty() on p.PeopleId equals c.PeopleId
-                                        where c.CreatedDate > dt
-                                        orderby f.FamilyId
-                                        select new { familyId = f.FamilyId, people = f.People, hoh = f.HeadOfHousehold }).ToList();//.ToDictionary(t => t.f.FamilyId, t => t);
-                        var thisCount = families.Count();
-                        var abc = 0;
-                        IDictionary<int, string> dict = new Dictionary<int, string>();
                         Stopwatch timer = new Stopwatch();
                         timer.Start();
-                        foreach (var item in families)
+                        var HoHsThatGave = (from p in db.People
+                                     join c in db.Contributions on p.PeopleId equals c.PeopleId
+                                     join f in db.Families on p.FamilyId equals f.FamilyId
+                                     where c.CreatedDate > dt && c.CreatedDate <= now
+                                     select new { f.HeadOfHouseholdId }).Distinct().ToDictionary(h => h.HeadOfHouseholdId, h => h.HeadOfHouseholdId);
+                        var AllHohs = (from f in db.Families select new { f.HeadOfHouseholdId }).Distinct().ToDictionary(h => h.HeadOfHouseholdId, h => h.HeadOfHouseholdId);
+                        var peopleIdsList = new List<int>();
+                        foreach (var item in AllHohs)
                         {
-                            
-                            abc++;
-                            //if (!item.c.ContributionAmount.HasValue)
-                            //{
-                            //    abc++;
-                            //}
+                            if (!HoHsThatGave.ContainsKey(item.Key))
+                            {
+                                peopleIdsList.Add((int)item.Value);
+                            }
                         }
+                        q = peopleIdsList.AsQueryable();
                         timer.Stop();
-                        abc = 0;
 
+                        #region
                         q = from pid in db.Contributions0(dt, now, fund, 0, false, taxnontax, true)
                             select pid.PeopleId.Value;
                         //if (fund == 0)
@@ -251,6 +248,7 @@ namespace CmsData
                         //        where g.Sum(cc => cc.Amount) == amt
                         //        select g.Key ?? 0;
                         //}
+                        #endregion
                     }
                     else
                     {
