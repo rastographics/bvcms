@@ -24,8 +24,8 @@ namespace CmsWeb.Areas.Giving.Controllers
             return View();
         }
 
-        [Route("~/CreateNewGivingPage")]
-        public ActionResult CreateNewGivingPage(string pageName)
+        //[Route("~/CreateNewGivingPage")]
+        public ActionResult CreateNewGivingPage(string pageName, string pageTitle, bool enabled)
         {
             return Json(pageName, JsonRequestBehavior.AllowGet);
         }

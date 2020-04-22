@@ -80,6 +80,7 @@
     <input class="boolean-toggle" type="checkbox" id="AllowLimitToRoleForInvolvementExport" name="AllowLimitToRoleForInvolvementExport" data-toggle="toggle" data-on="True" data-off="False" data-width="100" )>
     <span class="slider round"></span>
 </label>*@
+<input class="boolean-toggle" type="checkbox" id="AttendanceReminder" name="AttendanceReminder" data-toggle="toggle" data-on="True" data-off="False" data-width="100" checked="checked" )>
 
 <div class="row" id="table-div" style="display:none;">
     <div class="col-md-9">
@@ -147,14 +148,86 @@
                     <h4 class="modal-title">Add Giving Page</h4>
                 </div>
                 <div class="modal-body">
-                    <div class="form-group">
-                        <label class="control-label">Name</label>
-                        <input ref="pageName" type="text" id="newGivingPageName" class="form-control" />
+                    <div class="row">
+                        <div class="col-lg-5 col-md-5 col-sm-5">
+                            <div class="form-group">
+                                <label class="control-label">Page Name</label>
+                                <input type="text" id="newGivingPageName" class="form-control" />
+                            </div>
+                        </div>
+                        <div class="col-lg-5 col-md-5 col-sm-5">
+                            <div class="form-group">
+                                <label class="control-label">Page Title</label>
+                                <input type="text" id="newGivingPageTitle" class="form-control" />
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-md-2 col-sm-2">
+                            <div class="form-group">
+                                <label class="control-label">Enabled</label>
+                                <input type="checkbox" id="newGivingEnabled" class="form-control" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-5 col-md-5 col-sm-5">
+                            <div class="form-group">
+                                <label class="control-label">Skin</label>
+                                <input type="text" id="newGivingSkin" class="form-control" />
+                            </div>
+                        </div>
+                        <div class="col-lg-5 col-md-5 col-sm-5">
+                            <div class="form-group">
+                                <label class="control-label">Page Type</label>
+                                <input type="text" id="newGivingPageType" class="form-control" />
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-md-2 col-sm-2">
+
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-5 col-md-5 col-sm-5">
+                            <div class="form-group">
+                                <label class="control-label">Default Fund</label>
+                                <input type="text" id="newGivingDefaultFund" class="form-control" />
+                            </div>
+                        </div>
+                        <div class="col-lg-5 col-md-5 col-sm-5">
+                            <div class="form-group">
+                                <label class="control-label">Available Funds</label>
+                                <input type="text" id="newGivingAvailableFunds" class="form-control" />
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-md-2 col-sm-2">
+
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-9 col-md-9 col-sm-9">
+                            <div class="form-group">
+                                <label class="control-label">Disabled Redirect</label>
+                                <input type="text" id="newGivingSkin" class="form-control" />
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-md-3 col-sm-3">
+
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-5 col-md-5 col-sm-5">
+                            <div class="form-group">
+                                <label class="control-label">Entry Point</label>
+                                <input type="text" id="newGivingSkin" class="form-control" style="width:90%;" />
+                            </div>
+                        </div>
+                        <div class="col-lg-7 col-md-7 col-sm-7">
+
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <input type="button" value="Cancel" class="btn btn-default" data-dismiss="modal" />
-                    <input onclick="CreateNewGivingPage()" type="button" value="Submit" class="btn btn-primary" data-dismiss="modal" />
+                    <input v-on:click="createNewGivingPage()" type="button" value="Submit" class="btn btn-primary" data-dismiss="modal" />
                 </div>
             </div>
         </div>
@@ -184,26 +257,50 @@
                             createNew: function (event) {
                                 event.preventDefault();
                                 $('#new-modal').modal();
+                                $("#newGivingPageName").val('');
                                 //this.setFocus();
                                 //setFocus();
                                 //document.getElementById("newGivingPageName").value = "";
                                 //document.getElementById("newGivingPageName").focus();
-                                $("#newGivingPageName").val('');
                                 //$("#newGivingPageName").focus();
                                 //this.pageName.focus();
-                                this.$nextTick(() => {
-                                    this.$refs.pageName.focus()
-                                })
+                                //this.$nextTick(() => {
+                                //    this.$refs.pageName.focus()
+                                //})
                                 //setTimeout(() => {
                                 //    this.$refs.pageName.focus()
                                 //})
                                 //this.$refs.pageName.focus();
                             },
-                            //setFocus: function () {
+                            setFocus: function () {
                             //    this.pageName.value = '';
                             //    this.pageName.focus();
                             //    //$("#newGivingPageName").val('').focus();
-                            //}
+                            },
+                            createNewGivingPage() {
+                                //alert("success");
+                                var pageName = document.getElementById("newGivingPageName").value;
+                                var pageTitle = document.getElementById("newGivingPageTitle").value;
+                                var enabled = document.getElementById("newGivingEnabled").checked;
+                                $.ajax({
+                                    type: "POST",
+                                    dataType: "json",
+                                    url: "/Giving/CreateNewGivingPage",
+                                    data: {
+                                        pageName: pageName,
+                                        pageTitle: pageTitle,
+                                        enabled: enabled
+                                    },
+                                    success: function (response) {
+                                        //var asd = 1;
+                                        //alert(response);
+                                    },
+                                    //error: function (response) {
+                                    //    var asd = 1;
+                                    //    alert("fail");
+                                    //}
+                                });
+                            }
                         }
                     });
                     document.getElementById("table-div").style = "display:normal;";
