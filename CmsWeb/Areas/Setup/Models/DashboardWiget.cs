@@ -38,7 +38,7 @@ namespace CmsWeb.Areas.Setup.Models
         public CMSDataContext CurrentDatabase { get; set; }
         private Content BlankContent = new Content { Id = 0, Name = "(not specified)" };
 
-        [Obsolete(Errors.ModelBindingConstructorError, false)]
+        [Obsolete(Errors.ModelBindingConstructorError, true)]
         public DashboardWidgetModel() { }
         public DashboardWidgetModel(CMSDataContext db)
         {

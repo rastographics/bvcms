@@ -202,20 +202,20 @@
         $('.delete').click(function (e) {
             e.preventDefault();
             swal({
-                title: "Are you sure?",
-                text: "Do you really want to delete this homepage widget?",
-                type: "warning",
+                title: 'Are you sure?',
+                text: 'Do you really want to delete this homepage widget?',
+                type: 'warning',
                 showCancelButton: true,
-                confirmButtonClass: "btn-danger",
-                confirmButtonText: "Yes",
+                confirmButtonClass: 'btn-danger',
+                confirmButtonText: 'Yes',
                 closeOnConfirm: true,
-                allowOutsideClick: "true"
+                allowOutsideClick: 'true'
             }, function () {
-                $.post("/HomeWidgets/Delete/", {
+                $.post('/HomeWidgets/Delete/', {
                     id: @Model.Id
                 }, function (ret) {
                     if (ret.includes('success')) {
-                        window.location.href = "/HomeWidgets";
+                        window.location.href = '/HomeWidgets';
                     } else {
                         snackbar(ret, 'error');
                     }
