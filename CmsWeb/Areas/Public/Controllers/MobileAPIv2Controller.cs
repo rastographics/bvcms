@@ -803,7 +803,7 @@ namespace CmsWeb.Areas.Public.Controllers
 
             foreach (MobilePostEditField field in fields)
             {
-                field.updatePerson(person, personChangeList, familyChangeList);
+                field.updatePerson(CurrentDatabase, person, personChangeList, familyChangeList);
             }
 
             if (personChangeList.Count > 0)
