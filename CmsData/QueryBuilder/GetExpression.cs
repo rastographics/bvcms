@@ -195,6 +195,7 @@ namespace CmsData
                 { QueryType.RecentPledgeCount, RecentPledgeCount },
                 { QueryType.RecentRegistrationType, RecentRegistrationType },
                 { QueryType.RecentVisitNumber, RecentVisitNumber },
+                { QueryType.RecentVisitNumberOrgs, RecentVisitNumberOrgs },
                 { QueryType.RecInterestedCoaching, RecInterestedCoaching },
                 { QueryType.RegisteredForMeetingId, RegisteredForMeetingId },
                 { QueryType.RelatedFamilyMembers, RelatedFamilyMembers },
