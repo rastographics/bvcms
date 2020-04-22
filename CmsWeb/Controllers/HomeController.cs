@@ -30,9 +30,9 @@ namespace CmsWeb.Controllers
                 Util2.OrgLeadersOnly = true;
                 CurrentDatabase.SetOrgLeadersOnly();
             }
-            var newHomePageEnabled = CurrentDatabase.Setting("EnableCustomHomepage");
+            var newHomePageDisabled = CurrentDatabase.Setting("DisableCustomHomepage");
             var m = new HomeModel(CurrentDatabase);
-            if (newHomePageEnabled)
+            if (!newHomePageDisabled)
             {
                 var widgets = m.HomepageWidgets();
                 return View("Dashboard", widgets);
