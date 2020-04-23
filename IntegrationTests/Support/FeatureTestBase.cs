@@ -358,12 +358,15 @@ namespace IntegrationTests.Support
         /// Navigates the browser to the given <paramref name="url"/>
         /// </summary>
         /// <param name="url">The URL to open; may or may not start with http://</param>
-        protected void Open(string url)
+        protected void Open(string url, bool redirects = false)
         {
             string location = url.StartsWith("http") ? url : "http://" + url;
             Console.WriteLine("Opening: {0}", location);
             driver.Navigate().GoToUrl(location);
-            WaitFor((d) => d.Url.Contains(url));
+            if (!redirects)
+            {
+                WaitFor((d) => d.Url.Contains(url));
+            }
         }
 
         /// <summary>
