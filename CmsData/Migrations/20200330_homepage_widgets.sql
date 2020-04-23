@@ -9,12 +9,12 @@ BEGIN
            ('WidgetTasksHTML','Edit Text Content',
            '<div class="box">
     <div class="box-title hidden-xs">
-        <h5><a href="/TaskSearch">My Tasks</a></h5>
+        <h5><a href="/TaskSearch">{{WidgetName}}</a></h5>
     </div>
-    <a class="visible-xs-block" id="tasks-collapse" data-toggle="collapse" href="#tasks-section" aria-expanded="true" aria-controls="tasks-section">
+    <a class="visible-xs-block" id="{{WidgetId}}-collapse" data-toggle="collapse" href="#{{WidgetId}}-section" aria-expanded="true" aria-controls="{{WidgetId}}-section">
         <div class="box-title">
             <h5>
-                <i class="fa fa-chevron-circle-right"></i>&nbsp;&nbsp;My Tasks
+                <i class="fa fa-chevron-circle-right"></i>&nbsp;&nbsp;{{WidgetName}}
             </h5>
             {{#ifGT results.Count 0}}
                 <div class="pull-right">
@@ -23,7 +23,7 @@ BEGIN
             {{/ifGT}}
         </div>
     </a>
-    <div class="collapse in" id="tasks-section">
+    <div class="collapse in" id="{{WidgetId}}-section">
         {{#ifGT results.Count 0}}
             <ul class="list-group">
                 {{#each results}}
@@ -50,9 +50,7 @@ INSERT INTO [dbo].[Content]
 		   [DateCreated],[TypeID],[ThumbID],[RoleID],[OwnerID],[CreatedBy])
      VALUES
            ('WidgetTasksPython','Edit Python Script',
-           'import datetime
-
-def Get():
+           'def Get():
     sql = Data.SQLContent
     template = Data.HTMLContent
     params = { ''pid'': Data.CurrentPerson.PeopleId }
@@ -139,14 +137,14 @@ BEGIN
            ('WidgetTagsHTML','Edit Text Content',
            '<div class="box">
     <div class="box-title hidden-xs">
-        <h5><a href="/Tags">My Tags</a></h5>
+        <h5><a href="/Tags">{{WidgetName}}</a></h5>
     </div>
-    <a class="visible-xs-block" id="tags-collapse" data-toggle="collapse" href="#tags-section" aria-expanded="true" aria-controls="tags-section">
+    <a class="visible-xs-block" id="{{WidgetId}}-collapse" data-toggle="collapse" href="#{{WidgetId}}-section" aria-expanded="true" aria-controls="{{WidgetId}}-section">
         <div class="box-title">
-            <h5><i class="fa fa-chevron-circle-right"></i>&nbsp;&nbsp;My Tags</h5>
+            <h5><i class="fa fa-chevron-circle-right"></i>&nbsp;&nbsp;{{WidgetName}}</h5>
         </div>
     </a>
-    <div class="collapse in" id="tags-section">
+    <div class="collapse in" id="{{WidgetId}}-section">
         {{#ifGT results.Count 0}}
             <ul class="list-group">
                 {{#each results}}
@@ -262,14 +260,14 @@ BEGIN
            ('WidgetNewsHTML','Edit Text Content',
            '<div class="box">
     <div class="box-title hidden-xs">
-        <h5><a href="{{blogurl}}" target="_blank">{{blogtitle}}</a></h5>
+        <h5><a href="{{blogurl}}" target="_blank">{{WidgetName}}</a></h5>
     </div>
-    <a class="visible-xs-block" id="news-collapse" data-toggle="collapse" href="#news-section" aria-expanded="true" aria-controls="news-section">
+    <a class="visible-xs-block" id="{{WidgetId}}-collapse" data-toggle="collapse" href="#{{WidgetId}}-section" aria-expanded="true" aria-controls="{{WidgetId}}-section">
         <div class="box-title">
-            <h5><i class="fa fa-chevron-circle-right"></i>&nbsp;&nbsp;{{blogtitle}}</h5>
+            <h5><i class="fa fa-chevron-circle-right"></i>&nbsp;&nbsp;{{WidgetName}}</h5>
         </div>
     </a>
-    <div class="collapse in" id="news-section">
+    <div class="collapse in" id="{{WidgetId}}-section">
         {{#ifGT news.Count 0}}
             <ul class="list-group">
                 {{#each news}}
@@ -308,7 +306,6 @@ import xml.etree.ElementTree as ET
 def Get():
     feedurl = ''https://www.touchpointsoftware.com/feed/''
     blogurl = ''http://blog.touchpointsoftware.com''
-    blogtitle = ''TouchPoint News''
     highlightNew = 7 # days to show new badge on article
     
     headers = { ''content-type'': ''application/json'' }
@@ -333,7 +330,6 @@ def Get():
         newsitems.append(model.DynamicData(news)) 
     Data.news = newsitems
     Data.blogurl = blogurl
-    Data.blogtitle = blogtitle
     print model.RenderTemplate(template)
 
 Get()',
@@ -400,7 +396,6 @@ import xml.etree.ElementTree as ET
 def Get():
     feedurl = model.Setting(''ChurchFeedUrl'')
     blogurl = model.Setting(''ChurchBlogUrl'')
-    blogtitle = ''Church News''
     highlightNew = 7 # days to show new badge on article
     
     headers = { ''content-type'': ''application/json'' }
@@ -425,7 +420,6 @@ def Get():
         newsitems.append(model.DynamicData(news)) 
     Data.news = newsitems
     Data.blogurl = blogurl
-    Data.blogtitle = blogtitle
     print model.RenderTemplate(template)
 
 Get()',
@@ -460,7 +454,7 @@ INSERT INTO [dbo].[DashboardWidgets]
            ,(select max(Id) from Content where [Name] like 'WidgetNewsHTML')
            ,(select max(Id) from Content where [Name] like 'WidgetBlogPython')
            ,NULL
-           ,1
+           ,0
            ,(select isnull(max([Order]), 0)+1 from DashboardWidgets)
            ,1
            ,1
@@ -486,12 +480,12 @@ BEGIN
            ('WidgetSearchesHTML','Edit Text Content',
            '<div class="box">
     <div class="box-title hidden-xs">
-        <h5><a href="/SavedQueryList">My Searches</a></h5>
+        <h5><a href="/SavedQueryList">{{WidgetName}}</a></h5>
     </div>
-    <a class="visible-xs-block" id="searches-collapse" data-toggle="collapse" href="#searches-section" aria-expanded="true" aria-controls="searches-section">
+    <a class="visible-xs-block" id="{{WidgetId}}-collapse" data-toggle="collapse" href="#{{WidgetId}}-section" aria-expanded="true" aria-controls="{{WidgetId}}-section">
         <div class="box-title">
             <h5>
-                <i class="fa fa-chevron-circle-right"></i>&nbsp;&nbsp;My Searches
+                <i class="fa fa-chevron-circle-right"></i>&nbsp;&nbsp;{{WidgetName}}
             </h5>
             {{#ifGT results.Count 0}}
                 <div class="pull-right">
@@ -500,7 +494,7 @@ BEGIN
             {{/ifGT}}
         </div>
     </a>
-    <div class="collapse in" id="searches-section">
+    <div class="collapse in" id="{{WidgetId}}-section">
         {{#ifGT results.Count 0}}
             <ul class="list-group">
                 {{#each results}}
@@ -683,12 +677,12 @@ BEGIN
            ('WidgetInvolvementHTML','Edit Text Content',
            '<div class="box">
     <div class="box-title hidden-xs">
-        <h5><a href="/Person2/{{CurrentPerson.PeopleId}}#enrollment">My Involvement</a></h5>
+        <h5><a href="/Person2/{{CurrentPerson.PeopleId}}#enrollment">{{WidgetName}}</a></h5>
     </div>
-    <a class="visible-xs-block" id="involvements-collapse" data-toggle="collapse" href="#involvements-section" aria-expanded="true" aria-controls="involvements-section">
+    <a class="visible-xs-block" id="{{WidgetId}}-collapse" data-toggle="collapse" href="#{{WidgetId}}-section" aria-expanded="true" aria-controls="{{WidgetId}}-section">
         <div class="box-title">
             <h5>
-                <i class="fa fa-chevron-circle-right"></i>&nbsp;&nbsp;My Involvement
+                <i class="fa fa-chevron-circle-right"></i>&nbsp;&nbsp;{{WidgetName}}
             </h5>
             {{#ifGT results.Count 0}}
                 <div class="pull-right">
@@ -697,7 +691,7 @@ BEGIN
             {{/ifGT}}
         </div>
     </a>
-    <div class="collapse in" id="involvements-section">
+    <div class="collapse in" id="{{WidgetId}}-section">
         {{#ifGT results.Count 0}}
             <ul class="list-group">
                 {{#each results}}
@@ -825,12 +819,12 @@ BEGIN
            ('WidgetBirthdaysHTML','Edit Text Content',
            '<div class="box">
     <div class="box-title hidden-xs">
-        <h5><a href="/Tags?tag=TrackBirthdays">Birthdays</a></h5>
+        <h5><a href="/Tags?tag=TrackBirthdays">{{WidgetName}}</a></h5>
     </div>
-    <a class="visible-xs-block" id="birthdays-collapse" data-toggle="collapse" href="#birthdays-section" aria-expanded="true" aria-controls="birthdays-section">
+    <a class="visible-xs-block" id="{{WidgetId}}-collapse" data-toggle="collapse" href="#{{WidgetId}}-section" aria-expanded="true" aria-controls="{{WidgetId}}-section">
         <div class="box-title">
             <h5>
-                <i class="fa fa-chevron-circle-right"></i>&nbsp;&nbsp;Birthdays
+                <i class="fa fa-chevron-circle-right"></i>&nbsp;&nbsp;{{WidgetName}}
             </h5>
             {{#ifGT results.Count 0}}
                 <div class="pull-right">
@@ -839,7 +833,7 @@ BEGIN
             {{/ifGT}}
         </div>
     </a>
-    <div class="collapse in" id="birthdays-section">
+    <div class="collapse in" id="{{WidgetId}}-section">
         {{#ifGT results.Count 0}}
             <ul class="list-group">
                 {{#each results}}
@@ -917,5 +911,298 @@ INSERT INTO [dbo].[DashboardWidgetRoles]
      VALUES
            ((select SCOPE_IDENTITY())
            ,(select min(RoleId) from Roles where RoleName like 'Access'))
+END
+GO
+-- add recurring giving forecast widget
+IF (select count(*) from DashboardWidgets where [Name] like 'Recurring Giving Forecast' and [System] = 1) = 0
+BEGIN
+  INSERT INTO [dbo].[Content]
+           ([Name],[Title],
+       [Body],
+       [DateCreated],[TypeID],[ThumbID],[RoleID],[OwnerID],[CreatedBy])
+     VALUES
+           ('WidgetGivingForecastHTML','Edit Text Content',
+           '<div class="box">
+    <div class="box-title hidden-xs">
+        <h5><a href="#">{{WidgetName}}</a></h5>
+    </div>
+    <a class="visible-xs-block" id="giving-fc-collapse" data-toggle="collapse" href="#{{WidgetId}}-section" aria-expanded="true" aria-controls="{{WidgetId}}-section">
+        <div class="box-title">
+            <h5>
+                <i class="fa fa-chevron-circle-right"></i>&nbsp;&nbsp;{{WidgetName}}
+            </h5>
+        </div>
+    </a>
+    <div class="collapse in" id="{{WidgetId}}-section">
+        <div class="box-content center">
+            <h4 class="text-center">{{fund}}</h4>
+            <div class="chart">
+            </div>
+            <p class="text-center" style="margin-top:10px;">Based on annual budget of ${{FmtNumber budget}}</p>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    var data = {{{results}}};
+    var budget = {{budget}};
+    var projected = Math.round(data.Combined.MonthlyAmt * 12);
+    google.charts.load("current", {packages:["corechart"]});
+    google.charts.setOnLoadCallback(function() {
+    data = google.visualization.arrayToDataTable([
+        [''Item'', ''Dollars''],
+        [''Projected Monthly Recurring'', projected],
+        [''Remaining Budget'', budget - projected]
+    ]);
+    
+    var options = {
+        pieHole: 0.4,
+        legend: ''none'',
+        chartArea: {
+            left: 0,
+            top: 0,
+            width: ''100%'',
+            height: ''100%''
+        }
+    };
+    
+    var chart = new google.visualization.PieChart(document.querySelector(''#{{WidgetId}}-section .chart''));
+    chart.draw(data, options);
+    });
+</script>',
+           GETDATE(),1,0,0,0,'admin')
+           
+INSERT INTO [dbo].[ContentKeyWords]
+           ([Id]
+           ,[Word])
+     VALUES
+           ((select SCOPE_IDENTITY())
+           ,'widget')
+
+INSERT INTO [dbo].[Content]
+           ([Name],[Title],
+       [Body],
+       [DateCreated],[TypeID],[ThumbID],[RoleID],[OwnerID],[CreatedBy])
+     VALUES
+           ('WidgetGivingForecastPython','Edit Python Script',
+           'FundId = 9
+FundName = ''Benevolence''
+AnnualBudget = 48000 # in dollars
+TagMembers = ''GivingForecast-Members''
+TagNonMembers = ''GivingForecast-ActiveNonMembers''
+
+def Get():
+    sql = Data.SQLContent
+    template = Data.HTMLContent
+    params = { ''FundId'': FundId, ''TagMembers'': TagMembers, ''TagNonMembers'': TagNonMembers }
+    
+    model.CreateQueryTag(TagMembers, 
+        ''FamHasPrimAdultChurchMemb = 1 AND IncludeDeceased = 1'')
+    
+    model.CreateQueryTag(TagNonMembers, 
+    ''''''
+        ( 
+            RecentFamilyAdultLastAttend( Days=365 ) = 1 
+            OR IsFamilyGiver( Days=365 ) = 1
+        ) 
+        AND FamHasPrimAdultChurchMemb = 0 
+        AND IncludeDeceased = 1
+    '''''')
+
+    results = q.SqlFirstColumnRowKey(sql, params)
+    Data.results = model.FormatJson(results)
+    Data.fund = FundName
+    Data.budget = AnnualBudget
+    print model.RenderTemplate(template)
+    
+Get()',
+           GETDATE(),5,0,0,0,'admin')
+          
+INSERT INTO [dbo].[ContentKeyWords]
+           ([Id]
+           ,[Word])
+     VALUES
+           ((select SCOPE_IDENTITY())
+           ,'widget')
+           
+INSERT INTO [dbo].[Content]
+           ([Name],[Title],
+       [Body],
+       [DateCreated],[TypeID],[ThumbID],[RoleID],[OwnerID],[CreatedBy])
+     VALUES
+           ('WidgetGivingForecastSQL','Edit Sql Script',
+           'with Members as (
+  select tp.PeopleId, p.FamilyId
+  from dbo.TagPerson tp
+  join dbo.Tag t on t.Id = tp.Id
+  join dbo.People p on p.PeopleId = tp.PeopleId
+  where t.Name = @TagMembers
+  and t.TypeId = 101 -- QueryTag
+),
+NonMembers as (
+  select tp.PeopleId, p.FamilyId
+  from dbo.TagPerson tp
+  join dbo.Tag t on t.Id = tp.Id
+  join dbo.People p on p.PeopleId = tp.PeopleId
+  where t.Name = @TagNonMembers
+  and t.TypeId = 101 -- QueryTag
+),
+Both as (
+  select PeopleId, FamilyId, ''Member'' MemberStatus
+  from Members
+  union
+  select PeopleId, FamilyId, ''NonMember''
+  from NonMembers
+),
+FamilyCounts as (
+  select 
+    MemberStatus = ''Member'',
+    FamilyCnt = count(distinct FamilyId)
+  from Members
+
+  union all
+
+  select 
+    MemberStatus = ''NonMember'',
+    FamilyCnt = count(distinct FamilyId)
+  from NonMembers
+),
+RecurTable as(
+    select PeopleId
+    from dbo.RecurringAmounts
+    where (FundID = @FundId or @FundId is null)
+    and Amt > 0
+),
+RecurringCounts as (
+  select 
+    MemberStatus = ''Member'',
+    RecurringCnt = count(distinct FamilyId)
+  from Members m
+  where exists(select null from RecurTable where PeopleId =  m.PeopleId)
+
+  union all
+
+  select 
+    MemberStatus = ''NonMember'',
+    RecurringCnt = count(distinct FamilyId)
+  from NonMembers n
+  where exists(select null from RecurTable where PeopleId =  n.PeopleId)
+),
+RecurringAmts as (
+  select 
+    RecurringType = ''Monthly'',
+    b.MemberStatus,
+    MonthlyAmt = isnull(sum(Amt),0)
+  from dbo.RecurringAmounts a
+  join dbo.ManagedGiving mg on a.peopleid = mg.peopleid
+  join Both b on b.PeopleId = mg.PeopleId
+  where (a.fundid = @FundId or @FundId is null)
+  and SemiEvery=''E'' and EveryN=1 and Period=''M''
+  group by b.MemberStatus
+
+  union all
+
+  select 
+    RecurringType = ''Weekly'',
+    b.MemberStatus,
+    MonthlyAmt = 4.345 * isnull(sum(Amt),0)
+  from dbo.RecurringAmounts a
+  join dbo.ManagedGiving mg on a.peopleid = mg.peopleid
+  join Both b on b.PeopleId = mg.PeopleId
+  where (a.fundid = @FundId or @FundId is null)
+  and SemiEvery=''E'' and EveryN=1 and Period=''W''
+  group by b.MemberStatus
+
+  union all
+
+  select 
+    RecurringType = ''BiWeeky'',
+    b.MemberStatus,
+    MonthlyAmt = 2.18 * isnull(sum(Amt),0)
+  from dbo.RecurringAmounts a
+  join dbo.ManagedGiving mg on a.peopleid = mg.peopleid
+  join Both b on b.PeopleId = mg.PeopleId
+  where (a.fundid = @FundId or @FundId is null)
+  and SemiEvery=''E'' and EveryN=2 and Period=''W''
+  group by b.MemberStatus
+
+  union all
+
+  select 
+    RecurringType = ''SemiMonthly'',
+    b.MemberStatus,
+    MonthlyAmt = 2 * isnull(sum(Amt),0)
+  from dbo.RecurringAmounts a
+  join dbo.ManagedGiving mg on a.peopleid = mg.peopleid
+  join Both b on b.PeopleId = mg.PeopleId
+  where (a.fundid = @FundId or @FundId is null)
+  and SemiEvery=''S''
+  group by b.MemberStatus
+),
+Totals as (
+  select 
+    MemberStatus, 
+    MonthlyAmt = sum(MonthlyAmt)
+  from RecurringAmts
+  group by MemberStatus
+)
+select
+  RowType = isnull(t.MemberStatus, ''Combined''),
+  FamilyCnt = sum(FamilyCnt),
+  RecurringCnt = sum(RecurringCnt),
+  MonthlyAmt = sum(MonthlyAmt)
+from Totals t
+join FamilyCounts c on c.MemberStatus = t.MemberStatus
+join RecurringCounts r on r.MemberStatus = t.MemberStatus
+group by rollup(t.MemberStatus)',
+           GETDATE(),4,0,0,0,'admin')
+
+INSERT INTO [dbo].[ContentKeyWords]
+           ([Id]
+           ,[Word])
+     VALUES
+           ((select SCOPE_IDENTITY())
+           ,'widget')
+END
+GO
+
+IF (select count(*) from DashboardWidgets where [Name] like 'Recurring Giving Forecast' and [System] = 1) = 0
+BEGIN
+INSERT INTO [dbo].[DashboardWidgets]
+           ([Name]
+           ,[Description]
+           ,[HTMLContentId]
+           ,[PythonContentId]
+           ,[SQLContentId]
+           ,[Enabled]
+           ,[Order]
+           ,[System]
+           ,[CachePolicy]
+           ,[CacheHours])
+     VALUES
+           ('Recurring Giving Forecast'
+           ,'Shows a pie chart with projected monthly recurring giving as a percentage of total budget'
+           ,(select max(Id) from Content where [Name] like 'WidgetGivingForecastHTML')
+           ,(select max(Id) from Content where [Name] like 'WidgetGivingForecastPython')
+           ,(select max(Id) from Content where [Name] like 'WidgetGivingForecastSQL')
+           ,0
+           ,(select isnull(max([Order]), 0)+1 from DashboardWidgets)
+           ,1
+           ,1
+           ,24)
+
+INSERT INTO [dbo].[DashboardWidgetRoles]
+           ([WidgetId]
+           ,[RoleId])
+     VALUES
+           ((select SCOPE_IDENTITY())
+           ,(select min(RoleId) from Roles where RoleName like 'Finance')),
+           ((select SCOPE_IDENTITY())
+           ,(select min(RoleId) from Roles where RoleName like 'FinanceAdmin')),
+           ((select SCOPE_IDENTITY())
+           ,(select min(RoleId) from Roles where RoleName like 'FinanceViewOnly')),
+           ((select SCOPE_IDENTITY())
+           ,(select min(RoleId) from Roles where RoleName like 'FinanceDataEntry')),
+           ((select SCOPE_IDENTITY())
+           ,(select min(RoleId) from Roles where RoleName like 'Admin'))
 END
 GO

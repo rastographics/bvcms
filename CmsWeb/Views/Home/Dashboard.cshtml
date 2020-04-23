@@ -3,6 +3,7 @@
     ViewBag.Title = "Home";
     Layout = ViewExtensions2.TouchPointLayout();
 }
+@ViewExtensions2.GoogleCharts()
 @section head
 {
     <style>
@@ -29,13 +30,13 @@
             padding-left: 20px;
         }
 
-        ul.list-group li.section {
-            font-weight: bold;
-        }
+            ul.list-group li.section {
+                font-weight: bold;
+            }
 
-        ul.list-group li.indent {
-            padding-left: 25px;
-        }
+            ul.list-group li.indent {
+                padding-left: 25px;
+            }
 
         .list-group-item > .label {
             float: right;
@@ -44,11 +45,13 @@
         .widget-embed.loading {
             opacity: 0.5;
         }
-        .widget-embed.loading .box,
-        .widget-embed.error .box {
-            height: 150px;
-            background-color: #fff;
-        }
+
+            .widget-embed.loading .box,
+            .widget-embed.error .box {
+                height: 150px;
+                background-color: #fff;
+            }
+
         .widget-embed .box > .center {
             display: flex;
             flex-direction: column;
@@ -56,48 +59,48 @@
             justify-content: center;
             height: 100%;
         }
-        .widget-embed .box > .center i {
-            margin-bottom: 15px;
-        }
 
+            .widget-embed .box > .center i {
+                margin-bottom: 15px;
+            }
     </style>
 }
 <div id="home" class="row">
     @foreach (List<DashboardWidget> column in Model)
     {
-    <div class="col-sm-4">
-        @foreach (DashboardWidget widget in column)
-        {
-            <div class="widget-embed" data-url="/HomeWidgets/Embed/@widget.Id.ToString()" data-name="@widget.Name">
-                <div class="box">
-                    <div class="center">
-                        <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
-                        <p>Loading...</p>
+        <div class="col-sm-4">
+            @foreach (DashboardWidget widget in column)
+            {
+                <div class="widget-embed" data-url="/HomeWidgets/Embed/@widget.Id.ToString()" data-name="@widget.Name">
+                    <div class="box">
+                        <div class="center">
+                            <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
+                            <p>Loading...</p>
+                        </div>
                     </div>
                 </div>
-            </div>
-        }
-    </div>
+            }
+        </div>
     }
 </div>
 @section scripts {
-<script>
-    $('.widget-embed').each(function () {
-        var el = $(this);
-        var url = el.data('url');
-        el.addClass('loading');
-        $.get(url, function (data) {
-            if (data.includes('Error:')) {
+    <script>
+        $('.widget-embed').each(function () {
+            var el = $(this);
+            var url = el.data('url');
+            el.addClass('loading');
+            $.get(url, function (data) {
+                if (data.includes('Error:')) {
+                    el.removeClass('loading').addClass('error');
+                    el.html("<div class='box'><div class='center bg-warning text-warning'><i class='fa fa-3x fa-exclamation-circle'></i><p style='text-align:center;'>Error loading " + el.data('name') + "<br />Contact your system administrator</p></div></div>")
+                } else {
+                    el.html(data);
+                    el.removeClass('loading');
+                }
+            }).fail(function () {
                 el.removeClass('loading').addClass('error');
                 el.html("<div class='box'><div class='center bg-warning text-warning'><i class='fa fa-3x fa-exclamation-circle'></i><p style='text-align:center;'>Error loading " + el.data('name') + "<br />Contact your system administrator</p></div></div>")
-            } else {
-                el.html(data);
-                el.removeClass('loading');
-            }
-        }).fail(function () {
-            el.removeClass('loading').addClass('error');
-            el.html("<div class='box'><div class='center bg-warning text-warning'><i class='fa fa-3x fa-exclamation-circle'></i><p style='text-align:center;'>Error loading " + el.data('name') + "<br />Contact your system administrator</p></div></div>")
-        });
-    })
-</script>
+            });
+        })
+    </script>
 }

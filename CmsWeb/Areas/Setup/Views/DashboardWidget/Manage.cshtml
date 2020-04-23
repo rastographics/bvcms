@@ -4,6 +4,7 @@
     ViewBag.Title = "Homepage Widgets";
     ViewBag.PageHeader = "Homepage Widgets";
 }
+@ViewExtensions2.GoogleCharts()
 @section head{
     @Fingerprint.Css("/Content/touchpoint/lib/jquery-multi-select/css/multi-select.css")
     <style type="text/css">
@@ -23,15 +24,12 @@
             border-right: none;
             padding-left: 20px;
         }
-
         .widget-preview ul.list-group li.section {
             font-weight: bold;
         }
-
         .widget-preview ul.list-group li.indent {
             padding-left: 25px;
         }
-
         .list-group-item > .label {
             float: right;
         }
@@ -170,7 +168,7 @@
 
 @section scripts
 {
-<script>
+    <script>
     $(function () {
         $('[data-toggle="popover"]').popover({ container: '.box-content' });
         $('[data-toggle="popover"]').click(function (ev) {
@@ -225,5 +223,5 @@
             });
         });
     });
-</script>
+    </script>
 }

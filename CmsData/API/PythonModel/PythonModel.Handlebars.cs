@@ -134,6 +134,33 @@ namespace CmsData
                 if(decimal.TryParse(s, out decimal d))
                     writer.Write(d.ToString("C"));
             });
+            handlebars.RegisterHelper("FmtNumber", (writer, context, args) =>
+            {
+                var s = args[0]?.ToString();
+                if(int.TryParse(s, out int num))
+                {
+                    if (num >= 100000000)
+                    {
+                        writer.Write((num / 1000000).ToString("#,0M"));
+                    }
+                    else if (num >= 10000000)
+                    {
+                        writer.Write((num / 1000000).ToString("0.#") + "M");
+                    }
+                    else if (num >= 100000)
+                    {
+                        writer.Write((num / 1000).ToString("#,0K"));
+                    }
+                    else if (num >= 10000)
+                    {
+                        writer.Write((num / 1000).ToString("0.#") + "K");
+                    }
+                    else
+                    {
+                        writer.Write(num.ToString("#,0"));
+                    }
+                }
+            });
 
             // Format helper in form of:  {{Fmt value "fmt"}}
             // ex. {{Fmt Total "C"}}

@@ -241,6 +241,8 @@ namespace CmsWeb.Areas.Setup.Models
             }
             m.pythonModel.DictionaryAdd("CurrentUser", CurrentDatabase.CurrentUser);
             m.pythonModel.DictionaryAdd("CurrentPerson", CurrentDatabase.CurrentUserPerson);
+            m.pythonModel.DictionaryAdd("WidgetId", "widget_" + Id);
+            m.pythonModel.DictionaryAdd("WidgetName", Name);
             if (PythonContent == null)
             {
                 return m.RunPythonScript("print model.RenderTemplate(Data.HTMLContent)");
