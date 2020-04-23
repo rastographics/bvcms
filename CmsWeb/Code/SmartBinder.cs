@@ -17,6 +17,9 @@ namespace CmsWeb
         
         protected override object CreateModel(ControllerContext controllerContext, ModelBindingContext bindingContext, Type modelType)
         {
+            if(controllerContext.Controller is CmsWeb.Areas.Public.Controllers.IncomingSmsController)
+                return base.CreateModel(controllerContext, bindingContext, modelType);
+
             var db = ((CMSBaseController)controllerContext?.Controller)?.CurrentDatabase;
             string type = null;            
             if (modelType == typeof(Ask))
