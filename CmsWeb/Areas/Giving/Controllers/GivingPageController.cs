@@ -7,6 +7,7 @@ using System.Web.Mvc;
 using CmsData;
 using UtilityExtensions;
 using CmsWeb.Areas.Giving.Models;
+using DocumentFormat.OpenXml.Wordprocessing;
 
 namespace CmsWeb.Areas.Giving.Controllers
 {
@@ -18,25 +19,14 @@ namespace CmsWeb.Areas.Giving.Controllers
         {
         }
 
+        [HttpGet]
         [Route("~/Giving")]
         public ActionResult Index()
         {
             return View();
         }
 
-        //[Route("~/CreateNewGivingPage")]
-        public ActionResult CreateNewGivingPage(string pageName, string pageTitle, bool enabled)
-        {
-            return Json(pageName, JsonRequestBehavior.AllowGet);
-        }
-
-        public ActionResult Edit(int id)
-        {
-            ViewBag.CurrentGivingPageId = id;
-            return View();
-        }
-
-        [Route("~/GetGivingPageList")]
+        [HttpGet]
         public JsonResult GetGivingPageList()
         {
             var model = new GivingPageModel(CurrentDatabase);
@@ -45,5 +35,162 @@ namespace CmsWeb.Areas.Giving.Controllers
 
             return Json(givingPageHash, JsonRequestBehavior.AllowGet);
         }
+
+        public ActionResult CreateNewGivingPage(string pageName, string pageTitle, bool enabled)
+        {
+            return Json(pageName, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpGet]
+        public ActionResult Edit(int id)
+        {
+            ViewBag.CurrentGivingPageId = id;
+            return View();
+        }
+
+        [HttpGet]
+        public JsonResult GetGivingPage(int id) // id = GivingPageId
+        {
+            var givingPage = CurrentDatabase.GivingPages.Where(g => g.GivingPageId == id).FirstOrDefault();
+            var output = new GivingPage
+            {
+                GivingPageId = givingPage.GivingPageId,
+                PageName = givingPage.PageName,
+                PageTitle = givingPage.PageTitle,
+                PageType = givingPage.PageType,
+                FundId = givingPage.FundId,
+                Enabled = givingPage.Enabled,
+                DisabledRedirect = givingPage.DisabledRedirect,
+                SkinFile = givingPage.SkinFile,
+                TopText = givingPage.TopText,
+                ThankYouText = givingPage.ThankYouText,
+                ConfirmationEmailPledge = givingPage.ConfirmationEmailPledge,
+                ConfirmationEmailOneTime = givingPage.ConfirmationEmailOneTime,
+                ConfirmationEmailRecurring = givingPage.ConfirmationEmailRecurring,
+                CampusId = givingPage.CampusId,
+                EntryPointId = givingPage.EntryPointId
+            };
+
+            return Json(output, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpGet]
+        public JsonResult GetPageTypes()
+        {
+            var pageTypesList = new List<PageTypesClass>();
+            for(var i = 1; i < 11; i++)
+            {
+                var pageType = new PageTypesClass
+                {
+                    id = i,
+                    pageTypeName = "Page Type " + (i).ToString()
+                };
+                pageTypesList.Add(pageType);
+            }
+            return Json(pageTypesList, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpGet]
+        public JsonResult GetAvailableFunds()
+        {
+            var availableFundsList = new List<PageTypesClass>();
+            for (var i = 0; i < 10; i++)
+            {
+                var pageType = new PageTypesClass
+                {
+                    id = i,
+                    pageTypeName = "Available Fund " + (i + 1).ToString()
+                };
+                availableFundsList.Add(pageType);
+            }
+            return Json(availableFundsList, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpGet]
+        public JsonResult GetEntryPoints()
+        {
+            var entryPointsList = new List<PageTypesClass>();
+            for (var i = 0; i < 10; i++)
+            {
+                var pageType = new PageTypesClass
+                {
+                    id = i,
+                    pageTypeName = "Entry Point " + (i + 1).ToString()
+                };
+                entryPointsList.Add(pageType);
+            }
+            return Json(entryPointsList, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpGet]
+        public JsonResult GetOnlineNotifyPersonList()
+        {
+            var onlineNotifyPersonList = new List<PageTypesClass>();
+            for (var i = 0; i < 10; i++)
+            {
+                var pageType = new PageTypesClass
+                {
+                    id = i,
+                    pageTypeName = "Online Notify Person " + (i + 1).ToString()
+                };
+                onlineNotifyPersonList.Add(pageType);
+            }
+            return Json(onlineNotifyPersonList, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpGet]
+        public JsonResult GetConfirmationEmailList()
+        {
+            var confirmationEmailList = new List<PageTypesClass>();
+            for (var i = 0; i < 10; i++)
+            {
+                var pageType = new PageTypesClass
+                {
+                    id = i,
+                    pageTypeName = "Confirmation Email Person " + (i + 1).ToString()
+                };
+                confirmationEmailList.Add(pageType);
+            }
+            return Json(confirmationEmailList, JsonRequestBehavior.AllowGet);
+        }
+
+        //[HttpGet]
+        //public JsonResult GetConfirmationEmailPledgeList()
+        //{
+        //    var confirmationEmailPledgeList = new List<int>();
+        //    for (var i = 0; i < 10; i++)
+        //    {
+        //        confirmationEmailPledgeList.Add(i);
+        //    }
+        //    return Json(confirmationEmailPledgeList, JsonRequestBehavior.AllowGet);
+        //}
+
+        //[HttpGet]
+        //public JsonResult GetConfirmationEmailOneTimeList()
+        //{
+        //    var confirmationEmailOneTimeList = new List<int>();
+        //    for (var i = 0; i < 10; i++)
+        //    {
+        //        confirmationEmailOneTimeList.Add(i);
+        //    }
+        //    return Json(confirmationEmailOneTimeList, JsonRequestBehavior.AllowGet);
+        //}
+
+        //[HttpGet]
+        //public JsonResult GetConfirmationEmailRecurringList()
+        //{
+        //    var confirmationEmailRecurringList = new List<int>();
+        //    for (var i = 0; i < 10; i++)
+        //    {
+        //        confirmationEmailRecurringList.Add(i);
+        //    }
+        //    return Json(confirmationEmailRecurringList, JsonRequestBehavior.AllowGet);
+        //}
     }
+}
+
+public class PageTypesClass
+{
+    public int id { get; set; }
+    public string pageTypeName { get; set; }
 }

@@ -9,7 +9,7 @@
 			[PageType] [INT] NOT NULL,
 			[FundId] [INT] NOT NULL CONSTRAINT FK_GivingPages_ContributionFund FOREIGN KEY REFERENCES ContributionFund(FundId),
             [Enabled] [bit] NOT NULL,
-            [DisabledReDirect] [NVARCHAR](max) NOT NULL,
+            [DisabledRedirect] [NVARCHAR](max),
             [SkinFile] [NVARCHAR](max),
             [TopText] [NVARCHAR](max),
             [ThankYouText] [NVARCHAR](max),
