@@ -31,7 +31,7 @@ namespace CmsWeb.MobileAPI
             title = $"{y}";
         }
 
-        public void Load(int peopleId, List<NormalContribution> contributions, List<UnitPledgeSummary> pledges, List<GiftsInKind> giftsinkind, List<NonTaxContribution> nontaxitems)
+        public void Load(int peopleId, List<NormalContribution> contributions, List<UnitPledgeSummary> pledges, List<NonTaxContribution> nontaxitems)
         {
             statement = $"/Person2/ContributionStatement/{peopleId}/{title}-01-01/{title}-12-31";
             var empty = contributions.Count == 0;
@@ -43,9 +43,8 @@ namespace CmsWeb.MobileAPI
                 new AnnualSummary(contributions),
                 new AnnualSummary(nontaxitems),
                 new AnnualSummary(pledges),
-                new AnnualSummary(giftsinkind)
             });
-            details = new AnnualGivingDetails(new GivingDetails(contributions), new GivingDetails(pledges), new GivingDetails(giftsinkind), new GivingDetails(nontaxitems));
+            details = new AnnualGivingDetails(new GivingDetails(contributions), new GivingDetails(pledges), new GivingDetails(nontaxitems));
         }
     }
 
