@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Configuration;
 using CmsData.Classes.Twilio;
+using RestSharp;
 
 namespace CmsData
 {
@@ -23,6 +25,15 @@ namespace CmsData
                 throw new Exception($"The message length was {sMessage.Length} but cannot be over 1600.");
             }
             TwilioHelper.QueueSms(db, query, iSendGroup, sTitle, sMessage);
+        }
+        public static string CreateTinyUrl(string url)
+        {
+            var createTinyUrl = "https://tpsdb.co/Create";
+            var client = new RestClient(createTinyUrl);
+            var request = new RestRequest(Method.POST);
+            request.AddParameter("token", ConfigurationManager.AppSettings["tpsdbcotoken"]);
+            request.AddParameter("url", url);
+            return client.Execute(request).Content;
         }
     }
 }
