@@ -4,8 +4,11 @@ using CmsDataTests.Properties;
 using SharedTestFixtures;
 using Shouldly;
 using System;
+using System.IO;
+using System.Reflection;
 using Xunit;
 using UtilityExtensions;
+using UtilityExtensions.Config;
 
 namespace CmsDataTests
 {
@@ -118,6 +121,26 @@ namespace CmsDataTests
             var result = model.SqlGrid(sql);
 
             result.Length.ShouldBeGreaterThan(0);
+        }
+
+        [Fact]
+        public void CreateTinyUrlTest()
+        {
+            string id = null;
+            using (AppConfig.Change(GetWebConfig()))
+            {
+                id = PythonModel.CreateTinyUrl("https://status.touchpointsoftware.com");
+            }
+            System.Net.WebClient wc = new System.Net.WebClient();
+            string webData = wc.DownloadString($"https://{id}");
+            webData.ShouldContain("Announcements");
+        }
+
+        private static string GetWebConfig()
+        {
+            string curDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            var webconfig = Path.GetFullPath(Path.Combine(curDir, @"..\..\..\..\CmsWeb\web.config"));
+            return webconfig;
         }
 
         public override void Dispose()
