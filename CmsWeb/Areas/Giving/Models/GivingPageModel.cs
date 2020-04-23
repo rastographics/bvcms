@@ -27,6 +27,8 @@ namespace CmsWeb.Areas.Giving.Models
                 _db = value;
             }
         }
+
+
         public HashSet<GivingPageItem> GetGivingPageHashSet()
         {
             var outputHashSet = new HashSet<GivingPageItem>();
@@ -55,14 +57,6 @@ namespace CmsWeb.Areas.Giving.Models
                 outputHashSet.Add(givingPage);
             }
             return outputHashSet;
-        }
-        public List<GivingPage> GetGivingPageList()
-        {
-            var givingPageList = new List<GivingPage>();
-
-            givingPageList = CurrentDatabase.GivingPages.ToList();
-
-            return givingPageList;
         }
     }
 

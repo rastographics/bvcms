@@ -29,7 +29,7 @@ namespace CmsData
 
         private bool _Enabled;
 
-        private string _DisabledReDirect;
+        private string _DisabledRedirect;
 
         private string _SkinFile;
 
@@ -79,8 +79,8 @@ namespace CmsData
         partial void OnEnabledChanging(bool value);
         partial void OnEnabledChanged();
 
-        partial void OnDisabledReDirectChanging(string value);
-        partial void OnDisabledReDirectChanged();
+        partial void OnDisabledRedirectChanging(string value);
+        partial void OnDisabledRedirectChanged();
 
         partial void OnSkinFileChanging(string value);
         partial void OnSkinFileChanged();
@@ -234,20 +234,20 @@ namespace CmsData
             }
         }
 
-        [Column(Name = "DisabledReDirect", UpdateCheck = UpdateCheck.Never, Storage = "_DisabledReDirect", DbType = "nvarchar NOT NULL")]
-        public string DisabledReDirect
+        [Column(Name = "DisabledRedirect", UpdateCheck = UpdateCheck.Never, Storage = "_DisabledRedirect", DbType = "nvarchar")]
+        public string DisabledRedirect
         {
-            get { return _DisabledReDirect; }
+            get { return _DisabledRedirect; }
 
             set
             {
-                if (_DisabledReDirect != value)
+                if (_DisabledRedirect != value)
                 {
-                    OnDisabledReDirectChanging(value);
+                    OnDisabledRedirectChanging(value);
                     SendPropertyChanging();
-                    _DisabledReDirect = value;
-                    SendPropertyChanged("DisabledReDirect");
-                    OnDisabledReDirectChanged();
+                    _DisabledRedirect = value;
+                    SendPropertyChanged("DisabledRedirect");
+                    OnDisabledRedirectChanged();
                 }
             }
         }
