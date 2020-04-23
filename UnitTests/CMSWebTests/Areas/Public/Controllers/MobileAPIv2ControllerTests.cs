@@ -70,6 +70,7 @@ namespace CmsWeb.Areas.Public.ControllersTests
             requestManager.CurrentHttpContext.Request.Headers["Authorization"] = BasicAuthenticationString(username, password);
             var Now = DateTime.Now;
             var year = Now.Year;
+            var fund1Name = db.ContributionFunds.Where(c => c.FundId == 1).Select(c => c.FundName).Single();
             if (contribution > 0)
             {
                 GenerateContribution(contribution, user, Now);
@@ -100,7 +101,7 @@ namespace CmsWeb.Areas.Public.ControllersTests
             current.summary[0].showAsPledge.ShouldBe(0);
             if (contribution > 0)
             {
-                current.summary[0].funds[0].name.ShouldBe("General Operation");
+                current.summary[0].funds[0].name.ShouldBe(fund1Name);
                 current.summary[0].funds[0].given.ShouldBe(total);
             }
             message = new MobileMessage
@@ -127,7 +128,7 @@ namespace CmsWeb.Areas.Public.ControllersTests
                 previous.summary[0].comment.ShouldBe(comment);
                 previous.summary[0].count.ShouldBe(contribCount);
                 previous.summary[0].showAsPledge.ShouldBe(0);
-                previous.summary[0].funds[0].name.ShouldBe("General Operation");
+                previous.summary[0].funds[0].name.ShouldBe(fund1Name);
                 previous.summary[0].funds[0].given.ShouldBe(prevTotal);
             }
         }

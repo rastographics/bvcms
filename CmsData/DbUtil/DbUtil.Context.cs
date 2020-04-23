@@ -857,7 +857,13 @@ This search uses multiple steps which cannot be duplicated in a single query.
         public Person CurrentUserPerson => Users.Where(u => u.UserId == UserId).Select(u => u.Person).SingleOrDefault();
         public Tag OrgLeadersOnlyTag2()
         {
-            return FetchOrCreateTag(CurrentSessionId, UserPeopleId, DbUtil.TagTypeId_OrgLeadersOnly);
+            //return FetchOrCreateTag(CurrentSessionId, UserPeopleId, DbUtil.TagTypeId_OrgLeadersOnly);
+            var tag = FetchTag(CurrentSessionId, UserPeopleId, DbUtil.TagTypeId_OrgLeadersOnly);
+            if (tag == null)
+            {
+                tag = SetOrgLeadersOnly();
+            }
+            return tag;
         }
 
         public Tag FetchOrCreateTag(string tagname, int? ownerId, int tagtypeid)
@@ -921,7 +927,7 @@ This search uses multiple steps which cannot be duplicated in a single query.
             return oids;
         }
 
-        public void SetOrgLeadersOnly()
+        public Tag SetOrgLeadersOnly()
         {
             var me = UserPeopleId;
             var dt = Util.Now.AddYears(-3);
@@ -976,6 +982,8 @@ This search uses multiple steps which cannot be duplicated in a single query.
                 where p.contactsHad.Any(c => c.contact.contactsMakers.Any(cm => cm.PeopleId == me))
                 select p;
             TagAll(q, tag);
+
+            return tag;
         }
 
         [Function(Name = "dbo.AddAbsents")]
