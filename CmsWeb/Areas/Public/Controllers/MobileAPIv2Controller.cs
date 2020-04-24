@@ -803,7 +803,7 @@ namespace CmsWeb.Areas.Public.Controllers
 
             foreach (MobilePostEditField field in fields)
             {
-                field.updatePerson(person, personChangeList, familyChangeList);
+                field.updatePerson(CurrentDatabase, person, personChangeList, familyChangeList);
             }
 
             if (personChangeList.Count > 0)
@@ -944,8 +944,9 @@ namespace CmsWeb.Areas.Public.Controllers
             var nontaxitems = APIContribution.NonTaxItems(CurrentDatabase, ci, FromDate, ToDate, null).ToList();
             if (summary.ContainsKey($"{year}"))
             {
-                summary[$"{year}"].Load(peopleId, contributions, pledges, giftsinkind, nontaxitems);
+                summary[$"{year}"].Load(peopleId, contributions, pledges, nontaxitems);
             }
+            contributions.AddRange(giftsinkind.ConvertAll(g => new NormalContribution(g)));
             MobileMessage response = new MobileMessage();
             response.data = SerializeJSON(summary, message.version);
             response.setNoError();
