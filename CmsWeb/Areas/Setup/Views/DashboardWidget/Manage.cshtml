@@ -54,7 +54,7 @@
     </style>
 }
 <div class="row">
-    <div class="col-sm-8 col-md-8 col-lg-9">
+    <div class="col-sm-8">
         @using (Html.BeginForm("Update", "DashboardWidget", FormMethod.Post, new { id = "widgetform" }))
         {
             <div class="box box-responsive">
@@ -156,7 +156,7 @@
     </div>
     @if (Model.Id != 0)
     {
-        <div class="col-sm-4 col-md-4 col-lg-3 widget-preview">
+        <div class="col-sm-4 widget-preview">
             <div>
                 <span class="h4">Widget Preview</span> <a href="#" class="load-preview" data-url="/HomeWidgets/Embed/@Model.Id.ToString()/?preview=true"><i class="fa fa-refresh"></i></a>
             </div>
