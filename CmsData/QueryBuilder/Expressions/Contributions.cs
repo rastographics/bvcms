@@ -164,7 +164,7 @@ namespace CmsData
             Expression expr = Expression.Invoke(pred, parm);
             return expr;
         }
-        private Expression RecentContributionAmount2(int days, int fund, decimal amt, bool taxnontax)
+        private Expression RecentContributionAmount2(int days, int fund, decimal amt, bool taxnontax, bool hoh = false)
         {
             if (!db.FromBatch)
             {
@@ -212,28 +212,61 @@ namespace CmsData
                 case CompareType.Equal:
                     if (amt == 0)
                     {
-                        Stopwatch timer = new Stopwatch();
-                        timer.Start();
-                        var HoHsThatGave = (from p in db.People
-                                     join c in db.Contributions on p.PeopleId equals c.PeopleId
-                                     join f in db.Families on p.FamilyId equals f.FamilyId
-                                     where c.CreatedDate > dt && c.CreatedDate <= now
-                                     select new { f.HeadOfHouseholdId }).Distinct().ToDictionary(h => h.HeadOfHouseholdId, h => h.HeadOfHouseholdId);
-                        var AllHohs = (from f in db.Families select new { f.HeadOfHouseholdId }).Distinct().ToDictionary(h => h.HeadOfHouseholdId, h => h.HeadOfHouseholdId);
-                        var peopleIdsList = new List<int>();
-                        foreach (var item in AllHohs)
-                        {
-                            if (!HoHsThatGave.ContainsKey(item.Key))
-                            {
-                                peopleIdsList.Add((int)item.Value);
-                            }
-                        }
-                        q = peopleIdsList.AsQueryable();
-                        timer.Stop();
+                        //q = from pid in db.Contributions0(dt, now, fund, 0, false, taxnontax, true)
+                        //    select pid.PeopleId.Value;
+                        //q = from p in db.People
+                        //    join c in db.Contributions on p.PeopleId equals c.PeopleId into ps
+                        //    join f in db.Families on p.FamilyId equals f.FamilyId
+                        //    from c in ps.DefaultIfEmpty()
+                        //    where c.ContributionDate > dt && c.ContributionDate <= now
+                        //    where fund == 0 || c.FundId == fund
+                        //    group c by c.PeopleId into g
+                        //    select new { sum = g.Sum(cc => cc.ContributionAmount ?? 0), f.familyId }
+                        //    where g.Sum(cc => cc.ContributionAmount ?? 0) == 0
+                        //    select g.Key ?? 0;
+
+                        q = from p in db.People
+                            join f in db.Families on p.FamilyId equals f.FamilyId
+                            join c in db.Contributions on p.PeopleId equals c.PeopleId into ps
+                            from c in ps.DefaultIfEmpty()
+                            where fund == 0 || c.FundId == fund
+                            where c.ContributionDate == null || (c.ContributionDate >= dt && c.ContributionDate <= now)
+                            group c by f.HeadOfHouseholdId into g
+                            where g.Sum(cc => cc.ContributionAmount ?? 0) == 0
+                            select g.Key ?? 0;
+
+                        //var excluded = from p in db.People
+                        //    join c in db.Contributions.DefaultIfEmpty() on p.PeopleId equals c.PeopleId
+                        //    join f in db.Families on p.FamilyId equals f.FamilyId
+                        //    where c.ContributionDate > dt && c.ContributionDate <= now
+                        //    where fund == 0 || c.FundId == fund
+                        //    select new { f.HeadOfHousehold };
+                        //var AllHohs = from f in db.Families
+                        //              select new { f.HeadOfHouseholdId };
+                        //var anotherone = AllHohs.Where(i => !excluded.Any(e => i.Contains(e)));
 
                         #region
-                        q = from pid in db.Contributions0(dt, now, fund, 0, false, taxnontax, true)
-                            select pid.PeopleId.Value;
+                        //Stopwatch timer = new Stopwatch();
+                        //timer.Start();
+                        //var HoHsThatGave = (from p in db.People
+                        //             join c in db.Contributions on p.PeopleId equals c.PeopleId
+                        //             join f in db.Families on p.FamilyId equals f.FamilyId
+                        //             where c.CreatedDate > dt && c.CreatedDate <= now
+                        //             select new { f.HeadOfHouseholdId }).Distinct().ToDictionary(h => h.HeadOfHouseholdId, h => h.HeadOfHouseholdId);
+                        //var AllHohs = (from f in db.Families select new { f.HeadOfHouseholdId }).Distinct().ToDictionary(h => h.HeadOfHouseholdId, h => h.HeadOfHouseholdId);
+                        //var peopleIdsList = new List<int>();
+                        //foreach (var item in AllHohs)
+                        //{
+                        //    if (!HoHsThatGave.ContainsKey(item.Key))
+                        //    {
+                        //        peopleIdsList.Add((int)item.Value);
+                        //    }
+                        //}
+                        //q = peopleIdsList.AsQueryable();
+                        //timer.Stop();
+                        //var results = dataset.Where(i => !excluded.Any(e => i.Contains(e)));
+
+
                         //if (fund == 0)
                         //{
                         //    q = from c in db.Contributions2(dt, now, 0, false, taxnontax, true, null)
@@ -360,7 +393,7 @@ namespace CmsData
         {
             var fund = Quarters.AllDigits() ? Quarters.ToInt() : db.Setting(Quarters, "").ToInt();
             var amt = TextValue.ToDecimal() ?? 0;
-            return RecentContributionAmount2(Days, fund, amt, false);
+            return RecentContributionAmount2(Days, fund, amt, false, true);
         }
         internal Expression RecentContributionAmountBothJoint()
         {
