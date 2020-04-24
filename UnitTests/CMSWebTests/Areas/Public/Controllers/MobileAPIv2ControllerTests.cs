@@ -134,9 +134,9 @@ namespace CmsWeb.Areas.Public.ControllersTests
         }
 
         [Theory]
-        [InlineData(0, 0, 0, 0)]
-        [InlineData(3.33, 333, 1332, 1)]
-        public void FetchGivingHistoryTest(decimal contribution, int total, int prevTotal, int yearCount)
+        [InlineData(0, 0, 0, 0, 0)]
+        [InlineData(36.63, 40293, 14652, 2, 1)]
+        public void FetchGivingHistoryTest(decimal contribution, int total, int prevTotal, int yearCount, int prevYearCount)
         {
             var username = RandomString();
             var password = RandomString();
@@ -152,6 +152,7 @@ namespace CmsWeb.Areas.Public.ControllersTests
             if (contribution > 0)
             {
                 GenerateContribution(contribution, user, Now);
+                GenerateContribution(contribution * 10m, user, Now, ContributionTypeCode.Stock);
                 GenerateContribution(contribution * 4m, user, Now.AddYears(-1));
             }
             var controller = new MobileAPIv2Controller(requestManager);
@@ -175,8 +176,8 @@ namespace CmsWeb.Areas.Public.ControllersTests
             history.entries.Count.ShouldBe(yearCount);
             if (yearCount > 1)
             {
-                var entry = history.entries.First();
-                entry.amount.ShouldBe(total);
+                var sum = history.entries.Sum(e => e.amount);
+                sum.ShouldBe(total);
             }
 
             message = new MobileMessage
@@ -197,15 +198,15 @@ namespace CmsWeb.Areas.Public.ControllersTests
             {
                 history.yearToDateTotal.ShouldBe(prevTotal);
             }
-            history.entries.Count.ShouldBe(yearCount);
+            history.entries.Count.ShouldBe(prevYearCount);
             if (yearCount > 1)
             {
-                var entry = history.entries.First();
-                entry.amount.ShouldBe(prevTotal);
+                var sum = history.entries.Sum(e => e.amount);
+                sum.ShouldBe(prevTotal);
             }
         }
 
-        private void GenerateContribution(decimal contribution, User user, DateTime date)
+        private void GenerateContribution(decimal contribution, User user, DateTime date, int contributionTypeId = ContributionTypeCode.Online)
         {
             var c = new Contribution
             {
@@ -213,7 +214,7 @@ namespace CmsWeb.Areas.Public.ControllersTests
                 ContributionAmount = contribution,
                 ContributionDate = date.Date,
                 ContributionStatusId = ContributionStatusCode.Recorded,
-                ContributionTypeId = ContributionTypeCode.Online,
+                ContributionTypeId = contributionTypeId,
                 CreatedDate = date,
                 FundId = 1
             };
