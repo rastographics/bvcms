@@ -2,7 +2,6 @@ CREATE PROCEDURE [dbo].[DeleteSpecialTags](@pid INT = null)
 AS
 BEGIN
 	SET NOCOUNT ON;
-	EXEC SetupNumbers
 
 	DELETE dbo.TagPerson
 	FROM dbo.TagPerson tp

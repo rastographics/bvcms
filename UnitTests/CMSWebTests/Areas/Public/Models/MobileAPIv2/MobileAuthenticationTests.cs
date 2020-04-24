@@ -1,10 +1,5 @@
 ﻿using Xunit;
 using CmsWeb.Areas.Public.Models.MobileAPIv2;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using CMSWebTests.Support;
 using CMSWebTests;
 using SharedTestFixtures;
@@ -13,6 +8,7 @@ using Shouldly;
 
 namespace CmsWeb.Areas.Public.Models.MobileAPIv2Tests
 {
+    [Collection(Collections.Database)]
     public class MobileAuthenticationTests : ControllerTestBase
     {
         [Theory]
@@ -35,6 +31,7 @@ namespace CmsWeb.Areas.Public.Models.MobileAPIv2Tests
             var mobileAuth = new MobileAuthentication(db);
             mobileAuth.authenticate("");
 
+            mobileAuth.getErrorMessage().ShouldBe("Authenticated");
             mobileAuth.hasError().ShouldBeFalse();
         }
     }

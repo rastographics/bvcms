@@ -1,6 +1,6 @@
 <p>{{header.DateFrom}} - {{header.DateTo}}</p>
 {{#each results}}
-    <p>{{trans_date}}</p>
+    <p>{{Fmt trans_date "MM/dd/yyyy hh:mm:ss tt"}}</p>
     <p>{{Payment_Type}}</p>
     <p>{{OrganizationName}}</p>
     <p>{{account_code}}</p>

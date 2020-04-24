@@ -19,7 +19,7 @@ namespace CMSWebTests.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class CMSWebTestsResources {
@@ -61,6 +61,31 @@ namespace CMSWebTests.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to &lt;h1&gt;Name of Church&lt;/h1&gt;&lt;h2&gt;Start Address | (000) 000-0000&lt;/h2&gt;.
+        /// </summary>
+        public static string DefaultHeader {
+            get {
+                return ResourceManager.GetString("DefaultHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &lt;p&gt;&lt;i&gt;
+        ///NOTE: No goods or services were provided to you by the church in connection with any contribution;
+        ///any value received consisted entirely of intangible religious benefits.
+        ///Name of Church, FEIN # 0000, is a 501(c)(3) organization and qualifies as a part of the Southern Baptist Convention&apos;s group tax exemption ruling number GEN #1674.
+        ///&lt;/i&gt;&lt;/p&gt;
+        ///&lt;p&gt;&lt;i&gt;
+        ///Thank you for your faithfulness in the giving of your time, talents, and resources. Together we can share the love of Jesus with our city.
+        ///&lt;/i&gt;&lt;/p&gt;.
+        /// </summary>
+        public static string DefaultNotice {
+            get {
+                return ResourceManager.GetString("DefaultNotice", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
         public static byte[] DocFormsTest1 {
@@ -77,6 +102,58 @@ namespace CMSWebTests.Properties {
             get {
                 object obj = ResourceManager.GetObject("DocFormsTest2", resourceCulture);
                 return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &lt;CustomStatements&gt;
+        ///    &lt;Statement description=&quot;CustomStatement1&quot;&gt;
+        ///        &lt;Funds&gt;&lt;/Funds&gt;
+        ///        &lt;Header&gt;&lt;header/&gt;&lt;/Header&gt;
+        ///        &lt;Notice&gt;&lt;notice/&gt;&lt;/Notice&gt;
+        ///        &lt;Template&gt;&lt;template/&gt;&lt;/Template&gt;
+        ///        &lt;TemplateBody&gt;
+        ///            &lt;templatebody/&gt;
+        ///        &lt;/TemplateBody&gt;
+        ///        &lt;Footer&gt;
+        ///            &lt;footer/&gt;
+        ///        &lt;/Footer&gt;
+        ///    &lt;/Statement&gt;
+        ///    &lt;Statement description=&quot;CustomStatement2&quot;&gt;
+        ///        &lt;Funds&gt;1,2&lt;/Funds&gt;
+        ///        &lt;Header&gt;
+        ///            &lt;header2/&gt;
+        ///        &lt;/Header&gt;
+        ///        &lt;Not [rest of string was truncated]&quot;;.
+        /// </summary>
+        public static string StatementSpecification1 {
+            get {
+                return ResourceManager.GetString("StatementSpecification1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &lt;CustomStatements&gt;
+        ///    &lt;Statement description=&quot;CustomStatement3&quot;&gt;
+        ///        &lt;Funds&gt;&lt;/Funds&gt;
+        ///        &lt;Header content=&quot;StatementHeader&quot; /&gt;
+        ///        &lt;Notice content=&quot;StatementNotice&quot; /&gt;
+        ///        &lt;Template&gt;&lt;template/&gt;&lt;/Template&gt;
+        ///        &lt;TemplateBody&gt;
+        ///            &lt;templatebody/&gt;
+        ///        &lt;/TemplateBody&gt;
+        ///        &lt;Footer&gt;
+        ///            &lt;footer/&gt;
+        ///        &lt;/Footer&gt;
+        ///    &lt;/Statement&gt;
+        ///    &lt;Statement description=&quot;CustomStatement4&quot;&gt;
+        ///        &lt;Funds&gt;1-3&lt;/Funds&gt;
+        ///        &lt;Header&gt;&lt;header4 /&gt;&lt;/Header&gt;
+        ///        &lt;Notice [rest of string was truncated]&quot;;.
+        /// </summary>
+        public static string StatementSpecification2 {
+            get {
+                return ResourceManager.GetString("StatementSpecification2", resourceCulture);
             }
         }
     }

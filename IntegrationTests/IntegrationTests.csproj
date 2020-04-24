@@ -59,8 +59,8 @@
     <Reference Include="RestSharp, Version=106.6.9.0, Culture=neutral, PublicKeyToken=598062e77f915f75, processorArchitecture=MSIL">
       <HintPath>..\packages\RestSharp.106.6.9\lib\net452\RestSharp.dll</HintPath>
     </Reference>
-    <Reference Include="Shouldly, Version=3.0.2.0, Culture=neutral, PublicKeyToken=6042cbcb05cbc941, processorArchitecture=MSIL">
-      <HintPath>..\packages\Shouldly.3.0.2\lib\net451\Shouldly.dll</HintPath>
+    <Reference Include="Shouldly, Version=4.0.0.0, Culture=neutral, PublicKeyToken=6042cbcb05cbc941, processorArchitecture=MSIL">
+      <HintPath>..\packages\Shouldly.4.0.0-beta0002\lib\net451\Shouldly.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
@@ -113,6 +113,7 @@
   <ItemGroup>
     <Compile Include="Areas\CheckIn\Views\CheckinTimeViewsTests.cs" />
     <Compile Include="Areas\Finance\Views\Fund\IndexTests.cs" />
+    <Compile Include="Areas\Finance\Views\PostBundle\PostBundleViewsTests.cs" />
     <Compile Include="Areas\General\ScriptControllerTests.cs" />
     <Compile Include="Areas\Figures\Views\Figures\RefineFundViewTests.cs" />
     <Compile Include="Areas\Finance\Views\Bundle\EditTests.cs" />
@@ -123,6 +124,7 @@
     <Compile Include="Areas\OnlineReg\Views\OnlineRegViewsTests.cs" />
     <Compile Include="Areas\OnlineReg\Models\OnlineRegPerson\EnrollTests.cs" />
     <Compile Include="Areas\OnlineReg\OneTimeGivingTests.cs" />
+    <Compile Include="Areas\Org\Views\Org\EditorTemplates\AskCheckboxesTests.cs" />
     <Compile Include="Areas\Org\Views\Org\Registration\RegistrationEditViewsTests.cs" />
     <Compile Include="Areas\Org\Views\Org\SettingsViewsTests.cs" />
     <Compile Include="Areas\Search\Views\Query\EditConditionTests.cs" />

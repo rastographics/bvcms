@@ -60,11 +60,14 @@ namespace CmsWeb.Areas.Finance.Models.Report
         private void HtmlToPdfMethod(Stream stream, CMSDataContext db, IEnumerable<ContributorInfo> q, StatementSpecification cs, int set)
         {
             IConverter converter = GetConverter();
-            string html = db.Content("StatementTemplate", ContentTypeCode.TypeText)?.Body ?? Resource1.ContributionStatementTemplate;
-            string bodyHtml = db.Content("StatementTemplateBody", ContentTypeCode.TypeText)?.Body ?? Resource1.ContributionStatementTemplateBody;
-            string header = cs.Header ?? db.ContentHtml("StatementHeader", Resource1.ContributionStatementHeader);
-            string notice = cs.Notice ?? db.ContentHtml("StatementNotice", Resource1.ContributionStatementNotice);
-            string footer = db.ContentHtml("StatementTemplateFooter", "");
+            string nameOfChurch = db.Setting("NameOfChurch", "Name of Church");
+            string startAddress = db.Setting("StartAddress", "Start Address");
+            string churchPhone = db.Setting("ChurchPhone", "(000) 000-0000");
+            string html = cs.Template ?? db.Content("StatementTemplate", Resource1.ContributionStatementTemplate, ContentTypeCode.TypeText).Body;
+            string bodyHtml = cs.TemplateBody ?? db.Content("StatementTemplateBody", Resource1.ContributionStatementTemplateBody, ContentTypeCode.TypeText).Body;
+            string header = cs.Header ?? db.Content("StatementHeader", string.Format(Resource1.ContributionStatementHeader, nameOfChurch, startAddress, churchPhone), ContentTypeCode.TypeHtml).Body;
+            string notice = cs.Notice ?? db.Content("StatementNotice", string.Format(Resource1.ContributionStatementNotice, nameOfChurch), ContentTypeCode.TypeHtml).Body;
+            string footer = cs.Footer ?? db.Content("StatementTemplateFooter", "", ContentTypeCode.TypeText).Body;
             ContributionsRun runningtotals = db.ContributionsRuns.Where(mm => mm.UUId == UUId).SingleOrDefault();
             StatementOptions options;
             if (!GetStatementOptions(bodyHtml, out options))
@@ -78,8 +81,8 @@ namespace CmsWeb.Areas.Finance.Models.Report
             {
                 GlobalSettings =
                 {
-                    DocumentTitle = cs.Description ?? $"Contribution Statement {toDate:d}",
-                    Margins = options.Margins,
+                    DocumentTitle = (cs.Description ?? "Contribution Statement {date}").Replace("{date}", $"{toDate:d}"),
+                    Margins = options.Margins.Settings,
                     PaperSize = options.PaperSize,
                     ProduceOutline = false,
                 }
@@ -87,92 +90,134 @@ namespace CmsWeb.Areas.Finance.Models.Report
 
             var familiesInSet = pageEvents.FamilySet.Where(k => k.Value == set).Select(k => k.Key);
             var contributors = q.Where(c => set == 0 || familiesInSet.Contains(c.FamilyId));
-            var count = 0;
-            if (runningtotals != null)
-            {
-                runningtotals.Processed = 0;
-            }
-            db.SubmitChanges();
-
-            var currentSet = 1;
-            foreach (var contributor in contributors)
-            {
-                count++;
-                if (set == 0)
-                {
-                    pageEvents.FamilySet[contributor.FamilyId] = currentSet;
-                    if (count % 10 == 0)
-                    {
-                        currentSet++;
-                    }
-                }
-
-                var contributions = APIContribution.Contributions(db, contributor, FromDate, toDate, cs.Funds).ToList();
-                var pledges = APIContribution.Pledges(db, contributor, toDate, cs.Funds).ToList();
-                var giftsinkind = APIContribution.GiftsInKind(db, contributor, FromDate, toDate, cs.Funds).ToList();
-                var nontaxitems = APIContribution.NonTaxItems(db, contributor, FromDate, toDate, cs.Funds).ToList();
-
-                if ((contributions.Count + pledges.Count + giftsinkind.Count + nontaxitems.Count) > 0)
-                {
-                    contributor.MailingAddress = string.Join("<br/>", contributor.MailingAddress.SplitLines());
-                    var taxSummary = SumByFund(contributions);
-                    var nontaxSummary = SumByFund(nontaxitems.Select(i => new NormalContribution(i)).ToList());
-                    if (options.CombinedTaxSummary)
-                    {
-                        taxSummary.Combine(SumByFund(giftsinkind.Select(i => new NormalContribution(i)).ToList()));
-                    }
-
-                    var data = new StatementContext
-                    {
-                        fromDate = FromDate,
-                        toDate = toDate,
-                        header = "",
-                        notice = "",
-                        now = DateTime.Now,
-                        body = "",
-                        footer = "",
-                        contributor = contributor,
-                        envelopeNumber = Convert.ToString(Person.GetExtraValue(db, contributor.PeopleId, "EnvelopeNumber")?.IntValue),
-                        contributions = new ListOfNormalContributions(contributions),
-                        pledges = pledges,
-                        giftsinkind = giftsinkind,
-                        nontaxitems = nontaxitems,
-                        taxSummary = taxSummary,
-                        nontaxSummary = nontaxSummary,
-                        totalGiven = taxSummary.Total + nontaxSummary.Total
-                    };
-                    data.header = db.RenderTemplate(header, data);
-                    data.notice = db.RenderTemplate(notice, data);
-                    data.body = db.RenderTemplate(bodyHtml, data);
-                    data.footer = db.RenderTemplate(footer, data);
-                    var htmlDocument = db.RenderTemplate(html, data);
-                    document.Objects.Add(new ObjectSettings {
-                        CountPages = true,
-                        FooterSettings = options.Footer,
-                        HeaderSettings = options.Header ?? new HeaderSettings(),
-                        HtmlText = htmlDocument,
-                        LoadSettings = new LoadSettings { BlockLocalFileAccess = true }
-                    });
-                }
-
-                if (runningtotals != null)
-                {
-                    runningtotals.Processed += 1;
-                    runningtotals.CurrSet = set;
-                    db.SubmitChanges();
-                }
-            }
-
+            var count = contributors.Count();
             if (count == 0)
             {
                 document.Objects.Add(new ObjectSettings { HtmlText = @"<p>no data</p>
                     <a href=""https://docs.touchpointsoftware.com/Finance/ContributionStatements.html#troubleshooting"">
                     See this help document docs.touchpointsoftware.com/Finance/ContributionStatements.html
                     </a>" });
+                var bytes = converter.Convert(document);
+                stream.Write(bytes, 0, bytes.Length);
+                return;
             }
 
-            byte[] bytes = converter.Convert(document);
-            stream.Write(bytes, 0, bytes.Length);
+            if (runningtotals != null)
+            {
+                runningtotals.Processed = 0;
+            }
+            db.SubmitChanges();
+
+            Document combinedPDF = new Document();
+            var combinedPDFName = Path.Combine(Path.GetTempPath(), $"{Guid.NewGuid()}.pdf");
+            using (FileStream combinedStream = new FileStream(combinedPDFName, FileMode.Create))
+            {
+                using (PdfCopy writer = new PdfCopy(combinedPDF, combinedStream))
+                {
+                    combinedPDF.Open();
+
+                    var lastFamilyId = 0;
+                    foreach (var contributor in contributors)
+                    {
+                        if (runningtotals != null)
+                        {
+                            runningtotals.Processed += 1;
+                            runningtotals.CurrSet = set;
+                            db.SubmitChanges();
+                        }
+
+                        if (lastFamilyId != contributor.FamilyId)
+                        {
+                            lastFamilyId = contributor.FamilyId;
+
+                            if (set == 0)
+                            {
+                                pageEvents.FamilySet[contributor.FamilyId] = 0;
+                            }
+                        }
+
+                        var contributions = APIContribution.Contributions(db, contributor, FromDate, toDate, cs.Funds).ToList();
+                        var pledges = APIContribution.Pledges(db, contributor, toDate, cs.Funds).ToList();
+                        var giftsinkind = APIContribution.GiftsInKind(db, contributor, FromDate, toDate, cs.Funds).ToList();
+                        var nontaxitems = APIContribution.NonTaxItems(db, contributor, FromDate, toDate, cs.Funds).ToList();
+
+                        if ((contributions.Count + pledges.Count + giftsinkind.Count + nontaxitems.Count) > 0)
+                        {
+                            contributor.MailingAddress = string.Join("<br/>", contributor.MailingAddress.SplitLines());
+                            var taxSummary = SumByFund(contributions);
+                            var nontaxSummary = SumByFund(nontaxitems.Select(i => new NormalContribution(i)).ToList());
+                            if (options.CombinedTaxSummary)
+                            {
+                                taxSummary.Combine(SumByFund(giftsinkind.Select(i => new NormalContribution(i)).ToList()));
+                            }
+
+                            var data = new StatementContext
+                            {
+                                fromDate = FromDate,
+                                toDate = toDate,
+                                header = "",
+                                notice = "",
+                                now = DateTime.Now,
+                                body = "",
+                                footer = "",
+                                contributor = contributor,
+                                envelopeNumber = Convert.ToString(Person.GetExtraValue(db, contributor.PeopleId, "EnvelopeNumber")?.IntValue),
+                                contributions = new ListOfNormalContributions(contributions),
+                                pledges = pledges,
+                                giftsinkind = giftsinkind,
+                                nontaxitems = nontaxitems,
+                                taxSummary = taxSummary,
+                                nontaxSummary = nontaxSummary,
+                                totalGiven = taxSummary.Total + nontaxSummary.Total
+                            };
+                            data.header = db.RenderTemplate(header, data);
+                            data.notice = db.RenderTemplate(notice, data);
+                            data.body = db.RenderTemplate(bodyHtml, data);
+                            data.footer = db.RenderTemplate(footer, data);
+                            var htmlDocument = db.RenderTemplate(html, data);
+                            document.Objects.Clear();
+                            document.Objects.Add(new ObjectSettings
+                            {
+                                CountPages = true,
+                                FooterSettings = options.Footer.Settings,
+                                HeaderSettings = options.Header.Settings,
+                                HtmlText = htmlDocument,
+                                WebSettings = new WebSettings
+                                {
+                                    EnableJavascript = false,
+                                    PrintBackground = true
+                                },
+                                LoadSettings = new LoadSettings { BlockLocalFileAccess = true }
+                            });
+                        }
+                        else
+                        {
+                            continue;
+                        }
+
+                        var bytes = converter.Convert(document);
+                        var pageCount = 0;
+                        using (PdfReader reader = new PdfReader(bytes))
+                        {
+                            pageCount = reader.NumberOfPages;
+                            for (int p = 0; p < pageCount; p++)
+                            {
+                                var page = writer.GetImportedPage(reader, p + 1);
+                                writer.AddPage(page);
+                            }
+                        }
+
+                        if (set == 0)
+                        {
+                            pageEvents.FamilySet[contributor.FamilyId] += pageCount;
+                        }
+                    }
+                }
+            }
+            using (var combined = File.OpenRead(combinedPDFName))
+            {
+                combined.CopyTo(stream);
+            }
         }
 
         private bool GetStatementOptions(string html, out StatementOptions options)
@@ -184,29 +229,12 @@ namespace CmsWeb.Areas.Finance.Models.Report
             var node = doc.DocumentNode.SelectSingleNode("//script[@id=\"options\"]");
             if (node != null)
             {
-                options = JsonConvert.DeserializeObject<StatementOptions>(node.InnerText);
+                options = JsonConvert.DeserializeObject<StatementOptions>(node.InnerText.Trim());
                 found = true;
-            }
-            if (options.Margins == null)
-            {
-                options.Margins = new MarginSettings
-                {
-                    All = 0.5,
-                    Unit = Unit.Inches
-                };
             }
             if (options.PaperSize == 0)
             {
                 options.PaperSize = PaperKind.Letter;
-            }
-            if (options.Footer == null)
-            {
-                options.Footer = new FooterSettings
-                {
-                    RightText = "Page [page] of [topage]",
-                    FontName = "Helvetica",
-                    FontSize = 10
-                };
             }
             return found;
         }
@@ -332,8 +360,11 @@ p { font-size: 11px; }
                     TotalWidth = 72f * 5f
                 };
                 t1.DefaultCell.Border = Rectangle.NO_BORDER;
-                var html1 = cs.Header ?? db.ContentHtml("StatementHeader", Resource1.ContributionStatementHeader);
-                var html2 = cs.Notice ?? db.ContentHtml("StatementNotice", Resource1.ContributionStatementNotice);
+                string nameOfChurch = db.Setting("NameOfChurch", "Name of Church");
+                string startAddress = db.Setting("StartAddress", "Start Address");
+                string churchPhone = db.Setting("ChurchPhone", "(000) 000-0000");
+                var html1 = cs.Header ?? db.ContentHtml("StatementHeader", string.Format(Resource1.ContributionStatementHeader, nameOfChurch, startAddress, churchPhone));
+                var html2 = cs.Notice ?? db.ContentHtml("StatementNotice", string.Format(Resource1.ContributionStatementNotice, nameOfChurch));
 
                 var mh = new MyHandler();
                 using (var sr = new StringReader(css + html1))

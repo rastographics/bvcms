@@ -76,7 +76,10 @@ namespace CmsData
         public DateTime CreatedOn { get; set; }
         public string Quarters { get; set; }
         public string TaxNonTax { get; set; }
-        public bool? TaxNonTaxBool { get; set; }
+        private bool? _taxNonTaxBool;
+        public bool? TaxNonTaxBool {
+            get => _taxNonTaxBool ?? GetTaxStatusBool(TaxNonTax);
+            set => _taxNonTaxBool = value; }
         public string FundIds { get; set; }
         private string _fundset;
         public string FundSet

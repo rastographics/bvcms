@@ -70,6 +70,7 @@ namespace CmsWeb.Areas.Public.ControllersTests
             requestManager.CurrentHttpContext.Request.Headers["Authorization"] = BasicAuthenticationString(username, password);
             var Now = DateTime.Now;
             var year = Now.Year;
+            var fund1Name = db.ContributionFunds.Where(c => c.FundId == 1).Select(c => c.FundName).Single();
             if (contribution > 0)
             {
                 GenerateContribution(contribution, user, Now);
@@ -100,7 +101,7 @@ namespace CmsWeb.Areas.Public.ControllersTests
             current.summary[0].showAsPledge.ShouldBe(0);
             if (contribution > 0)
             {
-                current.summary[0].funds[0].name.ShouldBe("General Operation");
+                current.summary[0].funds[0].name.ShouldBe(fund1Name);
                 current.summary[0].funds[0].given.ShouldBe(total);
             }
             message = new MobileMessage
@@ -127,8 +128,80 @@ namespace CmsWeb.Areas.Public.ControllersTests
                 previous.summary[0].comment.ShouldBe(comment);
                 previous.summary[0].count.ShouldBe(contribCount);
                 previous.summary[0].showAsPledge.ShouldBe(0);
-                previous.summary[0].funds[0].name.ShouldBe("General Operation");
+                previous.summary[0].funds[0].name.ShouldBe(fund1Name);
                 previous.summary[0].funds[0].given.ShouldBe(prevTotal);
+            }
+        }
+
+        [Theory]
+        [InlineData(0, 0, 0, 0)]
+        [InlineData(3.33, 333, 1332, 1)]
+        public void FetchGivingHistoryTest(decimal contribution, int total, int prevTotal, int yearCount)
+        {
+            var username = RandomString();
+            var password = RandomString();
+            var user = CreateUser(username, password);
+            var requestManager = FakeRequestManager.Create();
+            var membershipProvider = new MockCMSMembershipProvider { ValidUser = true };
+            var roleProvider = new MockCMSRoleProvider();
+            CMSMembershipProvider.SetCurrentProvider(membershipProvider);
+            CMSRoleProvider.SetCurrentProvider(roleProvider);
+            requestManager.CurrentHttpContext.Request.Headers["Authorization"] = BasicAuthenticationString(username, password);
+            var Now = DateTime.Now;
+            var year = Now.Year;
+            if (contribution > 0)
+            {
+                GenerateContribution(contribution, user, Now);
+                GenerateContribution(contribution * 4m, user, Now.AddYears(-1));
+            }
+            var controller = new MobileAPIv2Controller(requestManager);
+            var message = new MobileMessage
+            {
+                argInt = 0
+            };
+            var data = message.ToString();
+            var result = controller.FetchGivingHistory(data) as BaseMessage;
+            result.ShouldNotBeNull();
+            result.count.ShouldBe(1);
+            result.error.ShouldBe(0);
+            var history = JsonConvert.DeserializeObject<MobileGivingHistory>(result.data);
+            history.lastYear.ShouldBe(year - 1);
+            history.lastYearTotal.ShouldBe(prevTotal);
+            history.thisYear.ShouldBe(year);
+            if (contribution > 0)
+            {
+                history.yearToDateTotal.ShouldBe(total);
+            }
+            history.entries.Count.ShouldBe(yearCount);
+            if (yearCount > 1)
+            {
+                var entry = history.entries.First();
+                entry.amount.ShouldBe(total);
+            }
+
+            message = new MobileMessage
+            {
+                argInt = Now.Year - 1,
+                version = 9
+            };
+            data = message.ToString();
+            result = controller.FetchGivingHistory(data) as BaseMessage;
+            result.ShouldNotBeNull();
+            result.count.ShouldBe(1);
+            result.error.ShouldBe(0);
+            history = JsonConvert.DeserializeObject<MobileGivingHistory>(result.data);
+            history.lastYear.ShouldBe(year - 2);
+            history.lastYearTotal.ShouldBe(0);
+            history.thisYear.ShouldBe(year - 1);
+            if (contribution > 0)
+            {
+                history.yearToDateTotal.ShouldBe(prevTotal);
+            }
+            history.entries.Count.ShouldBe(yearCount);
+            if (yearCount > 1)
+            {
+                var entry = history.entries.First();
+                entry.amount.ShouldBe(prevTotal);
             }
         }
 

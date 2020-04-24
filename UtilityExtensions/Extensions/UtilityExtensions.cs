@@ -4,7 +4,6 @@ using System.Configuration;
 using System.Globalization;
 using System.IO;
 using System.Net;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
 using System.Xml;
@@ -22,6 +21,7 @@ namespace UtilityExtensions
 
         public static string ScratchPad2 => "scratchpad";
 
+        [Obsolete("Use CMSDataContext.CurrentSessionId", error:true)]
         public static string SessionId => HttpContextFactory.Current?.Session?.SessionID ?? Guid.NewGuid().ToString();
 
         public static bool Auditing

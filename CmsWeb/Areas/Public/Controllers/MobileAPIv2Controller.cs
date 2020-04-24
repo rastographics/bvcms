@@ -803,7 +803,7 @@ namespace CmsWeb.Areas.Public.Controllers
 
             foreach (MobilePostEditField field in fields)
             {
-                field.updatePerson(person, personChangeList, familyChangeList);
+                field.updatePerson(CurrentDatabase, person, personChangeList, familyChangeList);
             }
 
             if (personChangeList.Count > 0)
@@ -854,10 +854,10 @@ namespace CmsWeb.Areas.Public.Controllers
             int lastYear = thisYear - 1;
 
             var q = GetContributionsFor(person);
-            decimal lastYearTotal = (from c in q
+            decimal? lastYearTotal = (from c in q
                                      where c.ContributionDate.Value.Year == lastYear
                                      orderby c.ContributionDate descending
-                                     select c).Sum(c => c.ContributionAmount ?? 0);
+                                     select c).Sum(c => c.ContributionAmount) ?? 0;
 
             List<MobileGivingEntry> entries = (from c in q
                                                let online = c.BundleDetails.Single().BundleHeader.BundleHeaderType.Description.Contains("Online")
@@ -900,6 +900,7 @@ namespace CmsWeb.Areas.Public.Controllers
                            && (person.ContributionOptionsId ?? StatementOptionCode.Joint) == StatementOptionCode.Joint
                    where !ContributionTypeCode.ReturnedReversedTypes.Contains(c.ContributionTypeId)
                    where c.ContributionStatusId == ContributionStatusCode.Recorded
+                   where c.ContributionAmount != null
                    select c;
         }
 
@@ -943,8 +944,9 @@ namespace CmsWeb.Areas.Public.Controllers
             var nontaxitems = APIContribution.NonTaxItems(CurrentDatabase, ci, FromDate, ToDate, null).ToList();
             if (summary.ContainsKey($"{year}"))
             {
-                summary[$"{year}"].Load(peopleId, contributions, pledges, giftsinkind, nontaxitems);
+                summary[$"{year}"].Load(peopleId, contributions, pledges, nontaxitems);
             }
+            contributions.AddRange(giftsinkind.ConvertAll(g => new NormalContribution(g)));
             MobileMessage response = new MobileMessage();
             response.data = SerializeJSON(summary, message.version);
             response.setNoError();

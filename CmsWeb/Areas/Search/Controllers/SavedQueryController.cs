@@ -75,13 +75,13 @@ namespace CmsWeb.Areas.Search.Controllers
             var qlist = from q in m.DefineModelList()
                         select q.QueryId;
             var list = string.Join(",", qlist);
-            TempData["codelist"] = list;
+            Util.TempCodeList = list;
             return Content("ok");
         }
         [HttpGet]
         public ActionResult Code()
         {
-            var list = TempData["codelist"] as string;
+            var list = Util.TempCodeList as string;
             if (list == null)
             {
                 return Content("no data");
@@ -96,13 +96,13 @@ namespace CmsWeb.Areas.Search.Controllers
             var qlist = from q in m.DefineModelList()
                         select q.QueryId;
             var list = string.Join(",", qlist);
-            TempData["codelist"] = list;
+            Util.TempCodeList = list;
             return Content("ok");
         }
         [HttpGet]
         public ActionResult PythonCode()
         {
-            var list = TempData["codelist"] as string;
+            var list = Util.TempCodeList as string;
             if (list == null)
             {
                 return Content("no data");

@@ -241,7 +241,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             {
                 m.Log("Error " + ex.Message);
                 ErrorSignal.FromCurrentContext().Raise(ex);
-                TempData["error"] = ex.Message;
+                Util.TempError = ex.Message;
                 return Redirect("/Error");
             }
         }
@@ -296,7 +296,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             {
                 m.Log("Error " + ex.Message);
                 ErrorSignal.FromCurrentContext().Raise(ex);
-                TempData["error"] = ex.Message;
+                Util.TempError = ex.Message;
                 return Redirect("/Error");
             }
         }

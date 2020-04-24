@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using UtilityExtensions;
 
 namespace CmsWeb.MobileAPI
 {
@@ -22,7 +23,7 @@ namespace CmsWeb.MobileAPI
             return defaultValue;
         }
 
-        public void updatePerson(Person person, List<ChangeDetail> personChangeList, List<ChangeDetail> familyChangeList)
+        public void updatePerson(CMSDataContext db, Person person, List<ChangeDetail> personChangeList, List<ChangeDetail> familyChangeList)
         {
             Type enumType = (Type)type;
 
@@ -386,8 +387,8 @@ namespace CmsWeb.MobileAPI
 
                         if (person.SpouseId.HasValue)
                         {
-                            Person spouse = DbUtil.Db.People.FirstOrDefault(p => p.PeopleId == person.SpouseId);
-                            updateInteger(spouse, personChangeList, "ElectronicStatement");
+                            Person spouse = db.People.FirstOrDefault(p => p.PeopleId == person.SpouseId);
+                            spouse.ElectronicStatement = value.ToInt() > 0;
                         }
 
                         break;
@@ -399,8 +400,8 @@ namespace CmsWeb.MobileAPI
 
                         if (person.SpouseId.HasValue)
                         {
-                            Person spouse = DbUtil.Db.People.FirstOrDefault(p => p.PeopleId == person.SpouseId);
-                            updateInteger(spouse, personChangeList, "ContributionOptionsId");
+                            Person spouse = db.People.FirstOrDefault(p => p.PeopleId == person.SpouseId);
+                            spouse.ContributionOptionsId = value.ToInt();
                         }
 
                         break;
@@ -412,8 +413,8 @@ namespace CmsWeb.MobileAPI
 
                         if (person.SpouseId.HasValue)
                         {
-                            Person spouse = DbUtil.Db.People.FirstOrDefault(p => p.PeopleId == person.SpouseId);
-                            updateInteger(spouse, personChangeList, "EnvelopeOptionsId");
+                            Person spouse = db.People.FirstOrDefault(p => p.PeopleId == person.SpouseId);
+                            spouse.EnvelopeOptionsId = value.ToInt();
                         }
 
                         break;

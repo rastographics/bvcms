@@ -241,6 +241,7 @@ namespace CmsData
         RecentPledgeCount,
         RecentRegistrationType,
         RecentVisitNumber,
+        RecentVisitNumberOrgs,
         RecInterestedCoaching,
         RecActiveOtherChurch,
         NotChurchMember,
