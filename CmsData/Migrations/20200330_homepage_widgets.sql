@@ -1236,14 +1236,13 @@ BEGIN
     </div>
 </div>
 <script type="text/javascript">
-    var data = {{{counts}}};
     google.charts.load("current", {packages:["corechart"]});
     google.charts.setOnLoadCallback(function() {
         data = google.visualization.arrayToDataTable([
             [''Item'', ''Logins''],
             [''Web'', {{counts.web}}],
             [''Mobile'', {{counts.mobile}}],
-            [''Total'', {{counts.web}}]
+            [''Total'', {{counts.total}}]
         ]);
         var options = {
             colors: [''#9575cd''],

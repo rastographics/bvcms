@@ -103,15 +103,15 @@ namespace CmsWeb.Areas.Setup.Models
         {
             var options = new[]
             {
-                new { Value = 0, Name = "Every page load" },
-                new { Value = 1, Name = "1 hour" },
-                new { Value = 2, Name = "2 hours" },
-                new { Value = 3, Name = "3 hours" },
-                new { Value = 4, Name = "4 hours" },
-                new { Value = 6, Name = "6 hours" },
-                new { Value = 12, Name = "12 hours" },
-                new { Value = 24, Name = "1 day" },
-                new { Value = 168, Name = "1 week" }
+                new { Value = 0, Name = "every page load" },
+                new { Value = 1, Name = "every hour" },
+                new { Value = 2, Name = "every 2 hours" },
+                new { Value = 3, Name = "every 3 hours" },
+                new { Value = 4, Name = "every 4 hours" },
+                new { Value = 6, Name = "every 6 hours" },
+                new { Value = 12, Name = "every 12 hours" },
+                new { Value = 24, Name = "each day" },
+                new { Value = 168, Name = "each week" }
             };
             return new SelectList(options, "Value", "Name", CacheHours);
         }
@@ -120,8 +120,8 @@ namespace CmsWeb.Areas.Setup.Models
         {
             var options = new[]
             {
-                new { Value = 2, Name = "User Specific" },
-                new { Value = 1, Name = "Church Wide" }
+                new { Value = 2, Name = "each user" },
+                new { Value = 1, Name = "all users" }
             };
             return new SelectList(options, "Value", "Name", CachePolicy);
         }

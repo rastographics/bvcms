@@ -7,6 +7,8 @@
 @ViewExtensions2.GoogleCharts()
 @section head{
     @Fingerprint.Css("/Content/touchpoint/lib/jquery-multi-select/css/multi-select.css")
+    @Fingerprint.Css("/Content/touchpoint/lib/bootstrap-editable/css/bootstrap-editable.css")
+
     <style type="text/css">
         .form-group .control-label {
             display: none;
@@ -70,78 +72,77 @@
                 </div>
                 <div class="box-content">
                     <div class="row">
-                        <div class="col-sm-3">
-                            <label for="Name" class="control-label">Name <a href="#" data-toggle="popover" data-placement="right" data-trigger="focus" data-title="Title" data-content="Used to identify the widget. This field is required."><i class="fa fa-info-circle"></i></a></label>
+                        <div class="col-lg-6">
+                            <div class="row">
+                                <div class="col-sm-4">
+                                    <label for="Name" class="control-label">Name <a href="#" data-toggle="popover" data-placement="right" data-trigger="focus" data-title="Title" data-content="Used to identify the widget. This field is required."><i class="fa fa-info-circle"></i></a></label>
+                                </div>
+                                <div class="col-sm-8">
+                                    @Html.EditorFor(m => m.Name, new { required = true })
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-4">
+                                    <label for="Description" class="control-label">Description <a href="#" data-toggle="popover" data-placement="right" data-trigger="focus" data-title="Description" data-content="Only visible to admins. Used to identify this widget in the list."><i class="fa fa-info-circle"></i></a></label>
+                                </div>
+                                <div class="col-sm-8">
+                                    @Html.EditorFor(m => m.Description)
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-4">
+                                    <label for="Roles" class="control-label">Roles visible <a href="#" data-toggle="popover" data-placement="right" data-trigger="focus" data-title="Roles visible" data-content="Users can see this widget on the homepage if they are assigned to ANY of these roles and the widget is enabled"><i class="fa fa-info-circle"></i></a></label>
+                                </div>
+                                <div class="col-sm-8">
+                                    <div class="form-group">
+                                        @Html.DropDownList("Roles", Model.AllRoles(), new { multiple = "multiple", @class = "form-control" })
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="col-sm-9">
-                            @Html.EditorFor(m => m.Name, new { required = true })
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-sm-3">
-                            <label for="Description" class="control-label">Description <a href="#" data-toggle="popover" data-placement="right" data-trigger="focus" data-title="Description" data-content="Only visible to admins. Used to identify this widget in the list."><i class="fa fa-info-circle"></i></a></label>
-                        </div>
-                        <div class="col-sm-9">
-                            @Html.EditorFor(m => m.Description)
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-sm-3">
-                            <label for="Roles" class="control-label">Roles visible <a href="#" data-toggle="popover" data-placement="right" data-trigger="focus" data-title="Roles visible" data-content="Users can see this widget on the homepage if they are assigned to ANY of these roles and the widget is enabled"><i class="fa fa-info-circle"></i></a></label>
-                        </div>
-                        <div class="col-sm-9">
-                            <div class="form-group">
-                                @Html.DropDownList("Roles", Model.AllRoles(), new { multiple = "multiple", @class = "form-control" })
+                        <div class="col-lg-6">
+                            <div class="row">
+                                <div class="col-sm-4">
+                                    <label for="HTMLContentId" class="control-label">View (Text) <a href="#" data-toggle="popover" data-placement="right" data-trigger="focus" data-title="View (Text)" data-content="Text type special content that should contain the widget HTML. Be sure the special content has the 'widget' keyword assigned."><i class="fa fa-info-circle"></i></a></label>
+                                </div>
+                                <div class="col-sm-8">
+                                    <div class="form-group">
+                                        @Html.DropDownList("HTMLContentId", Model.HtmlContents(), new { @class = "form-control" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-4">
+                                    <label for="PythonContentId" class="control-label">Code (Python) <a href="#" data-toggle="popover" data-placement="right" data-trigger="focus" data-title="Code (Python)" data-content="Python Script type special content that should contain the widget code. Be sure the special content has the 'widget' keyword assigned."><i class="fa fa-info-circle"></i></a></label>
+                                </div>
+                                <div class="col-sm-8">
+                                    <div class="form-group">
+                                        @Html.DropDownList("PythonContentId", Model.PythonContents(), new { @class = "form-control" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-4">
+                                    <label for="SQLContentId" class="control-label">Data (SQL) <a href="#" data-toggle="popover" data-placement="right" data-trigger="focus" data-title="Data (SQL)" data-content="SQL Script type special content that should contain the database script to provide data to the widget. Be sure the special content has the 'widget' keyword assigned."><i class="fa fa-info-circle"></i></a></label>
+                                </div>
+                                <div class="col-sm-8">
+                                    <div class="form-group">
+                                        @Html.DropDownList("SQLContentId", Model.SQLContents(), new { @class = "form-control" })
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-sm-3">
-                            <label for="HTMLContentId" class="control-label">View (Text) <a href="#" data-toggle="popover" data-placement="right" data-trigger="focus" data-title="View (Text)" data-content="Text type special content that should contain the widget HTML. Be sure the special content has the 'widget' keyword assigned."><i class="fa fa-info-circle"></i></a></label>
+                        <div class="col-sm-4 col-lg-2">
+                            <label for="CacheHours" class="control-label">Caching <a href="#" data-toggle="popover" data-placement="right" data-trigger="focus" data-title="Widget Caching" data-content="If your data isn't changing often, set the time period to a longer option to make the widget load faster. Similarly if you aren't showing user specific data in this widget, set the audience to all users to make the widget load faster"><i class="fa fa-info-circle"></i></a></label>
                         </div>
-                        <div class="col-sm-9">
-                            <div class="form-group">
-                                @Html.DropDownList("HTMLContentId", Model.HtmlContents(), new { @class = "form-control" })
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-sm-3">
-                            <label for="PythonContentId" class="control-label">Code (Python) <a href="#" data-toggle="popover" data-placement="right" data-trigger="focus" data-title="Code (Python)" data-content="Python Script type special content that should contain the widget code. Be sure the special content has the 'widget' keyword assigned."><i class="fa fa-info-circle"></i></a></label>
-                        </div>
-                        <div class="col-sm-9">
-                            <div class="form-group">
-                                @Html.DropDownList("PythonContentId", Model.PythonContents(), new { @class = "form-control" })
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-sm-3">
-                            <label for="SQLContentId" class="control-label">Data (SQL) <a href="#" data-toggle="popover" data-placement="right" data-trigger="focus" data-title="Data (SQL)" data-content="SQL Script type special content that should contain the database script to provide data to the widget. Be sure the special content has the 'widget' keyword assigned."><i class="fa fa-info-circle"></i></a></label>
-                        </div>
-                        <div class="col-sm-9">
-                            <div class="form-group">
-                                @Html.DropDownList("SQLContentId", Model.SQLContents(), new { @class = "form-control" })
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-sm-3">
-                            <label for="CacheHours" class="control-label">Refresh Frequency <a href="#" data-toggle="popover" data-placement="right" data-trigger="focus" data-title="Refresh Frequency" data-content="The amount of time the widget will show the same data before rerunning the script. If your data isn't changing often, set this to a higher frequency to make the widget load faster."><i class="fa fa-info-circle"></i></a></label>
-                        </div>
-                        <div class="col-sm-9">
-                            <div class="form-group">
-                                @Html.DropDownList("CacheHours", Model.CacheTimes(), new { @class = "form-control" })
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-sm-3">
-                            <label for="CachePolicy" class="control-label">Widget Caching <a href="#" data-toggle="popover" data-placement="right" data-trigger="focus" data-title="Widget Caching" data-content="This setting controls how we cache widget content. If you aren't showing user specific data in this widget, set this to Church Wide to make the widget load faster."><i class="fa fa-info-circle"></i></a></label>
-                        </div>
-                        <div class="col-sm-9">
-                            <div class="form-group">
-                                @Html.DropDownList("CachePolicy", Model.CachePolicyOptions(), new { @class = "form-control" })
+                        <div class="col-sm-8 col-lg-10">
+                            <div class="form-inline">
+                                Widget refreshes <a class="cacheHoursSelect" data-value="@Model.CacheHours">@Model.CacheTimes().SingleOrDefault(x => x.Value == Model.CacheHours.ToString()).Text</a>
+                                for <a class="cachePolicySelect" data-value="@Model.CachePolicy">@Model.CachePolicyOptions().SingleOrDefault(x => x.Value == Model.CachePolicy.ToString()).Text</a>
+                                @Html.Hidden("CacheHours", Model.CacheHours)
+                                @Html.Hidden("CachePolicy", Model.CachePolicy)
                             </div>
                         </div>
                     </div>
@@ -168,8 +169,35 @@
 
 @section scripts
 {
-    <script>
+    @Fingerprint.Script("/Content/touchpoint/lib/bootstrap-editable/js/bootstrap-editable.min.js")
+    <script type="text/javascript">
     $(function () {
+        $.fn.editableform.buttons = '<button type="submit" class="btn btn-primary btn-md editable-submit">' +
+            '<i class="fa fa-fw fa-check"></i>' +
+            '</button>' +
+            '<button type="button" class="btn btn-default btn-md editable-cancel">' +
+            '<i class="fa fa-fw fa-times"></i>' +
+            '</button>';
+
+        $(".cacheHoursSelect").editable({
+            mode: 'popup',
+            type: 'select',
+            inputclass: 'input-md',
+            source: @Html.Raw(Json.Encode(Model.CacheTimes().Select(x => new { value = x.Value, text = x.Text }))),
+            success: function (result, value) {
+                $('#CacheHours').val(value);
+            }
+        });
+
+        $(".cachePolicySelect").editable({
+            mode: 'popup',
+            type: 'select',
+            inputclass: 'input-md',
+            source: @Html.Raw(Json.Encode(Model.CachePolicyOptions().Select(x => new { value = x.Value, text = x.Text }))),
+            success: function (result, value) {
+                $('#CachePolicy').val(value);
+            }
+        });
         $('[data-toggle="popover"]').popover({ container: '.box-content' });
         $('[data-toggle="popover"]').click(function (ev) {
             ev.preventDefault();
