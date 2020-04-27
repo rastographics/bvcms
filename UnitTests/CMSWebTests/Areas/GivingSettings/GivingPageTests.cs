@@ -6,7 +6,7 @@ using Xunit;
 namespace CmsDataTests.GivingSettings
 {
     [Collection(Collections.Database)]
-    public class GivingPageCRUD : DatabaseTestBase
+    public class GivingPageTests : DatabaseTestBase
     {
         [Theory]
         [InlineData("Giving Page One")]
