@@ -137,27 +137,27 @@ namespace CmsData
             handlebars.RegisterHelper("FmtNumber", (writer, context, args) =>
             {
                 var s = args[0]?.ToString();
-                if(int.TryParse(s, out int num))
+                if(decimal.TryParse(s, out decimal num))
                 {
                     if (num >= 100000000)
                     {
-                        writer.Write((num / 1000000).ToString("#,0M"));
+                        writer.Write((num / 1000000).ToString("#,1M"));
                     }
-                    else if (num >= 10000000)
+                    else if (num >= 1000000)
                     {
-                        writer.Write((num / 1000000).ToString("0.#") + "M");
+                        writer.Write(Math.Round(num / 1000000, 1).ToString("0.#") + "M");
                     }
                     else if (num >= 100000)
                     {
-                        writer.Write((num / 1000).ToString("#,0K"));
+                        writer.Write(Math.Round(num / 1000, 0).ToString("0.#") + "K");
                     }
-                    else if (num >= 10000)
+                    else if (num >= 1000)
                     {
-                        writer.Write((num / 1000).ToString("0.#") + "K");
+                        writer.Write(Math.Round(num / 1000, 1).ToString("0.#") + "K");
                     }
                     else
                     {
-                        writer.Write(num.ToString("#,0"));
+                        writer.Write(Math.Round(num,1).ToString());
                     }
                 }
             });
