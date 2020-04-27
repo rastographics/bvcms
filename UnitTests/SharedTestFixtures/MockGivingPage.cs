@@ -27,7 +27,7 @@ namespace SharedTestFixtures
                 PageType = DatabaseTestBase.RandomNumber(),
                 FundId = (int)fundId,
                 Enabled = true,
-                DisabledReDirect = DatabaseTestBase.RandomString()
+                DisabledRedirect = DatabaseTestBase.RandomString()
             };
             db.GivingPages.InsertOnSubmit(givingPage);
             db.SubmitChanges();
