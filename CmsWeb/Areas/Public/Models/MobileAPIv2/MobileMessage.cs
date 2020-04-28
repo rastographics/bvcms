@@ -167,9 +167,11 @@ namespace CmsWeb.Areas.Public.Models.MobileAPIv2
 			// Failure Errors
 			EMAIL_NOT_SENT = 21,
 			PIN_NOT_SET = 22,
+            SMS_NOT_CONFIGURED = 23,
+            SMS_SEND_FAILED = 24,
 
-			// Create Errors	
-			CREATE_FAILED = 51,
+            // Create Errors	
+            CREATE_FAILED = 51,
 			CREATE_CODE_FAILED = 52,
 
 			// People Errors
