@@ -148,12 +148,14 @@ namespace CmsWeb.Areas.Setup.Models
 
         private void UpdateContent(DashboardWidget widget)
         {
+            var widgetContentIds = new[] { HTMLContentId, PythonContentId, SQLContentId };
+            var contents = CurrentDatabase.Contents.Where(c => widgetContentIds.Contains(c.Id));
             widget.CopyPropertiesFrom(this, excludefields: "HTMLContentId,PythonContentId,SQLContentId");
-            widget.HTMLContent = CurrentDatabase.Contents.Where(c => c.Id == HTMLContentId).SingleOrDefault();
+            widget.HTMLContent = contents.Where(c => c.Id == HTMLContentId).SingleOrDefault();
             widget.HTMLContentId = (HTMLContentId == 0) ? (int?)null : HTMLContentId;
-            widget.PythonContent = CurrentDatabase.Contents.Where(c => c.Id == PythonContentId).SingleOrDefault();
+            widget.PythonContent = contents.Where(c => c.Id == PythonContentId).SingleOrDefault();
             widget.PythonContentId = (PythonContentId == 0) ? (int?)null : PythonContentId;
-            widget.SQLContent = CurrentDatabase.Contents.Where(c => c.Id == SQLContentId).SingleOrDefault();
+            widget.SQLContent = contents.Where(c => c.Id == SQLContentId).SingleOrDefault();
             widget.SQLContentId = (SQLContentId == 0) ? (int?)null : SQLContentId;
         }
 

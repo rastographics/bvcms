@@ -195,7 +195,7 @@
             inputclass: 'input-md',
             source: @Html.Raw(Json.Encode(Model.CachePolicyOptions().Select(x => new { value = x.Value, text = x.Text }))),
             success: function (result, value) {
-                $('#CachePolicy').val(value);
+                $('#CachePolicy').val(value); 
             }
         });
         $('[data-toggle="popover"]').popover({ container: '.box-content' });
@@ -205,7 +205,7 @@
         $('#Roles').multiselect({
             maxHeight: 200,
             buttonWidth: '100%',
-            numberDisplayed: 6,
+            numberDisplayed: 3,
             includeSelectAllOption: true
         });
         $('#Roles').multiselect('select', @Html.Raw(Json.Encode(Model.Roles)));
