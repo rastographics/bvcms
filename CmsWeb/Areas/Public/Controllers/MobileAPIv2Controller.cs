@@ -896,8 +896,8 @@ namespace CmsWeb.Areas.Public.Controllers
         {
             return from c in CurrentDatabase.Contributions
                    where c.PeopleId == person.PeopleId
-                           || c.PeopleId == person.SpouseId
-                           && (person.ContributionOptionsId ?? StatementOptionCode.Joint) == StatementOptionCode.Joint
+                           || (c.PeopleId == person.SpouseId
+                           && (person.ContributionOptionsId ?? StatementOptionCode.Joint) == StatementOptionCode.Joint)
                    where !ContributionTypeCode.ReturnedReversedTypes.Contains(c.ContributionTypeId)
                    where c.ContributionStatusId == ContributionStatusCode.Recorded
                    where c.ContributionAmount != null
@@ -942,11 +942,11 @@ namespace CmsWeb.Areas.Public.Controllers
             var pledges = APIContribution.Pledges(CurrentDatabase, ci, ToDate, null).ToList();
             var giftsinkind = APIContribution.GiftsInKind(CurrentDatabase, ci, FromDate, ToDate, null).ToList();
             var nontaxitems = APIContribution.NonTaxItems(CurrentDatabase, ci, FromDate, ToDate, null).ToList();
+            contributions.AddRange(giftsinkind.ConvertAll(g => new NormalContribution(g)));
             if (summary.ContainsKey($"{year}"))
             {
                 summary[$"{year}"].Load(peopleId, contributions, pledges, nontaxitems);
             }
-            contributions.AddRange(giftsinkind.ConvertAll(g => new NormalContribution(g)));
             MobileMessage response = new MobileMessage();
             response.data = SerializeJSON(summary, message.version);
             response.setNoError();
