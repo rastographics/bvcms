@@ -92,7 +92,7 @@ namespace IntegrationTests.Support
             return OrgId;
         }
 
-        protected void PayRegistration(int OrgId)
+        protected void PayRegistration(int OrgId, bool savePayInfo = false)
         {
             Open($"{rootUrl}OnlineReg/{OrgId}");
 
@@ -109,7 +109,7 @@ namespace IntegrationTests.Support
             Find(id: "City").SendKeys("City");
 
             Find(id: "State").Clear();
-            Find(id: "State").SendKeys("State");
+            Find(id: "State").SendKeys("TX");
 
             Find(id: "Country").Click();
             Find(css: ".form-group:nth-child(10)").Click();
@@ -128,8 +128,8 @@ namespace IntegrationTests.Support
             Find(id: "Account").Clear();
             Find(id: "Account").SendKeys("111110");
 
-            Find(id: "SavePayInfo").Click();
-
+            if (savePayInfo)            
+                Find(id: "SavePayInfo").Click();            
             WaitForElement("#submitit", maxWaitTimeInSeconds: 5);
             Find(id: "submitit").Click();
             Wait(5);

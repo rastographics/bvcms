@@ -22,16 +22,19 @@ namespace IntegrationTests.Areas.Manage.Views.Batch
             password = RandomString();
             string roleName = "role_" + RandomString();
             var user = CreateUser(username, password, roles: new string[] { "Access", "Edit", "Admin" });
-            FinanceTestUtils.CreateMockPaymentProcessor(db, PaymentProcessTypes.OnlineRegistration, GatewayTypes.Transnational);
+            FinanceTestUtils.CreateMockPaymentProcessor(db, PaymentProcessTypes.OnlineRegistration, GatewayTypes.Acceptiva);
             Login();
-
+            Wait(3);
             OrgId = CreateOrgWithFee();
             SettingUtils.UpdateSetting("UseRecaptcha", "false");
+            SettingUtils.UpdateSetting("AutomaticSettle", "true");
+            SettingUtils.UpdateSetting("AutoSyncBatchDates", "true");
+            SettingUtils.UpdateSetting("AutoSyncBatchDatesWindow", "10");
             PayRegistration(OrgId);
 
             db.RetrieveBatchData(testing: true) ;
             var transaction = db.Transactions.FirstOrDefault(t => t.OrgId == OrgId);
-            transaction.ShouldNotBeNull();
+            transaction.Settled.ShouldNotBeNull();
         }
 
         public override void Dispose()
