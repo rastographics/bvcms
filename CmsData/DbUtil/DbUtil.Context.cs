@@ -1891,8 +1891,8 @@ This search uses multiple steps which cannot be duplicated in a single query.
                 .OrderByDescending(x => x.TransactionDate)
                 .FirstOrDefault();
 
-            if (posDuplicatedTran != null)            
-                timeDifference = DateTime.Now - posDuplicatedTran.TransactionDate;                            
+            if (posDuplicatedTran != null)
+                timeDifference = DateTime.Now - posDuplicatedTran.TransactionDate;
 
             if (timeDifference.HasValue && timeDifference.Value.TotalMinutes < 19)
                 isDuplicateTransaction = true;
@@ -2153,12 +2153,14 @@ This search uses multiple steps which cannot be duplicated in a single query.
             DateTime? dateTo = (enddt != null) ? (DateTime?)DateTime.Parse(enddt) : null;
 
             var rangeTo = dateTo ?? DateTime.Now;
-            var rangeFrom = dateFrom ?? rangeTo.AddDays(0 - Math.Max(1, Setting("AutoSyncBatchDatesWindow").ToInt()));
+            var rangeFrom = dateFrom ?? rangeTo.AddDays(0 - Math.Max(1, Setting("AutoSyncBatchDatesWindow", "1").ToInt()));
 
             var transactions
-                = from t in ViewTransactionLists
-                  join org in Organizations on t.OrgId equals org.OrganizationId
-                  select t;
+                = (from t in ViewTransactionLists
+                   join org in Organizations on t.OrgId equals org.OrganizationId
+                   where t.TransactionDate >= rangeFrom
+                   where t.TransactionDate <= rangeTo
+                   select t).ToList();
 
             foreach (var gateway in gateways.Where(g => g.IsNotNull()).DistinctBy(g => g.Identifier))
             {
@@ -2170,8 +2172,6 @@ This search uses multiple steps which cannot be duplicated in a single query.
                 if (gateway.UseIdsForSettlementDates)
                 {
                     var tranids = (from t in transactions
-                                   where t.TransactionDate >= rangeFrom
-                                   where t.TransactionDate <= rangeTo
                                    where t.Settled == null
                                    where t.Moneytran == true
                                    select t.TransactionId).ToList();
