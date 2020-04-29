@@ -1801,8 +1801,6 @@
     <Content Include="Areas\People\Views\Volunteering\Display.cshtml" />
     <Content Include="Areas\Org\Views\MissionTripEmail\EmailBody.cshtml" />
     <Content Include="Content\touchpoint\src\less\twitter-typeahead\twitter-typeahead.less" />
-    <Content Include="Content\touchpoint\lib\ion-sound\sounds\glass.ogg" />
-    <Content Include="Content\touchpoint\lib\ion-sound\sounds\computer_error.ogg" />
     <Content Include="Areas\Manage\Views\Batch\OtherDeveloperActions.cshtml" />
     <Content Include="Content\touchpoint\src\less\badges.less" />
     <Content Include="Areas\Manage\Views\Display\EditDraft.cshtml" />
@@ -2233,8 +2231,6 @@
     <Content Include="Content\font-awesome-4.0.3\scss\_stacked.scss" />
     <Content Include="Content\font-awesome-4.0.3\scss\_variables.scss" />
     <Content Include="Areas\Search\Views\Query\SaveAs.cshtml" />
-    <Content Include="Content\images\computer_error.ogg" />
-    <Content Include="Content\images\glass.ogg" />
     <Content Include="Areas\Reports\Views\Reports\RecentAbsents1.cshtml" />
     <Content Include="Areas\Org\Views\MissionTripEmail\Index.cshtml" />
     <Content Include="Areas\Org\Views\MissionTripEmail\Supporters.cshtml" />
