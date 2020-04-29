@@ -223,7 +223,7 @@ INSERT INTO [dbo].[DashboardWidgets]
            ,(select isnull(max([Order]), 0)+1 from DashboardWidgets)
            ,1
            ,1
-           ,24)
+           ,1)
 
 INSERT INTO [dbo].[DashboardWidgetRoles]
            ([WidgetId]
@@ -850,20 +850,26 @@ BEGIN
      VALUES
            ('WidgetWelcomeHTML','Edit Text Content',
            '<div class="box" style="background-color:white;">
-    <div class="center">
-        <h2 style="color:#003f72;text-align:center;">Welcome to TouchPoint!</h2>
-        <div style="margin-bottom: 15px;">
-            <div class="col-xs-4" style="text-align:center;display: flex;flex-direction: column;">
-                <i class="fa fa-video-camera fa-2x" style="margin-bottom: 8px;"></i>
-                <a href="https://www.touchpointsoftware.com/blog/#on-demand-webinars">Webinars</a>
+    <div style="padding:0 14px;">
+        <h2 style="text-align:center;margin-bottom:18px;">Welcome to TouchPoint!</h2>
+        <div class="row" style="margin-bottom: 20px;">
+            <div class="col-xs-4">
+                <a target="_blank" href="https://www.touchpointsoftware.com/blog/#on-demand-webinars" style="text-align:center;display:flex;flex-direction:column;">
+                    <i class="fa fa-video-camera fa-2x" style="margin-bottom: 8px;"></i>
+                    <span>Webinars</span>
+                </a>
             </div>
-            <div class="col-xs-4" style="text-align:center;display: flex;flex-direction: column;">
-                <i class="fa fa-book fa-2x" style="margin-bottom: 8px;"></i>
-                <a href="https://docs.touchpointsoftware.com/">Documentation</a>
+            <div class="col-xs-4">
+                <a target="_blank" href="https://docs.touchpointsoftware.com/" style="text-align:center;display:flex;flex-direction:column;">
+                    <i class="fa fa-book fa-2x" style="margin-bottom: 8px;"></i>
+                    <span>Documentation</span>
+                </a>
             </div>
-            <div class="col-xs-4" style="text-align:center;display: flex;flex-direction: column;">
-                <i class="fa fa-question-circle fa-2x" style="margin-bottom: 8px;"></i>
-                <a href="https://www.touchpointsoftware.com/training/">Training</a>
+            <div class="col-xs-4">
+                <a target="_blank" href="https://www.touchpointsoftware.com/training/" style="text-align:center;display:flex;flex-direction:column;">
+                    <i class="fa fa-question-circle fa-2x" style="margin-bottom: 8px;"></i>
+                    <span>Training</span>
+                </a>
             </div>
         </div>
     </div>
@@ -899,7 +905,7 @@ INSERT INTO [dbo].[DashboardWidgets]
            ,(select max(Id) from Content where [Name] like 'WidgetWelcomeHTML')
            ,NULL
            ,NULL
-           ,1
+           ,0
            ,(select isnull(max([Order]), 0)+1 from DashboardWidgets)
            ,0
            ,1
