@@ -959,9 +959,15 @@ BEGIN
             [''Projected Monthly Recurring'', projected],
             [''Remaining Budget'', budget - projected]
         ]);
+        var formatter = new google.visualization.NumberFormat({
+            prefix: ''$'',
+            fractionDigits: 0
+        });
+        formatter.format(data, 1);
         var options = {
             pieHole: 0.4,
             legend: ''none'',
+            pieSliceText: ''percentage'',
             chartArea: {
                 left: 0,
                 top: 20,
