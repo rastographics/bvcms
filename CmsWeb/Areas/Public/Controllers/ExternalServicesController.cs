@@ -26,38 +26,38 @@ namespace CmsWeb.Areas.Public.Controllers
         {
             string req = Request["request"];
 
-            int iReportID = 0;
+            int reportID = 0;
 
-            string sReportLink = "";
-            string sOrderID = "";
-            string sBillingReference = "";
+            string reportLink = "";
+            string orderID = "";
+            string billingReference = "";
 
-            bool bHasAlerts = false;
+            bool hasAlerts = false;
 
-            XDocument xd = XDocument.Parse(req, LoadOptions.None);
+            XDocument xmldoc = XDocument.Parse(req, LoadOptions.None);
 
-            iReportID = Int32.Parse(xd.Root.Element("ReportID").Value);
-            sBillingReference = xd.Root.Element("Order").Element("BillingReferenceCode").Value;
+            reportID = int.Parse(xmldoc.Root.Element("ReportID").Value);
+            billingReference = xmldoc.Root.Element("Order").Element("BillingReferenceCode").Value;
 
-            if (xd.Root.Element("Order").Element("Alerts") != null)
+            if (xmldoc.Root.Element("Order").Element("Alerts") != null)
             {
-                bHasAlerts = true;
+                hasAlerts = true;
             }
 
-            sReportLink = xd.Root.Element("Order").Element("ReportLink").Value;
-            sOrderID = xd.Root.Element("Order").Element("OrderDetail").Attribute("OrderId").Value;
+            reportLink = xmldoc.Root.Element("Order").Element("ReportLink").Value;
+            orderID = xmldoc.Root.Element("Order").Element("OrderDetail").Attribute("OrderId").Value;
 
             var check = (from e in CurrentDatabase.BackgroundChecks
-                         where e.ReportID == iReportID
+                         where e.ReportID == reportID
                          select e).SingleOrDefault();
 
             if (check != null)
             {
                 check.Updated = DateTime.Now;
-                check.ReportID = iReportID;
-                check.ReportLink = sReportLink;
+                check.ReportID = reportID;
+                check.ReportLink = reportLink;
                 check.StatusID = 3;
-                if (bHasAlerts)
+                if (hasAlerts)
                 {
                     check.IssueCount = 1;
                 }
@@ -66,8 +66,6 @@ namespace CmsWeb.Areas.Public.Controllers
 
                 CurrentDatabase.Email(DbUtil.AdminMail, check.User, "TouchPoint Notification: Background Check Complete", "A scheduled background check has been completed for " + check.Person.Name);
             }
-
-            //System.IO.File.WriteAllText(@"C:\" + DateTime.Now.ToString("yyyyMMddHHmmssfff") + ".txt", req);
 
             return Content("<?xml version=\"1.0\" encoding=\"utf-8\"?><OrderXML><Success>TRUE</Success></OrderXML>");
         }
@@ -104,11 +102,11 @@ namespace CmsWeb.Areas.Public.Controllers
 
         public ActionResult ApiUserInfo()
         {
-            var header = Request.Headers;
+            var header = HttpContextFactory.Current.Request.Headers;
 
             //Check incoming values are valid        
             var apiKeyValue = header.GetValues("ApiKey");
-            var getIp = HttpContext.Request.ServerVariables["REMOTE_ADDR"];
+            var ip = HttpContextFactory.Current.Request.ServerVariables["REMOTE_ADDR"];
 
             // ApiKey header is missing
             if (apiKeyValue == null)
@@ -116,7 +114,7 @@ namespace CmsWeb.Areas.Public.Controllers
                 return Json(new
                 {
                     error = ErrorMessage.ApiKeyHeaderMissing,
-                    ip = getIp
+                    ip,
                 }, JsonRequestBehavior.AllowGet);
             }
 
@@ -127,7 +125,7 @@ namespace CmsWeb.Areas.Public.Controllers
                 return Json(new
                 {
                     error = ErrorMessage.ApiKeyHeaderValueNull,
-                    ip = getIp
+                    ip,
                 }, JsonRequestBehavior.AllowGet);
             }
 
@@ -138,7 +136,7 @@ namespace CmsWeb.Areas.Public.Controllers
                 return Json(new
                 {
                     error = ErrorMessage.AuthHeaderMissing,
-                    ip = getIp
+                    ip,
                 }, JsonRequestBehavior.AllowGet);
             }
 
@@ -151,7 +149,7 @@ namespace CmsWeb.Areas.Public.Controllers
                     return Json(new
                     {
                         error = ErrorMessage.AuthHeaderValueInvalid,
-                        ip = getIp
+                        ip,
                     }, JsonRequestBehavior.AllowGet);
                 }
                 getAuthInfo = Encoding.ASCII.GetString(Convert.FromBase64String(authorizationValue.First().Substring(6)));
@@ -161,7 +159,7 @@ namespace CmsWeb.Areas.Public.Controllers
                 return Json(new
                 {
                     error = ErrorMessage.MalformedBase64,
-                    ip = getIp
+                    ip,
                 }, JsonRequestBehavior.AllowGet);
             }
 
@@ -171,7 +169,7 @@ namespace CmsWeb.Areas.Public.Controllers
                 return Json(new
                 {
                     error = ErrorMessage.AuthorizationHeaderValueInvalid,
-                    ip = getIp
+                    ip,
                 }, JsonRequestBehavior.AllowGet);
             }
 
@@ -183,7 +181,7 @@ namespace CmsWeb.Areas.Public.Controllers
                 return Json(new
                 {
                     error = ErrorMessage.InvalidCredentials,
-                    ip = getIp
+                    ip,
                 }, JsonRequestBehavior.AllowGet);
             }
 
@@ -194,7 +192,7 @@ namespace CmsWeb.Areas.Public.Controllers
                 return Json(new
                 {
                     error = ErrorMessage.ApiKeySettingNotFound,
-                    ip = getIp
+                    ip,
                 }, JsonRequestBehavior.AllowGet);
             }
 
@@ -208,18 +206,18 @@ namespace CmsWeb.Areas.Public.Controllers
                     return Json(new
                     {
                         error = ErrorMessage.IpSettingNotFound,
-                        ip = getIp
+                        ip,
                     }, JsonRequestBehavior.AllowGet);
                 }
 
                 //Check Ip is valid
-                var ipCheck = getIpWhiteList.Split(',').Contains(getIp);
+                var ipCheck = getIpWhiteList.Split(',', ';', ' ').Contains(ip);
                 if (!ipCheck)
                 {
                     return Json(new
                     {
                         error = ErrorMessage.IpNotFoundInKey,
-                        ip = getIp
+                        ip,
                     }, JsonRequestBehavior.AllowGet);
                 }
 
@@ -240,15 +238,14 @@ namespace CmsWeb.Areas.Public.Controllers
                 return Json(new
                 {
                     error = ErrorMessage.FailedAuthentication,
-                    ip = getIp
+                    ip,
                 }, JsonRequestBehavior.AllowGet);
             }
             return Json(new
             {
                 error = ErrorMessage.ApiKeyNotValid,
-                ip = getIp
+                ip,
             }, JsonRequestBehavior.AllowGet);
         }
-
     }
 }

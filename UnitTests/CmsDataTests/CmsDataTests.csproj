@@ -127,6 +127,7 @@
     <Compile Include="DbUtil\CMSDataContextTests.cs" />
     <Compile Include="Email\ReplacementCodes\Links\SupportLinkTests.cs" />
     <Compile Include="Email\ReplacementCodes\Links\UnlayerLinkTests.cs" />
+    <Compile Include="Email\SendEmailTests.cs" />
     <Compile Include="Extensions\ContributionTests.cs" />
     <Compile Include="Finance\AcceptivaGatewayTests.cs" />
     <Compile Include="Finance\Acceptiva\Core\Helpers\ISO3166Tests.cs" />
@@ -140,6 +141,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="QueryBuilder\Expression\ConditionsTests.cs" />
     <Compile Include="QueryBuilder\AttendTests.cs" />
   </ItemGroup>
   <ItemGroup>

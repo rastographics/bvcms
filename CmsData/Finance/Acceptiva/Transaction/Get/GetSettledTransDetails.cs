@@ -12,8 +12,8 @@ namespace CmsData.Finance.Acceptiva.Transaction.Get
         public GetSettledTransDetails(bool isTesting, string apiKey, DateTime dateStart, DateTime dateEnd)
             : base(isTesting, apiKey, action)
         {
-            Data["params[0][filters][0]"] = $"trans_date>{dateStart.ToString("yyyy-MM-dd")}";
-            Data["params[0][filters][1]"] = $"trans_date<{dateEnd.ToString("yyyy-MM-dd")}";
+            Data["params[0][filters][0]"] = $"trans_date>={dateStart.ToString("yyyy-MM-dd")}";
+            Data["params[0][filters][1]"] = $"trans_date<={dateEnd.ToString("yyyy-MM-dd")}";
             Data["params[0][filters][2]"] = $"trans_status=52,61,73,74";
         }
 

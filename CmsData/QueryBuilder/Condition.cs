@@ -47,7 +47,7 @@ namespace CmsData
         }
 
         public string Ministry { get; set; }
-        public int? MinistryInt => Ministry.ToInt2() ?? ProgramInt; // Ministry used to be stored in Program
+        public int? MinistryInt => Ministry.Split(',')[0].ToInt2() ?? ProgramInt; // Ministry used to be stored in Program
 
         public string Program { get; set; }
         public int? ProgramInt => DivisionInt > 0 ? 0 : Program.GetCsvToken().ToInt();
