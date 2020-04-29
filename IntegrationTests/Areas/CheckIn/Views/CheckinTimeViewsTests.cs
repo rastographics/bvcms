@@ -21,11 +21,7 @@ namespace IntegrationTests.Areas.CheckIn.Views
 
             PageSource.ShouldContain("no checkin times available");
         }
-    }
-
-    [Collection(Collections.Webapp)]
-    public class CheckInTests : AccountTestBase
-    {
+        
         [Fact]
         public void Should_Only_Allow_Checkin_User()
         {
@@ -42,6 +38,40 @@ namespace IntegrationTests.Areas.CheckIn.Views
             Find(css: "input[type=submit]").Click();
             Wait(10);
 
+            Open($"{rootUrl}CheckIn/");
+            WaitForElement("#CheckInApp", 30);
+
+            PageSource.ShouldContain("Enter your phone number");
+            
+            Open($"{rootUrl}CheckIn/Logout", true);
+            Open($"{rootUrl}CheckIn/");
+            WaitForElement("#CheckInApp", 30);
+
+            PageSource.ShouldNotContain("Enter your phone number");
+        }
+        
+        [Fact]
+        public void Should_Allow_Login_and_Logout()
+        {
+            username = RandomString();
+            password = RandomString();
+            var user = CreateUser(username, password, roles: new string[] { "Checkin" });
+            Open($"{rootUrl}CheckIn/");
+
+            WaitForElement("#CheckInApp", 30);
+
+            Find(name: "username").SendKeys(username);
+            Find(name: "password").SendKeys(password);
+            Find(name: "kiosk").SendKeys("test");
+            Find(css: "input[type=submit]").Click();
+            Wait(10);
+
+            Open($"{rootUrl}CheckIn/");
+            WaitForElement("#CheckInApp", 30);
+
+            PageSource.ShouldContain("Enter your phone number");
+            
+            Open($"{rootUrl}CheckIn/Logout", true);
             Open($"{rootUrl}CheckIn/");
             WaitForElement("#CheckInApp", 30);
 

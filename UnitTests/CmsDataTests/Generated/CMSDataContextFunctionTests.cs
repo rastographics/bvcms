@@ -107,7 +107,9 @@ namespace CmsDataTests
                 db.SubmitChanges();
 
                 var bundleHeader = MockContributions.CreateSaveBundle(db);
+
                 var FirstContribution = MockContributions.CreateSaveContribution(db, bundleHeader, fromDate, 100, peopleId: person.PeopleId, contributionType: 1);
+
                 var SecondContribution = MockContributions.CreateSaveContribution(db, bundleHeader, fromDate, 20, peopleId: person.PeopleId, contributionType: 9);
 
                 var FundIds = $"{FirstContribution.FundId},{SecondContribution.FundId}";
@@ -122,6 +124,89 @@ namespace CmsDataTests
                 {
                     TopGiversResult.ShouldNotBeNull();
                 }
+
+                MockContributions.DeleteAllFromBundle(db, bundleHeader);
+            }
+        }
+
+        [Fact]
+        public void ContributionAmount2Test()
+        {
+            var fromDate = new DateTime(2019, 4, 4);
+            var toDate = new DateTime(2019, 7, 31);
+            using (var db = CMSDataContext.Create(Util.Host))
+            {
+                // Cleaning Contribution garbage from previous tests
+                db.ExecuteCommand("DELETE FROM dbo.BundleDetail; DELETE FROM dbo.BundleHeader; DELETE FROM dbo.ContributionTag; DELETE FROM dbo.Contribution;");
+
+                var family = new Family();
+                var family2 = new Family();
+                db.Families.InsertOnSubmit(family);
+                db.Families.InsertOnSubmit(family2);
+                db.SubmitChanges();
+
+                var person = new Person
+                {
+                    Family = family,
+                    FirstName = "MockPersonFirstName",
+                    LastName = "MockPersonLastName",
+                    EmailAddress = "MockPerson@example.com",
+                    MemberStatusId = MemberStatusCode.Member,
+                    PositionInFamilyId = PositionInFamily.PrimaryAdult,
+                    MaritalStatusId = MaritalStatusCode.Married,
+                    GenderId = GenderCode.Male                    
+                };
+
+                var Wife = new Person
+                {
+                    Family = family,
+                    FirstName = "WifeFirst",
+                    LastName = "WifeLast",
+                    EmailAddress = "MockPerson@example.com",
+                    MemberStatusId = MemberStatusCode.Member,
+                    PositionInFamilyId = PositionInFamily.PrimaryAdult,
+                    MaritalStatusId = MaritalStatusCode.Married,
+                    GenderId = GenderCode.Female                    
+                };
+
+                var person2 = new Person
+                {
+                    Family = family2,
+                    FirstName = "Person2First",
+                    LastName = "Person2Last",
+                    EmailAddress = "Person2@example.com",
+                    MemberStatusId = MemberStatusCode.Member,
+                    PositionInFamilyId = PositionInFamily.PrimaryAdult,
+                    MaritalStatusId = MaritalStatusCode.Married,
+                    GenderId = GenderCode.Male
+                };
+
+                db.People.InsertOnSubmit(person);
+                db.People.InsertOnSubmit(Wife);
+                db.People.InsertOnSubmit(person2);
+                db.SubmitChanges();
+
+                var bundleHeader = MockContributions.CreateSaveBundle(db);
+
+                var FirstContribution = MockContributions.CreateSaveContribution(db, bundleHeader, fromDate, 100, peopleId: person.PeopleId, contributionType: ContributionTypeCode.NonTaxDed);
+
+                var SecondContribution = MockContributions.CreateSaveContribution(db, bundleHeader, fromDate, 20, peopleId: person.PeopleId, contributionType: ContributionTypeCode.Online);
+
+                var ThirdContribution = MockContributions.CreateSaveContribution(db, bundleHeader, fromDate, 20, peopleId: person2.PeopleId, contributionType: ContributionTypeCode.NonTaxDed);
+
+                var FundIds = $"{FirstContribution.FundId},{SecondContribution.FundId}";
+
+                Condition c = new Condition();
+
+                CompareType op = CompareType.Greater;
+
+                //Both Joint
+                var bothjoint = c.GetContributionList(db, op, fromDate,toDate,1,null,true);
+                bothjoint.ToList().Count().ShouldBe(3);
+
+                //Donor Only
+                var donoronly = c.GetContributionList(db, op, fromDate, toDate, 1, null, true,false);
+                donoronly.ToList().Count().ShouldBe(2);
 
                 MockContributions.DeleteAllFromBundle(db, bundleHeader);
             }

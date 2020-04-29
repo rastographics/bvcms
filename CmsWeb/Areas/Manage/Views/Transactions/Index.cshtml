@@ -72,6 +72,9 @@
                             @Html.DropDownList("gateway", MultipleGatewayUtils.GatewayGatewayAccountList(), Model.gateway, new { @class = "form-control" })
                         </div>
                     </div>
+                    <div style="display:none;">
+                        @Html.CheckBox("isBatchref")
+                    </div>
                     @if (!Model.CurrentDatabase.Setting("ShowSyncBatchDatesOption"))
                     {
                         <div class="col-lg-3 col-md-3 col-sm-6 col-md-offset-6">

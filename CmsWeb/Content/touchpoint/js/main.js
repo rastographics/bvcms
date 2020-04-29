@@ -156,24 +156,16 @@
     };
 
     $.DateValid = function (d, displayError) {
-        var extraSmallDevice = $('.device-xs').is(':visible');
-        var smallDevice = $('.device-sm').is(':visible');
-
-        var reDate = /^(0?[1-9]|1[012])[\/-](0?[1-9]|[12][0-9]|3[01])[\/-]((19|20)?[0-9]{2})$/i;
-        if ($.dateFormat.startsWith('d'))
-            reDate = /^(0?[1-9]|[12][0-9]|3[01])[\/-](0?[1-9]|1[012])[\/-]((19|20)?[0-9]{2})$/i;
-
-        if (extraSmallDevice || smallDevice) {
-            reDate = /(\d{4})-(\d{2})-(\d{2})/;
-        }
-
-        var v = true;
-        if (!reDate.test(d)) {
-            if (displayError == true)
+        var reMobileDate = /(\d{4})-(\d{2})-(\d{2})/;
+        var reDate = $.dateFormat.startsWith('d') ? /^(0?[1-9]|[12][0-9]|3[01])[\/-](0?[1-9]|1[012])[\/-]((19|20)?[0-9]{2})$/i : /^(0?[1-9]|1[012])[\/-](0?[1-9]|[12][0-9]|3[01])[\/-]((19|20)?[0-9]{2})$/i;
+        
+        if (!reDate.test(d) && !reMobileDate.test(d)) {
+            if (displayError) {
                 swal("Error!", "Enter valid date.", "error");
-            v = false;
+            }
+            return false;
         }
-        return v;
+        return true;
     };
 
     $.DateRangeValid = function (df, dt, displayError)

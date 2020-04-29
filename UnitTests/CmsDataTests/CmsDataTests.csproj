@@ -140,6 +140,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="QueryBuilder\Expression\ConditionsTests.cs" />
     <Compile Include="QueryBuilder\AttendTests.cs" />
   </ItemGroup>
   <ItemGroup>

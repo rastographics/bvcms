@@ -1,4 +1,5 @@
 using CmsData;
+using CmsData.Codes;
 using SharedTestFixtures;
 using Shouldly;
 using System;
@@ -6,7 +7,7 @@ using System.Linq;
 using UtilityExtensions;
 using Xunit;
 
-namespace CmsDataTests
+namespace CmsData.Tests
 {
     [Collection(Collections.Database)]
     public class CMSDataContextTests : DatabaseTestBase
@@ -212,6 +213,36 @@ namespace CmsDataTests
         {
             var ints = db.SplitInts(list).ToList();
             ints.Count().ShouldBe(count);
+        }
+
+        [Fact]
+        public void SetOrgLeadersOnlyTest()
+        {
+            var user = CreateUser(RandomString(), RandomString());
+            var person = user.Person;
+            var personInFamily = CreatePerson(person.Family);
+            var personInOrg = CreatePerson();
+            var personNotInOrg = CreatePerson();
+            var org = CreateOrganization();
+            CreateOrganizationMember(org.OrganizationId, personInOrg.PeopleId);
+            var leader = CreateOrganizationMember(org.OrganizationId, person.PeopleId);
+            leader.MemberTypeId = MemberTypeCode.Leader;
+            db.SubmitChanges();
+
+            db.CurrentUser = user;
+            db.CurrentSessionId = RandomString(32);
+
+            db.SetOrgLeadersOnly();
+
+            var tag = db.OrgLeadersOnlyTag2();
+
+            var everyone = tag.People(db);
+            var ids = everyone.Select(p => p.PeopleId).ToArray();
+
+            ids.ShouldContain(person.PeopleId);
+            ids.ShouldContain(personInFamily.PeopleId);
+            ids.ShouldContain(personInOrg.PeopleId);
+            ids.ShouldNotContain(personNotInOrg.PeopleId);
         }
     }
 }

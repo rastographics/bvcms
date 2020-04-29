@@ -773,7 +773,7 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
 
             foreach (MobilePostEditField field in fields)
             {
-                field.updatePerson(person, personChangeList, familyChangeList);
+                field.updatePerson(CurrentDatabase, person, personChangeList, familyChangeList);
             }
 
             if (personChangeList.Count > 0)
