@@ -276,6 +276,7 @@ namespace CmsWeb.Areas.Public.ControllersTests
         public void QuickSignInTest()
         {
             var requestManager = FakeRequestManager.Create();
+            db = requestManager.CurrentDatabase;
             var membershipProvider = new MockCMSMembershipProvider { ValidUser = true };
             var roleProvider = new MockCMSRoleProvider();
             CMSMembershipProvider.SetCurrentProvider(membershipProvider);
