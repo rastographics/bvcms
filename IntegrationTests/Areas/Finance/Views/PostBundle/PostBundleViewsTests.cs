@@ -49,5 +49,31 @@ namespace IntegrationTests.Areas.Finance.Views.PostBundle
             var r6 = Find(css: "tr:nth-child(6) > .name");
             r6.ShouldNotBeNull();
         }
+
+        /// <summary>
+        /// Tests creation of a Bundle. After clicking "Save", there
+        ///     should be a redirect to the next (summary) page.
+        /// </summary>
+        [Fact]
+        public void Should_Redirect_After_Creating_Bundle()
+        {
+            username = RandomString();
+            password = RandomString();
+            var user = CreateUser(username, password, roles: new string[] { "Access", "Edit", "Admin", "Finance" });
+            Login();
+            Wait(3);
+            Open($"{rootUrl}Bundles/");
+            Find(text: "Create New Bundle").Click();
+            Find(id: "Bundle_TotalCash").SendKeys("100");
+            Find(id: "Bundle_TotalChecks").SendKeys("500");
+            Find(id: "Bundle_TotalEnvelopes").SendKeys("25");
+            var noResults = Find(id: "results");
+            noResults.ShouldBeNull();
+            Find(text: "Save").Click();
+            Wait(4);
+            var results = Find(id: "results");
+            results.ShouldNotBeNull();
+        }
+
     }
 }

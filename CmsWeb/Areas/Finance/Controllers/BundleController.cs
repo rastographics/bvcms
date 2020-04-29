@@ -22,7 +22,12 @@ namespace CmsWeb.Areas.Finance.Controllers
         public ActionResult Index(int id, bool? create, bool? edit)
         {
             var m = new Models.BundleModel(id, CurrentDatabase);
-            ViewBag.createbundle = create;
+
+            if (TempData["BundleCreated"] == null)
+                ViewBag.createbundle = create;
+
+            TempData["BundleCreated"] = "True";
+
             ViewBag.editbundle = edit;
             if (User.IsInRole("FinanceDataEntry") && m.BundleStatusId != BundleStatusCode.OpenForDataEntry)
             {
@@ -102,7 +107,8 @@ namespace CmsWeb.Areas.Finance.Controllers
             }
 
             m.BundleId = id; // refresh values
-            return View("Display", m);
+
+            return Redirect($"/Bundle/{id}?create=false");
         }
 
         [HttpPost]
