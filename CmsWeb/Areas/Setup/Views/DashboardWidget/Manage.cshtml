@@ -54,6 +54,9 @@
             margin-top: 7px;
         }
     </style>
+    <script type="text/javascript">
+        var WidgetCharts = {};
+    </script>
 }
 <div class="row">
     <div class="col-sm-8">
@@ -139,8 +142,8 @@
                         </div>
                         <div class="col-sm-8 col-lg-10">
                             <div class="form-inline">
-                                Widget refreshes <a class="cacheHoursSelect" data-value="@Model.CacheHours">@Model.CacheTimes().SingleOrDefault(x => x.Value == Model.CacheHours.ToString()).Text</a>
-                                for <a class="cachePolicySelect" data-value="@Model.CachePolicy">@Model.CachePolicyOptions().SingleOrDefault(x => x.Value == Model.CachePolicy.ToString()).Text</a>
+                                Widget refreshes <a href="#" class="cacheHoursSelect" data-value="@Model.CacheHours">@Model.CacheTimes().SingleOrDefault(x => x.Value == Model.CacheHours.ToString()).Text</a>
+                                for <a href="#" class="cachePolicySelect" data-value="@Model.CachePolicy">@Model.CachePolicyOptions().SingleOrDefault(x => x.Value == Model.CachePolicy.ToString()).Text</a>
                                 @Html.Hidden("CacheHours", Model.CacheHours)
                                 @Html.Hidden("CachePolicy", Model.CachePolicy)
                             </div>
@@ -188,14 +191,13 @@
                 $('#CacheHours').val(value);
             }
         });
-
         $(".cachePolicySelect").editable({
             mode: 'popup',
             type: 'select',
             inputclass: 'input-md',
             source: @Html.Raw(Json.Encode(Model.CachePolicyOptions().Select(x => new { value = x.Value, text = x.Text }))),
             success: function (result, value) {
-                $('#CachePolicy').val(value); 
+                $('#CachePolicy').val(value);
             }
         });
         $('[data-toggle="popover"]').popover({ container: '.box-content' });
@@ -249,6 +251,19 @@
                     snackbar('Error deleting widget', 'error');
                 });
             });
+        });
+        $(window).resize(function () {
+            if (this.resizeTO) clearTimeout(this.resizeTO);
+            this.resizeTO = setTimeout(function () {
+                $(this).trigger('resizeEnd');
+            }, 200);
+        });
+
+        // handle google chart resizing
+        $(window).on('resizeEnd', function () {
+            for (var widget in WidgetCharts) {
+                WidgetCharts[widget]();
+            }
         });
     });
     </script>

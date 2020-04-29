@@ -10,33 +10,29 @@
         #home {
             padding-top: 10px;
         }
-
         ul.list-group {
             max-height: 215px;
             overflow-y: auto;
             margin-bottom: 0;
         }
-
         @@media (max-width: 767px) {
             ul.list-group {
                 max-height: none !important;
                 overflow-y: visible !important;
             }
         }
-
         ul.list-group li {
             border-left: none;
             border-right: none;
             padding-left: 20px;
         }
+        ul.list-group li.section {
+            font-weight: bold;
+        }
 
-            ul.list-group li.section {
-                font-weight: bold;
-            }
-
-            ul.list-group li.indent {
-                padding-left: 25px;
-            }
+        ul.list-group li.indent {
+            padding-left: 25px;
+        }
 
         .list-group-item > .label {
             float: right;
@@ -45,13 +41,11 @@
         .widget-embed.loading {
             opacity: 0.5;
         }
-
-            .widget-embed.loading .box,
-            .widget-embed.error .box {
-                height: 150px;
-                background-color: #fff;
-            }
-
+        .widget-embed.loading .box,
+        .widget-embed.error .box {
+            height: 150px;
+            background-color: #fff;
+        }
         .widget-embed .box > .center {
             display: flex;
             flex-direction: column;
@@ -59,11 +53,13 @@
             justify-content: center;
             height: 100%;
         }
-
-            .widget-embed .box > .center i {
-                margin-bottom: 15px;
-            }
+        .widget-embed .box > .center i {
+            margin-bottom: 15px;
+        }
     </style>
+    <script type="text/javascript">
+        var WidgetCharts = {};
+    </script>
 }
 <div id="home" class="row">
     @foreach (List<DashboardWidget> column in Model)
@@ -101,6 +97,19 @@
                 el.removeClass('loading').addClass('error');
                 el.html("<div class='box'><div class='center bg-warning text-warning'><i class='fa fa-3x fa-exclamation-circle'></i><p style='text-align:center;'>Error loading " + el.data('name') + "<br />Contact your system administrator</p></div></div>")
             });
-        })
+        });
+        $(window).resize(function () {
+            if (this.resizeTO) clearTimeout(this.resizeTO);
+            this.resizeTO = setTimeout(function () {
+                $(this).trigger('resizeEnd');
+            }, 200);
+        });
+
+        // handle google chart resizing
+        $(window).on('resizeEnd', function () {
+            for (var widget in WidgetCharts) {
+                WidgetCharts[widget]();
+            }
+        });
     </script>
 }
