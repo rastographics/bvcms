@@ -40,7 +40,6 @@ namespace CmsWeb.Areas.Public.Models
             var model = new SmsReplyWordsModel(CurrentDatabase) {Number = To};
             model.PopulateNumber();
             return model;
-
         }
         public string ProcessAndRespond()
         {
@@ -82,7 +81,6 @@ namespace CmsWeb.Areas.Public.Models
             }
             //Reply word never found in loop
             return $"{Body} reply word not recognized for number {To}";
-
             string MarkAttendingIntention(SmsActionModel r, int code)
             {
                 Meeting meeting = null;
