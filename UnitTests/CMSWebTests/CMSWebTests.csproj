@@ -57,6 +57,12 @@
     <Reference Include="FluentAssertions, Version=5.9.0.0, Culture=neutral, PublicKeyToken=33f2691a05b67b6a, processorArchitecture=MSIL">
       <HintPath>..\..\packages\FluentAssertions.5.9.0\lib\net45\FluentAssertions.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.IdentityModel.Logging, Version=1.1.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.IdentityModel.Logging.1.1.2\lib\net451\Microsoft.IdentityModel.Logging.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.IdentityModel.Tokens, Version=5.1.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.IdentityModel.Tokens.5.1.2\lib\net451\Microsoft.IdentityModel.Tokens.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.VisualStudio.TestPlatform.TestFramework, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\..\packages\MSTest.TestFramework.1.4.0\lib\net45\Microsoft.VisualStudio.TestPlatform.TestFramework.dll</HintPath>
       <Private>True</Private>
@@ -85,6 +91,11 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Data.Linq" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.IdentityModel.Tokens.Jwt, Version=5.1.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.IdentityModel.Tokens.Jwt.5.1.2\lib\net451\System.IdentityModel.Tokens.Jwt.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net" />
+    <Reference Include="System.Net.Http, Version=4.2.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.4.1, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\..\packages\System.Runtime.CompilerServices.Unsafe.4.5.2\lib\netstandard2.0\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
     </Reference>
@@ -130,6 +141,7 @@
     <Compile Include="Areas\Main\Controllers\EmailControllerTests.cs" />
     <Compile Include="Areas\Manage\Models\Involvement\InvolvementTabModelTests.cs" />
     <Compile Include="Areas\Manage\Models\AccountModelTests.cs" />
+    <Compile Include="Areas\Manage\Models\TransactionsModelTest.cs" />
     <Compile Include="Areas\OnlineReg\Models\LinkInfoTests.cs" />
     <Compile Include="Areas\OnlineReg\Models\OnlineRegModelTest.cs" />
     <Compile Include="Areas\OnlineReg\Models\OnlineRegPerson\HelperTests.cs" />
@@ -139,6 +151,7 @@
     <Compile Include="Areas\People\Models\Person\Profile\MemberDocModelTests.cs" />
     <Compile Include="Areas\Public\Controllers\CheckInAPIControllerTests.cs" />
     <Compile Include="Areas\Public\Controllers\APIPersonControllerTests.cs" />
+    <Compile Include="Areas\Public\Controllers\ExternalServicesControllerTests.cs" />
     <Compile Include="Areas\Public\Controllers\MobileAPIControllerTests.cs" />
     <Compile Include="Areas\Public\Controllers\MobileAPIv2ControllerTests.cs" />
     <Compile Include="Areas\Manage\Models\VolunteerCommitmentsModelTest.cs" />

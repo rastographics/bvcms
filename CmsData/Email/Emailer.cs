@@ -56,6 +56,9 @@ namespace CmsData
 
         public void EmailFinanceInformation(MailAddress fromaddress, Person p, List<MailAddress> list, string subject, string body)
         {
+            if (fromaddress == null)
+                return;
+
             var emailqueue = new EmailQueue
             {
                 Queued = Util.Now,
@@ -67,10 +70,13 @@ namespace CmsData
                 Transactional = true,
                 FinanceOnly = true
             };
+
             EmailQueues.InsertOnSubmit(emailqueue);
             string addmailstr = null;
+
             if (list != null)
                 addmailstr = list.EmailAddressListToString();
+
             emailqueue.EmailQueueTos.Add(new EmailQueueTo
             {
                 PeopleId = p.PeopleId,
@@ -78,6 +84,7 @@ namespace CmsData
                 AddEmail = addmailstr,
                 Guid = Guid.NewGuid(),
             });
+
             SubmitChanges();
             SendPersonEmail(emailqueue.Id, p.PeopleId);
         }

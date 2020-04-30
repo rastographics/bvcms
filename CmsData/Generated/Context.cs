@@ -2254,14 +2254,14 @@ namespace CmsData
         public IQueryable<View.FirstTimeGiver> FirstTimeGivers(
             [Parameter(DbType = "int")] int? days,
             [Parameter(DbType = "int")] int? fundid,
-            [Parameter(DbType = "bit")] bool? TaxNonTax
+            [Parameter(DbType = "bit")] bool? nontaxded
             )
         {
             return CreateMethodCallQuery<View.FirstTimeGiver>(this,
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 days,
                 fundid,
-                TaxNonTax
+                nontaxded
                 );
         }
 

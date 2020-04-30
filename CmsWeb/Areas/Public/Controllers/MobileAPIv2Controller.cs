@@ -170,12 +170,18 @@ namespace CmsWeb.Areas.Public.Controllers
                 return MobileMessage.createErrorReturn("Invalid email address", (int)MobileMessage.Error.INVALID_EMAIL);
             }
 
-            bool useMobileMessages = CurrentDatabase.Setting("UseMobileMessages", "false") == "true";
+            bool useMobileMessages = CurrentDatabase.Setting("UseMobileMessages");
 
             MobileAccount account = new MobileAccount(CurrentDatabase);
             account.setDeepLinkFields(message.device, message.instance, message.key, message.argString);
-            account.sendDeepLink();
-
+            if (CurrentDatabase.Setting("UseMobileQuickSignInCodes"))
+            {
+                account.sendLoginCode();
+            }
+            else
+            {
+                account.sendDeepLink();
+            }
             return account.getMobileResponse(useMobileMessages);
         }
 
@@ -201,7 +207,9 @@ namespace CmsWeb.Areas.Public.Controllers
             }
 
             List<Person> people = (from p in CurrentDatabase.People
-                                   where p.EmailAddress == device.CodeEmail || p.EmailAddress2 == device.CodeEmail
+                                   where p.EmailAddress == device.CodeEmail
+                                      || p.EmailAddress2 == device.CodeEmail
+                                      || p.CellPhone == device.CodeEmail
                                    orderby p.FirstName, p.LastName
                                    select p).ToList();
 
@@ -803,7 +811,7 @@ namespace CmsWeb.Areas.Public.Controllers
 
             foreach (MobilePostEditField field in fields)
             {
-                field.updatePerson(person, personChangeList, familyChangeList);
+                field.updatePerson(CurrentDatabase, person, personChangeList, familyChangeList);
             }
 
             if (personChangeList.Count > 0)
@@ -896,8 +904,8 @@ namespace CmsWeb.Areas.Public.Controllers
         {
             return from c in CurrentDatabase.Contributions
                    where c.PeopleId == person.PeopleId
-                           || c.PeopleId == person.SpouseId
-                           && (person.ContributionOptionsId ?? StatementOptionCode.Joint) == StatementOptionCode.Joint
+                           || (c.PeopleId == person.SpouseId
+                           && (person.ContributionOptionsId ?? StatementOptionCode.Joint) == StatementOptionCode.Joint)
                    where !ContributionTypeCode.ReturnedReversedTypes.Contains(c.ContributionTypeId)
                    where c.ContributionStatusId == ContributionStatusCode.Recorded
                    where c.ContributionAmount != null
@@ -942,9 +950,10 @@ namespace CmsWeb.Areas.Public.Controllers
             var pledges = APIContribution.Pledges(CurrentDatabase, ci, ToDate, null).ToList();
             var giftsinkind = APIContribution.GiftsInKind(CurrentDatabase, ci, FromDate, ToDate, null).ToList();
             var nontaxitems = APIContribution.NonTaxItems(CurrentDatabase, ci, FromDate, ToDate, null).ToList();
+            contributions.AddRange(giftsinkind.ConvertAll(g => new NormalContribution(g)));
             if (summary.ContainsKey($"{year}"))
             {
-                summary[$"{year}"].Load(peopleId, contributions, pledges, giftsinkind, nontaxitems);
+                summary[$"{year}"].Load(peopleId, contributions, pledges, nontaxitems);
             }
             MobileMessage response = new MobileMessage();
             response.data = SerializeJSON(summary, message.version);

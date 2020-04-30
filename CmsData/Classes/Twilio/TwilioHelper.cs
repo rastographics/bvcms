@@ -20,6 +20,8 @@ namespace CmsData.Classes.Twilio
 {
     public class TwilioHelper
     {
+        public static Func<PhoneNumber, PhoneNumber, string, Uri, TwilioMessageResult> MockSender; //For mocking SMS in unit tests
+
         public static void QueueSms(CMSDataContext db, object query, int iSendGroupID, string sTitle, string sMessage)
         {
             var q = db.PeopleQuery2(query);
@@ -132,8 +134,9 @@ namespace CmsData.Classes.Twilio
                     success = new[] {
                         MessageResource.StatusEnum.Accepted,
                         MessageResource.StatusEnum.Queued,
-                        MessageResource.StatusEnum.Sending
-                    }.Contains(response.Status);
+                        MessageResource.StatusEnum.Sending,
+                        MessageResource.StatusEnum.Sent
+                    }.Any(s => s.ToString().Equals(response.Status, StringComparison.OrdinalIgnoreCase));
                 }
             }
             return success;
@@ -227,7 +230,7 @@ namespace CmsData.Classes.Twilio
         /// This checks that the Twilio web hook didn't already update the status
         /// If so, we update just the Sent flag
         /// </summary>
-        public static void UpdateSMSItemStatus(CMSDataContext db, SMSItem item, MessageResource response)
+        public static void UpdateSMSItemStatus(CMSDataContext db, SMSItem item, TwilioMessageResult response)
         {
             if (IsSmsFailed(response))
             {
@@ -251,7 +254,7 @@ namespace CmsData.Classes.Twilio
             } while (failed);
         }
 
-        private static MessageResource SendSmsInternal(string sSID, string sToken, string sFrom, string sTo, string sBody, string callbackUrl = null)
+        private static TwilioMessageResult SendSmsInternal(string sSID, string sToken, string sFrom, string sTo, string sBody, string callbackUrl = null)
         {
             // Needs API keys. Removed to keep private
 
@@ -261,7 +264,9 @@ namespace CmsData.Classes.Twilio
             //For testing numbers outside of U.S.
             //sTo = string.Format("+{0}", sTo);
 
-            MessageResource response = MessageResource.Create(new PhoneNumber(sTo), from: new PhoneNumber(sFrom), body: sBody, statusCallback: callbackUri);
+            Func<PhoneNumber, PhoneNumber, string, Uri, TwilioMessageResult> delegateMethod =
+                (to, from, body, statusCallback) => new TwilioMessageResult(MessageResource.Create(to, from: from, body: body, statusCallback: statusCallback));
+            TwilioMessageResult response = (MockSender ?? delegateMethod).Invoke(new PhoneNumber(sTo), new PhoneNumber(sFrom), sBody, callbackUri);
 
             if (IsSmsSent(response))
             {
@@ -279,14 +284,14 @@ namespace CmsData.Classes.Twilio
             return response;
         }
 
-        public static bool IsSmsFailed(MessageResource response)
+        public static bool IsSmsFailed(TwilioMessageResult result)
         {
-            return MessageResource.StatusEnum.Undelivered.Equals(response.Status) || MessageResource.StatusEnum.Failed.Equals(response.Status);
+            return MessageResource.StatusEnum.Undelivered.Equals(result.Status) || MessageResource.StatusEnum.Failed.Equals(result.Status);
         }
 
-        public static bool IsSmsSent(MessageResource response)
+        public static bool IsSmsSent(TwilioMessageResult result)
         {
-            return MessageResource.StatusEnum.Sent.Equals(response.Status) || MessageResource.StatusEnum.Delivered.Equals(response.Status);
+            return MessageResource.StatusEnum.Sent.Equals(result.Status) || MessageResource.StatusEnum.Delivered.Equals(result.Status);
         }
 
         public static List<TwilioNumber> GetUnusedNumberList()
