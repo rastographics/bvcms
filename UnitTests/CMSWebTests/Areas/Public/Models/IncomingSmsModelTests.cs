@@ -88,6 +88,13 @@ delete dbo.SMSGroupMembers
 delete dbo.SMSGroups;
 delete dbo.Attend where OrganizationId = 36
 delete dbo.Meetings where OrganizationId = 36
+
+delete dbo.OrgMemMemTags
+from dbo.OrgMemMemTags mt
+join dbo.MemberTags t on t.Id = mt.MemberTagId and t.OrgId = mt.OrgId
+where mt.OrgId = 36 and t.Name = 'flowers'
+
+delete dbo.MemberTags where Name = 'flowers' and OrgId = 36
 ");
             }
             void TestActionShouldBe(string correctmessage)

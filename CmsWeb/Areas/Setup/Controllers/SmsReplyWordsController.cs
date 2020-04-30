@@ -1,6 +1,7 @@
 using CmsWeb.Areas.Setup.Models;
 using CmsWeb.Lifecycle;
 using System.Web.Mvc;
+using UtilityExtensions;
 
 namespace CmsWeb.Areas.Setup.Controllers
 {
@@ -12,7 +13,7 @@ namespace CmsWeb.Areas.Setup.Controllers
         public ActionResult Index()
         {
             var m = new SmsReplyWordsModel(CurrentDatabase);
-            var number = TempData["number"];
+            var number = Util.GetFromSessionTemp("number");
             if (number != null)
             {
                 m.Number = number.ToString();
@@ -50,7 +51,7 @@ namespace CmsWeb.Areas.Setup.Controllers
         {
             model.Save();
             model.PopulateMetaData();
-            TempData["number"] = model.Number;
+            Util.SetValueInSession("number", model.Number);
             return RedirectToAction("Index");
         }
 

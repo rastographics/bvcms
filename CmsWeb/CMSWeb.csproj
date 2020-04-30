@@ -1928,8 +1928,6 @@
     <Content Include="Areas\Dialog\Views\RemoteDeposit\Index.cshtml" />
     <Content Include="Areas\Dialog\Views\RemoteDeposit\NotConfigured.cshtml" />
     <Content Include="Areas\Setup\Views\SmsReplyWords\Index.cshtml" />
-    <Content Include="Areas\Setup\Views\_ViewStart.cshtml" />
-    <Content Include="Areas\Setup\Views\Shared\_Layout.cshtml" />
     <Content Include="Areas\Setup\Views\SmsReplyWords\ReplyWords.cshtml" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
