@@ -123,30 +123,6 @@ namespace CmsDataTests
             result.Length.ShouldBeGreaterThan(0);
         }
 
-        [Fact]
-        public void CreateTinyUrlTest()
-        {
-            string id = null;
-            using (AppConfig.Change(GetWebConfig()))
-            {
-                // For this test to succeed,
-                // it will require adding a setting in appSettings of secrets.config (so as to not be included in source repo) under CMSWeb 
-                // The setting should be of the form: 
-                // <add key="tpsdbcotoken" value="secret token here" />
-                id = PythonModel.CreateTinyUrl("https://status.touchpointsoftware.com");
-            }
-            System.Net.WebClient wc = new System.Net.WebClient();
-            string webData = wc.DownloadString($"https://{id}");
-            webData.ShouldContain("Announcements");
-        }
-
-        private static string GetWebConfig()
-        {
-            string curDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            var webconfig = Path.GetFullPath(Path.Combine(curDir, @"..\..\..\..\CmsWeb\web.config"));
-            return webconfig;
-        }
-
         public override void Dispose()
         {
             base.Dispose();
