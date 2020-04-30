@@ -61,14 +61,14 @@
                 $('#name').val(ret.name);
                 $('#pid').val(ret.PeopleId);
                 $('#amt').focus();
-                showPledgesSummary(ret.pledgesSummary);                
+                showPledgesSummary(ret.pledgesSummary);
             }
         });
     });
 
     $(".ui-autocomplete-input").on("autocompleteopen", function () {
         var autocomplete = $(this).data("autocomplete"),
-    		menu = autocomplete.menu;
+            menu = autocomplete.menu;
         if (!autocomplete.options.selectFirst) {
             return;
         }
@@ -91,7 +91,7 @@
                 $("#SearchResults2 > ul").css({
                     'max-height': 400,
                     'overflow-y': 'auto'
-                });               
+                });
             }
             else {
                 $.post("/PostBundle/Names", request, function (ret) {
@@ -102,7 +102,7 @@
         select: function (event, ui) {
             $("#name").val(ui.item.Name);
             $("#pid").val(ui.item.Pid);
-            showPledgesSummary(ui.item.pledgesSummary);            
+            showPledgesSummary(ui.item.pledgesSummary);
             return false;
         }
     }).data("uiAutocomplete")._renderItem = function (ul, item) {
@@ -246,12 +246,9 @@
         $("#amt-split").val('').focus();
     });
 
-    function splitSubmit() {
-        var amounts = $("#amt-split").val().split(' ');
-        for (var i = 0, len = amounts.length; i < len; i++) {
-            var newamt = parseFloat(amounts[i]);
-            if (isNaN(newamt))
-                continue;
+    var postContribution = function (i, amounts) {
+        var newamt = parseFloat(amounts[i]);
+        if (!isNaN(newamt)) {
             var tr = $('tr[cid=' + $('#contributionId').val() + ']');
             var q = {
                 pid: $("a.pid", tr).text(),
@@ -264,8 +261,27 @@
                 notes: $("td.notes", tr).text(),
                 id: $("#id").val()
             };
-            $.PostRow({ scroll: true, q: q });
+            $.PostRow({ scroll: true, q: q }).done(function () {
+                i++;
+                if (i < amounts.length) {
+                    postContribution(i, amounts);
+                } else {
+                    return;
+                }
+            });
+        } else {
+            i++;
+            if (i < amounts.length) {
+                postContribution(i, amounts);
+            } else {
+                return;
+            }
         }
+    }
+
+    function splitSubmit() {
+        var amounts = $("#amt-split").val().split(' ');
+        postContribution(0, amounts);
         $('#split-modal').modal('hide');
     }
 
@@ -295,21 +311,21 @@
             confirmButtonText: "Yes, delete it!",
             closeOnConfirm: true
         },
-        function () {
-            $.post("/PostBundle/DeleteRow/", q, function (ret) {
-                if (ret && ret.error)
-                    $.growl("Error!", ret.error, "danger");
-                else {
-                    tr.remove();
-                    showHideDiffRow(ret.diff);
-                    $('.totalitems').text(ret.totalitems);
-                    $('.difference').text(ret.difference);
-                    $('.itemcount').text(ret.itemcount);
-                    $('#editid').val('');
-                    $.growl("Deleted!", "Contribution was successfully deleted.", "success");
-                }
+            function () {
+                $.post("/PostBundle/DeleteRow/", q, function (ret) {
+                    if (ret && ret.error)
+                        $.growl("Error!", ret.error, "danger");
+                    else {
+                        tr.remove();
+                        showHideDiffRow(ret.diff);
+                        $('.totalitems').text(ret.totalitems);
+                        $('.difference').text(ret.difference);
+                        $('.itemcount').text(ret.itemcount);
+                        $('#editid').val('');
+                        $.growl("Deleted!", "Contribution was successfully deleted.", "success");
+                    }
+                });
             });
-        });
     });
 
     function showHideDiffRow(diff) {
@@ -321,11 +337,11 @@
     }
 
     $.fn.editableform.buttons = '<button type="submit" class="btn btn-primary btn-sm editable-submit">' +
-                                            '<i class="fa fa-fw fa-check"></i>' +
-                                        '</button>' +
-                                        '<button type="button" class="btn btn-default btn-sm editable-cancel">' +
-                                            '<i class="fa fa-fw fa-times"></i>' +
-                                        '</button>';
+        '<i class="fa fa-fw fa-check"></i>' +
+        '</button>' +
+        '<button type="button" class="btn btn-default btn-sm editable-cancel">' +
+        '<i class="fa fa-fw fa-times"></i>' +
+        '</button>';
     function initializeEditable() {
         $(".clickEdit").editable({
             mode: 'popup',
@@ -365,6 +381,7 @@
     initializeEditable();
 
     $.PostRow = function (options) {
+        var dfrd = new $.Deferred();
         $('#name').popover('hide');
         if (!options.q) {
             var n = parseFloat($('#amt').val());
@@ -386,7 +403,7 @@
         if (cid) {
             action = "/PostBundle/UpdateRow/";
         }
-        $.post(action, options.q).done(function(ret){
+        $.post(action, options.q).done(function (ret) {
             keyallowed = true;
             if (!ret)
                 return;
@@ -430,7 +447,9 @@
             $("#gear").hide();
             initializePopovers();
             initializeEditable();
+            dfrd.resolve();
         });
+        return dfrd.promise();
     };
 
 
@@ -520,7 +539,7 @@
 function setPledges(pledgesData) {
     var pledges = '<div><table><thead><tr><th id="pledgesTable">Id</th><th id="pledgesTable">Fund</th><th id="pledgesTable"">Pledged</th><th id="pledgesTable"">Contributed</th><th id="pledgesTable">Balance</th></tr></thead>';
     $.each(pledgesData, function (idx, obj) {
-        pledges = pledges + '<tr><td id="pledgesTable">' + obj.FundId + '</td><td id="pledgesTable">' + obj.FundName + '</td><td id="pledgesTable">' + obj.AmountPledged + '</td><td id="pledgesTable">' + obj.AmountContributed + '</td><td id="pledgesTable">' + obj.Balance + '</td></tr>';        
+        pledges = pledges + '<tr><td id="pledgesTable">' + obj.FundId + '</td><td id="pledgesTable">' + obj.FundName + '</td><td id="pledgesTable">' + obj.AmountPledged + '</td><td id="pledgesTable">' + obj.AmountContributed + '</td><td id="pledgesTable">' + obj.Balance + '</td></tr>';
     });
     pledges = pledges + '</table></div>';
     $('#name').attr('data-content', pledges);
