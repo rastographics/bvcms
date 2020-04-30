@@ -6,6 +6,7 @@ for /f %%f in ('dir /b packages\xunit.runner.console.*') do set xunit=%~dp0packa
 for /f %%f in ('dir /b packages\codecov.*') do set codecov=%~dp0packages\%%f\tools\codecov.exe
 for /f %%f in ('dir /b packages\selenium.webdriver.chromedriver.*') do set chromedriverdir=%~dp0packages\%%f\driver\win32\
 if "%PR%" EQU "" set PR=local
+if "%PR%" EQU "develop" set PR=""
 set root=%~dp0%
 set opencover_filters="+[*]* -[*Tests]* -[xunit.*]*"
 set iisexpress="%ProgramFiles%\IIS Express\iisexpress.exe"
