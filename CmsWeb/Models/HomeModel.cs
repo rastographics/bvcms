@@ -1,9 +1,12 @@
 using CmsData;
 using CmsData.Codes;
 using CmsWeb.Code;
+using Dapper;
 using System;
 using System.Collections.Generic;
 using System.Data.Linq.SqlClient;
+using System.Data.SqlClient;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -30,7 +33,9 @@ namespace CmsWeb.Models
             public string Url => "/Person2/" + PeopleId;
         }
 
-        public HomeModel() { }
+        public HomeModel(CMSDataContext db) {
+            _currentDatabase = db;
+        }
 
         public IEnumerable<BirthdayInfo> Birthdays()
         {
@@ -410,6 +415,7 @@ namespace CmsWeb.Models
 
         public IEnumerable<SearchInfo22> FastSearch(SearchRequest sr)
         {
+            var CurrentDatabase = DbUtil.Db;
             string first, last;
             string text = sr.Query;
             bool addContext = sr.Context == "add"; 
@@ -695,6 +701,35 @@ namespace CmsWeb.Models
             HttpRuntime.Cache.Insert(bvcmsnews, list, null,
                 DateTime.Now.AddMinutes(minutes), Cache.NoSlidingExpiration);
             return list;
+        }
+
+        public List<List<DashboardWidget>> HomepageWidgets()
+        {
+            // create a list of columns for the home page markup. in each list is a list of widgets. in this way
+            // each column can be drawn in a row to support bootstrap, and the layout is flexible enough to support
+            // future layouts with any number of columns
+            int NumColumns = 3;
+            List<List<DashboardWidget>> Columns = Enumerable.Range(0, NumColumns).Select(x => new List<DashboardWidget>()).ToList();
+            List<DashboardWidget> widgets;
+            using (SqlConnection db = new SqlConnection(Util.ConnectionString))
+            {
+                var Roles = CurrentDatabase.CurrentRoleIds();
+                string qWidgets = @"
+                select * from DashboardWidgets where Id in (
+	                select distinct w.Id from DashboardWidgets w
+	                left join DashboardWidgetRoles r
+	                on w.Id = r.WidgetId
+	                where RoleId is null
+	                or RoleId in @Roles)
+                and Enabled = 1 order by [Order]";
+                widgets = db.Query<DashboardWidget>(qWidgets, new { Roles }).ToList();
+            }
+            for (int i = 0; i < widgets.Count(); i++)
+            {
+                int column = i % NumColumns;
+                Columns[column].Add(widgets[i]);
+            }
+            return Columns;
         }
     }
 }
