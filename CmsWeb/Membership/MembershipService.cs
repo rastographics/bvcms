@@ -154,7 +154,7 @@ namespace CmsWeb.Membership
             var token = new MFAToken {
                 Expires = expires,
                 Key = key,
-                UserId = db.UserId
+                UserId = Util.MFAUserId ?? db.UserId
             };
             db.MFATokens.InsertOnSubmit(token);
             db.SubmitChanges();
