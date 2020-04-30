@@ -27,8 +27,8 @@ namespace CmsWeb.Areas.Public.Models
         public Person FindPerson()
         {
             var person = (from p in CurrentDatabase.People
-                where p.CellPhone == From || p.HomePhone == From
-                select p).FirstOrDefault();
+                          where p.CellPhone == From || p.HomePhone == From
+                          select p).FirstOrDefault();
             if (person == null)
             {
                 throw new Exception($"could not find person with the number {From}");
@@ -37,7 +37,7 @@ namespace CmsWeb.Areas.Public.Models
         }
         public SmsReplyWordsModel FindNumber()
         {
-            var model = new SmsReplyWordsModel(CurrentDatabase) {Number = To};
+            var model = new SmsReplyWordsModel(CurrentDatabase) { Number = To };
             model.PopulateNumber();
             return model;
         }
@@ -64,15 +64,15 @@ namespace CmsWeb.Areas.Public.Models
                     case "OptOut":
                         break; // todo: Optout
                     case "Attending":
-                        return MarkAttendingIntention(r, AttendCommitmentCode.Attending);
+                        return MarkAttendingIntention(r, AttendCommitmentCode.Attending, person);
                     case "Regrets":
-                        return MarkAttendingIntention(r, AttendCommitmentCode.Regrets);
+                        return MarkAttendingIntention(r, AttendCommitmentCode.Regrets, person);
                     case "AddToOrg":
-                        return AddToOrg(r);
+                        return AddToOrg(r, person);
                     case "AddToOrgSg":
-                        return AddToSmallGroup(r);
+                        return AddToSmallGroup(r, person);
                     case "SendAnEmail":
-                        return SendAnEmail(r);
+                        return SendAnEmail(r, person);
                     case "RunScript":
                         break; // todo: add RunScript
                     default:
@@ -81,78 +81,80 @@ namespace CmsWeb.Areas.Public.Models
             }
             //Reply word never found in loop
             return $"{Body} reply word not recognized for number {To}";
-            string MarkAttendingIntention(SmsActionModel r, int code)
-            {
-                Meeting meeting = null;
-                Organization o = null;
-                string markedas = null;
-                try
-                {
-                    if (r.MeetingId == null)
-                        throw new Exception("meetingid null");
-                    meeting = CurrentDatabase.Meetings.FirstOrDefault(mm => mm.MeetingId == r.MeetingId);
-                    if (meeting == null)
-                        throw new Exception($"meetingid {r.MeetingId} not found");
-                    o = CurrentDatabase.LoadOrganizationById(meeting.OrganizationId);
-                    Attend.MarkRegistered(CurrentDatabase, person.PeopleId, r.MeetingId.Value, code);
-                    markedas = code == AttendCommitmentCode.Attending ? "Attending" : "Regrets";
-                }
-                catch (Exception e)
-                {
-                    return $"No Meeting on action {r.Action}, {e.Message}";
-                }
-                return $"{person.Name} has been marked as {markedas} to {o.OrganizationName} for {meeting.MeetingDate}";
-            }
+        }
 
-            string AddToOrg(SmsActionModel r)
+        private string MarkAttendingIntention(SmsActionModel r, int code, Person person)
+        {
+            Meeting meeting = null;
+            Organization o = null;
+            string markedas = null;
+            try
             {
-                Organization o = null;
-                try
-                {
-                    if (r.OrgId == null)
-                        throw new Exception("orgid null");
-                    o = CurrentDatabase.LoadOrganizationById(r.OrgId);
-                    if (o == null)
-                        throw new Exception($"orgid {r.OrgId} not found");
-                    o = CurrentDatabase.LoadOrganizationById(r.OrgId);
-                    OrganizationMember.InsertOrgMembers(CurrentDatabase, r.OrgId.Value, person.PeopleId, 220, Util.Now, null, false);
-                }
-                catch(Exception e)
-                {
-                    return $"Org not found on action {r.Action}, {e.Message}";
-                }
-                return $"{person.Name} has been added to {o.OrganizationName}";
+                if (r.MeetingId == null)
+                    throw new Exception("meetingid null");
+                meeting = CurrentDatabase.Meetings.FirstOrDefault(mm => mm.MeetingId == r.MeetingId);
+                if (meeting == null)
+                    throw new Exception($"meetingid {r.MeetingId} not found");
+                o = CurrentDatabase.LoadOrganizationById(meeting.OrganizationId);
+                Attend.MarkRegistered(CurrentDatabase, person.PeopleId, r.MeetingId.Value, code);
+                markedas = code == AttendCommitmentCode.Attending ? "Attending" : "Regrets";
             }
+            catch (Exception e)
+            {
+                return $"No Meeting on action {r.Action}, {e.Message}";
+            }
+            return $"{person.Name} has been marked as {markedas} to {o.OrganizationName} for {meeting.MeetingDate}";
+        }
 
-            string AddToSmallGroup(SmsActionModel r)
+        private string AddToOrg(SmsActionModel r, Person person)
+        {
+            Organization o = null;
+            try
             {
-                Organization o = null;
-                try
-                {
-                    if(r.OrgId == null)
-                        throw new Exception("OrgId is null");
-                    o = CurrentDatabase.LoadOrganizationById(r.OrgId);
-                    if (o == null)
-                        throw new Exception($"OrgId {r.OrgId} not found");
-                    if (r.SmallGroup == null)
-                        throw new Exception($"SmallGroup is null");
-                    var om = OrganizationMember.InsertOrgMembers(CurrentDatabase, r.OrgId.Value, person.PeopleId, 220, Util.Now, null, false);
-                    om.AddToGroup(CurrentDatabase, r.SmallGroup);
-                }
-                catch (Exception e)
-                {
-                    return e.Message;
-                }
-                return $"{person.Name} has been added to {r.SmallGroup} group for {o.OrganizationName}";
+                if (r.OrgId == null)
+                    throw new Exception("orgid null");
+                o = CurrentDatabase.LoadOrganizationById(r.OrgId);
+                if (o == null)
+                    throw new Exception($"orgid {r.OrgId} not found");
+                o = CurrentDatabase.LoadOrganizationById(r.OrgId);
+                OrganizationMember.InsertOrgMembers(CurrentDatabase, r.OrgId.Value, person.PeopleId, 220, Util.Now, null, false);
             }
+            catch (Exception e)
+            {
+                return $"Org not found on action {r.Action}, {e.Message}";
+            }
+            return $"{person.Name} has been added to {o.OrganizationName}";
+        }
 
-            string SendAnEmail(dynamic r)
+        private string AddToSmallGroup(SmsActionModel r, Person person)
+        {
+            Organization o = null;
+            try
             {
-                int draftid = r.EmailId;
-                var email = CurrentDatabase.ContentFromID(draftid);
-                CurrentDatabase.Email(DbUtil.AdminMail, person, email.Title, email.Body);
-                return $"email sent to {person.Name}";
+                if (r.OrgId == null)
+                    throw new Exception("OrgId is null");
+                o = CurrentDatabase.LoadOrganizationById(r.OrgId);
+                if (o == null)
+                    throw new Exception($"OrgId {r.OrgId} not found");
+                if (r.SmallGroup == null)
+                    throw new Exception($"SmallGroup is null");
+                var om = OrganizationMember.InsertOrgMembers(CurrentDatabase, r.OrgId.Value, person.PeopleId, 220, Util.Now, null, false);
+                om.AddToGroup(CurrentDatabase, r.SmallGroup);
             }
+            catch (Exception e)
+            {
+                return e.Message;
+            }
+            return $"{person.Name} has been added to {r.SmallGroup} group for {o.OrganizationName}";
+        }
+
+        private string SendAnEmail(SmsActionModel r, Person person)
+        {
+            if (r.EmailId == null)
+                return $"Email Draft not found for id {r.EmailId}";
+            var email = CurrentDatabase.ContentFromID(r.EmailId.Value);
+            CurrentDatabase.Email(DbUtil.AdminMail, person, email.Title, email.Body);
+            return $"email sent to {person.Name}";
         }
     }
 }
