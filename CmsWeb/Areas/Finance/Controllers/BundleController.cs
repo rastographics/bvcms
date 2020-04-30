@@ -23,20 +23,25 @@ namespace CmsWeb.Areas.Finance.Controllers
         {
             var m = new Models.BundleModel(id, CurrentDatabase);
 
-            if (TempData["BundleCreated"] == null)
-                ViewBag.createbundle = create;
-
-            TempData["BundleCreated"] = "True";
-
-            ViewBag.editbundle = edit;
-            if (User.IsInRole("FinanceDataEntry") && m.BundleStatusId != BundleStatusCode.OpenForDataEntry)
-            {
-                return Redirect("/Bundles");
-            }
-
-            if (m.Bundle == null)
+            if (m == null || m.Bundle == null)
             {
                 return Content("no bundle");
+            }
+
+            // Since this action gets called more than once in succession sometimes, make sure Bundle
+            //     was not created first.
+            if (create == true &&
+                m.Bundle.TotalCash == null &&
+                m.Bundle.TotalChecks == null &&
+                m.Bundle.TotalEnvelopes == null)
+            {
+                ViewBag.createbundle = create;
+                ViewBag.editbundle = edit;
+
+                if (User.IsInRole("FinanceDataEntry") && m.BundleStatusId != BundleStatusCode.OpenForDataEntry)
+                {
+                    return Redirect("/Bundles");
+                }
             }
 
             return View(m);
@@ -107,8 +112,7 @@ namespace CmsWeb.Areas.Finance.Controllers
             }
 
             m.BundleId = id; // refresh values
-
-            return Redirect($"/Bundle/{id}?create=false");
+            return Redirect($"/Bundle/{id}");
         }
 
         [HttpPost]
