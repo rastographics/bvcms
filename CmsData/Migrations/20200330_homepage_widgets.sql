@@ -513,13 +513,10 @@ INSERT INTO [dbo].[Content]
 from datetime import timedelta
 import xml.etree.ElementTree as ET 
 
-def Get():
-    feedurl = model.Setting(''ChurchFeedUrl'')
-    blogurl = model.Setting(''ChurchBlogUrl'')
-    highlightNew = 7 # days to show new badge on article
-    
+highlightNew = 7 # days to show new badge on article
+
+def Process(feedurl):
     headers = { ''content-type'': ''application/json'' }
-    template = Data.HTMLContent
     response = model.RestGet(feedurl, headers)
     
     tree = ET.fromstring(response) 
@@ -539,6 +536,17 @@ def Get():
             
         newsitems.append(model.DynamicData(news)) 
     Data.news = newsitems
+    
+def Get():
+    template = Data.HTMLContent
+    feedurl = model.Setting(''ChurchFeedUrl'')
+    blogurl = model.Setting(''ChurchBlogUrl'')
+    
+    if feedurl and blogurl:
+        Process(feedurl)
+    else:
+        Data.news = list()
+        
     Data.blogurl = blogurl
     print model.RenderTemplate(template)
 
@@ -574,7 +582,7 @@ INSERT INTO [dbo].[DashboardWidgets]
            ,(select max(Id) from Content where [Name] like 'WidgetNewsHTML')
            ,(select max(Id) from Content where [Name] like 'WidgetBlogPython')
            ,NULL
-           ,0
+           ,1
            ,(select isnull(max([Order]), 0)+1 from DashboardWidgets)
            ,1
            ,1
