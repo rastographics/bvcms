@@ -1,0 +1,270 @@
+﻿@model CmsWeb.Areas.Setup.Models.DashboardWidgetModel
+@{
+    Layout = ViewExtensions2.TouchPointLayout();
+    ViewBag.Title = "Homepage Widgets";
+    ViewBag.PageHeader = "Homepage Widgets";
+}
+@ViewExtensions2.GoogleCharts()
+@section head{
+    @Fingerprint.Css("/Content/touchpoint/lib/jquery-multi-select/css/multi-select.css")
+    @Fingerprint.Css("/Content/touchpoint/lib/bootstrap-editable/css/bootstrap-editable.css")
+
+    <style type="text/css">
+        .form-group .control-label {
+            display: none;
+        }
+        .widget-preview .embed.loading {
+            opacity: 0.5;
+        }
+        .widget-preview ul.list-group {
+            max-height: 215px;
+            overflow-y: auto;
+            margin-bottom: 0;
+        }
+        .widget-preview ul.list-group li {
+            border-left: none;
+            border-right: none;
+            padding-left: 20px;
+        }
+        .widget-preview ul.list-group li.section {
+            font-weight: bold;
+        }
+        .widget-preview ul.list-group li.indent {
+            padding-left: 25px;
+        }
+        .list-group-item > .label {
+            float: right;
+        }
+        .widget-preview .box > .center {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+        }
+        .widget-preview .box > .center i {
+            margin-bottom: 15px;
+        }
+        .btn.multiselect {
+            width: 100%;
+            text-align: left;
+        }
+        .btn.multiselect .caret {
+            float: right;
+            margin-top: 7px;
+        }
+    </style>
+    <script type="text/javascript">
+        var WidgetCharts = {};
+    </script>
+}
+<div class="row">
+    <div class="col-sm-8">
+        @using (Html.BeginForm("Update", "DashboardWidget", FormMethod.Post, new { id = "widgetform" }))
+        {
+            <div class="box box-responsive">
+                <div class="box-title-btn">
+                    @if (!Model.System && Model.Id != 0)
+                    {
+                        <a class="btn btn-danger delete" style="margin-top: -8px;"><i class="fa fa-trash-o"></i> Delete</a>
+                    }
+                    <div class="box-tools">
+                        <a class="btn btn-default" href="/HomeWidgets"><i class="fa fa-arrow-circle-left"></i> Back to List</a>
+                        <button type="submit" class="btn btn-primary">Save</button>
+                    </div>
+                </div>
+                <div class="box-content">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="row">
+                                <div class="col-sm-4">
+                                    <label for="Name" class="control-label">Name <a href="#" data-toggle="popover" data-placement="right" data-trigger="focus" data-title="Title" data-content="Used to identify the widget. This field is required."><i class="fa fa-info-circle"></i></a></label>
+                                </div>
+                                <div class="col-sm-8">
+                                    @Html.EditorFor(m => m.Name, new { required = true })
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-4">
+                                    <label for="Description" class="control-label">Description <a href="#" data-toggle="popover" data-placement="right" data-trigger="focus" data-title="Description" data-content="Only visible to admins. Used to identify this widget in the list."><i class="fa fa-info-circle"></i></a></label>
+                                </div>
+                                <div class="col-sm-8">
+                                    @Html.EditorFor(m => m.Description)
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-4">
+                                    <label for="Roles" class="control-label">Roles visible <a href="#" data-toggle="popover" data-placement="right" data-trigger="focus" data-title="Roles visible" data-content="Users can see this widget on the homepage if they are assigned to ANY of these roles and the widget is enabled"><i class="fa fa-info-circle"></i></a></label>
+                                </div>
+                                <div class="col-sm-8">
+                                    <div class="form-group">
+                                        @Html.DropDownList("Roles", Model.AllRoles(), new { multiple = "multiple", @class = "form-control" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="row">
+                                <div class="col-sm-4">
+                                    <label for="HTMLContentId" class="control-label">View (Text) <a href="#" data-toggle="popover" data-placement="right" data-trigger="focus" data-title="View (Text)" data-content="Text type special content that should contain the widget HTML. Be sure the special content has the 'widget' keyword assigned."><i class="fa fa-info-circle"></i></a></label>
+                                </div>
+                                <div class="col-sm-8">
+                                    <div class="form-group">
+                                        @Html.DropDownList("HTMLContentId", Model.HtmlContents(), new { @class = "form-control" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-4">
+                                    <label for="PythonContentId" class="control-label">Code (Python) <a href="#" data-toggle="popover" data-placement="right" data-trigger="focus" data-title="Code (Python)" data-content="Python Script type special content that should contain the widget code. Be sure the special content has the 'widget' keyword assigned."><i class="fa fa-info-circle"></i></a></label>
+                                </div>
+                                <div class="col-sm-8">
+                                    <div class="form-group">
+                                        @Html.DropDownList("PythonContentId", Model.PythonContents(), new { @class = "form-control" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-4">
+                                    <label for="SQLContentId" class="control-label">Data (SQL) <a href="#" data-toggle="popover" data-placement="right" data-trigger="focus" data-title="Data (SQL)" data-content="SQL Script type special content that should contain the database script to provide data to the widget. Be sure the special content has the 'widget' keyword assigned."><i class="fa fa-info-circle"></i></a></label>
+                                </div>
+                                <div class="col-sm-8">
+                                    <div class="form-group">
+                                        @Html.DropDownList("SQLContentId", Model.SQLContents(), new { @class = "form-control" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-4 col-lg-2">
+                            <label for="CacheHours" class="control-label">Caching <a href="#" data-toggle="popover" data-placement="right" data-trigger="focus" data-title="Widget Caching" data-content="If your data isn't changing often, set the time period to a longer option to make the widget load faster. Similarly if you aren't showing user specific data in this widget, set the audience to all users to make the widget load faster"><i class="fa fa-info-circle"></i></a></label>
+                        </div>
+                        <div class="col-sm-8 col-lg-10">
+                            <div class="form-inline">
+                                Widget refreshes <a href="#" class="cacheHoursSelect" data-value="@Model.CacheHours">@Model.CacheTimes().SingleOrDefault(x => x.Value == Model.CacheHours.ToString()).Text</a>
+                                for <a href="#" class="cachePolicySelect" data-value="@Model.CachePolicy">@Model.CachePolicyOptions().SingleOrDefault(x => x.Value == Model.CachePolicy.ToString()).Text</a>
+                                @Html.Hidden("CacheHours", Model.CacheHours)
+                                @Html.Hidden("CachePolicy", Model.CachePolicy)
+                            </div>
+                        </div>
+                    </div>
+                    <div class="visible-xs-block">
+                        <button type="submit" class="btn btn-primary btn-block">Save</button>
+                        <a href="/HomeWidgets" class="btn btn-default btn-block">Cancel</a>
+                    </div>
+                    @Html.Hidden("Id", Model.Id.ToString())
+                </div>
+            </div>
+        }
+    </div>
+    @if (Model.Id != 0)
+    {
+        <div class="col-sm-4 widget-preview">
+            <div>
+                <span class="h4">Widget Preview</span> <a href="#" class="load-preview" data-url="/HomeWidgets/Embed/@Model.Id.ToString()/?preview=true"><i class="fa fa-refresh"></i></a>
+            </div>
+            <div class="embed">
+            </div>
+        </div>
+    }
+</div>
+
+@section scripts
+{
+    @Fingerprint.Script("/Content/touchpoint/lib/bootstrap-editable/js/bootstrap-editable.min.js")
+    <script type="text/javascript">
+    $(function () {
+        $.fn.editableform.buttons = '<button type="submit" class="btn btn-primary btn-md editable-submit">' +
+            '<i class="fa fa-fw fa-check"></i>' +
+            '</button>' +
+            '<button type="button" class="btn btn-default btn-md editable-cancel">' +
+            '<i class="fa fa-fw fa-times"></i>' +
+            '</button>';
+
+        $(".cacheHoursSelect").editable({
+            mode: 'popup',
+            type: 'select',
+            inputclass: 'input-md',
+            source: @Html.Raw(Json.Encode(Model.CacheTimes().Select(x => new { value = x.Value, text = x.Text }))),
+            success: function (result, value) {
+                $('#CacheHours').val(value);
+            }
+        });
+        $(".cachePolicySelect").editable({
+            mode: 'popup',
+            type: 'select',
+            inputclass: 'input-md',
+            source: @Html.Raw(Json.Encode(Model.CachePolicyOptions().Select(x => new { value = x.Value, text = x.Text }))),
+            success: function (result, value) {
+                $('#CachePolicy').val(value);
+            }
+        });
+        $('[data-toggle="popover"]').popover({ container: '.box-content' });
+        $('[data-toggle="popover"]').click(function (ev) {
+            ev.preventDefault();
+        });
+        $('#Roles').multiselect({
+            maxHeight: 200,
+            buttonWidth: '100%',
+            numberDisplayed: 3,
+            includeSelectAllOption: true
+        });
+        $('#Roles').multiselect('select', @Html.Raw(Json.Encode(Model.Roles)));
+
+        $('.load-preview').click(function (e) {
+            e.preventDefault();
+            var icon = $(this).children('i');
+            var url = $(this).data('url');
+            var el = $('.widget-preview .embed');
+            el.addClass('loading');
+            icon.addClass('fa-spin');
+            $.get(url, function (data) {
+                el.html(data);
+                el.removeClass('loading');
+                icon.removeClass('fa-spin');
+            });
+        });
+        $('.load-preview').click();
+
+        $('.delete').click(function (e) {
+            e.preventDefault();
+            swal({
+                title: 'Are you sure?',
+                text: 'Do you really want to delete this homepage widget?',
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonClass: 'btn-danger',
+                confirmButtonText: 'Yes',
+                closeOnConfirm: true,
+                allowOutsideClick: 'true'
+            }, function () {
+                $.post('/HomeWidgets/Delete/', {
+                    id: @Model.Id
+                }, function (ret) {
+                    if (ret.includes('success')) {
+                        window.location.href = '/HomeWidgets';
+                    } else {
+                        snackbar(ret, 'error');
+                    }
+                }).fail(function () {
+                    snackbar('Error deleting widget', 'error');
+                });
+            });
+        });
+        $(window).resize(function () {
+            if (this.resizeTO) clearTimeout(this.resizeTO);
+            this.resizeTO = setTimeout(function () {
+                $(this).trigger('resizeEnd');
+            }, 200);
+        });
+
+        // handle google chart resizing
+        $(window).on('resizeEnd', function () {
+            for (var widget in WidgetCharts) {
+                WidgetCharts[widget]();
+            }
+        });
+    });
+    </script>
+}

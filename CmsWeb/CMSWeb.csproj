@@ -882,6 +882,8 @@
     <Compile Include="Areas\Search\Models\SavedQuery\SavedQueryModel.cs" />
     <Compile Include="Areas\Setup\Controllers\SmsReplyWordsController.cs" />
     <Compile Include="Areas\Setup\Models\SmsActionModel.cs" />
+    <Compile Include="Areas\Setup\Controllers\DashboardWidgetController.cs" />
+    <Compile Include="Areas\Setup\Models\DashboardWiget.cs" />
     <Compile Include="Areas\Setup\Models\RoleModel.cs" />
     <Compile Include="Areas\Setup\Models\Pushpay\RecurringManagment.cs" />
     <Compile Include="Areas\Setup\Controllers\GatewayController.cs" />
@@ -1921,6 +1923,8 @@
     <Content Include="Areas\Org\Views\Org\DisplayTemplates\ESpaceEventId.cshtml" />
     <Content Include="Areas\Org\Views\Org\Other\eSpaceResults.cshtml" />
     <Content Include="Areas\Manage\Views\Batch\RetrieveBatchData.cshtml" />
+    <Content Include="Areas\Setup\Views\DashboardWidget\Index.cshtml" />
+    <Content Include="Areas\Setup\Views\DashboardWidget\Manage.cshtml" />
     <Content Include="Content\touchpoint\src\less\figures.less" />
     <Content Include="Areas\Manage\Views\Display\UnLayerCompose.cshtml" />
     <Content Include="Areas\Manage\Views\Display\EmailBody.cshtml" />
@@ -2836,6 +2840,7 @@
     <Content Include="Views\Shared\AdminAlerts.cshtml" />
     <Content Include="Views\Shared\_diagnostics.cshtml" />
     <Content Include="Views\Shared\Redirect.cshtml" />
+    <Content Include="Views\Home\Dashboard.cshtml" />
     <None Include="Web.staging.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
