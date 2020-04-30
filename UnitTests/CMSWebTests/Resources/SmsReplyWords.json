@@ -1,0 +1,27 @@
+[
+    {
+        "Word": "STOP",
+        "Action": "OptOut"
+    },
+    {
+        "Word": "YES",
+        "Action": "Attending",
+        "MeetingId": {meetingid}
+    },
+    {
+        "Word": "NO",
+        "Action": "Regrets",
+        "MeetingId": {meetingid}
+    },
+    {
+        "Word": "JOIN",
+        "Action": "AddToOrg",
+        "OrgId": 36
+    },
+    {
+        "Word": "Flowers",
+        "Action": "AddToOrgSg",
+        "OrgId": 36,
+        "SmallGroup": "Flowers"
+    }
+]

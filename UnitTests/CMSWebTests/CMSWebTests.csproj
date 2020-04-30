@@ -105,6 +105,9 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="Twilio.AspNet.Common, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Twilio.AspNet.Common.5.33.1\lib\net45\Twilio.AspNet.Common.dll</HintPath>
+    </Reference>
     <Reference Include="xunit.abstractions, Version=2.0.0.0, Culture=neutral, PublicKeyToken=8d05b1bb7a6fdb6c, processorArchitecture=MSIL">
       <HintPath>..\..\packages\xunit.abstractions.2.0.3\lib\net35\xunit.abstractions.dll</HintPath>
     </Reference>
@@ -142,6 +145,7 @@
     <Compile Include="Areas\OnlineReg\Models\OnlineReg\OnlineRegModelTests.cs" />
     <Compile Include="Areas\OnlineReg\Models\OnlineReg\PaymentFormTests.cs" />
     <Compile Include="Areas\Public\Models\CheckIn\CheckInModelTests.cs" />
+    <Compile Include="Areas\Public\Models\IncomingSmsModelTests.cs" />
     <Compile Include="Areas\Public\Models\MobileAPIv2\MobileAccountTests.cs" />
     <Compile Include="Areas\Public\Models\MobileAPIv2\MobileAuthenticationTests.cs" />
     <Compile Include="Areas\Public\Models\SmallGroupFinderModelTests.cs" />
@@ -225,6 +229,7 @@
     <EmbeddedResource Include="Properties\CMSWebTestsResources.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>CMSWebTestsResources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
@@ -232,6 +237,10 @@
     <Content Include="Properties\Resources\DefaultNotice.txt" />
     <Content Include="Properties\Resources\StatementSpecification1.xml" />
     <Content Include="Properties\Resources\StatementSpecification2.xml" />
+    <None Include="Resources\SmsReplyWords.json" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Areas\Public\Models\IncomingSmsModel\" />
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

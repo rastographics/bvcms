@@ -130,6 +130,9 @@
   <data name="DocFormsTest2" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\DocFormsTest2.pdf;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
+  <data name="SmsReplyWords" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\SmsReplyWords.json;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
   <data name="StatementSpecification1" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>resources\statementspecification1.xml;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>

@@ -19,6 +19,8 @@ namespace CmsData
 
         private DateTime _LastUpdated;
 
+        private string _ReplyWords;
+
         #endregion
 
         #region Extensibility Method Definitions
@@ -116,6 +118,24 @@ namespace CmsData
                     _LastUpdated = value;
                     SendPropertyChanged("LastUpdated");
                     OnLastUpdatedChanged();
+                }
+            }
+        }
+
+        [Column(Name = "ReplyWords", UpdateCheck = UpdateCheck.Never, Storage = "_ReplyWords", DbType = "varchar(max)")]
+        public string ReplyWords
+        {
+            get => _ReplyWords;
+
+            set
+            {
+                if (_ReplyWords != value)
+                {
+                    OnNumberChanging(value);
+                    SendPropertyChanging();
+                    _ReplyWords = value;
+                    SendPropertyChanged("ReplyWords");
+                    OnNumberChanged();
                 }
             }
         }

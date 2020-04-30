@@ -266,7 +266,8 @@ namespace CmsData
                 {
                     user = ConfigurationManager.AppSettings[sendgridmailuser];
                 }
-                HttpRuntime.Cache.Insert(Host + sendgridmailuser, user, null, DateTime.Now.AddSeconds(60), Cache.NoSlidingExpiration);
+                if(user.HasValue())
+                    HttpRuntime.Cache.Insert(Host + sendgridmailuser, user, null, DateTime.Now.AddSeconds(60), Cache.NoSlidingExpiration);
 
                 return user;
             }
@@ -289,7 +290,8 @@ namespace CmsData
                 {
                     user = ConfigurationManager.AppSettings[sendgridmailpassword];
                 }
-                HttpRuntime.Cache.Insert(Host + sendgridmailpassword, user, null, DateTime.Now.AddSeconds(60), Cache.NoSlidingExpiration);
+                if(user.HasValue())
+                    HttpRuntime.Cache.Insert(Host + sendgridmailpassword, user, null, DateTime.Now.AddSeconds(60), Cache.NoSlidingExpiration);
 
                 return user;
             }

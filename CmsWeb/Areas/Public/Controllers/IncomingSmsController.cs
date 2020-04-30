@@ -1,5 +1,5 @@
-﻿using System.Web.Mvc;
-using CmsWeb.Common.Extensions;
+﻿using CmsData;
+using CmsWeb.Areas.Public.Models;
 using Twilio.AspNet.Common;
 using Twilio.AspNet.Mvc;
 using Twilio.TwiML;
@@ -10,15 +10,11 @@ namespace CmsWeb.Areas.Public.Controllers
     {
         public TwiMLResult Index(SmsRequest incomingMessage)
         {
-            var from = incomingMessage.From;
-            var to = incomingMessage.To;
-            var body = incomingMessage.Body;
+            var db = CMSDataContext.Create(HttpContext);
+            var model = new IncomingSmsModel(db, incomingMessage);
+            var returnMessage = model.ProcessAndRespond();
             var messagingResponse = new MessagingResponse();
-            switch (body.ToUpper())
-            {
-                case "JOIN":
-                    break;
-            }
+            messagingResponse.Message(returnMessage);
             return TwiML(messagingResponse);
         }
     }
