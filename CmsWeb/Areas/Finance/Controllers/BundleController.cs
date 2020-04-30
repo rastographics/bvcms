@@ -28,6 +28,8 @@ namespace CmsWeb.Areas.Finance.Controllers
                 return Content("no bundle");
             }
 
+            ViewBag.editbundle = edit;
+
             // Since this action gets called more than once in succession sometimes, make sure Bundle
             //     was not created first.
             if (create == true &&
@@ -36,7 +38,6 @@ namespace CmsWeb.Areas.Finance.Controllers
                 m.Bundle.TotalEnvelopes == null)
             {
                 ViewBag.createbundle = create;
-                ViewBag.editbundle = edit;
 
                 if (User.IsInRole("FinanceDataEntry") && m.BundleStatusId != BundleStatusCode.OpenForDataEntry)
                 {
@@ -119,6 +120,7 @@ namespace CmsWeb.Areas.Finance.Controllers
         public ActionResult Cancel(int id)
         {
             var m = new Models.BundleModel(id, CurrentDatabase);
+
             return View("Display", m);
         }
 

@@ -337,8 +337,13 @@ namespace CmsWeb.Areas.Manage.Controllers
         {
             var rg = (from r in CurrentDatabase.ManagedGivings
                       where r.PeopleId == id
-                      select r).Single();
-            rg.DoGiving(CurrentDatabase);
+                      select r).SingleOrDefault();
+
+            if (rg != null)
+            {
+                rg.DoGiving(CurrentDatabase);
+            }
+
             return Content($"done with {id}");
         }
 
