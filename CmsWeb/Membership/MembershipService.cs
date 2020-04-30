@@ -10,6 +10,8 @@ namespace CmsWeb.Membership
 {
     public static class MembershipService
     {
+        private const string TwoFactorAuthCookie = "_mfa";
+
         public static int MinPasswordLength (CMSDataContext db) => db.Setting("PasswordMinLength", "7").ToInt();
 
         public static bool RequireSpecialCharacter (CMSDataContext db) => db.Setting("PasswordRequireSpecialCharacter", "true").ToBool();
@@ -29,6 +31,7 @@ namespace CmsWeb.Membership
             CMSMembershipProvider.provider.CreateUser(userName, password, email, null, null, true, null, out status);
             return status;
         }
+
         public static User CreateUser(int peopleId, string username, string password)
         {
             CMSMembershipProvider.provider.AdminOverride = true;
@@ -41,6 +44,7 @@ namespace CmsWeb.Membership
             CMSMembershipProvider.provider.AdminOverride = false;
             return user;
         }
+
         public static User CreateUser(CMSDataContext db, int peopleId)
         {
             var p = db.LoadPersonById(peopleId);
@@ -86,7 +90,7 @@ namespace CmsWeb.Membership
         {
             if (IsTwoFactorAuthenticationEnabled(db))
             {
-                var token = Request.Cookies["_mfa"]?.Value;
+                var token = Request.Cookies[TwoFactorAuthCookie]?.Value;
                 return user.MFAEnabled && !db.MFATokens.Any(
                     t => t.UserId == user.UserId &&
                     t.Key == token &&
@@ -129,7 +133,7 @@ namespace CmsWeb.Membership
             return passcode?.Length == 6 && tfa.ValidateTwoFactorPIN(Get2FAUserSecret(user, secretKey), passcode);
         }
 
-        public static void  DisableTwoFactorAuth(User user, CMSDataContext db, HttpResponseBase response)
+        public static void DisableTwoFactorAuth(User user, CMSDataContext db, HttpResponseBase response)
         {
             user.MFAEnabled = false;
             user.Secret = null;
@@ -138,14 +142,12 @@ namespace CmsWeb.Membership
             db.SubmitChanges();
             if (response != null)
             {
-                response.SetCookie(new HttpCookie("_mfa", null) { Expires = DateTime.Now.Date });
+                response.SetCookie(new HttpCookie(TwoFactorAuthCookie, null) { Expires = DateTime.Now.Date });
             }
         }
 
         public static void SaveTwoFactorAuthenticationToken(CMSDataContext db, HttpResponseBase response)
         {
-            const string name = "_mfa";
-
             var expirationDays = db.Setting("TwoFactorAuthExpirationDays", "30").ToInt();
             var expires = DateTime.Now.AddDays(expirationDays);
             var key = string.Join("", "123".Select(c => Guid.NewGuid().ToString("N")));
@@ -157,12 +159,12 @@ namespace CmsWeb.Membership
             db.MFATokens.InsertOnSubmit(token);
             db.SubmitChanges();
 
-            var cookie = new HttpCookie(name, token.Key) { Expires = expires, HttpOnly = true, Secure = !Util.IsDebug() };
+            var cookie = new HttpCookie(TwoFactorAuthCookie, token.Key) { Expires = expires, HttpOnly = true, Secure = !Util.IsDebug() };
             if (!cookie.Secure) // https://stackoverflow.com/questions/26627886/not-able-to-set-cookie-from-action
             {
                 cookie.Domain = null;
             }
-            response.AppendCookie(cookie);
+            response.SetCookie(cookie);
         }
     }
 }
