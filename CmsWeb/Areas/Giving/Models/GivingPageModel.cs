@@ -10,10 +10,7 @@ namespace CmsWeb.Areas.Giving.Models
 {
     public class GivingPageModel : IDbBinder
     {
-        public GivingPageModel()
-        {
-            
-        }
+        public GivingPageModel(){}
         public GivingPageModel(CMSDataContext db)
         {
             CurrentDatabase = db;
