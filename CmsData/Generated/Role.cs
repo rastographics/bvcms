@@ -131,12 +131,12 @@ namespace CmsData
 
         [Association(Name = "FK_UserRole_Roles", Storage = "_UserRoles", OtherKey = "RoleId")]
         public EntitySet<UserRole> UserRoles
-           {
-               get => _UserRoles;
+        {
+            get => _UserRoles;
 
             set => _UserRoles.Assign(value);
 
-           }
+        }
 
         #endregion
 
