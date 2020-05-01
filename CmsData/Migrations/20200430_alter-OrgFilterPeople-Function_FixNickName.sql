@@ -82,18 +82,22 @@ RETURN
                 ('%' + f.FirstName + '%')
             ELSE
                 '' -- exception case to satisfy requirements
-            END
-			-- Removing filtering by NickName to filter list by only FirstName and LastName. Keeping it commented temporarily.
-            --OR
-            --(
-            --    p.NickName LIKE
-            --    CASE WHEN f.LastName IS NULL THEN -- if LastName is null, treat this as a fuzzy search. Note: NULL != an empty string! ^^^
-            --        ('%' + f.FirstName + '%')
-            --    ELSE
-            --        ('%' + f.LastName + '%')
-            --    END
-            --    OR p.NickName LIKE ('%' + f.FirstName + '%')
-            --)
+            END			
+            OR
+            (
+                p.NickName LIKE
+                CASE WHEN f.LastName IS NULL THEN -- if LastName is null, treat this as a fuzzy search. Note: NULL != an empty string! ^^^
+                    ('%' + f.FirstName + '%')
+                ELSE
+                    ('%' + f.LastName + '%')
+                END
+                OR p.NickName LIKE --('%' + f.FirstName + '%')
+				CASE WHEN f.FirstName IS NULL THEN -- if FirstName is null, treat this as a fuzzy search. Note: NULL != an empty string!
+					'%'
+				ELSE
+					('%' + f.FirstName + '%')
+				END
+            )
         )
 	OR p.PeopleId = TRY_CONVERT(INT, f.FirstName)
     )
