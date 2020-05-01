@@ -25,7 +25,6 @@ namespace CmsWeb.Areas.Giving.Models
             }
         }
 
-
         public HashSet<GivingPageItem> GetGivingPageHashSet()
         {
             var outputHashSet = new HashSet<GivingPageItem>();
@@ -56,14 +55,14 @@ namespace CmsWeb.Areas.Giving.Models
             return outputHashSet;
         }
     }
+}
 
-    public class GivingPageItem
-    {
-        public int GivingPageId { get; set; }
-        public bool Enabled { get; set; }
-        public string PageName { get; set; }
-        public string Skin { get; set; }
-        public string PageType { get; set; }
-        public string DefaultFund { get; set; }
-    }
+public class GivingPageItem
+{
+    public int GivingPageId { get; set; }
+    public bool Enabled { get; set; }
+    public string PageName { get; set; }
+    public string Skin { get; set; }
+    public string PageType { get; set; }
+    public string DefaultFund { get; set; }
 }
