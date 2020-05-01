@@ -64,6 +64,7 @@ CmsWeb/StagingConnectionStrings.config
 cassette-cache/
 CmsDataSqlClr.dbmdl
 CmsWeb/Upload/
+Web.config
 Web.*.config
 CmsDataSqlClr_.*.sqlproj
 
