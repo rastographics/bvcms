@@ -28,7 +28,7 @@ namespace CmsData
         }
         public static string CreateTinyUrl(string url)
         {
-            var createTinyUrl = "https://tpsdb.co/Create";
+            var createTinyUrl = ConfigurationManager.AppSettings["UrlShortenerService"] ?? "https://tpsdb.co/Create";
             var client = new RestClient(createTinyUrl);
             var request = new RestRequest(Method.POST);
             request.AddParameter("token", ConfigurationManager.AppSettings["tpsdbcotoken"]);
