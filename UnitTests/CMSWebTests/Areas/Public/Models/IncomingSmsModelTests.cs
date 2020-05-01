@@ -74,7 +74,7 @@ insert SmsNumbers (GroupID,Number,LastUpdated,ReplyWords) Values (@gid, @number,
             string ReplyWordsJson()
             {
                 var meeting = CmsData.Meeting.FetchOrCreateMeeting(db, 36, meetingdt);
-                string json = Encoding.ASCII.GetString(CMSWebTestsResources.SmsReplyWords, 0, CMSWebTestsResources.SmsReplyWords.Length);
+                string json = Encoding.Default.GetString(CMSWebTestsResources.SmsReplyWords);
                 return json.Replace("{meetingid}", meeting.MeetingId.ToString());
             }
 

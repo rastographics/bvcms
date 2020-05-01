@@ -253,7 +253,7 @@
     <Content Include="Properties\Resources\DefaultNotice.txt" />
     <Content Include="Properties\Resources\StatementSpecification1.xml" />
     <Content Include="Properties\Resources\StatementSpecification2.xml" />
-    <None Include="Resources\SmsReplyWords.json" />
+    <Content Include="Properties\Resources\SmsReplyWords.json" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Areas\Public\Models\IncomingSmsModel\" />
