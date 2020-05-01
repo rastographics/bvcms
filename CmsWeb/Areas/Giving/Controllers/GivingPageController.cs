@@ -49,9 +49,9 @@ namespace CmsWeb.Areas.Giving.Controllers
         }
 
         [HttpGet]
-        public JsonResult GetGivingPage(int id) // id = GivingPageId
+        public JsonResult GetGivingPage(int pageId) // id = GivingPageId
         {
-            var givingPage = CurrentDatabase.GivingPages.Where(g => g.GivingPageId == id).FirstOrDefault();
+            var givingPage = CurrentDatabase.GivingPages.Where(g => g.GivingPageId == pageId).FirstOrDefault();
             var output = new GivingPage
             {
                 GivingPageId = givingPage.GivingPageId,
@@ -154,38 +154,14 @@ namespace CmsWeb.Areas.Giving.Controllers
             return Json(confirmationEmailList, JsonRequestBehavior.AllowGet);
         }
 
-        //[HttpGet]
-        //public JsonResult GetConfirmationEmailPledgeList()
-        //{
-        //    var confirmationEmailPledgeList = new List<int>();
-        //    for (var i = 0; i < 10; i++)
-        //    {
-        //        confirmationEmailPledgeList.Add(i);
-        //    }
-        //    return Json(confirmationEmailPledgeList, JsonRequestBehavior.AllowGet);
-        //}
-
-        //[HttpGet]
-        //public JsonResult GetConfirmationEmailOneTimeList()
-        //{
-        //    var confirmationEmailOneTimeList = new List<int>();
-        //    for (var i = 0; i < 10; i++)
-        //    {
-        //        confirmationEmailOneTimeList.Add(i);
-        //    }
-        //    return Json(confirmationEmailOneTimeList, JsonRequestBehavior.AllowGet);
-        //}
-
-        //[HttpGet]
-        //public JsonResult GetConfirmationEmailRecurringList()
-        //{
-        //    var confirmationEmailRecurringList = new List<int>();
-        //    for (var i = 0; i < 10; i++)
-        //    {
-        //        confirmationEmailRecurringList.Add(i);
-        //    }
-        //    return Json(confirmationEmailRecurringList, JsonRequestBehavior.AllowGet);
-        //}
+        [HttpPost]
+        public void SaveGivingPageEnabled(bool currentValue, int currentGivingPageId)
+        {
+           var givingPage = CurrentDatabase.GivingPages.Where(g => g.GivingPageId == currentGivingPageId).FirstOrDefault();
+           givingPage.Enabled = currentValue;
+           UpdateModel(givingPage);
+           CurrentDatabase.SubmitChanges();
+        }
     }
 }
 
