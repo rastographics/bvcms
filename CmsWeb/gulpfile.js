@@ -7,8 +7,8 @@ var gulp = require('gulp'),
     concat = require('gulp-concat');
 
 var cssOutput = 'Content/touchpoint/css',
-    select2Output = 'Content/touchpoint/lib/select2/css',
-    jsOutput = 'Content/touchpoint/js';
+    select2Output = 'Content/touchpoint/lib/select2/css';
+    //jsOutput = 'Content/touchpoint/js';
 
 var legacyJsFiles = [
     {

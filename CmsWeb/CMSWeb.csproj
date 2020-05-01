@@ -1209,6 +1209,7 @@
       <SubType>Designer</SubType>
     </Content>
     <Content Include="Areas\Search\Views\PictureDirectory\PictureDirectory.sql" />
+    <Content Include="babel.config.js" />
     <Content Include="Content\css\bootstrap-datetimepicker.css" />
     <Content Include="Content\css\bootstrap-datetimepicker.min.css">
       <DependentUpon>bootstrap-datetimepicker.css</DependentUpon>
@@ -1263,6 +1264,10 @@
     <Content Include="Content\css\select2.png" />
     <Content Include="Content\css\select2x2.png" />
     <Content Include="Content\css\typeahead.js-bootstrap.css" />
+    <Content Include="Content\dist\css\app.css" />
+    <Content Include="Content\dist\favicon.ico" />
+    <Content Include="Content\dist\index.html" />
+    <Content Include="Content\dist\js\app.js" />
     <Content Include="Content\font-awesome-4.0.3\css\font-awesome.css" />
     <Content Include="Content\font-awesome-4.0.3\css\font-awesome.min.css" />
     <Content Include="Content\font-awesome-4.0.3\fonts\fontawesome-webfont.svg" />
@@ -1799,6 +1804,8 @@
     <Content Include="chart.py" />
     <Content Include="Properties\Files\ContributionStatementTemplate.html" />
     <Content Include="Properties\Files\ContributionStatementTemplateBody.html" />
+    <Content Include="src\assets\logo.png" />
+    <Content Include="src\main.js" />
     <Content Include="Views\Shared\Account\_Layout.cshtml" />
     <Content Include="Areas\Reports\Views\Reports\EditCustomReport.cshtml" />
     <Content Include="Areas\Manage\Views\Account\SetPasswordConfirm.cshtml" />
@@ -1968,6 +1975,8 @@
     </Content>
     <Content Include="Areas\Giving\Views\GivingPage\Edit.cshtml" />
     <Content Include="Areas\Giving\Views\GivingPage\Index.cshtml" />
+    <Content Include="package-lock.json" />
+    <Content Include="Content\dist\js\app.js.map" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
@@ -2876,6 +2885,20 @@
     <Content Include="Views\Shared\_diagnostics.cshtml" />
     <Content Include="Views\Shared\Redirect.cshtml" />
     <Content Include="Views\Home\Dashboard.cshtml" />
+    <Content Include="src\App.vue" />
+    <Content Include="src\components\UsersGrid\UsersGrid.vue" />
+    <Content Include="src\components\GenericComponents\Modal.vue" />
+    <Content Include="src\components\GenericComponents\Slider.vue" />
+    <Content Include="src\components\Giving\GivingPageIndex\AddGivingPage.vue" />
+    <Content Include="src\components\Giving\GivingPageIndex\GivingPageIndex.vue" />
+    <Content Include="src\components\Giving\GivingPageIndex\GivingPageIndexSlider.vue" />
+    <Content Include="src\components\Giving\GivingPageEdit\GivingPageEdit.vue" />
+    <Content Include="src\components\Giving\GivingPageEdit\GivingPageEditSlider.vue" />
+    <Content Include="src\components\GenericComponents\MultiSelect.vue" />
+    <Content Include="src\components\GenericComponents\ShowModalBtn.vue" />
+    <Content Include="src\components\Giving\AvailableFundsMultiDropdown.vue" />
+    <Content Include="src\components\UsersGrid\UserCard.vue" />
+    <Content Include="src\components\UsersGrid\UserCardGrid.vue" />
     <None Include="Web.staging.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -3370,6 +3393,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
+    <Content Include="vue.config.js" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
