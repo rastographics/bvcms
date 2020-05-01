@@ -66,3 +66,9 @@ public class GivingPageItem
     public string PageType { get; set; }
     public string DefaultFund { get; set; }
 }
+
+public class PageTypesClass
+{
+    public int id { get; set; }
+    public string pageTypeName { get; set; }
+}
