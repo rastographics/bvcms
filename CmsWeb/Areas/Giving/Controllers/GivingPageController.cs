@@ -164,9 +164,3 @@ namespace CmsWeb.Areas.Giving.Controllers
         }
     }
 }
-
-public class PageTypesClass
-{
-    public int id { get; set; }
-    public string pageTypeName { get; set; }
-}
