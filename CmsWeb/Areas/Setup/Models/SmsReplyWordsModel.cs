@@ -40,6 +40,8 @@ namespace CmsWeb.Areas.Setup.Models
                 return;
             string json = CurrentDatabase.SMSGroups.FirstOrDefault(
                 v => v.Id == GroupId)?.ReplyWords;
+            if(json == null)
+                return;
             Actions = JsonConvert.DeserializeObject<List<SmsActionModel>>(json);
             PopulateMetaData();
         }

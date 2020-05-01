@@ -62,11 +62,11 @@ namespace CMSWebTests.Areas.Public.Models
                 var cell = from.Substring(2);
                 var replywords = ReplyWordsJson();
                 db.Connection.Execute(@"
-insert SmsGroups (Name, Description) values ('TestGroup', '');
+insert SmsGroups (Name, Description,ReplyWords) values ('TestGroup', '', @replywords);
 declare @gid int = @@Identity;
 insert SmsGroupMembers (GroupId, UserId) values (@gid, 1);
 insert SmsGroupMembers (GroupId, UserId) values (@gid, 2);
-insert SmsNumbers (GroupID,Number,LastUpdated,ReplyWords) Values (@gid, @number, @meetingdt, @replywords)
+insert SmsNumbers (GroupID,Number,LastUpdated) Values (@gid, @number, @meetingdt)
 ", new { number, meetingdt, replywords });
                 db.Connection.Execute("UPDATE dbo.People SET CellPhone = @cell WHERE PeopleId = 2", new { cell });
             }
