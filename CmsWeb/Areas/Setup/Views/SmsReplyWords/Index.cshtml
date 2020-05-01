@@ -10,10 +10,10 @@
             <div class="box-content">
                 <form action="/SmsReplyWords/Save" method="post">
                     <div class="well">
-                        <label for="Number" class="control-label">Numbers</label>
+                        <label for="GroupId" class="control-label">Sms Groups</label>
                         <div class="row">
                             <div class="col-sm-4">
-                                @Html.DropDownList("Number", Model.SmsNumbers(), new { @class = "form-control" })
+                                @Html.DropDownList("GroupId", Model.SmsGroups(), new { @class = "form-control" })
                             </div>
                             <div class="col-sm-4"><button type="submit" class="btn btn-success">Save Actions</button></div>
                         </div>
@@ -43,11 +43,11 @@
 {
     <script type="text/javascript">
         $(function () {
-            $("#Number").change(function (ev) {
+            $("#GroupId").change(function (ev) {
                 ev.preventDefault();
                 var f = $(this).closest('form');
                 var q = f.serialize();
-                $.post("/SmsReplyWords/NumberChanged/",
+                $.post("/SmsReplyWords/GroupChanged/",
                     q,
                     function (ret) {
                         $("#ReplyWords").html(ret);

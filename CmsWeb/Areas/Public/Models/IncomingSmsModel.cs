@@ -3,6 +3,7 @@ using System.Linq;
 using CmsData;
 using CmsData.Codes;
 using CmsWeb.Areas.Setup.Models;
+using Dapper;
 using Twilio.AspNet.Common;
 using UtilityExtensions;
 
@@ -35,19 +36,21 @@ namespace CmsWeb.Areas.Public.Models
             }
             return person;
         }
-        public SmsReplyWordsModel FindNumber()
+        public SmsReplyWordsModel FindGroup()
         {
-            var model = new SmsReplyWordsModel(CurrentDatabase) { Number = To };
-            model.PopulateNumber();
+            var model = new SmsReplyWordsModel(CurrentDatabase);
+            model.GroupId = CurrentDatabase.Connection.QueryFirstOrDefault<int?>(
+                "select GroupID from dbo.SMSNumbers where Number = @To", new {To}) ?? -1;
+            model.PopulateActions();
             return model;
         }
+        private Person person;
         public string ProcessAndRespond()
         {
-            SmsReplyWordsModel number;
-            Person person;
+            SmsReplyWordsModel model;
             try
             {
-                number = FindNumber();
+                model = FindGroup();
                 person = FindPerson();
             }
             catch (Exception e)
@@ -55,7 +58,7 @@ namespace CmsWeb.Areas.Public.Models
                 return e.Message;
             }
 
-            foreach (var r in number.Actions)
+            foreach (var r in model.Actions)
             {
                 if (!Body.Equal(r.Word))
                     continue;
@@ -64,15 +67,15 @@ namespace CmsWeb.Areas.Public.Models
                     case "OptOut":
                         break; // todo: Optout
                     case "Attending":
-                        return MarkAttendingIntention(r, AttendCommitmentCode.Attending, person);
+                        return MarkAttendingIntention(r, AttendCommitmentCode.Attending);
                     case "Regrets":
-                        return MarkAttendingIntention(r, AttendCommitmentCode.Regrets, person);
+                        return MarkAttendingIntention(r, AttendCommitmentCode.Regrets);
                     case "AddToOrg":
-                        return AddToOrg(r, person);
+                        return AddToOrg(r);
                     case "AddToOrgSg":
-                        return AddToSmallGroup(r, person);
+                        return AddToSmallGroup(r);
                     case "SendAnEmail":
-                        return SendAnEmail(r, person);
+                        return SendAnEmail(r);
                     case "RunScript":
                         break; // todo: add RunScript
                     default:
@@ -83,7 +86,7 @@ namespace CmsWeb.Areas.Public.Models
             return $"{Body} reply word not recognized for number {To}";
         }
 
-        private string MarkAttendingIntention(SmsActionModel r, int code, Person person)
+        private string MarkAttendingIntention(SmsActionModel r, int code)
         {
             Meeting meeting = null;
             Organization o = null;
@@ -106,7 +109,7 @@ namespace CmsWeb.Areas.Public.Models
             return $"{person.Name} has been marked as {markedas} to {o.OrganizationName} for {meeting.MeetingDate}";
         }
 
-        private string AddToOrg(SmsActionModel r, Person person)
+        private string AddToOrg(SmsActionModel r)
         {
             Organization o = null;
             try
@@ -126,7 +129,7 @@ namespace CmsWeb.Areas.Public.Models
             return $"{person.Name} has been added to {o.OrganizationName}";
         }
 
-        private string AddToSmallGroup(SmsActionModel r, Person person)
+        private string AddToSmallGroup(SmsActionModel r)
         {
             Organization o = null;
             try
@@ -137,7 +140,7 @@ namespace CmsWeb.Areas.Public.Models
                 if (o == null)
                     throw new Exception($"OrgId {r.OrgId} not found");
                 if (r.SmallGroup == null)
-                    throw new Exception($"SmallGroup is null");
+                    throw new Exception("SmallGroup is null");
                 var om = OrganizationMember.InsertOrgMembers(CurrentDatabase, r.OrgId.Value, person.PeopleId, 220, Util.Now, null, false);
                 om.AddToGroup(CurrentDatabase, r.SmallGroup);
             }
@@ -148,7 +151,7 @@ namespace CmsWeb.Areas.Public.Models
             return $"{person.Name} has been added to {r.SmallGroup} group for {o.OrganizationName}";
         }
 
-        private string SendAnEmail(SmsActionModel r, Person person)
+        private string SendAnEmail(SmsActionModel r)
         {
             if (r.EmailId == null)
                 return $"Email Draft not found for id {r.EmailId}";

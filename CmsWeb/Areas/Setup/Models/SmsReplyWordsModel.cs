@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
 using CmsWeb.Models;
+using Dapper;
 using Newtonsoft.Json;
 
 namespace CmsWeb.Areas.Setup.Models
@@ -11,7 +12,7 @@ namespace CmsWeb.Areas.Setup.Models
     {
         public CMSDataContext CurrentDatabase { get; set; }
 
-        public string Number { get; set; }
+        public int GroupId { get; set; }
         public List<SmsActionModel> Actions { get; set; }
 
         public SmsReplyWordsModel(CMSDataContext db)
@@ -19,38 +20,36 @@ namespace CmsWeb.Areas.Setup.Models
             CurrentDatabase = db;
             Actions = new List<SmsActionModel>();
         }
-        public IEnumerable<SelectListItem> SmsNumbers()
+        public IEnumerable<SelectListItem> SmsGroups()
         {
-            var q = from c in CurrentDatabase.SMSNumbers
-                    join g in CurrentDatabase.SMSGroups on c.GroupID equals g.Id
-                    select new
-                    SelectListItem
+            var q = from c in CurrentDatabase.SMSGroups
+                    select new SelectListItem
                     {
-                        Value = c.Number,
-                        Text = $"{g.Name} - {c.Number}"
+                        Value = c.Id.ToString(),
+                        Text = c.Name
                     };
             var list = q.ToList();
-            list.Insert(0, new SelectListItem { Text = "(select number)" });
+            list.Insert(0, new SelectListItem { Text = "(select group)" });
             return list;
         }
 
-        public void PopulateNumber()
+        public void PopulateActions()
         {
             Actions = new List<SmsActionModel>();
-            if (string.IsNullOrEmpty(Number) || Number == "(select number)")
+            if (GroupId == -1)
                 return;
-            string json = CurrentDatabase.SMSNumbers.FirstOrDefault(
-                v => v.Number == Number)?.ReplyWords;
+            string json = CurrentDatabase.SMSGroups.FirstOrDefault(
+                v => v.Id == GroupId)?.ReplyWords;
             Actions = JsonConvert.DeserializeObject<List<SmsActionModel>>(json);
             PopulateMetaData();
         }
 
         public void Save()
         {
-            var number = CurrentDatabase.SMSNumbers.FirstOrDefault(
-                v => v.Number == Number);
-            if (number != null)
-                number.ReplyWords = ToString();
+            var group = CurrentDatabase.SMSGroups.FirstOrDefault(
+                v => v.Id == GroupId);
+            if (group != null)
+                group.ReplyWords = ToString();
             CurrentDatabase.SubmitChanges();
         }
 

@@ -13,21 +13,21 @@ namespace CmsWeb.Areas.Setup.Controllers
         public ActionResult Index()
         {
             var m = new SmsReplyWordsModel(CurrentDatabase);
-            var number = Util.GetFromSessionTemp("number");
-            if (number != null)
+            var groupid = Util.GetFromSessionTemp("groupid");
+            if (groupid != null)
             {
-                m.Number = number.ToString();
-                m.PopulateNumber();
+                m.GroupId = groupid.ToInt2() ?? -1;
+                m.PopulateActions();
                 ViewBag.Message = "Saved";
             }
             return View(m);
         }
 
         [HttpPost]
-        [Route("~/SmsReplyWords/NumberChanged")]
-        public PartialViewResult NumberChanged(SmsReplyWordsModel model)
+        [Route("~/SmsReplyWords/GroupChanged")]
+        public PartialViewResult GroupChanged(SmsReplyWordsModel model)
         {
-            model.PopulateNumber();
+            model.PopulateActions();
             return PartialView("ReplyWords", model);
         }
         [HttpPost]
@@ -51,7 +51,7 @@ namespace CmsWeb.Areas.Setup.Controllers
         {
             model.Save();
             model.PopulateMetaData();
-            Util.SetValueInSession("number", model.Number);
+            Util.SetValueInSession("groupid", model.GroupId);
             return RedirectToAction("Index");
         }
 

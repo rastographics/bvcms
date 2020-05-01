@@ -101,7 +101,7 @@ delete dbo.MemberTags where Name = 'flowers' and OrgId = 36
             {
                 var request = new SmsRequest { To = number, From = from, Body = word };
                 var incoming = new IncomingSmsModel(db, request);
-                var model = incoming.FindNumber();
+                var model = incoming.FindGroup();
                 if (field != null)
                 {
                     var action = model.Actions.Find(vv => vv.Word == word);

@@ -26,6 +26,8 @@ namespace CmsData
 
         private EntitySet<SMSList> _SMSLists;
 
+        private string _ReplyWords;
+
         #endregion
 
         #region Extensibility Method Definitions
@@ -48,6 +50,9 @@ namespace CmsData
 
         partial void OnIsDeletedChanging(bool value);
         partial void OnIsDeletedChanged();
+
+        partial void OnReplyWordsChanging(string value);
+        partial void OnReplyWordsChanged();
 
         #endregion
 
@@ -151,6 +156,24 @@ namespace CmsData
                 }
             }
         }
+        [Column(Name = "ReplyWords", UpdateCheck = UpdateCheck.Never, Storage = "_ReplyWords", DbType = "varchar(max)")]
+        public string ReplyWords
+        {
+            get => _ReplyWords;
+
+            set
+            {
+                if (_ReplyWords != value)
+                {
+                    OnReplyWordsChanging(value);
+                    SendPropertyChanging();
+                    _ReplyWords = value;
+                    SendPropertyChanged("ReplyWords");
+                    OnReplyWordsChanged();
+                }
+            }
+        }
+
 
         #endregion
 
