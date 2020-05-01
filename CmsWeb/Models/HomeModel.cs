@@ -715,6 +715,7 @@ namespace CmsWeb.Models
                 .Where(w => w.Enabled)
                 .Where(w => w.DashboardWidgetRoles
                     .Any(r => Roles.Contains(r.RoleId)) || w.DashboardWidgetRoles.Count() == 0)
+                .OrderBy(w => w.Order)
                 .ToList();
             for (int i = 0; i < widgets.Count(); i++)
             {
