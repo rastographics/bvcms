@@ -712,6 +712,7 @@ namespace CmsWeb.Models
             List<List<DashboardWidget>> Columns = Enumerable.Range(0, NumColumns).Select(x => new List<DashboardWidget>()).ToList();
             var Roles = CurrentDatabase.CurrentRoleIds();
             List<DashboardWidget> widgets = CurrentDatabase.DashboardWidgets
+                .Where(w => w.Enabled)
                 .Where(w => w.DashboardWidgetRoles
                     .Any(r => Roles.Contains(r.RoleId)) || w.DashboardWidgetRoles.Count() == 0)
                 .ToList();
