@@ -11,10 +11,8 @@ namespace CmsWeb.Areas.Setup.Models
     public class SmsReplyWordsModel : IDbBinder
     {
         public CMSDataContext CurrentDatabase { get; set; }
-
         public SmsReplyWordsModel()
         {
-            
         }
         public int GroupId { get; set; }
         public List<SmsActionModel> Actions { get; set; }
