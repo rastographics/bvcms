@@ -47,7 +47,7 @@ namespace CmsData
         }
 
         public string Ministry { get; set; }
-        public int? MinistryInt => Ministry.ToInt2() ?? ProgramInt; // Ministry used to be stored in Program
+        public int? MinistryInt => Ministry.Split(',')[0].ToInt2() ?? ProgramInt; // Ministry used to be stored in Program
 
         public string Program { get; set; }
         public int? ProgramInt => DivisionInt > 0 ? 0 : Program.GetCsvToken().ToInt();
@@ -76,7 +76,10 @@ namespace CmsData
         public DateTime CreatedOn { get; set; }
         public string Quarters { get; set; }
         public string TaxNonTax { get; set; }
-        public bool? TaxNonTaxBool { get; set; }
+        private bool? _taxNonTaxBool;
+        public bool? TaxNonTaxBool {
+            get => _taxNonTaxBool ?? GetTaxStatusBool(TaxNonTax);
+            set => _taxNonTaxBool = value; }
         public string FundIds { get; set; }
         private string _fundset;
         public string FundSet

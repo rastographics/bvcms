@@ -157,6 +157,7 @@
 }
 @helper AdminList1(bool admin, bool design, bool managetrans, bool edit, bool manageemails, bool finance, bool developer, bool financeadmin)
 {
+    CMSDataContext Db = ViewExtensions2.CurrentDatabase;
     if (admin || finance || managetrans)
     {
         <li class="dropdown-header dropdown-sub-header">Batch Actions</li>
@@ -187,6 +188,7 @@
     {
         <li class="dropdown-header dropdown-sub-header">Setup</li>
     }
+    @Helper.LiAnchorLink("Homepage Widgets", "/HomeWidgets/", admin)
     @Helper.LiAnchorLink("Lookup Codes", "/Lookups/", admin || finance)
     @Helper.LiAnchorLink("Payment Gateways", "/Gateway/", admin)
     @Helper.LiAnchorLink("Promotion", "/PromotionSetup/", admin)

@@ -35,7 +35,12 @@ namespace CmsData
         public int? UserPeopleId => CurrentUser?.PeopleId;
 
         public int UserId1 => UserId == 0 ? 1 : UserId;
-        public string CurrentSessionId => HttpContextFactory.Current?.Session?.SessionID ?? Guid.NewGuid().ToString();
+        private string _currentSessionId;
+        public string CurrentSessionId
+        {
+            get => _currentSessionId ?? HttpContextFactory.Current?.Session?.SessionID ?? Guid.NewGuid().ToString();
+            set => _currentSessionId = value;
+        }
 
         public string CmsHost
         {

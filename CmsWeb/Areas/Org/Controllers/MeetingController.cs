@@ -314,6 +314,7 @@ namespace CmsWeb.Areas.Org.Controllers
                 pid = wandtarget.ToInt();
                 var q = from person in CurrentDatabase.People
                         where person.PeopleId == pid
+                        where person.IsDeceased == false
                         let meeting = CurrentDatabase.Meetings.SingleOrDefault(mm => mm.MeetingId == MeetingId)
                         let attended = CurrentDatabase.Attends.SingleOrDefault(aa => aa.MeetingId == MeetingId && aa.PeopleId == pid && aa.AttendanceFlag)
                         let orgmember = CurrentDatabase.OrganizationMembers.SingleOrDefault(om => om.OrganizationId == meeting.OrganizationId && om.PeopleId == pid)
@@ -325,6 +326,7 @@ namespace CmsWeb.Areas.Org.Controllers
                             orgmember = orgmember,
                             family = from m in person.Family.People
                                      where m.PeopleId != pid
+                                     where m.IsDeceased == false
                                      let att = CurrentDatabase.Attends.SingleOrDefault(aa => aa.MeetingId == MeetingId && aa.PeopleId == m.PeopleId && aa.AttendanceFlag)
                                      let orgmem = CurrentDatabase.OrganizationMembers.SingleOrDefault(om => om.OrganizationId == meeting.OrganizationId && om.PeopleId == m.PeopleId)
                                      select new FamilyMemberInfo

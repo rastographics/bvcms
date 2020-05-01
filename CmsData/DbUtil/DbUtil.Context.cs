@@ -857,7 +857,13 @@ This search uses multiple steps which cannot be duplicated in a single query.
         public Person CurrentUserPerson => Users.Where(u => u.UserId == UserId).Select(u => u.Person).SingleOrDefault();
         public Tag OrgLeadersOnlyTag2()
         {
-            return FetchOrCreateTag(CurrentSessionId, UserPeopleId, DbUtil.TagTypeId_OrgLeadersOnly);
+            //return FetchOrCreateTag(CurrentSessionId, UserPeopleId, DbUtil.TagTypeId_OrgLeadersOnly);
+            var tag = FetchTag(CurrentSessionId, UserPeopleId, DbUtil.TagTypeId_OrgLeadersOnly);
+            if (tag == null)
+            {
+                tag = SetOrgLeadersOnly();
+            }
+            return tag;
         }
 
         public Tag FetchOrCreateTag(string tagname, int? ownerId, int tagtypeid)
@@ -921,7 +927,7 @@ This search uses multiple steps which cannot be duplicated in a single query.
             return oids;
         }
 
-        public void SetOrgLeadersOnly()
+        public Tag SetOrgLeadersOnly()
         {
             var me = UserPeopleId;
             var dt = Util.Now.AddYears(-3);
@@ -976,6 +982,8 @@ This search uses multiple steps which cannot be duplicated in a single query.
                 where p.contactsHad.Any(c => c.contact.contactsMakers.Any(cm => cm.PeopleId == me))
                 select p;
             TagAll(q, tag);
+
+            return tag;
         }
 
         [Function(Name = "dbo.AddAbsents")]
@@ -2133,24 +2141,26 @@ This search uses multiple steps which cannot be duplicated in a single query.
             ExecuteCommand("dbo.DeleteOldQueryBitTags");
         }
 
-        public void RetrieveBatchData(string startdt = null, string enddt = null)  // code has mostly been moved over from CmsWeb.Models.TransactionsModel.cs with some cleanup
+        public void RetrieveBatchData(string startdt = null, string enddt = null, bool testing = false)  // code has mostly been moved over from CmsWeb.Models.TransactionsModel.cs with some cleanup
         {
             IGateway[] gateways = {
-                Gateway(false, null, PaymentProcessTypes.OneTimeGiving, false),
-                Gateway(false, null, PaymentProcessTypes.OnlineRegistration, false),
-                Gateway(false, null, PaymentProcessTypes.RecurringGiving, false)
+                Gateway(testing, null, PaymentProcessTypes.OneTimeGiving, false),
+                Gateway(testing, null, PaymentProcessTypes.OnlineRegistration, false),
+                Gateway(testing, null, PaymentProcessTypes.RecurringGiving, false)
             };
 
             DateTime? dateFrom = (startdt != null) ? (DateTime?)DateTime.Parse(startdt) : null;
             DateTime? dateTo = (enddt != null) ? (DateTime?)DateTime.Parse(enddt) : null;
 
             var rangeTo = dateTo ?? DateTime.Now;
-            var rangeFrom = dateFrom ?? rangeTo.AddDays(0 - Math.Max(1, Setting("AutoSyncBatchDatesWindow").ToInt()));
+            var rangeFrom = dateFrom ?? rangeTo.AddDays(0 - Math.Max(1, Setting("AutoSyncBatchDatesWindow", "1").ToInt()));
 
             var transactions
-                = from t in ViewTransactionLists
-                  join org in Organizations on t.OrgId equals org.OrganizationId
-                  select t;
+                = (from t in ViewTransactionLists
+                   join org in Organizations on t.OrgId equals org.OrganizationId
+                   where t.TransactionDate >= rangeFrom
+                   where t.TransactionDate <= rangeTo
+                   select t).ToList();
 
             foreach (var gateway in gateways.Where(g => g.IsNotNull()).DistinctBy(g => g.Identifier))
             {
@@ -2162,11 +2172,9 @@ This search uses multiple steps which cannot be duplicated in a single query.
                 if (gateway.UseIdsForSettlementDates)
                 {
                     var tranids = (from t in transactions
-                                   where t.TransactionDate >= rangeFrom
-                                   where t.TransactionDate <= rangeTo
                                    where t.Settled == null
                                    where t.Moneytran == true
-                                   select t.TransactionId).ToList();
+                                   select t.TransactionId.Replace("(testing)","")).ToList();
                     gateway.CheckBatchSettlements(tranids);
                 }
                 else

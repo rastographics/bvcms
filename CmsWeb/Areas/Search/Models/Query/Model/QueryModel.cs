@@ -3,6 +3,7 @@ using CmsWeb.Code;
 using CmsWeb.Constants;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Web.Mvc;
 using UtilityExtensions;
@@ -86,7 +87,13 @@ namespace CmsWeb.Areas.Search.Models
 
         public bool IsPublic { get; set; }
         public string Days { get; set; }
-        public string TaxNonTax { get; set; }
+                
+        private string _taxStatus;
+        [DisplayName("Tax Status")]
+        public string TaxNonTax {
+            get => _taxStatus ?? "Both";
+            set => _taxStatus = value;
+        }
         public int? Age { get; set; }
         public string Quarters { get; set; }
         public string FundIds { get; set; }
