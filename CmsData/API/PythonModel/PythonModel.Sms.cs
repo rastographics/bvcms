@@ -28,12 +28,22 @@ namespace CmsData
         }
         public static string CreateTinyUrl(string url)
         {
-            var createTinyUrl = ConfigurationManager.AppSettings["UrlShortenerService"] ?? "https://tpsdb.co/Create";
-            var client = new RestClient(createTinyUrl);
-            var request = new RestRequest(Method.POST);
-            request.AddParameter("token", ConfigurationManager.AppSettings["tpsdbcotoken"]);
-            request.AddParameter("url", url);
-            return client.Execute(request).Content;
+            var serviceurl = ConfigurationManager.AppSettings["UrlShortenerService"];
+            var token = ConfigurationManager.AppSettings["UrlShortenerServiceToken"];
+            var shorturl = url; // default return value if no service is configured
+            if (!string.IsNullOrEmpty(serviceurl) && !string.IsNullOrEmpty(token))
+            {
+                var client = new RestClient(serviceurl);
+                var request = new RestRequest(Method.POST);
+                request.AddParameter("token", token);
+                request.AddParameter("url", url);
+                shorturl = client.Execute(request).Content;
+                if (string.IsNullOrEmpty(shorturl))
+                    return url;
+            }
+            if (shorturl.StartsWith("http"))
+                return shorturl;
+            return $"https://{shorturl}";
         }
     }
 }
