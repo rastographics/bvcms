@@ -20,8 +20,9 @@ namespace CmsWeb.Areas.Public.Models.MobileAPIv2
 		public string argString = "";
 
 		public string data = "";
-		public string instance = "";
-		public string key = "";
+        public string instance = "";
+        public string build = "";
+        public string key = "";
 
 		public override void ExecuteResult( ControllerContext context )
 		{
