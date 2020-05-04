@@ -38,12 +38,11 @@ namespace CmsData
                 request.AddParameter("token", token);
                 request.AddParameter("url", url);
                 shorturl = client.Execute(request).Content;
+                // if the request fails, return the original url
                 if (string.IsNullOrEmpty(shorturl))
                     return url;
             }
-            if (shorturl.StartsWith("http"))
-                return shorturl;
-            return $"https://{shorturl}";
+            return shorturl;
         }
     }
 }
