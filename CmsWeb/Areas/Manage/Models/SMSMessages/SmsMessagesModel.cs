@@ -1,12 +1,16 @@
-﻿using CmsData;
-using System;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
-using UtilityExtensions;
+using CmsData;
+using CmsWeb.Models;
+using Twilio.TwiML.Voice;
 
-namespace CmsWeb.Models
+namespace CmsWeb.Areas.Manage.Models.SMSMessages
 {
-    public class SMSModel
+    public class SmsMessagesModel : IDbBinder
     {
+        public CMSDataContext CurrentDatabase { get; set; }
+
         public PagerModel2 Pager { get; set; }
 
         private int? _count;
@@ -14,9 +18,10 @@ namespace CmsWeb.Models
         public DateTime? start { get; set; }
         public DateTime? end { get; set; }
 
-        public SMSModel()
+        public SmsMessagesModel(CMSDataContext db)
         {
-            Pager = new PagerModel2(DbUtil.Db)
+            CurrentDatabase = db;
+            Pager = new PagerModel2(CurrentDatabase)
             {
                 GetCount = Count
             };
@@ -34,7 +39,7 @@ namespace CmsWeb.Models
 
         public IQueryable<SMSList> GetList()
         {
-            var l = from e in DbUtil.Db.SMSLists
+            var l = from e in CurrentDatabase.SMSLists
                     select e;
 
             if (start != null)
@@ -101,6 +106,10 @@ namespace CmsWeb.Models
             }
 
             return l;
+        }
+        public SmsReplyWordsModel ReplyWords()
+        {
+            return new SmsReplyWordsModel(CurrentDatabase);
         }
     }
 }

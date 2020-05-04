@@ -1,31 +1,30 @@
-﻿using System.Web.Mvc;
+﻿using System.Linq;
+using System.Web.Mvc;
+using CmsWeb.Areas.Manage.Models.SMSMessages;
 using CmsWeb.Lifecycle;
-using CmsWeb.Models;
 
 namespace CmsWeb.Areas.Manage.Controllers
 {
     [RouteArea("Manage")]
-    public class SMSController : CmsStaffController
+    public class SmsController : CmsStaffController
     {
-        public SMSController(IRequestManager requestManager) : base(requestManager)
+        public SmsController(IRequestManager requestManager) : base(requestManager)
         {
         }
 
-        [Route("~/SMS/List")]
-        public ActionResult Index(SMSModel m)
+        [Route("~/Sms/List")]
+        public ActionResult Index(SmsMessagesModel m)
         {
-            if (m == null) 
-                m = new SMSModel();
-            else
-                UpdateModel(m.Pager);
+            UpdateModel(m.Pager);
             return View(m);
         }
 
-        [Route("~/SMS/Details/{id:int}")]
+        [Route("~/Sms/Details/{id:int}")]
         public ActionResult Details( int id )
         {
-            ViewBag.ListID = id;
-            return View();
+            var m = new SmsListModel(CurrentDatabase, id);
+            return View(m);
         }
+
     }
 }

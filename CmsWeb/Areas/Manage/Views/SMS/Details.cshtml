@@ -1,13 +1,8 @@
-﻿@using CmsData
+﻿@model CmsWeb.Areas.Manage.Models.SMSMessages.SmsListModel
 @{
     ViewBag.Title = "SMS Message Details";
     ViewBag.PageHeader = "SMS Message Details";
     Layout = ViewExtensions2.TouchPointLayout();
-    int ListID = ViewBag.ListID;
-    
-    var l = (from e in ViewExtensions2.CurrentDatabase.SMSLists
-             where e.Id == ListID
-             select e).Single();
 }
 <div class="row">
     <div class="col-sm-9">
@@ -18,7 +13,7 @@
                 </div>
             </div>
             <div class="box-content">
-                <blockquote>@l.Message</blockquote>
+                <blockquote>@Model.SmsList.Message</blockquote>
                 <div class="table-responsive">
                     <table class="table table-striped">
                         <thead>
@@ -31,7 +26,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach (var i in l.SMSItems.OrderBy(e => e.Person.Name).OrderByDescending(e => e.Sent))
+                            @foreach (var i in Model.SmsItems())
                             {
                                 <tr>
                                     <td>

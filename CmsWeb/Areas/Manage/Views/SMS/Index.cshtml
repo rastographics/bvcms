@@ -1,84 +1,25 @@
-﻿@model CmsWeb.Models.SMSModel
+﻿@model CmsWeb.Areas.Manage.Models.SMSMessages.SmsMessagesModel
 @{
     ViewBag.Title = "SMS Messages";
     ViewBag.PageHeader = "SMS Messages";
     Layout = ViewExtensions2.TouchPointLayout();
 }
 <div class="box box-responsive">
-    <div class="box-content">
-        <form id="form" method="post" action="/SMS/List">
-            <div class="well">
-                <div class="row">
-                    <div class="col-sm-4 col-md-3 col-lg-2">
-                        <label for="start" class="control-label">Start Date</label>
-                        <div class="form-inline">
-                            <div class="input-group date">
-                                @Html.TextBox("start", Model.start.HasValue ? Model.start.GetValueOrDefault().ToShortDateString() : "", new { @class = "form-control" })<span class="input-group-addon hidden-xs hidden-sm"><i class="fa fa-calendar"></i></span>
-                                @Html.Hidden("startIso", Model.start.HasValue ? Model.start.GetValueOrDefault().ToString("yyyy-MM-dd") : "", new { disabled = "disabled" })
-                            </div>
-                        </div>
-
-                    </div>
-                    <div class="col-sm-8 col-md-9 col-lg-10">
-                        <label for="end" class="control-label">End Date</label>
-                        <div class="form-inline">
-                            <div class="input-group date">
-                                @Html.TextBox("end", Model.end.HasValue ? Model.end.GetValueOrDefault().ToShortDateString() : "", new { @class = "form-control" })<span class="input-group-addon hidden-xs hidden-sm"><i class="fa fa-calendar"></i></span>
-                                @Html.Hidden("endIso", Model.end.HasValue ? Model.end.GetValueOrDefault().ToString("yyyy-MM-dd") : "", new { disabled = "disabled" })
-                            </div>
-                            <div class="input-group">
-                                <a href="#" id="clear" class="btn btn-default">Clear</a>&nbsp;<button type="submit" class="btn btn-primary">Filter</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            @Html.Partial("PagerTop", Model.Pager)
-            <div class="table-responsive">
-                <table class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th><a href="#" class="sortable">Sent/Scheduled</a></th>
-                            <th><a href="#" class="sortable">From</a></th>
-                            <th><a href="#" class="sortable">Title</a></th>
-                            <th class="text-right"><a href="#" class="sortable">Included</a></th>
-                            <th class="text-right"><a href="#" class="sortable">Excluded</a></th>
-                            <th style="width: 50px;">Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var i in Model.GetList())
-                        {
-                            <tr>
-                                <td>
-                                    @i.Created
-                                </td>
-                                <td>
-                                    @i.Person.Name
-                                </td>
-                                <td>
-                                    @i.Title
-                                </td>
-                                <td class="text-right">
-                                    @i.SentSMS
-                                </td>
-                                <td class="text-right">
-                                    @i.SentNone
-                                </td>
-                                <td style="width: 50px;">
-                                    <a href="/SMS/Details/@i.Id" class="btn btn-default btn-sm"><i class="fa fa-search"></i> Details</a>
-                                </td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
-            </div>
-            @Html.Partial("PagerBottom", Model.Pager)
-            @Html.Hidden("totcnt", Model.Count().ToString("N0"))
-            @Html.Hidden("Page", Model.Pager.Page)
-            @Html.Hidden("Sort", Model.Pager.Sort)
-            @Html.Hidden("Direction", Model.Pager.Direction)
-        </form>
+    <ul class="nav nav-tabs">
+        <li class="active"><a href="#sent" data-toggle="tab">Sent</a></li>
+        <li><a href="#received" data-toggle="tab">Received</a></li>
+        <li><a href="#replywords" data-toggle="tab">Reply Words</a></li>
+    </ul>
+    <div class="tab-content">
+        <div id="sent" class="tab-pane fade in active">
+            @Html.Partial("Sent", Model)
+        </div>
+        <div id="received" class="tab-pane fade">
+            <h3>Received stuff here</h3>
+        </div>
+        <div id="replywords" class="tab-pane fade">
+            @Html.Partial("ReplyWords", Model.ReplyWords())
+        </div>
     </div>
 </div>
 @section scripts
@@ -90,7 +31,6 @@
                 $('#start').val('');
                 $('#end').val('');
             });
-
 
             $('a.sortable').on("click", function () {
                 var newsort = $(this).text();

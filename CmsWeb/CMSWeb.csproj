@@ -582,6 +582,9 @@
     <Compile Include="Areas\Manage\Models\Involvement\InvolvementType.cs" />
     <Compile Include="Areas\Manage\Models\ResourceModel.cs" />
     <Compile Include="Areas\Manage\Models\ResourceTypeModel.cs" />
+    <Compile Include="Areas\Manage\Models\SMSMessages\SmsActionModel.cs" />
+    <Compile Include="Areas\Manage\Models\SMSMessages\SmsListModel.cs" />
+    <Compile Include="Areas\Manage\Models\SMSMessages\SmsReplyWordsModel.cs" />
     <Compile Include="Areas\Manage\Models\UpdateFieldsLookups.cs" />
     <Compile Include="Areas\Manage\Models\UploadAddressesModel.cs" />
     <Compile Include="Areas\Manage\Models\UploadExcelIpsModel.cs" />
@@ -850,14 +853,14 @@
     <Compile Include="Areas\Reports\Models\Attendance\VisitsAbsentsResult2.cs" />
     <Compile Include="Areas\Reports\Models\Attendance\RallyRollsheetResult.cs" />
     <Compile Include="Areas\CheckIn\Controllers\CheckinTimeController.cs" />
-    <Compile Include="Areas\Manage\Controllers\SMSController.cs" />
+    <Compile Include="Areas\Manage\Controllers\SmsController.cs" />
     <Compile Include="Areas\Manage\Controllers\UploadPeopleController.cs" />
     <Compile Include="Areas\Finance\Controllers\StatementsController.cs" />
     <Compile Include="Areas\Reports\Models\Export\ExtraExcelResult.cs" />
     <Compile Include="Areas\Org\Models\OrgChildrenModel.cs" />
     <Compile Include="Areas\Manage\Controllers\UsersController.cs" />
     <Compile Include="Areas\Manage\Models\ContentModel.cs" />
-    <Compile Include="Areas\Manage\Models\SMSModel.cs" />
+    <Compile Include="Areas\Manage\Models\SMSMessages\SmsMessagesModel.cs" />
     <Compile Include="Areas\Manage\Models\UsersModel.cs" />
     <Compile Include="Areas\Manage\Models\UploadPeopleModel.cs" />
     <Compile Include="Areas\Manage\Models\AccountModel.cs" />
@@ -1930,8 +1933,12 @@
     <Content Include="Content\touchpoint\src\less\unlayer-editor.less" />
     <Content Include="Areas\Dialog\Views\RemoteDeposit\Index.cshtml" />
     <Content Include="Areas\Dialog\Views\RemoteDeposit\NotConfigured.cshtml" />
-    <Content Include="Areas\Setup\Views\SmsReplyWords\Index.cshtml" />
     <Content Include="Areas\Setup\Views\SmsReplyWords\ReplyWords.cshtml" />
+    <Content Include="Areas\Setup\Views\SmsReplyWords\ReplyWordsDetails.cshtml" />
+    <Content Include="Areas\Manage\Views\SMS\Sent.cshtml" />
+    <Content Include="Areas\Manage\Views\SMS\ReplyWords.cshtml" />
+    <Content Include="Areas\Setup\Views\SmsReplyWords\Index.cshtml" />
+    <Content Include="Areas\Manage\Views\SMS\ReplyWordsList.cshtml" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
