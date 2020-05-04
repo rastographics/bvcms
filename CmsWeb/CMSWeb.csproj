@@ -406,6 +406,7 @@
     <Compile Include="Areas\Coordinator\Models\PostTargetInfo.cs" />
     <Compile Include="Areas\Coordinator\CoordinatorAreaRegistration.cs" />
     <Compile Include="Areas\Coordinator\Models\SubgroupModel.cs" />
+    <Compile Include="Areas\Dialog\Controllers\AddInvolvementController.cs" />
     <Compile Include="Areas\Dialog\Controllers\AddResourceController.cs" />
     <Compile Include="Areas\Dialog\Controllers\AddOrganizationController.cs" />
     <Compile Include="Areas\Dialog\Controllers\AddAttendeesFromTagController.cs" />
@@ -432,6 +433,7 @@
     <Compile Include="Areas\Dialog\Models\AddToOrgFromTag.cs" />
     <Compile Include="Areas\Dialog\Models\CheckImageModel.cs" />
     <Compile Include="Areas\Dialog\Models\DeleteMeeting.cs" />
+    <Compile Include="Areas\Dialog\Models\InvolvementModel.cs" />
     <Compile Include="Areas\Dialog\Models\NewMeetingInfo.cs" />
     <Compile Include="Areas\Dialog\Models\OrganizationModel.cs" />
     <Compile Include="Areas\Dialog\Models\OrgPrevMember\OrgPrevMemberModel.cs" />
@@ -1246,6 +1248,7 @@
     <Content Include="Content\font-awesome-4.0.3\fonts\fontawesome-webfont.svg" />
     <Content Include="Content\images\check.png" />
     <Content Include="Content\img\textarealine.png" />
+    <Content Include="Content\Site.css" />
     <Content Include="Content\touchpoint\css\account.css" />
     <Content Include="Content\touchpoint\css\app.css" />
     <Content Include="Content\touchpoint\css\checkin.css" />
@@ -1919,6 +1922,9 @@
     <Content Include="Content\touchpoint\src\less\unlayer-editor.less" />
     <Content Include="Areas\Dialog\Views\RemoteDeposit\Index.cshtml" />
     <Content Include="Areas\Dialog\Views\RemoteDeposit\NotConfigured.cshtml" />
+    <Content Include="Areas\Dialog\Views\_ViewStart.cshtml" />
+    <Content Include="Areas\Dialog\Views\Shared\_Layout.cshtml" />
+    <Content Include="Areas\Dialog\Views\AddInvolvement\index.cshtml" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
@@ -3435,7 +3441,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Areas\CheckIn\Views\Shared\" />
-    <Folder Include="Areas\Dialog\Views\Shared\" />
     <Folder Include="Areas\Figures\Views\Shared\" />
     <Folder Include="Areas\Main\Views\Shared\" />
     <Folder Include="Areas\Manage\Views\Shared\" />
