@@ -226,6 +226,7 @@ namespace CmsData.Codes
         public const int SpecialJavascript = 16;
         public const int RecordFamilyAttendance = 18;
         public const int RegisterLinkMaster = 20;
+        public const int TicketedEvent = 22;
 
         public static IEnumerable<KeyValuePair<int, string>> GetCodePairs()
         {
