@@ -305,8 +305,7 @@ namespace CmsWeb.Areas.Search.Models
             }
             else
             {
-                queryable = CurrentDatabase.OrgSearch(Name, ProgramId, DivisionId, TypeId, CampusId, ScheduleId, StatusId, OnlineReg,
-                 CurrentDatabase.CurrentUser.UserId, TagDiv);
+                queryable = CurrentDatabase.OrgSearch(Name, ProgramId, DivisionId, TypeId, CampusId, ScheduleId, StatusId, OnlineReg, CurrentDatabase.CurrentUser.UserId, TagDiv);
             }
 
             if (ExtraValuesDict != null && ExtraValuesDict.Any())

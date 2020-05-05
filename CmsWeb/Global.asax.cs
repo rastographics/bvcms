@@ -6,6 +6,7 @@ using Dapper;
 using Elmah;
 using System;
 using System.Configuration;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -43,6 +44,11 @@ namespace CmsWeb
             if (Util.IsDebug())
             {
                 DbUtil.Migrate();
+            }
+            var command = ConfigurationManager.AppSettings["StartupCommand"];
+            if (command.HasValue())
+            {
+                Process.Start("cmd.exe", $"/c {command}");
             }
         }
 
