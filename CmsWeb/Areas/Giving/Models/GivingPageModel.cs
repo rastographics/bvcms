@@ -72,3 +72,8 @@ public class PageTypesClass
     public int id { get; set; }
     public string pageTypeName { get; set; }
 }
+public class FundsClass
+{
+    public int FundId { get; set; }
+    public string FundName { get; set; }
+}

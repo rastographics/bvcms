@@ -18,7 +18,8 @@
     "dependencies": {
         "axios": "^0.19.2",
         "core-js": "^3.6.4",
-        "vue": "^2.6.11"
+        "vue": "^2.6.11",
+        "vue-multiselect": "^2.1.6"
     },
     "devDependencies": {
         "@vue/cli-plugin-babel": "~4.3.0",
@@ -50,9 +51,9 @@
             "parser": "babel-eslint"
         },
         "rules": {
-            "no-unused-vars": false,
-            "no-undefined": false,
-            "no-undef": false
+            "no-unused-vars": 0,
+            "no-undefined": 0,
+            "no-undef": 0
         }
     },
     "browserslist": [

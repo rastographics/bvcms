@@ -43,7 +43,10 @@
             <div class="col-lg-2 col-md-2 col-sm-2">
               <div class="form-group">
                 <label class="control-label">Enabled</label>
-                <generic-slider v-model="newGivingEnabled"></generic-slider>
+                <generic-slider
+                  v-model="newGivingEnabled"
+                  v-on:toggleSlider="toggleNewGivingEnabled()"
+                ></generic-slider>
               </div>
             </div>
           </div>
@@ -57,13 +60,14 @@
             <div class="col-lg-5 col-md-5 col-sm-5">
               <div class="form-group">
                 <label class="control-label">Page Type</label>
-                <select class="form-control" v-model="newGivingPageType">
-                  <option
-                    v-for="pageType in PageTypes"
-                    v-bind:value="pageType.id"
-                    :key="pageType.id"
-                  >{{pageType.pageTypeName}}</option>
-                </select>
+                <MultiSelect
+                  v-model="newGivingPageType"
+                  :options="pageTypes"
+                  :searchable="true"
+                  :close-on-select="true"
+                  :show-labels="false"
+                  :custom-label="customLabel"
+                ></MultiSelect>
               </div>
             </div>
             <div class="col-lg-2 col-md-2 col-sm-2"></div>
@@ -72,19 +76,31 @@
             <div class="col-lg-5 col-md-5 col-sm-5">
               <div class="form-group">
                 <label class="control-label">Default Fund</label>
-                <input type="text" v-model="newGivingFundId" class="form-control" />
+                <MultiSelect
+                  placeholder="Pick at least one"
+                  v-model="newDefaultFund"
+                  :options="availableFunds"
+                  :searchable="true"
+                  :close-on-select="true"
+                  :show-labels="false"
+                  :custom-label="AvailableFundsCustomLabel"
+                ></MultiSelect>
               </div>
             </div>
             <div class="col-lg-5 col-md-5 col-sm-5">
               <div class="form-group">
                 <label class="control-label">Available Funds</label>
-                <select multiple class="form-control" v-model="newGivingFundIdArray">
-                  <option
-                    v-for="availableFund in AvailableFunds"
-                    v-bind:value="availableFund.id"
-                    :key="availableFund.id"
-                  >{{availableFund.pageTypeName}}</option>
-                </select>
+                <MultiSelect
+                  select-label
+                  v-model="newGivingFundsArray"
+                  :options="availableFunds"
+                  :searchable="true"
+                  :close-on-select="true"
+                  :show-labels="false"
+                  :multiple="true"
+                  trackBy="FundId"
+                  :custom-label="AvailableFundsCustomLabel"
+                ></MultiSelect>
               </div>
             </div>
             <div class="col-lg-2 col-md-2 col-sm-2"></div>
@@ -102,13 +118,15 @@
             <div class="col-lg-5 col-md-5 col-sm-5">
               <div class="form-group">
                 <label class="control-label">Entry Point</label>
-                <select class="form-control" style="width:90%;" v-model="newGivingEntryPointId">
-                  <option
-                    v-for="entryPoint in EntryPoints"
-                    v-bind:value="entryPoint.id"
-                    :key="entryPoint.id"
-                  >{{entryPoint.pageTypeName}}</option>
-                </select>
+                <MultiSelect
+                  v-model="newGivingEntryPointId"
+                  :options="entryPoints"
+                  :searchable="true"
+                  :close-on-select="true"
+                  :show-labels="false"
+                  trackBy="Id"
+                  :custom-label="EntryPointCustomLabel"
+                ></MultiSelect>
               </div>
             </div>
             <div class="col-lg-7 col-md-7 col-sm-7"></div>
@@ -133,131 +151,90 @@
 
 <script>
 import axios from "axios";
+import MultiSelect from "vue-multiselect";
 export default {
-  props: ["showAddModal"],
+  props: {
+    showAddModal: Boolean,
+    pageTypes: Array,
+    availableFunds: Array,
+    entryPoints: Array
+  },
+  components: {
+    MultiSelect
+  },
   data: function() {
     return {
       showMyModal: this.showAddModal,
-      PageTypes: [],
-      AvailableFunds: [],
-      EntryPoints: [],
       newGivingPageName: "",
       newGivingPageTitle: "",
       newGivingEnabled: false,
       newGivingSkinFile: "",
-      newGivingPageType: 0,
-      newGivingFundId: 0,
-      newGivingFundIdArray: [],
+      newGivingPageType: null,
+      newDefaultFund: null,
+      newGivingFundsArray: [],
       newGivingDisabledRedirect: "",
-      newGivingEntryPointId: 0
+      newGivingEntryPointId: null
     };
   },
   methods: {
     createNewGivingPage() {
       //alert("create new giving page button worked!");
       this.showMyModal = false;
-      // $.ajax({
-      //   type: "POST",
-      //   dataType: "json",
-      //   url: "/Giving/CreateNewGivingPage",
-      //   data: {
-      //     pageName: this.newGivingPageName,
-      //     pageTitle: this.newGivingPageTitle,
-      //     enabled: this.newGivingEnabled,
-      //     skin: this.newGivingSkinFile,
-      //     pageType: this.newGivingPageType,
-      //     fundId: this.newGivingFundId,
-      //     fundArray: this.newGivingFundIdArray,
-      //     disabledRedirect: this.newGivingDisabledRedirect,
-      //     entryPointId: this.newGivingEntryPointId
-      //   },
-      //   success: function(response) {
-      //     //var asd = 1;
-      //     //alert(response);
-      //   },
-      //   error: function(response) {
-      //     var asd = 1;
-      //     alert("fail");
-      //   }
-      // });
-    },
-    getPageTypes: function() {
-      let vm = this;
       axios
-        .get("/Giving/GetPageTypes")
+        .post("/Giving/CreateNewGivingPage", {
+          pageName: this.newGivingPageName,
+          pageTitle: this.newGivingPageTitle,
+          enabled: this.newGivingEnabled,
+          skin: this.newGivingSkinFile,
+          pageType: this.newGivingPageType.id,
+          defaultFund: this.newDefaultFund.FundId,
+          availFundsArray: this.newGivingFundsArray,
+          disRedirect: this.newGivingDisabledRedirect,
+          entryPoint: this.newGivingEntryPointId.Id
+        })
         .then(
           response => {
             if (response.status === 200) {
-              vm.PageTypes = response.data;
+              this.$emit('add-givingPage', response.data);
+              this.newGivingPageName = "";
+              this.newGivingPageTitle = "";
+              this.newGivingEnabled = false;
+              this.newGivingSkinFile = "";
+              this.newGivingPageType = null;
+              this.newDefaultFund = null;
+              this.newGivingFundsArray = null;
+              this.newGivingDisabledRedirect = "";
+              this.newGivingEntryPointId = null;
             } else {
-              alert("Warning! Something went wrong, try again later");
-              // warning_swal("Warning!", "Something went wrong, try again later");
+              warning_swal("Warning!", "Something went wrong, try again later");
             }
           },
           err => {
-            alert("Fatal Error! We are working to fix it");
             console.log(err);
-            // error_swal("Fatal Error!", "We are working to fix it");
+            error_swal("Fatal Error!", "We are working to fix it");
           }
         )
         .catch(function(error) {
           console.log(error);
         });
     },
-    getAvailableFunds: function() {
-      let vm = this;
-      axios
-        .get("/Giving/GetAvailableFunds")
-        .then(
-          response => {
-            if (response.status === 200) {
-              vm.AvailableFunds = response.data;
-            } else {
-              alert("Warning! Something went wrong, try again later");
-              // warning_swal("Warning!", "Something went wrong, try again later");
-            }
-          },
-          err => {
-            alert("Fatal Error! We are working to fix it");
-            console.log(err);
-            // error_swal("Fatal Error!", "We are working to fix it");
-          }
-        )
-        .catch(function(error) {
-          console.log(error);
-        });
+    toggleNewGivingEnabled() {
+      this.newGivingEnabled = !this.newGivingEnabled;
     },
-    getEntryPoints: function() {
-      let vm = this;
-      axios
-        .get("/Giving/GetEntryPoints")
-        .then(
-          response => {
-            if (response.status === 200) {
-              vm.EntryPoints = response.data;
-            } else {
-              alert("Warning! Something went wrong, try again later");
-              // warning_swal("Warning!", "Something went wrong, try again later");
-            }
-          },
-          err => {
-            alert("Fatal Error! We are working to fix it");
-            console.log(err);
-            // error_swal("Fatal Error!", "We are working to fix it");
-          }
-        )
-        .catch(function(error) {
-          console.log(error);
-        });
+    AvailableFundsCustomLabel({ FundName }) {
+      return `${FundName}`;
+    },
+    EntryPointCustomLabel({ Description }) {
+      return `${Description}`;
+    },
+    customLabel({ pageTypeName }) {
+      return `${pageTypeName}`;
     }
-  },
-  mounted() {
-    this.getPageTypes();
-    this.getAvailableFunds();
-    this.getEntryPoints();
   }
 };
 </script>
+
+<style src="vue-multiselect/dist/vue-multiselect.min.css"></style>
 
 <style scoped>
 .modal-overlay {
@@ -274,13 +251,14 @@ export default {
 .modal {
   display: block !important;
   position: fixed;
-  top: 33vh;
+  top: 31%;
   left: 50%;
   transform: translate(-50%, -50%);
   z-index: 9999;
 
+  overflow-y: auto;
   width: 600px;
-  height: 587px;
+  height: 550px;
   background-color: #fff;
   display: table;
 
@@ -290,140 +268,22 @@ export default {
   background-clip: padding-box;
   outline: 0;
 }
-
 @media only screen and (max-width: 768px) {
   .modal {
-    display: block !important;
-    position: fixed;
-    top: 33vh;
+    top: 48%;
     left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 9999;
-
-    overflow-y: scroll;
     width: 600px;
-    height: 587px;
-    background-color: #fff;
-    display: table;
-
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
-    border: 1px solid rgba(0, 0, 0, 0.2);
-    border-radius: 0;
-    background-clip: padding-box;
-    outline: 0;
+    height: 90%;
   }
 }
-
-/* Extra small devices (phones, 600px and down) */
 @media only screen and (max-width: 600px) {
   .modal {
-    display: block !important;
-    position: fixed;
     top: 47%;
     left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 9999;
-
-    overflow-y: scroll;
     width: 90%;
     height: 90%;
-    background-color: #fff;
-    display: table;
-
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
-    border: 1px solid rgba(0, 0, 0, 0.2);
-    border-radius: 0;
-    background-clip: padding-box;
-    outline: 0;
   }
 }
-
-/* Small devices (portrait tablets and large phones, 600px and up) */
-/* @media only screen and (min-width: 600px) {
-  .modal {
-    display: block !important;
-    position: fixed;
-    top: 33vh;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 9999;
-
-    overflow-y: scroll;
-    width: 600px;
-    height: 587px;
-    background-color: #fff;
-    display: table;
-
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
-    border: 1px solid rgba(0, 0, 0, 0.2);
-    border-radius: 0;
-    background-clip: padding-box;
-    outline: 0;
-  }
-} */
-
-/* Medium devices (landscape tablets, 768px and up) */
-/* @media only screen and (min-width: 768px) {
-  .modal {
-    position: fixed;
-    top: 32vh;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 9999;
-
-    width: 600px;
-    background-color: #fff;
-    display: table;
-
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
-    border: 1px solid rgba(0, 0, 0, 0.2);
-    border-radius: 0;
-    background-clip: padding-box;
-    outline: 0;
-  }
-} */
-
-/* Large devices (laptops/desktops, 992px and up) */
-/* @media only screen and (min-width: 992px) {
-  .modal {
-    position: fixed;
-    top: 41vh;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 9999;
-
-    width: 600px;
-    background-color: #fff;
-    display: table;
-
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
-    border: 1px solid rgba(0, 0, 0, 0.2);
-    border-radius: 0;
-    background-clip: padding-box;
-    outline: 0;
-  }
-} */
-
-/* Extra large devices (large laptops and desktops, 1200px and up) */
-/* @media only screen and (min-width: 1200px) {
-  .modal {
-    position: fixed;
-    top: 32vh;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 9999;
-
-    width: 600px;
-    background-color: #fff;
-    display: table;
-
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
-    border: 1px solid rgba(0, 0, 0, 0.2);
-    border-radius: 0;
-    background-clip: padding-box;
-    outline: 0;
-  }
-} */
 
 .fade-enter-active,
 .fade-leave-active {
