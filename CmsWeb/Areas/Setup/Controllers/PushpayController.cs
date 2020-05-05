@@ -252,21 +252,27 @@ namespace CmsWeb.Areas.Setup.Controllers
             string fundName = string.Empty;
             string merchantHandle = string.Empty;
             RegistrationDatum datum = CurrentDatabase.RegistrationDatas.SingleOrDefault(d => d.Id == DatumId);
-            if (datum != null)
-            {
-                m = Util.DeSerialize<OnlineRegModel>(datum.Data);
-                Amount = m.PayAmount() + (m.donation ?? 0);
-                mobile = CurrentDatabase.People.SingleOrDefault(p => p.PeopleId == m.UserPeopleId)?.CellPhone;
-                fundName = await _resolver.GetOrgFund(m.List.FirstOrDefault().setting.PushpayFundName);
-                merchantHandle = GetMerchantHandle(m.List.FirstOrDefault().org.OrganizationId);
-                //Needs to redirect in case cupons are enable.
-            }
-            else
+
+            if (datum == null)
             {
                 ViewBag.Message = "Something went wrong";
                 CurrentDatabase.LogActivity($"No datum founded with id: {DatumId}");
                 return View("~/Views/Shared/PageError.cshtml");
             }
+
+            m = Util.DeSerialize<OnlineRegModel>(datum.Data);
+            PaymentForm pf = PaymentForm.CreatePaymentForm(m);
+            Amount = m.PayAmount() + (m.donation ?? 0);
+            mobile = CurrentDatabase.People.SingleOrDefault(p => p.PeopleId == m.UserPeopleId)?.CellPhone;
+            fundName = await _resolver.GetOrgFund(m.List.FirstOrDefault().setting.PushpayFundName);
+            merchantHandle = GetMerchantHandle(m.List.FirstOrDefault().org.OrganizationId);
+
+            if (pf.AllowCoupon)
+            {
+
+            }
+            //Needs to redirect in case cupons are enable.
+
             return Redirect($"{_givingLink}{merchantHandle}?ru={_ru}&sr=re_{_state}_{DatumId}&rcv=false&r=no&up={mobile}&a={Amount}&fnd={fundName}&al=true&fndv=lock");
         }
 

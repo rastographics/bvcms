@@ -1915,6 +1915,7 @@
     <Content Include="Content\touchpoint\src\less\unlayer-editor.less" />
     <Content Include="Areas\Dialog\Views\RemoteDeposit\Index.cshtml" />
     <Content Include="Areas\Dialog\Views\RemoteDeposit\NotConfigured.cshtml" />
+    <Content Include="Areas\Setup\Views\Pushpay\Coupon.cshtml" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
