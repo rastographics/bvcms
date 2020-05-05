@@ -8,6 +8,7 @@ using CmsData;
 using UtilityExtensions;
 using CmsWeb.Areas.Giving.Models;
 using DocumentFormat.OpenXml.Wordprocessing;
+using DocumentFormat.OpenXml.Office2010.Excel;
 
 namespace CmsWeb.Areas.Giving.Controllers
 {
@@ -36,9 +37,33 @@ namespace CmsWeb.Areas.Giving.Controllers
             return Json(givingPageHash, JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult CreateNewGivingPage(string pageName, string pageTitle, bool enabled)
+        public ActionResult CreateNewGivingPage(string pageName, string pageTitle, bool enabled, string skin, int pageType, int defaultFund, FundsClass[] availFundsArray, string disRedirect, int entryPoint)
         {
-            return Json(pageName, JsonRequestBehavior.AllowGet);
+            var newGivingPage = new GivingPage()
+            {
+                PageName = pageName,
+                PageTitle = pageTitle,
+                Enabled = enabled,
+                SkinFile = skin,
+                PageType = pageType,
+                FundId = defaultFund,
+                DisabledRedirect = disRedirect,
+                EntryPointId = entryPoint
+            };
+            CurrentDatabase.GivingPages.InsertOnSubmit(newGivingPage);
+            CurrentDatabase.SubmitChanges();
+            var newGivingPageList = new List<GivingPageItem>();
+            var givingPageItem = new GivingPageItem()
+            {
+                GivingPageId = newGivingPage.GivingPageId,
+                PageName = newGivingPage.PageName,
+                Enabled = newGivingPage.Enabled,
+                Skin = newGivingPage.SkinFile,
+                PageType = newGivingPage.PageType.ToString(),
+                DefaultFund = newGivingPage.ContributionFund.FundName
+            };
+            newGivingPageList.Add(givingPageItem);
+            return Json(newGivingPageList, JsonRequestBehavior.AllowGet);
         }
 
         [HttpGet]
@@ -78,79 +103,59 @@ namespace CmsWeb.Areas.Giving.Controllers
         public JsonResult GetPageTypes()
         {
             var pageTypesList = new List<PageTypesClass>();
-            for(var i = 1; i < 11; i++)
+            PageTypesClass pledge = new PageTypesClass
             {
-                var pageType = new PageTypesClass
-                {
-                    id = i,
-                    pageTypeName = "Page Type " + (i).ToString()
-                };
-                pageTypesList.Add(pageType);
-            }
+                id = 1,
+                pageTypeName = "Pledge"
+            };
+            PageTypesClass oneTime = new PageTypesClass
+            {
+                id = 2,
+                pageTypeName = "One Time"
+            };
+            PageTypesClass recurring = new PageTypesClass
+            {
+                id = 3,
+                pageTypeName = "Recurring"
+            };
+            pageTypesList.Add(pledge);
+            pageTypesList.Add(oneTime);
+            pageTypesList.Add(recurring);
+
             return Json(pageTypesList, JsonRequestBehavior.AllowGet);
         }
 
         [HttpGet]
         public JsonResult GetAvailableFunds()
         {
-            var availableFundsList = new List<PageTypesClass>();
-            for (var i = 0; i < 10; i++)
-            {
-                var pageType = new PageTypesClass
-                {
-                    id = i,
-                    pageTypeName = "Available Fund " + (i + 1).ToString()
-                };
-                availableFundsList.Add(pageType);
-            }
+            var availableFundsList = (from f in CurrentDatabase.ContributionFunds
+                                 where f.FundStatusId == 1
+                                 select new { f.FundId, f.FundName }).ToList();
             return Json(availableFundsList, JsonRequestBehavior.AllowGet);
         }
 
         [HttpGet]
         public JsonResult GetEntryPoints()
         {
-            var entryPointsList = new List<PageTypesClass>();
-            for (var i = 0; i < 10; i++)
-            {
-                var pageType = new PageTypesClass
-                {
-                    id = i,
-                    pageTypeName = "Entry Point " + (i + 1).ToString()
-                };
-                entryPointsList.Add(pageType);
-            }
+            var entryPointsList = (from ep in CurrentDatabase.EntryPoints
+                                   select new { ep.Id, ep.Description }).ToList();
             return Json(entryPointsList, JsonRequestBehavior.AllowGet);
         }
 
         [HttpGet]
         public JsonResult GetOnlineNotifyPersonList()
         {
-            var onlineNotifyPersonList = new List<PageTypesClass>();
-            for (var i = 0; i < 10; i++)
-            {
-                var pageType = new PageTypesClass
-                {
-                    id = i,
-                    pageTypeName = "Online Notify Person " + (i + 1).ToString()
-                };
-                onlineNotifyPersonList.Add(pageType);
-            }
+            var onlineNotifyPersonList = (from p in CurrentDatabase.People
+                                          select new { p.PeopleId, p.Name }).Take(50).ToList();
             return Json(onlineNotifyPersonList, JsonRequestBehavior.AllowGet);
         }
 
         [HttpGet]
         public JsonResult GetConfirmationEmailList()
         {
-            var confirmationEmailList = new List<PageTypesClass>();
-            for (var i = 0; i < 10; i++)
-            {
-                var pageType = new PageTypesClass
-                {
-                    id = i,
-                    pageTypeName = "Confirmation Email Person " + (i + 1).ToString()
-                };
-                confirmationEmailList.Add(pageType);
-            }
+            var confirmationEmailList = (from p in CurrentDatabase.People
+                                         where p.EmailAddress != null
+                                         select new { p.PeopleId, p.EmailAddress }).Take(50).ToList();
             return Json(confirmationEmailList, JsonRequestBehavior.AllowGet);
         }
 

@@ -47,9 +47,16 @@
         </div>
       </div>
 
-      <div v-if="givingPageList.length > 0" class="box box-responsive" style="width:60vw;">
+      <div v-if="givingPageList.length > 0" class="box box-responsive">
         <div class="box-content">
-          <add-giving-page v-bind:showAddModal="showAddModal" @click="showAddModal = true"></add-giving-page>
+          <add-giving-page
+            v-bind:showAddModal="showAddModal"
+            :pageTypes="PageTypes"
+            :availableFunds="AvailableFunds"
+            :entryPoints="EntryPoints"
+            @click="showAddModal = true"
+            v-on:add-givingPage="AddNewGivingPageToList"
+          ></add-giving-page>
           <div class="table-responsive">
             <table class="table table-striped">
               <thead>
@@ -87,7 +94,16 @@
                   <td>{{ items.PageType }}</td>
                   <td>{{ items.DefaultFund }}</td>
                   <td>
-                    <edit-giving-page v-bind:showEditModal="showEditModal" :givingPageId="items.GivingPageId" @click="showEditModal = true"></edit-giving-page>
+                    <edit-giving-page
+                      v-bind:showEditModal="showEditModal"
+                      :givingPageId="items.GivingPageId"
+                      :pageTypes="PageTypes"
+                      :availableFunds="AvailableFunds"
+                      :entryPoints="EntryPoints"
+                      :onlineNotifyPersonList="OnlineNotifyPersonList"
+                      :confirmationEmailList="ConfirmationEmailList"
+                      @click="showEditModal = true"
+                    ></edit-giving-page>
                   </td>
                 </tr>
               </tbody>
@@ -96,7 +112,13 @@
           <div class="row visible-xs-block">
             <div class="col-sm-12">
               <div style="text-align: center;">
-                <add-giving-page v-bind:showAddModal="showAddModal" @click="showAddModal = true"></add-giving-page>
+                <!-- <add-giving-page
+                  v-bind:showAddModal="showAddModal"
+                  :pageTypes="PageTypes"
+                  :availableFunds="AvailableFunds"
+                  :entryPoints="EntryPoints"
+                  @click="showAddModal = true"
+                ></add-giving-page> -->
               </div>
             </div>
           </div>
@@ -110,34 +132,36 @@
 import axios from "axios";
 
 export default {
-  components: {
-  },
+  components: {},
   data: function() {
     return {
       givingPageList: [],
       showAddModal: false,
       showEditModal: false,
       selectedGivingPageId: null,
-      selectedGivingPage: null
+      selectedGivingPage: null,
+      PageTypes: [],
+      AvailableFunds: [],
+      EntryPoints: [],
+      OnlineNotifyPersonList: [],
+      ConfirmationEmailList: []
     };
   },
   methods: {
     fetchGivingPages() {
-      let vm = this;
       axios
         .get("/Giving/GetGivingPageList")
         .then(
           response => {
             if (response.status === 200) {
-              vm.givingPageList = response.data;
+              this.givingPageList = response.data;
             } else {
-              //warning_swal("Warning!", "Something went wrong, try again later");
+              warning_swal("Warning!", "Something went wrong, try again later");
             }
           },
           err => {
-            alert("Fatal Error! We are working to fix it");
             console.log(err);
-            //error_swal("Fatal Error!", "We are working to fix it");
+            error_swal("Fatal Error!", "We are working to fix it");
           }
         )
         .catch(function(error) {
@@ -145,7 +169,6 @@ export default {
         });
     },
     showEditModalMethod(id) {
-      let vm = this;
       axios
         .get("/Giving/GetGivingPage", {
           params: {
@@ -155,17 +178,15 @@ export default {
         .then(
           response => {
             if (response.status === 200) {
-              vm.selectedGivingPage = response.data;
+              this.selectedGivingPage = response.data;
               this.showEditModal = true;
             } else {
-              alert("Warning! Something went wrong, try again later");
-              //   warning_swal("Warning!", "Something went wrong, try again later");
+              warning_swal("Warning!", "Something went wrong, try again later");
             }
           },
           err => {
-            alert("Fatal Error! We are working to fix it");
             console.log(err);
-            // error_swal("Fatal Error!", "We are working to fix it");
+            error_swal("Fatal Error!", "We are working to fix it");
           }
         )
         .catch(function(error) {
@@ -174,13 +195,127 @@ export default {
     },
     hideEditModalMethod() {
       this.showEditModal = false;
+    },
+    getPageTypes: function() {
+      axios
+        .get("/Giving/GetPageTypes")
+        .then(
+          response => {
+            if (response.status === 200) {
+              this.PageTypes = response.data;
+            } else {
+              warning_swal("Warning!", "Something went wrong, try again later");
+            }
+          },
+          err => {
+            console.log(err);
+            error_swal("Fatal Error!", "We are working to fix it");
+          }
+        )
+        .catch(function(error) {
+          console.log(error);
+        });
+    },
+    getAvailableFunds: function() {
+      axios
+        .get("/Giving/GetAvailableFunds")
+        .then(
+          response => {
+            if (response.status === 200) {
+              this.AvailableFunds = response.data;
+            } else {
+              warning_swal("Warning!", "Something went wrong, try again later");
+            }
+          },
+          err => {
+            console.log(err);
+            error_swal("Fatal Error!", "We are working to fix it");
+          }
+        )
+        .catch(function(error) {
+          console.log(error);
+        });
+    },
+    getEntryPoints: function() {
+      axios
+        .get("/Giving/GetEntryPoints")
+        .then(
+          response => {
+            if (response.status === 200) {
+              this.EntryPoints = response.data;
+            } else {
+              warning_swal("Warning!", "Something went wrong, try again later");
+            }
+          },
+          err => {
+            console.log(err);
+            error_swal("Fatal Error!", "We are working to fix it");
+          }
+        )
+        .catch(function(error) {
+          console.log(error);
+        });
+    },
+    getOnlineNotifyPersonList: function() {
+      axios
+        .get("/Giving/GetOnlineNotifyPersonList")
+        .then(
+          response => {
+            if (response.status === 200) {
+              this.OnlineNotifyPersonList = response.data;
+            } else {
+              warning_swal("Warning!", "Something went wrong, try again later");
+            }
+          },
+          err => {
+            console.log(err);
+            error_swal("Fatal Error!", "We are working to fix it");
+          }
+        )
+        .catch(function(error) {
+          console.log(error);
+        });
+    },
+    getConfirmationEmailList: function() {
+      axios
+        .get("/Giving/GetConfirmationEmailList")
+        .then(
+          response => {
+            if (response.status === 200) {
+              this.ConfirmationEmailList = response.data;
+            } else {
+              warning_swal("Warning!", "Something went wrong, try again later");
+            }
+          },
+          err => {
+            console.log(err);
+            error_swal("Fatal Error!", "We are working to fix it");
+          }
+        )
+        .catch(function(error) {
+          console.log(error);
+        });
+    },
+    AddNewGivingPageToList(newGivingPage) {
+      this.givingPageList = [...this.givingPageList, newGivingPage[0]];
     }
   },
   mounted() {
     this.fetchGivingPages();
+    this.getPageTypes();
+    this.getAvailableFunds();
+    this.getEntryPoints();
+    this.getOnlineNotifyPersonList();
+    this.getConfirmationEmailList();
   }
 };
 </script>
 
 <style scoped>
+/* Extra large devices (large laptops and desktops, 1200px and up) */
+@media only screen and (min-width: 1200px) {
+  .box {
+    width: 60vw;
+  }
+}
 </style>

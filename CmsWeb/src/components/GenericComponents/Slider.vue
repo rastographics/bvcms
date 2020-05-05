@@ -1,6 +1,6 @@
 <template>
   <label class="switch">
-    <input type="checkbox" v-model="mySliderValue" />
+    <input type="checkbox" @click="toggleMySlider()" />
     <span class="slider round"></span>
   </label>
 </template>
@@ -13,7 +13,11 @@ export default {
       mySliderValue: this.sliderValue
     };
   },
-  methods: {}
+  methods: {
+    toggleMySlider() {
+      this.$emit('toggleSlider', this.mySliderValue);
+    }
+  }
 };
 </script>
 
