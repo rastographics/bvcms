@@ -9,7 +9,8 @@ namespace CmsData
     {
         public static IHandlebars RegisterHelpers(CMSDataContext db, PythonModel pm = null, IHandlebars handlebars = null)
         {
-            handlebars = handlebars ?? Handlebars.Create();
+            var configuration = new HandlebarsConfiguration { TextEncoder = new UnicodeHtmlEncoder() };
+            handlebars = handlebars ?? Handlebars.Create(configuration);
             handlebars.RegisterHelper("BottomBorder", (writer, context, args) => { writer.Write(CssStyle.BottomBorder); });
             handlebars.RegisterHelper("AlignTop", (writer, context, args) => { writer.Write(CssStyle.AlignTop); });
             handlebars.RegisterHelper("AlignRight", (writer, context, args) => { writer.Write(CssStyle.AlignRight); });
@@ -133,6 +134,33 @@ namespace CmsData
                 if(decimal.TryParse(s, out decimal d))
                     writer.Write(d.ToString("C"));
             });
+            handlebars.RegisterHelper("FmtNumber", (writer, context, args) =>
+            {
+                var s = args[0]?.ToString();
+                if(decimal.TryParse(s, out decimal num))
+                {
+                    if (num >= 100000000)
+                    {
+                        writer.Write((num / 1000000).ToString("#,1M"));
+                    }
+                    else if (num >= 1000000)
+                    {
+                        writer.Write(Math.Round(num / 1000000, 1).ToString("0.#") + "M");
+                    }
+                    else if (num >= 100000)
+                    {
+                        writer.Write(Math.Round(num / 1000, 0).ToString("0.#") + "K");
+                    }
+                    else if (num >= 1000)
+                    {
+                        writer.Write(Math.Round(num / 1000, 1).ToString("0.#") + "K");
+                    }
+                    else
+                    {
+                        writer.Write(Math.Round(num,1).ToString());
+                    }
+                }
+            });
 
             // Format helper in form of:  {{Fmt value "fmt"}}
             // ex. {{Fmt Total "C"}}
@@ -177,7 +205,7 @@ namespace CmsData
             {
                 throw new Exception("ThrowError called in Handlebars Helper");
             });
-
+            
             return handlebars;
         }
 
@@ -256,6 +284,16 @@ namespace CmsData
         public string RenderTemplate(string source, object data)
         {
             return db.RenderTemplate(source, data);
+        }
+    }
+
+    internal class UnicodeHtmlEncoder : ITextEncoder
+    {
+        public string Encode(string text)
+        {
+            if (string.IsNullOrEmpty(text))
+                return string.Empty;
+            return HttpUtility.HtmlEncode(text);
         }
     }
 }

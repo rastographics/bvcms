@@ -120,6 +120,27 @@ namespace CmsDataTests
             result.Length.ShouldBeGreaterThan(0);
         }
 
+        [Theory]
+        [InlineData(0, "0")]
+        [InlineData(1.889, "1.9")]
+        [InlineData(142, "142")]
+        [InlineData(1400.99, "1.4K")]
+        [InlineData(9999, "10K")]
+        [InlineData(10000.00001, "10K")]
+        [InlineData(13872, "13.9K")]
+        [InlineData(121555, "122K")]
+        [InlineData(2000000, "2M")]
+        [InlineData(4511111, "4.5M")]
+        public void Handlebars_FmtNumber_Tests(decimal number, string expected)
+        {
+            // FmtNumber is used to shorten a number from 0 to a billion to a few characters for display.
+            var model = new PythonModel(db);
+            string template = "{{FmtNumber number}}";
+
+            var result = model.RenderTemplate(template, new { number });
+            result.ShouldBe(expected);
+        }
+
         public override void Dispose()
         {
             base.Dispose();

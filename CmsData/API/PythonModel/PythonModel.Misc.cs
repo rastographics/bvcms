@@ -10,6 +10,7 @@ using RestSharp.Authenticators;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.Linq.SqlClient;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -414,6 +415,76 @@ namespace CmsData
             return s.Md5Hash();
         }
 
+        public List<BirthdayInfo> BirthdayList() {
+
+            if (db.UserPeopleId == null)
+            {
+                return new List<BirthdayInfo>();
+            }
+
+            var qB = db.Queries.FirstOrDefault(cc => cc.Name == "TrackBirthdays" && cc.Owner == Util.UserName);
+            var tagq = db.FetchTag("FromTrackBirthdaysQuery", db.UserPeopleId, DbUtil.TagTypeId_System);
+            if (qB != null)
+            {
+                if (tagq?.Created == null || tagq.Created < DateTime.Today)
+                {
+                    db.PopulateSpecialTag(db.PeopleQuery(qB.QueryId), "FromTrackBirthdaysQuery", DbUtil.TagTypeId_System);
+                }
+
+                tagq = db.FetchTag("FromTrackBirthdaysQuery", db.UserPeopleId, DbUtil.TagTypeId_System);
+                if (tagq != null)
+                {
+                    var q0 = from p in tagq.People(db)
+                             let bd = p.BirthDay
+                             let bm = p.BirthMonth
+                             where bd != null && bm != null
+                             let bd2 = bd == 29 && bm == 2 ? bd - 1 : bd
+                             let bdate = new DateTime(DateTime.Now.Year, bm.Value, bd2.Value)
+                             let nextbd = bdate < DateTime.Today ? bdate.AddYears(1) : bdate
+                             orderby nextbd
+                             select new BirthdayInfo
+                             {
+                                 Birthday = nextbd.ToString("m", new System.Globalization.CultureInfo("en-US")),
+                                 Name = p.Name,
+                                 PeopleId = p.PeopleId
+                             };
+                    return q0.Take(100).ToList();
+                }
+            }
+            tagq?.DeleteTag(db);
+            var tag = db.FetchOrCreateTag("TrackBirthdays", db.UserPeopleId, DbUtil.TagTypeId_Personal);
+            var q = qB != null
+                ? db.PeopleQuery(qB.QueryId)
+                : tag.People(db);
+
+
+            if (!q.Any())
+            {
+                q = from p in db.People
+                    let up = db.People.Single(pp => pp.PeopleId == db.UserPeopleId)
+                    where p.OrganizationMembers.Any(om => om.OrganizationId == up.BibleFellowshipClassId)
+                    select p;
+            }
+
+            var q2 = from p in q
+                     let bd = p.BirthDay
+                     let bm = p.BirthMonth
+                     where bd != null && bm != null
+                     let bd2 = bd == 29 && bm == 2 ? bd - 1 : bd
+                     let bdate = new DateTime(DateTime.Now.Year, bm.Value, bd2.Value)
+                     let nextbd = bdate < DateTime.Today ? bdate.AddYears(1) : bdate
+                     where SqlMethods.DateDiffDay(Util.Now, nextbd) <= 15
+                     where p.DeceasedDate == null
+                     orderby nextbd
+                     select new BirthdayInfo
+                     {
+                         Birthday = nextbd.ToString("m", new System.Globalization.CultureInfo("en-US")),
+                         Name = p.Name,
+                         PeopleId = p.PeopleId
+                     };
+            return q2.ToList();
+        }
+
         public string ReplaceCodeStr(string text, string codes)
         {
             codes = Regex.Replace(codes, @"//\w*", ","); // replace comments
@@ -701,5 +772,12 @@ DELETE dbo.Tag WHERE TypeId = 101 AND Name LIKE @namelike
         }
 
         public bool IsDebug => Util.IsDebug();
+    }
+
+    public class BirthdayInfo
+    {
+        public string Birthday { get; set; }
+        public string Name { get; set; }
+        public int PeopleId { get; set; }
     }
 }

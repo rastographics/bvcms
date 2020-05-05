@@ -3,6 +3,7 @@ using System.Diagnostics.Eventing.Reader;
 using System.Linq;
 using System.Linq.Expressions;
 using CmsData.Codes;
+using Dapper;
 using UtilityExtensions;
 
 namespace CmsData
@@ -162,6 +163,45 @@ namespace CmsData
                 p.Attends.Any(aa => aa.SeqNo == n && aa.MeetingDate > dt);
             Expression expr = Expression.Invoke(pred, parm);
 
+            if (op == CompareType.Equal ^ tf)
+                expr = Expression.Not(expr);
+            return expr;
+        }
+        internal Expression RecentVisitNumberOrgs()
+        {
+            var tf = CodeIds == "1";
+
+            int visitnum = Quarters.ToInt2() ?? 1;
+            var mindate = Util.Now.AddDays(-Days);
+            var minpersoncreatedt = db.Setting("DbConvertedDate", "1/1/1900").ToDate();
+
+            var orgids = OrganizationInt > 0
+                ? OrganizationInt.ToString()
+                : db.Connection.Query<int>(
+                    "SELECT OrganizationId FROM dbo.OrgSearch(NULL, @ProgId, @DivId, @TypeId, NULL, NULL, NULL, NULL, NULL, NULL)",
+                    new {ProgId = ProgramInt, DivId = DivisionInt, TypeId = OrgTypeInt}).JoinInts(",");
+
+            var sql = @"
+;WITH attendnumbers AS (
+	SELECT a.PeopleId, MeetingDate,
+		ROW_NUMBER() OVER (PARTITION BY a.PeopleId ORDER BY MeetingDate) AS SeqNo
+	FROM dbo.Attend a
+	JOIN dbo.People p ON p.PeopleId = a.PeopleId
+	WHERE AttendanceFlag = 1
+	AND p.CreatedDate > @minpersoncreatedt
+	AND a.OrganizationId IN (SELECT value FROM dbo.SplitInts(@orgids))
+)
+SELECT
+	PeopleId 
+FROM attendnumbers
+WHERE SeqNo = @visitnum
+AND MeetingDate > @mindate
+";
+            var peopleids = db.Connection.Query<int>(sql, new {minpersoncreatedt, orgids, mindate, visitnum});
+            var tag = db.PopulateTempTag(peopleids);
+
+            Expression<Func<Person, bool>> pred = p => p.Tags.Any(t => t.Id == tag.Id);
+            Expression expr = Expression.Invoke(pred, parm);
             if (op == CompareType.Equal ^ tf)
                 expr = Expression.Not(expr);
             return expr;

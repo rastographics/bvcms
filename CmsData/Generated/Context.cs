@@ -982,6 +982,10 @@ namespace CmsData
 
         public Table<CustomColumn> CustomColumns => GetTable<CustomColumn>();
 
+        public Table<DashboardWidget> DashboardWidgets => GetTable<DashboardWidget>();
+
+        public Table<DashboardWidgetRole> DashboardWidgetRoles => GetTable<DashboardWidgetRole>();
+
         public Table<DecisionType> DecisionTypes => GetTable<DecisionType>();
 
         public Table<DeleteMeetingRun> DeleteMeetingRuns => GetTable<DeleteMeetingRun>();
@@ -2254,14 +2258,14 @@ namespace CmsData
         public IQueryable<View.FirstTimeGiver> FirstTimeGivers(
             [Parameter(DbType = "int")] int? days,
             [Parameter(DbType = "int")] int? fundid,
-            [Parameter(DbType = "bit")] bool? TaxNonTax
+            [Parameter(DbType = "bit")] bool? nontaxded
             )
         {
             return CreateMethodCallQuery<View.FirstTimeGiver>(this,
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 days,
                 fundid,
-                TaxNonTax
+                nontaxded
                 );
         }
 

@@ -49,7 +49,7 @@ namespace CmsWeb.Areas.Finance.Controllers
             CurrentDatabase.BundleHeaders.InsertOnSubmit(b);
             CurrentDatabase.SubmitChanges();
 
-            return Redirect($"/Bundle/{b.BundleHeaderId}?create=true");
+            return Redirect($"/Bundle/{b.BundleHeaderId}");
         }
     }
 }

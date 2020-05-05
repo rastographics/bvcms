@@ -88,16 +88,25 @@ namespace CMSShared.Session
         private SessionValue FetchSessionValue(string key, out bool cached)
         {
             cached = false;
+
             if (LocalCache.ContainsKey(key))
             {
-                cached = true;
-                return new SessionValue { Name = key, Value = LocalCache[key] };
+                String value = LocalCache[key].ToString();
+
+                if (!String.IsNullOrWhiteSpace(value))
+                {
+                    cached = true;
+                    return new SessionValue { Name = key, Value = value };
+                }
             }
+
             var sv = db.SessionValues.FirstOrDefault(v => v.SessionId == CurrentSessionId && v.Name == key);
+
             if (sv != null)
             {
                 LocalCache[key] = sv.Value;
             }
+
             return sv;
         }
 

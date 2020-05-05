@@ -366,6 +366,7 @@ namespace CmsData.API
                     select c;
             return q;
         }
+
         public static int? OneTimeGiftOrgId(CMSDataContext db)
         {
             var sql = @"

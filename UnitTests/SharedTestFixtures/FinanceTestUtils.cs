@@ -16,7 +16,7 @@ namespace SharedTestFixtures
             {
                 account = db.GatewayAccount.First(a => a.GatewayAccountId == paymentProcess.GatewayAccountId);
             }
-            if (account == null)
+            if (account == null || account.GatewayAccountId != (int)gatewayType)
             {
                 account = db.GatewayAccount.First(a => a.GatewayAccountId == (int)gatewayType);
                 paymentProcess.GatewayAccountId = account.GatewayAccountId;
