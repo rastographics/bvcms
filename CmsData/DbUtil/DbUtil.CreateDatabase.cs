@@ -196,7 +196,7 @@ GO
                 using (var connection = new SqlConnection(Util.GetConnectionString(host)))
                 {
                     connection.Open();
-                    string path = Path.GetFullPath(Path.Combine(HttpContextFactory.Current.Server.MapPath(@"/"), @"..\CmsData\Migrations"));
+                    string path = Path.GetFullPath(Path.Combine(HttpContextFactory.Current?.Server?.MapPath(@"/") ?? ".", @"..\CmsData\Migrations"));
                     RunMigrations(connection, path);
                 }
             }

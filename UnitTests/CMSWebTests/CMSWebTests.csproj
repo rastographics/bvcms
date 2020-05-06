@@ -136,6 +136,7 @@
     <Compile Include="..\SharedTestFixtures\DatabaseCollection.cs">
       <Link>DatabaseCollection.cs</Link>
     </Compile>
+    <Compile Include="Areas\Finance\Models\BundleModelsTests.cs" />
     <Compile Include="Areas\Finance\Models\PostBundleModelTests.cs" />
     <Compile Include="Areas\Finance\Models\Statements\ContributionStatementsExtractTests.cs" />
     <Compile Include="Areas\GivingSettings\GivingPageTests.cs" />
@@ -152,6 +153,7 @@
     <Compile Include="Areas\People\Models\Person\Profile\MemberDocModelTests.cs" />
     <Compile Include="Areas\Public\Controllers\CheckInAPIControllerTests.cs" />
     <Compile Include="Areas\Public\Controllers\APIPersonControllerTests.cs" />
+    <Compile Include="Areas\Public\Controllers\CheckInAPIv2ControllerTests.cs" />
     <Compile Include="Areas\Public\Controllers\ExternalServicesControllerTests.cs" />
     <Compile Include="Areas\Public\Controllers\MobileAPIControllerTests.cs" />
     <Compile Include="Areas\Public\Controllers\MobileAPIv2ControllerTests.cs" />
