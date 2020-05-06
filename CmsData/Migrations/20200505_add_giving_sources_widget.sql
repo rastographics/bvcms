@@ -9,7 +9,7 @@ BEGIN
            ('WidgetGivingSourcesHTML','Edit Text Content',
            '<div class="box">
     <div class="box-title hidden-xs">
-        <h5><a href="#">{{WidgetName}}</a></h5>
+        <h5>{{WidgetName}}</h5>
     </div>
     <a class="visible-xs-block" id="giving-fc-collapse" data-toggle="collapse" href="#{{WidgetId}}-section" aria-expanded="true" aria-controls="{{WidgetId}}-section">
         <div class="box-title">
@@ -36,7 +36,6 @@ BEGIN
             return item[1] > 0
         });
         data = [[''Item'', ''Dollars'']].concat(data);
-        console.log(data);
         data = google.visualization.arrayToDataTable(data);
         var formatter = new google.visualization.NumberFormat({
             prefix: ''$'',
