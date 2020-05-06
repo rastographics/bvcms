@@ -203,10 +203,10 @@ namespace CmsData
             {
                 if (_FundId != value)
                 {
-                    if (_ContributionFund.HasLoadedOrAssignedValue)
-                    {
-                        throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
-                    }
+                    //if (_ContributionFund.HasLoadedOrAssignedValue)
+                    //{
+                    //    throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+                    //}
                     OnFundIdChanging(value);
                     SendPropertyChanging();
                     _FundId = value;

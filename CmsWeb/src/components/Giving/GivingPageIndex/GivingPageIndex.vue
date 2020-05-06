@@ -51,7 +51,7 @@
         <div class="box-content">
           <add-giving-page
             v-bind:showAddModal="showAddModal"
-            :pageTypes="PageTypes"
+            :pageTypes="PageTypeList"
             :availableFunds="AvailableFunds"
             :entryPoints="EntryPoints"
             @click="showAddModal = true"
@@ -84,25 +84,41 @@
               <tbody>
                 <tr v-for="items in givingPageList" :key="items.GivingPageId">
                   <td>
-                    <giving-page-index-slider
+                    <generic-slider
                       v-bind:sliderValue="items.Enabled"
-                      :givingPageId="items.GivingPageId"
-                    ></giving-page-index-slider>
+                      v-on:toggleSlider="[toggleIndexSlider(items.GivingPageId, items.Enabled), items.Enabled = !items.Enabled]"
+                    ></generic-slider>
                   </td>
                   <td>{{ items.PageName }}</td>
-                  <td>{{ items.Skin }}</td>
-                  <td>{{ items.PageType }}</td>
-                  <td>{{ items.DefaultFund }}</td>
+                  <td>{{ items.SkinFile }}</td>
+                  <td>{{ items.PageType.pageTypeName }}</td>
+                  <td>{{ items.DefaultFund.FundName }}</td>
                   <td>
                     <edit-giving-page
                       v-bind:showEditModal="showEditModal"
-                      :givingPageId="items.GivingPageId"
-                      :pageTypes="PageTypes"
-                      :availableFunds="AvailableFunds"
-                      :entryPoints="EntryPoints"
+                      :pageId="items.GivingPageId"
+                      :pageName="items.PageName"
+                      :pageTitle="items.PageTitle"
+                      :pageEnabled="items.Enabled"
+                      :pageSkin="items.SkinFile"
+                      :pageType="items.PageType"
+                      :defaultFund="items.DefaultFund"
+                      :availableFunds="items.AvailableFunds"
+                      :pageDisabledRedirect="items.DisabledRedirect"
+                      :pageEntryPoint="items.EntryPoint"
+                      :topText="items.TopText"
+                      :thankYouText="items.ThankYouText"
+                      :onlineNotifyPerson="items.OnlineNotifyPerson"
+                      :confirmEmailPledge="items.ConfirmEmailPledge"
+                      :confirmEmailOneTime="items.ConfirmEmailOneTime"
+                      :confirmEmailRecurring="items.ConfirmEmailRecurring"
+                      :pageTypeList="PageTypeList"
+                      :fundsList="AvailableFunds"
+                      :entryPointList="EntryPoints"
                       :onlineNotifyPersonList="OnlineNotifyPersonList"
                       :confirmationEmailList="ConfirmationEmailList"
                       @click="showEditModal = true"
+                      v-on:updatePage="[updateCurrentPage(), items.Enabled = !items.Enabled]"
                     ></edit-giving-page>
                   </td>
                 </tr>
@@ -114,10 +130,11 @@
               <div style="text-align: center;">
                 <!-- <add-giving-page
                   v-bind:showAddModal="showAddModal"
-                  :pageTypes="PageTypes"
+                  :pageTypes="PageTypeList"
                   :availableFunds="AvailableFunds"
                   :entryPoints="EntryPoints"
                   @click="showAddModal = true"
+                  v-on:add-givingPage="AddNewGivingPageToList"
                 ></add-giving-page> -->
               </div>
             </div>
@@ -132,19 +149,17 @@
 import axios from "axios";
 
 export default {
-  components: {},
   data: function() {
     return {
       givingPageList: [],
       showAddModal: false,
       showEditModal: false,
-      selectedGivingPageId: null,
-      selectedGivingPage: null,
-      PageTypes: [],
+      PageTypeList: [],
       AvailableFunds: [],
       EntryPoints: [],
       OnlineNotifyPersonList: [],
-      ConfirmationEmailList: []
+      ConfirmationEmailList: [],
+      tester: ""
     };
   },
   methods: {
@@ -169,29 +184,7 @@ export default {
         });
     },
     showEditModalMethod(id) {
-      axios
-        .get("/Giving/GetGivingPage", {
-          params: {
-            pageId: id
-          }
-        })
-        .then(
-          response => {
-            if (response.status === 200) {
-              this.selectedGivingPage = response.data;
-              this.showEditModal = true;
-            } else {
-              warning_swal("Warning!", "Something went wrong, try again later");
-            }
-          },
-          err => {
-            console.log(err);
-            error_swal("Fatal Error!", "We are working to fix it");
-          }
-        )
-        .catch(function(error) {
-          console.log(error);
-        });
+      this.showEditModal = true;
     },
     hideEditModalMethod() {
       this.showEditModal = false;
@@ -202,7 +195,7 @@ export default {
         .then(
           response => {
             if (response.status === 200) {
-              this.PageTypes = response.data;
+              this.PageTypeList = response.data;
             } else {
               warning_swal("Warning!", "Something went wrong, try again later");
             }
@@ -298,6 +291,18 @@ export default {
     },
     AddNewGivingPageToList(newGivingPage) {
       this.givingPageList = [...this.givingPageList, newGivingPage[0]];
+    },
+    toggleIndexSlider(id, value) {
+      axios
+        .post("/Giving/SaveGivingPageEnabled", {
+          currentValue: !value,
+          currentGivingPageId: id
+        })
+        .then()
+        .catch(err => console.log(err));
+    },
+    updateCurrentPage() {
+      //alert("success");
     }
   },
   mounted() {
@@ -310,6 +315,8 @@ export default {
   }
 };
 </script>
+
+<style src="vue-multiselect/dist/vue-multiselect.min.css"></style>
 
 <style scoped>
 /* Extra large devices (large laptops and desktops, 1200px and up) */

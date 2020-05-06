@@ -2891,12 +2891,8 @@
     <Content Include="src\components\GenericComponents\Slider.vue" />
     <Content Include="src\components\Giving\GivingPageIndex\AddGivingPage.vue" />
     <Content Include="src\components\Giving\GivingPageIndex\GivingPageIndex.vue" />
-    <Content Include="src\components\Giving\GivingPageIndex\GivingPageIndexSlider.vue" />
     <Content Include="src\components\Giving\GivingPageEdit\GivingPageEdit.vue" />
-    <Content Include="src\components\Giving\GivingPageEdit\GivingPageEditSlider.vue" />
-    <Content Include="src\components\GenericComponents\MultiSelect.vue" />
     <Content Include="src\components\GenericComponents\ShowModalBtn.vue" />
-    <Content Include="src\components\Giving\AvailableFundsMultiDropdown.vue" />
     <Content Include="src\components\UsersGrid\UserCard.vue" />
     <Content Include="src\components\UsersGrid\UserCardGrid.vue" />
     <None Include="Web.staging.config">

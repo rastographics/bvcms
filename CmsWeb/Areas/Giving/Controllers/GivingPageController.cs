@@ -32,9 +32,10 @@ namespace CmsWeb.Areas.Giving.Controllers
         {
             var model = new GivingPageModel(CurrentDatabase);
 
-            var givingPageHash = model.GetGivingPageHashSet();
+            //var givingPageHash = model.GetGivingPageHashSet();
+            var givingPageList = model.GetGivingPageList();
 
-            return Json(givingPageHash, JsonRequestBehavior.AllowGet);
+            return Json(givingPageList, JsonRequestBehavior.AllowGet);
         }
 
         public ActionResult CreateNewGivingPage(string pageName, string pageTitle, bool enabled, string skin, int pageType, int defaultFund, FundsClass[] availFundsArray, string disRedirect, int entryPoint)
@@ -58,45 +59,61 @@ namespace CmsWeb.Areas.Giving.Controllers
                 GivingPageId = newGivingPage.GivingPageId,
                 PageName = newGivingPage.PageName,
                 Enabled = newGivingPage.Enabled,
-                Skin = newGivingPage.SkinFile,
-                PageType = newGivingPage.PageType.ToString(),
-                DefaultFund = newGivingPage.ContributionFund.FundName
+                SkinFile = newGivingPage.SkinFile,
+                //PageType = pageType,
+                //DefaultFundId = newGivingPage.ContributionFund.FundName
             };
+            var tempDefaultFund = (from d in CurrentDatabase.ContributionFunds where d.FundId == defaultFund select d).FirstOrDefault();
+            givingPageItem.DefaultFund = new FundsClass()
+            {
+                FundId = tempDefaultFund.FundId,
+                FundName = tempDefaultFund.FundName
+            };
+            var newPageType = new PageTypesClass();
+            switch (pageType)
+            {
+                case 1:
+                    newPageType.id = 1;
+                    newPageType.pageTypeName = "Pledge";
+                    break;
+                case 2:
+                    newPageType.id = 2;
+                    newPageType.pageTypeName = "One Time";
+                    break;
+                case 3:
+                    newPageType.id = 3;
+                    newPageType.pageTypeName = "Recurring";
+                    break;
+                default:
+                    break;
+            }
+            givingPageItem.PageType = newPageType;
             newGivingPageList.Add(givingPageItem);
             return Json(newGivingPageList, JsonRequestBehavior.AllowGet);
         }
 
-        [HttpGet]
-        public ActionResult Edit(int id)
-        {
-            ViewBag.CurrentGivingPageId = id;
-            return View();
-        }
-
-        [HttpGet]
-        public JsonResult GetGivingPage(int pageId) // id = GivingPageId
+        public void UpdateGivingPage(int pageId, string pageName, string pageTitle, PageTypesClass pageType, FundsClass defaultFund, bool enabled, FundsClass[] availFundsArray = null,
+            string disRedirect = null, string skinFile = null, string topText = null, string thankYouText = null, string onlineNotifyPerson = null,
+            string confirmEmailPledge = null, string confirmEmailOneTime = null, string confirmEmailRecurring = null, int? entryPoint = null)
         {
             var givingPage = CurrentDatabase.GivingPages.Where(g => g.GivingPageId == pageId).FirstOrDefault();
-            var output = new GivingPage
-            {
-                GivingPageId = givingPage.GivingPageId,
-                PageName = givingPage.PageName,
-                PageTitle = givingPage.PageTitle,
-                PageType = givingPage.PageType,
-                FundId = givingPage.FundId,
-                Enabled = givingPage.Enabled,
-                DisabledRedirect = givingPage.DisabledRedirect,
-                SkinFile = givingPage.SkinFile,
-                TopText = givingPage.TopText,
-                ThankYouText = givingPage.ThankYouText,
-                ConfirmationEmailPledge = givingPage.ConfirmationEmailPledge,
-                ConfirmationEmailOneTime = givingPage.ConfirmationEmailOneTime,
-                ConfirmationEmailRecurring = givingPage.ConfirmationEmailRecurring,
-                CampusId = givingPage.CampusId,
-                EntryPointId = givingPage.EntryPointId
-            };
+            givingPage.PageName = pageName;
+            givingPage.PageTitle = pageTitle;
+            givingPage.PageType = pageType.id;
+            givingPage.FundId = defaultFund.FundId;
+            givingPage.Enabled = enabled;
+            givingPage.DisabledRedirect = disRedirect;
+            givingPage.SkinFile = skinFile;
+            givingPage.TopText = topText;
+            givingPage.ThankYouText = thankYouText;
+            givingPage.ConfirmationEmailPledge = confirmEmailPledge;
+            givingPage.ConfirmationEmailOneTime = confirmEmailOneTime;
+            givingPage.ConfirmationEmailRecurring = confirmEmailRecurring;
+            givingPage.CampusId = givingPage.CampusId;
+            givingPage.EntryPointId = entryPoint;
 
-            return Json(output, JsonRequestBehavior.AllowGet);
+            UpdateModel(givingPage);
+            CurrentDatabase.SubmitChanges();
         }
 
         [HttpGet]
@@ -128,34 +145,28 @@ namespace CmsWeb.Areas.Giving.Controllers
         [HttpGet]
         public JsonResult GetAvailableFunds()
         {
-            var availableFundsList = (from f in CurrentDatabase.ContributionFunds
-                                 where f.FundStatusId == 1
-                                 select new { f.FundId, f.FundName }).ToList();
+            var availableFundsList = (from f in CurrentDatabase.ContributionFunds where f.FundStatusId == 1 select new { f.FundId, f.FundName }).ToList();
             return Json(availableFundsList, JsonRequestBehavior.AllowGet);
         }
 
         [HttpGet]
         public JsonResult GetEntryPoints()
         {
-            var entryPointsList = (from ep in CurrentDatabase.EntryPoints
-                                   select new { ep.Id, ep.Description }).ToList();
+            var entryPointsList = (from ep in CurrentDatabase.EntryPoints select new { ep.Id, ep.Description }).ToList();
             return Json(entryPointsList, JsonRequestBehavior.AllowGet);
         }
 
         [HttpGet]
         public JsonResult GetOnlineNotifyPersonList()
         {
-            var onlineNotifyPersonList = (from p in CurrentDatabase.People
-                                          select new { p.PeopleId, p.Name }).Take(50).ToList();
+            var onlineNotifyPersonList = (from p in CurrentDatabase.People select new { p.PeopleId, p.Name }).Take(50).ToList();
             return Json(onlineNotifyPersonList, JsonRequestBehavior.AllowGet);
         }
 
         [HttpGet]
         public JsonResult GetConfirmationEmailList()
         {
-            var confirmationEmailList = (from p in CurrentDatabase.People
-                                         where p.EmailAddress != null
-                                         select new { p.PeopleId, p.EmailAddress }).Take(50).ToList();
+            var confirmationEmailList = (from p in CurrentDatabase.People where p.EmailAddress.Length > 0 select new { p.PeopleId, p.EmailAddress }).Take(50).ToList();
             return Json(confirmationEmailList, JsonRequestBehavior.AllowGet);
         }
 

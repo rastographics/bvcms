@@ -21,28 +21,23 @@
                 <div class="col-lg-5 col-md-5 col-sm-5">
                   <div class="form-group">
                     <label class="control-label">Page Name</label>
-                    <input type="text" v-model="currentGivingPage.PageName" class="form-control" />
+                    <input type="text" v-model="currentPageName" class="form-control" />
                   </div>
                 </div>
                 <div class="col-lg-5 col-md-5 col-sm-5">
                   <div class="form-group">
                     <label class="control-label">Page Title</label>
-                    <input
-                      type="text"
-                      id="givingPageTitle"
-                      v-model="currentGivingPage.PageTitle"
-                      class="form-control"
-                    />
+                    <input type="text" v-model="currentPageTitle" class="form-control" />
                   </div>
                 </div>
                 <div class="col-lg-2 col-md-2 col-sm-2">
                   <div class="form-group">
                     <label class="control-label">Enabled</label>
-                    <edit-giving-page-slider
-                      v-model="currentGivingPage.Enabled"
-                      v-bind:sliderValue="currentGivingPage.Enabled"
-                      @changeValue="changeCurrentGivingPageEnabled"
-                    ></edit-giving-page-slider>
+                    <generic-slider
+                      v-model="currentPageEnabled"
+                      v-bind:sliderValue="currentPageEnabled"
+                      v-on:toggleSlider="currentPageEnabled = !currentPageEnabled"
+                    ></generic-slider>
                   </div>
                 </div>
               </div>
@@ -50,25 +45,20 @@
                 <div class="col-lg-5 col-md-5 col-sm-5">
                   <div class="form-group">
                     <label class="control-label">Skin</label>
-                    <input
-                      type="text"
-                      id="givingSkin"
-                      v-model="currentGivingPage.SkinFile"
-                      class="form-control"
-                    />
+                    <input type="text" v-model="currentPageSkin" class="form-control" />
                   </div>
                 </div>
                 <div class="col-lg-5 col-md-5 col-sm-5">
                   <div class="form-group">
                     <label class="control-label">Page Type</label>
                     <MultiSelect
-                      v-model="currentGivingPage.PageType"
-                      :options="pageTypes"
+                      v-model="currentPageType"
+                      :options="pageTypeList"
                       :searchable="true"
                       :close-on-select="true"
                       :show-labels="false"
                       trackBy="id"
-                      :custom-label="customLabel"
+                      :custom-label="PageTypeCustomLabel"
                     ></MultiSelect>
                   </div>
                 </div>
@@ -79,8 +69,8 @@
                   <div class="form-group">
                     <label class="control-label">Default Fund</label>
                     <MultiSelect
-                      v-model="currentGivingPage.FundId"
-                      :options="availableFunds"
+                      v-model="currentDefaultFund"
+                      :options="fundsList"
                       :searchable="true"
                       :close-on-select="true"
                       :show-labels="false"
@@ -93,8 +83,8 @@
                   <div class="form-group">
                     <label class="control-label">Available Funds</label>
                     <MultiSelect
-                      v-model="FundIdArray"
-                      :options="availableFunds"
+                      v-model="currentAvailableFunds"
+                      :options="fundsList"
                       :searchable="true"
                       :close-on-select="true"
                       :show-labels="false"
@@ -110,12 +100,7 @@
                 <div class="col-lg-9 col-md-9 col-sm-9">
                   <div class="form-group">
                     <label class="control-label">Disabled Redirect</label>
-                    <input
-                      type="text"
-                      id="givingDisabledRedirect"
-                      v-model="currentGivingPage.DisabledRedirect"
-                      class="form-control"
-                    />
+                    <input type="text" v-model="currentPageDisabledRedirect" class="form-control" />
                   </div>
                 </div>
                 <div class="col-lg-3 col-md-3 col-sm-3"></div>
@@ -125,8 +110,8 @@
                   <div class="form-group">
                     <label class="control-label">Entry Point</label>
                     <MultiSelect
-                      v-model="currentGivingPage.EntryPointId"
-                      :options="entryPoints"
+                      v-model="currentPageEntryPoint"
+                      :options="entryPointList"
                       :searchable="true"
                       :close-on-select="true"
                       :show-labels="false"
@@ -154,12 +139,7 @@
                 <div class="col-lg-12 col-md-12 col-sm-12">
                   <div class="form-group">
                     <label class="control-label">Top Text</label>
-                    <input
-                      type="text"
-                      id="givingTopText"
-                      v-model="currentGivingPage.TopText"
-                      class="form-control"
-                    />
+                    <input type="text" v-model="currentTopText" class="form-control" />
                   </div>
                 </div>
               </div>
@@ -167,12 +147,7 @@
                 <div class="col-lg-12 col-md-12 col-sm-12">
                   <div class="form-group">
                     <label class="control-label">Thank you message</label>
-                    <input
-                      type="text"
-                      id="givingThankYouText"
-                      v-model="currentGivingPage.ThankYouText"
-                      class="form-control"
-                    />
+                    <input type="text" v-model="currentThankYouText" class="form-control" />
                   </div>
                 </div>
               </div>
@@ -181,7 +156,7 @@
                   <div class="form-group">
                     <label class="control-label">Online Notify Person</label>
                     <MultiSelect
-                      v-model="NotifyPersonArray"
+                      v-model="currentOnlineNotifyPerson"
                       :options="onlineNotifyPersonList"
                       :searchable="true"
                       :close-on-select="true"
@@ -198,7 +173,7 @@
                   <div class="form-group">
                     <label class="control-label">Confirmation Email - pledge</label>
                     <MultiSelect
-                      v-model="currentGivingPage.ConfirmationEmailPledge"
+                      v-model="currentConfirmEmailPledge"
                       :options="confirmationEmailList"
                       :searchable="true"
                       :close-on-select="true"
@@ -214,7 +189,7 @@
                   <div class="form-group">
                     <label class="control-label">Confirmation Email - One time</label>
                     <MultiSelect
-                      v-model="currentGivingPage.ConfirmationEmailOneTime"
+                      v-model="currentConfirmEmailOneTime"
                       :options="confirmationEmailList"
                       :searchable="true"
                       :close-on-select="true"
@@ -230,7 +205,7 @@
                   <div class="form-group">
                     <label class="control-label">Confirmation Email - recurring</label>
                     <MultiSelect
-                      v-model="currentGivingPage.ConfirmationEmailRecurring"
+                      v-model="currentConfirmEmailRecurring"
                       :options="confirmationEmailList"
                       :searchable="true"
                       :close-on-select="true"
@@ -255,10 +230,26 @@ import MultiSelect from "vue-multiselect";
 export default {
   props: {
     showEditModal: Boolean,
-    givingPageId: Number,
-    pageTypes: Array,
+    pageId: Number,
+    pageName: String,
+    pageTitle: String,
+    pageEnabled: Boolean,
+    pageSkin: String,
+    pageType: Object,
+    defaultFund: Object,
     availableFunds: Array,
-    entryPoints: Array,
+    pageDisabledRedirect: String,
+    pageEntryPoint: String,
+    topText: String,
+    thankYouText: String,
+    onlineNotifyPerson: String,
+    confirmEmailPledge: String,
+    confirmEmailOneTime: String,
+    confirmEmailRecurring: String,
+
+    pageTypeList: Array,
+    fundsList: Array,
+    entryPointList: Array,
     onlineNotifyPersonList: Array,
     confirmationEmailList: Array
   },
@@ -268,43 +259,28 @@ export default {
   data: function() {
     return {
       showMyModal: this.showEditModal,
-      currentGivingPageId: this.givingPageId,
-      currentGivingPage: null,
-      // PageTypes: this.pageTypes,
-      // AvailableFunds: this.availableFunds,
-      // EntryPoints: this.entryPoints,
-      // OnlineNotifyPersonList: this.onlineNotifyPersonList,
-      // ConfirmationEmailList: this.confirmationEmailList,
-      FundIdArray: [],
-      NotifyPersonArray: []
+      currentPageId: this.pageId,
+      currentPageName: this.pageName,
+      currentPageTitle: this.pageTitle,
+      currentPageEnabled: this.pageEnabled,
+      currentPageSkin: this.pageSkin,
+      currentPageType: this.pageType,
+      currentDefaultFund: this.defaultFund,
+      currentAvailableFunds: this.availableFunds,
+      currentPageDisabledRedirect: this.pageDisabledRedirect,
+      currentPageEntryPoint: this.pageEntryPoint,
+      currentTopText: this.topText,
+      currentThankYouText: this.thankYouText,
+      currentOnlineNotifyPerson: this.onlineNotifyPerson,
+      currentConfirmEmailPledge: this.confirmEmailPledge,
+      currentConfirmEmailOneTime: this.confirmEmailOneTime,
+      currentConfirmEmailRecurring: this.confirmEmailRecurring,
+      tester: null
     };
   },
   methods: {
-    getSelectedGivingPage() {
-      axios
-        .get("/Giving/GetGivingPage", {
-          params: {
-            pageId: this.currentGivingPageId
-          }
-        })
-        .then(
-          response => {
-            if (response.status === 200) {
-              this.currentGivingPage = response.data;
-            } else {
-              alert("Warning! Something went wrong, try again later");
-              //   warning_swal("Warning!", "Something went wrong, try again later");
-            }
-          },
-          err => {
-            alert("Fatal Error! We are working to fix it");
-            console.log(err);
-            // error_swal("Fatal Error!", "We are working to fix it");
-          }
-        )
-        .catch(function(error) {
-          console.log(error);
-        });
+    PageTypeCustomLabel({ pageTypeName }) {
+      return `${pageTypeName}`;
     },
     AvailableFundsCustomLabel({ FundName }) {
       return `${FundName}`;
@@ -312,26 +288,77 @@ export default {
     EntryPointCustomLabel({ Description }) {
       return `${Description}`;
     },
-    NotifyPersonCustomLabel({Name}) {
+    NotifyPersonCustomLabel({ Name }) {
       return `${Name}`;
     },
-    ConfirmEmailCustomLabel({EmailAddress}) {
+    ConfirmEmailCustomLabel({ EmailAddress }) {
       return `${EmailAddress}`;
     },
-    customLabel({ pageTypeName }) {
-      return `${pageTypeName}`;
-    },
     saveGivingPage() {
-      //alert("save giving page button worked!");
+      axios
+        .post("/Giving/UpdateGivingPage", {
+          pageId: this.currentPageId,
+          pageName: this.currentPageName,
+          pageTitle: this.currentPageTitle,
+          pageType: this.currentPageType,
+          defaultFund: this.currentDefaultFund,
+          enabled: this.currentPageEnabled,
+          availFundsArray: this.currentAvailableFunds,
+          disRedirect: this.currentPageDisabledRedirect,
+          skinFile: this.currentPageSkin,
+          topText: this.currentTopText,
+          thankYouText: this.currentThankYouText,
+          onlineNotifyPerson: this.currentOnlineNotifyPerson,
+          confirmEmailPledge: this.currentConfirmEmailPledge,
+          confirmEmailOneTime: this.currentConfirmEmailOneTime,
+          confirmEmailRecurring: this.currentConfirmEmailRecurring,
+          entryPoint: this.currentPageEntryPoint
+        })
+        .then(
+          response => {
+            if (response.status === 200) {
+              this.tester = response.data;
+              //this.$emit('updatePage', response.data);
+              // this.$emit('updatePage', [this.currentPageId, this.currentPageName, this.currentPageTitle, this.currentPageEnabled]);
+            } else {
+              warning_swal("Warning!", "Something went wrong, try again later");
+            }
+          },
+          err => {
+            console.log(err);
+            error_swal("Fatal Error!", "We are working to fix it");
+          }
+        )
+        .catch(function(error) {
+          console.log(error);
+        });
       this.showMyModal = false;
     },
-    changeCurrentGivingPageEnabled() {
-      this.currentGivingPage.Enabled = !this.currentGivingPage.Enabled;
+    updateCurrentPage(currentPageId, currentPageName, currentPageTitle, currentPageEnabled) {
+      axios
+        .post("/Giving/UpdateGivingPage", {
+          pageId: this.currentPageId,
+          pageName: this.currentPageName,
+          pageTitle: this.currentPageTitle,
+          enabled: this.currentPageEnabled
+        })
+        .then(
+          response => {
+            if (response.status === 200) {
+              //alert("success");
+            } else {
+              warning_swal("Warning!", "Something went wrong, try again later");
+            }
+          },
+          err => {
+            console.log(err);
+            error_swal("Fatal Error!", "We are working to fix it");
+          }
+        )
+        .catch(function(error) {
+          console.log(error);
+        });
     }
-  },
-  created() {},
-  mounted() {
-    // this.getSelectedGivingPage();
   }
 };
 </script>
