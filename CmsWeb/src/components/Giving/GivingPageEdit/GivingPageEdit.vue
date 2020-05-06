@@ -32,19 +32,23 @@
                 </div>
                 <div class="col-lg-2 col-md-2 col-sm-2">
                   <div class="form-group">
-                    <label class="control-label">Enabled</label>
-                    <generic-slider
-                      v-model="currentPageEnabled"
-                      v-bind:sliderValue="currentPageEnabled"
-                      v-on:toggleSlider="currentPageEnabled = !currentPageEnabled"
-                    ></generic-slider>
+                    <div>
+                      <label class="control-label">Enabled</label>
+                    </div>
+                    <div>
+                      <generic-slider
+                        v-model="currentPageEnabled"
+                        v-bind:sliderValue="currentPageEnabled"
+                        v-on:toggleSlider="currentPageEnabled = !currentPageEnabled"
+                      ></generic-slider>
+                    </div>
                   </div>
                 </div>
               </div>
               <div class="row">
                 <div class="col-lg-5 col-md-5 col-sm-5">
                   <div class="form-group">
-                    <label class="control-label">Skin</label>
+                    <label class="control-label">Shell</label>
                     <input type="text" v-model="currentPageSkin" class="form-control" />
                   </div>
                 </div>
@@ -57,6 +61,9 @@
                       :searchable="true"
                       :close-on-select="true"
                       :show-labels="false"
+                      :multiple="true"
+                      :allowEmpty="false"
+                      :preselectFirst="true"
                       trackBy="id"
                       :custom-label="PageTypeCustomLabel"
                     ></MultiSelect>
@@ -74,6 +81,7 @@
                       :searchable="true"
                       :close-on-select="true"
                       :show-labels="false"
+                      :allowEmpty="true"
                       trackBy="FundId"
                       :custom-label="AvailableFundsCustomLabel"
                     ></MultiSelect>
@@ -178,7 +186,7 @@
                       :searchable="true"
                       :close-on-select="true"
                       :show-labels="false"
-                      trackBy="PeopleId"
+                      trackBy="Id"
                       :custom-label="ConfirmEmailCustomLabel"
                     ></MultiSelect>
                   </div>
@@ -194,7 +202,7 @@
                       :searchable="true"
                       :close-on-select="true"
                       :show-labels="false"
-                      trackBy="PeopleId"
+                      trackBy="Id"
                       :custom-label="ConfirmEmailCustomLabel"
                     ></MultiSelect>
                   </div>
@@ -210,7 +218,7 @@
                       :searchable="true"
                       :close-on-select="true"
                       :show-labels="false"
-                      trackBy="PeopleId"
+                      trackBy="Id"
                       :custom-label="ConfirmEmailCustomLabel"
                     ></MultiSelect>
                   </div>
@@ -235,17 +243,18 @@ export default {
     pageTitle: String,
     pageEnabled: Boolean,
     pageSkin: String,
-    pageType: Object,
+    pageType: Array,
     defaultFund: Object,
     availableFunds: Array,
     pageDisabledRedirect: String,
-    pageEntryPoint: String,
+    pageEntryPoint: Object,
+    capusId: Object,
     topText: String,
     thankYouText: String,
-    onlineNotifyPerson: String,
-    confirmEmailPledge: String,
-    confirmEmailOneTime: String,
-    confirmEmailRecurring: String,
+    onlineNotifyPerson: Array,
+    confirmEmailPledge: Object,
+    confirmEmailOneTime: Object,
+    confirmEmailRecurring: Object,
 
     pageTypeList: Array,
     fundsList: Array,
@@ -269,6 +278,7 @@ export default {
       currentAvailableFunds: this.availableFunds,
       currentPageDisabledRedirect: this.pageDisabledRedirect,
       currentPageEntryPoint: this.pageEntryPoint,
+      currentCampusId: this.capusId,
       currentTopText: this.topText,
       currentThankYouText: this.thankYouText,
       currentOnlineNotifyPerson: this.onlineNotifyPerson,
@@ -291,8 +301,8 @@ export default {
     NotifyPersonCustomLabel({ Name }) {
       return `${Name}`;
     },
-    ConfirmEmailCustomLabel({ EmailAddress }) {
-      return `${EmailAddress}`;
+    ConfirmEmailCustomLabel({ Title }) {
+      return `${Title}`;
     },
     saveGivingPage() {
       axios
@@ -301,8 +311,8 @@ export default {
           pageName: this.currentPageName,
           pageTitle: this.currentPageTitle,
           pageType: this.currentPageType,
-          defaultFund: this.currentDefaultFund,
           enabled: this.currentPageEnabled,
+          defaultFund: this.currentDefaultFund,
           availFundsArray: this.currentAvailableFunds,
           disRedirect: this.currentPageDisabledRedirect,
           skinFile: this.currentPageSkin,
@@ -312,6 +322,7 @@ export default {
           confirmEmailPledge: this.currentConfirmEmailPledge,
           confirmEmailOneTime: this.currentConfirmEmailOneTime,
           confirmEmailRecurring: this.currentConfirmEmailRecurring,
+          campusId: this.currentCampusId,
           entryPoint: this.currentPageEntryPoint
         })
         .then(
@@ -333,31 +344,6 @@ export default {
           console.log(error);
         });
       this.showMyModal = false;
-    },
-    updateCurrentPage(currentPageId, currentPageName, currentPageTitle, currentPageEnabled) {
-      axios
-        .post("/Giving/UpdateGivingPage", {
-          pageId: this.currentPageId,
-          pageName: this.currentPageName,
-          pageTitle: this.currentPageTitle,
-          enabled: this.currentPageEnabled
-        })
-        .then(
-          response => {
-            if (response.status === 200) {
-              //alert("success");
-            } else {
-              warning_swal("Warning!", "Something went wrong, try again later");
-            }
-          },
-          err => {
-            console.log(err);
-            error_swal("Fatal Error!", "We are working to fix it");
-          }
-        )
-        .catch(function(error) {
-          console.log(error);
-        });
     }
   }
 };
@@ -371,8 +357,8 @@ export default {
   right: 0;
   bottom: 0;
   z-index: 9998;
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  height: 100%;
 }
 
 .modal {
@@ -392,39 +378,40 @@ export default {
   background-clip: padding-box;
   outline: 0;
 }
+
 @media only screen and (max-width: 600px) {
   .modal {
-    top: 47%;
+    top: 49%;
     width: 90%;
     height: 90%;
   }
 }
 @media only screen and (min-width: 600px) {
   .modal {
-    top: 33%;
-    width: 85%;
-    height: 58%;
+    top: 49%;
+    width: 90%;
+    height: 90%;
   }
 }
 @media only screen and (min-width: 768px) {
   .modal {
-    top: 33%;
-    width: 85%;
-    height: 58%;
+    top: 49%;
+    width: 90%;
+    height: 90%;
   }
 }
 @media only screen and (min-width: 992px) {
   .modal {
-    top: 33%;
-    width: 85%;
-    height: 58%;
+    top: 41%;
+    width: 90%;
+    height: 75%;
   }
 }
 @media only screen and (min-width: 1200px) {
   .modal {
-    top: 33%;
-    width: 75%;
-    height: 58%;
+    top: 41%;
+    width: 90%;
+    height: 75%;
   }
 }
 
