@@ -68,7 +68,7 @@
                     <a v-on:click="sort('ragioneSociale')" style="cursor:pointer">Page Name</a>
                   </th>
                   <th>
-                    <a v-on:click="sort('provincia')" style="cursor:pointer">Skin</a>
+                    <a v-on:click="sort('provincia')" style="cursor:pointer">Shell</a>
                   </th>
                   <th>
                     <a v-on:click="sort('indirizzo')" style="cursor:pointer">Page Type</a>
@@ -91,8 +91,9 @@
                   </td>
                   <td>{{ items.PageName }}</td>
                   <td>{{ items.SkinFile }}</td>
-                  <td>{{ items.PageType.pageTypeName }}</td>
-                  <td>{{ items.DefaultFund.FundName }}</td>
+                  <td>{{ items.PageTypeString }}</td>
+                  <td v-if="items.DefaultFund != null">{{ items.DefaultFund.FundName }}</td>
+                  <td v-else></td>
                   <td>
                     <edit-giving-page
                       v-bind:showEditModal="showEditModal"
@@ -106,6 +107,7 @@
                       :availableFunds="items.AvailableFunds"
                       :pageDisabledRedirect="items.DisabledRedirect"
                       :pageEntryPoint="items.EntryPoint"
+                      :campusId="items.EntryPoint"
                       :topText="items.TopText"
                       :thankYouText="items.ThankYouText"
                       :onlineNotifyPerson="items.OnlineNotifyPerson"
@@ -135,7 +137,7 @@
                   :entryPoints="EntryPoints"
                   @click="showAddModal = true"
                   v-on:add-givingPage="AddNewGivingPageToList"
-                ></add-giving-page> -->
+                ></add-giving-page>-->
               </div>
             </div>
           </div>

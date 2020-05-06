@@ -25,7 +25,7 @@ namespace CmsData
 
         private int _PageType;
 
-        private int _FundId;
+        private int? _FundId;
 
         private bool _Enabled;
 
@@ -37,11 +37,13 @@ namespace CmsData
 
         private string _ThankYouText;
 
-        private string _ConfirmationEmailPledge;
+        private string _OnlineNotifyPerson;
 
-        private string _ConfirmationEmailOneTime;
+        private int? _ConfirmationEmailPledge;
 
-        private string _ConfirmationEmailRecurring;
+        private int? _ConfirmationEmailOneTime;
+
+        private int? _ConfirmationEmailRecurring;
 
         private int? _CampusId;
 
@@ -73,7 +75,7 @@ namespace CmsData
         partial void OnPageTypeChanging(int value);
         partial void OnPageTypeChanged();
 
-        partial void OnFundIdChanging(int value);
+        partial void OnFundIdChanging(int? value);
         partial void OnFundIdChanged();
 
         partial void OnEnabledChanging(bool value);
@@ -91,13 +93,16 @@ namespace CmsData
         partial void OnThankYouTextChanging(string value);
         partial void OnThankYouTextChanged();
 
-        partial void OnConfirmationEmailPledgeChanging(string value);
+        partial void OnOnlineNotifyPersonChanging(string value);
+        partial void OnOnlineNotifyPersonChanged();
+
+        partial void OnConfirmationEmailPledgeChanging(int? value);
         partial void OnConfirmationEmailPledgeChanged();
 
-        partial void OnConfirmationEmailOneTimeChanging(string value);
+        partial void OnConfirmationEmailOneTimeChanging(int? value);
         partial void OnConfirmationEmailOneTimeChanged();
 
-        partial void OnConfirmationEmailRecurringChanging(string value);
+        partial void OnConfirmationEmailRecurringChanging(int? value);
         partial void OnConfirmationEmailRecurringChanged();
 
         partial void OnCampusIdChanging(int? value);
@@ -193,9 +198,9 @@ namespace CmsData
             }
         }
 
-        [Column(Name = "FundId", UpdateCheck = UpdateCheck.Never, Storage = "_FundId", DbType = "int NOT NULL")]
+        [Column(Name = "FundId", UpdateCheck = UpdateCheck.Never, Storage = "_FundId", DbType = "int")]
         [IsForeignKey]
-        public int FundId
+        public int? FundId
         {
             get => _FundId;
 
@@ -203,10 +208,10 @@ namespace CmsData
             {
                 if (_FundId != value)
                 {
-                    //if (_ContributionFund.HasLoadedOrAssignedValue)
-                    //{
-                    //    throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
-                    //}
+                    if (_ContributionFund.HasLoadedOrAssignedValue)
+                    {
+                        throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+                    }
                     OnFundIdChanging(value);
                     SendPropertyChanging();
                     _FundId = value;
@@ -306,8 +311,26 @@ namespace CmsData
             }
         }
 
-        [Column(Name = "ConfirmationEmail_Pledge", UpdateCheck = UpdateCheck.Never, Storage = "_ConfirmationEmailPledge", DbType = "nvarchar")]
-        public string ConfirmationEmailPledge
+        [Column(Name = "OnlineNotifyPerson", UpdateCheck = UpdateCheck.Never, Storage = "_OnlineNotifyPerson", DbType = "nvarchar")]
+        public string OnlineNotifyPerson
+        {
+            get { return _OnlineNotifyPerson; }
+
+            set
+            {
+                if (_OnlineNotifyPerson != value)
+                {
+                    OnOnlineNotifyPersonChanging(value);
+                    SendPropertyChanging();
+                    _OnlineNotifyPerson = value;
+                    SendPropertyChanged("OnlineNotifyPerson");
+                    OnOnlineNotifyPersonChanged();
+                }
+            }
+        }
+
+        [Column(Name = "ConfirmationEmail_Pledge", UpdateCheck = UpdateCheck.Never, Storage = "_ConfirmationEmailPledge", DbType = "int")]
+        public int? ConfirmationEmailPledge
         {
             get { return _ConfirmationEmailPledge; }
 
@@ -324,8 +347,8 @@ namespace CmsData
             }
         }
 
-        [Column(Name = "ConfirmationEmail_OneTime", UpdateCheck = UpdateCheck.Never, Storage = "_ConfirmationEmailOneTime", DbType = "nvarchar")]
-        public string ConfirmationEmailOneTime
+        [Column(Name = "ConfirmationEmail_OneTime", UpdateCheck = UpdateCheck.Never, Storage = "_ConfirmationEmailOneTime", DbType = "int")]
+        public int? ConfirmationEmailOneTime
         {
             get { return _ConfirmationEmailOneTime; }
 
@@ -342,8 +365,8 @@ namespace CmsData
             }
         }
 
-        [Column(Name = "ConfirmationEmail_Recurring", UpdateCheck = UpdateCheck.Never, Storage = "_ConfirmationEmailRecurring", DbType = "nvarchar")]
-        public string ConfirmationEmailRecurring
+        [Column(Name = "ConfirmationEmail_Recurring", UpdateCheck = UpdateCheck.Never, Storage = "_ConfirmationEmailRecurring", DbType = "int")]
+        public int? ConfirmationEmailRecurring
         {
             get { return _ConfirmationEmailRecurring; }
 
@@ -472,7 +495,7 @@ namespace CmsData
                     }
                     else
                     {
-                        _FundId = default(int);
+                        _FundId = default(int?);
                     }
                     SendPropertyChanged("ContributionFund");
                 }

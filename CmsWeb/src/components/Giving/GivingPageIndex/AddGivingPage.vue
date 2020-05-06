@@ -42,18 +42,22 @@
             </div>
             <div class="col-lg-2 col-md-2 col-sm-2">
               <div class="form-group">
-                <label class="control-label">Enabled</label>
-                <generic-slider
-                  v-model="newGivingEnabled"
-                  v-on:toggleSlider="toggleNewGivingEnabled()"
-                ></generic-slider>
+                <div>
+                  <label class="control-label">Enabled</label>
+                </div>
+                <div>
+                  <generic-slider
+                    v-model="newGivingEnabled"
+                    v-on:toggleSlider="toggleNewGivingEnabled()"
+                  ></generic-slider>
+                </div>
               </div>
             </div>
           </div>
           <div class="row">
             <div class="col-lg-5 col-md-5 col-sm-5">
               <div class="form-group">
-                <label class="control-label">Skin</label>
+                <label class="control-label">Shell</label>
                 <input type="text" v-model="newGivingSkinFile" class="form-control" />
               </div>
             </div>
@@ -66,6 +70,10 @@
                   :searchable="true"
                   :close-on-select="true"
                   :show-labels="false"
+                  :multiple="true"
+                  :allowEmpty="false"
+                  :preselectFirst="true"
+                  trackBy="id"
                   :custom-label="customLabel"
                 ></MultiSelect>
               </div>
@@ -83,6 +91,7 @@
                   :searchable="true"
                   :close-on-select="true"
                   :show-labels="false"
+                  trackBy="FundId"
                   :custom-label="AvailableFundsCustomLabel"
                 ></MultiSelect>
               </div>
@@ -119,7 +128,7 @@
               <div class="form-group">
                 <label class="control-label">Entry Point</label>
                 <MultiSelect
-                  v-model="newGivingEntryPointId"
+                  v-model="newGivingEntryPoint"
                   :options="entryPoints"
                   :searchable="true"
                   :close-on-select="true"
@@ -173,7 +182,7 @@ export default {
       newDefaultFund: null,
       newGivingFundsArray: [],
       newGivingDisabledRedirect: "",
-      newGivingEntryPointId: null
+      newGivingEntryPoint: null
     };
   },
   methods: {
@@ -184,17 +193,17 @@ export default {
           pageName: this.newGivingPageName,
           pageTitle: this.newGivingPageTitle,
           enabled: this.newGivingEnabled,
+          pageType: this.newGivingPageType,
+          defaultFund: this.newDefaultFund,
           skin: this.newGivingSkinFile,
-          pageType: this.newGivingPageType.id,
-          defaultFund: this.newDefaultFund.FundId,
           availFundsArray: this.newGivingFundsArray,
           disRedirect: this.newGivingDisabledRedirect,
-          entryPoint: this.newGivingEntryPointId.Id
+          entryPoint: this.newGivingEntryPoint
         })
         .then(
           response => {
             if (response.status === 200) {
-              this.$emit('add-givingPage', response.data);
+              this.$emit("add-givingPage", response.data);
               this.newGivingPageName = "";
               this.newGivingPageTitle = "";
               this.newGivingEnabled = false;
@@ -203,7 +212,7 @@ export default {
               this.newDefaultFund = null;
               this.newGivingFundsArray = null;
               this.newGivingDisabledRedirect = "";
-              this.newGivingEntryPointId = null;
+              this.newGivingEntryPoint = null;
             } else {
               warning_swal("Warning!", "Something went wrong, try again later");
             }
@@ -243,8 +252,8 @@ export default {
   right: 0;
   bottom: 0;
   z-index: 9998;
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  height: 100%;
 }
 
 .modal {

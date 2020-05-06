@@ -9,6 +9,7 @@ using UtilityExtensions;
 using CmsWeb.Areas.Giving.Models;
 using DocumentFormat.OpenXml.Wordprocessing;
 using DocumentFormat.OpenXml.Office2010.Excel;
+using CmsData.Codes;
 
 namespace CmsWeb.Areas.Giving.Controllers
 {
@@ -31,14 +32,12 @@ namespace CmsWeb.Areas.Giving.Controllers
         public JsonResult GetGivingPageList()
         {
             var model = new GivingPageModel(CurrentDatabase);
-
-            //var givingPageHash = model.GetGivingPageHashSet();
             var givingPageList = model.GetGivingPageList();
 
             return Json(givingPageList, JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult CreateNewGivingPage(string pageName, string pageTitle, bool enabled, string skin, int pageType, int defaultFund, FundsClass[] availFundsArray, string disRedirect, int entryPoint)
+        public ActionResult CreateNewGivingPage(string pageName, string pageTitle, bool enabled, PageTypesClass[] pageType, FundsClass defaultFund = null, string skin = null, FundsClass[] availFundsArray = null, string disRedirect = null, EntryPointClass entryPoint = null)
         {
             var newGivingPage = new GivingPage()
             {
@@ -46,74 +45,160 @@ namespace CmsWeb.Areas.Giving.Controllers
                 PageTitle = pageTitle,
                 Enabled = enabled,
                 SkinFile = skin,
-                PageType = pageType,
-                FundId = defaultFund,
+                //PageType = pageType.id,
+                //FundId = defaultFund.FundId,
                 DisabledRedirect = disRedirect,
-                EntryPointId = entryPoint
+                //EntryPointId = entryPoint.Id
             };
+            var pageTypeBitWise = 0;
+            foreach(var item in pageType)
+            {
+                if(item.id == 1)
+                {
+                    pageTypeBitWise = pageTypeBitWise + 1;
+                }
+                if (item.id == 2)
+                {
+                    pageTypeBitWise = pageTypeBitWise + 2;
+                }
+                if (item.id == 3)
+                {
+                    pageTypeBitWise = pageTypeBitWise + 4;
+                }
+            }
+            newGivingPage.PageType = pageTypeBitWise;
+            if (defaultFund != null)
+            {
+                newGivingPage.FundId = defaultFund.FundId;
+            }
+            if (entryPoint != null)
+            {
+                newGivingPage.EntryPointId = entryPoint.Id;
+            }
             CurrentDatabase.GivingPages.InsertOnSubmit(newGivingPage);
             CurrentDatabase.SubmitChanges();
+
+            if(availFundsArray != null)
+            {
+                foreach (var item in availFundsArray)
+                {
+                    var newGivingPageFund = new GivingPageFund()
+                    {
+                        GivingPageId = newGivingPage.GivingPageId,
+                        FundId = item.FundId
+                    };
+                    CurrentDatabase.GivingPageFunds.InsertOnSubmit(newGivingPageFund);
+                }
+                CurrentDatabase.SubmitChanges();
+            }
+
+            #region
             var newGivingPageList = new List<GivingPageItem>();
             var givingPageItem = new GivingPageItem()
             {
                 GivingPageId = newGivingPage.GivingPageId,
                 PageName = newGivingPage.PageName,
                 Enabled = newGivingPage.Enabled,
-                SkinFile = newGivingPage.SkinFile,
-                //PageType = pageType,
-                //DefaultFundId = newGivingPage.ContributionFund.FundName
+                SkinFile = newGivingPage.SkinFile
             };
-            var tempDefaultFund = (from d in CurrentDatabase.ContributionFunds where d.FundId == defaultFund select d).FirstOrDefault();
-            givingPageItem.DefaultFund = new FundsClass()
+
+            if(defaultFund != null)
             {
-                FundId = tempDefaultFund.FundId,
-                FundName = tempDefaultFund.FundName
-            };
-            var newPageType = new PageTypesClass();
-            switch (pageType)
-            {
-                case 1:
-                    newPageType.id = 1;
-                    newPageType.pageTypeName = "Pledge";
-                    break;
-                case 2:
-                    newPageType.id = 2;
-                    newPageType.pageTypeName = "One Time";
-                    break;
-                case 3:
-                    newPageType.id = 3;
-                    newPageType.pageTypeName = "Recurring";
-                    break;
-                default:
-                    break;
+                var tempDefaultFund = (from d in CurrentDatabase.ContributionFunds where d.FundId == defaultFund.FundId select d).FirstOrDefault();
+                givingPageItem.DefaultFund = new FundsClass()
+                {
+                    FundId = tempDefaultFund.FundId,
+                    FundName = tempDefaultFund.FundName
+                };
             }
-            givingPageItem.PageType = newPageType;
+
+            #region
+            //var newPageType = new PageTypesClass();
+            //switch (pageType.id)
+            //{
+            //    case 1:
+            //        newPageType.id = 1;
+            //        newPageType.pageTypeName = "Pledge";
+            //        break;
+            //    case 2:
+            //        newPageType.id = 2;
+            //        newPageType.pageTypeName = "One Time";
+            //        break;
+            //    case 3:
+            //        newPageType.id = 3;
+            //        newPageType.pageTypeName = "Recurring";
+            //        break;
+            //    default:
+            //        break;
+            //}
+            givingPageItem.PageType = pageType;
+            givingPageItem.PageTypeString = givingPageItem.PageType[0].pageTypeName;
+            #endregion
+
+            givingPageItem.AvailableFunds = availFundsArray;
+
+            if(entryPoint != null)
+            {
+                var tempEntryPoint = (from ep in CurrentDatabase.EntryPoints where ep.Id == entryPoint.Id select new { ep.Id, ep.Description }).FirstOrDefault();
+                givingPageItem.EntryPoint = new EntryPointClass()
+                {
+                    Id = (int)entryPoint.Id,
+                    Description = tempEntryPoint.Description
+                };
+            }
+            
             newGivingPageList.Add(givingPageItem);
+            #endregion
             return Json(newGivingPageList, JsonRequestBehavior.AllowGet);
         }
 
-        public void UpdateGivingPage(int pageId, string pageName, string pageTitle, PageTypesClass pageType, FundsClass defaultFund, bool enabled, FundsClass[] availFundsArray = null,
-            string disRedirect = null, string skinFile = null, string topText = null, string thankYouText = null, string onlineNotifyPerson = null,
-            string confirmEmailPledge = null, string confirmEmailOneTime = null, string confirmEmailRecurring = null, int? entryPoint = null)
+        public void UpdateGivingPage(int pageId, string pageName, string pageTitle, PageTypesClass pageType, bool enabled, FundsClass defaultFund = null, FundsClass[] availFundsArray = null,
+            string disRedirect = null, string skinFile = null, string topText = null, string thankYouText = null, PeopleClass[] onlineNotifyPerson = null,
+            ConfirmEmailClass confirmEmailPledge = null, ConfirmEmailClass confirmEmailOneTime = null, ConfirmEmailClass confirmEmailRecurring = null, int? campusId = null, EntryPointClass entryPoint = null)
         {
             var givingPage = CurrentDatabase.GivingPages.Where(g => g.GivingPageId == pageId).FirstOrDefault();
             givingPage.PageName = pageName;
             givingPage.PageTitle = pageTitle;
             givingPage.PageType = pageType.id;
+            givingPage.ContributionFund = (from cf in CurrentDatabase.ContributionFunds where cf.FundId == defaultFund.FundId select cf).FirstOrDefault();
             givingPage.FundId = defaultFund.FundId;
             givingPage.Enabled = enabled;
             givingPage.DisabledRedirect = disRedirect;
             givingPage.SkinFile = skinFile;
             givingPage.TopText = topText;
             givingPage.ThankYouText = thankYouText;
-            givingPage.ConfirmationEmailPledge = confirmEmailPledge;
-            givingPage.ConfirmationEmailOneTime = confirmEmailOneTime;
-            givingPage.ConfirmationEmailRecurring = confirmEmailRecurring;
+            givingPage.ConfirmationEmailPledge = confirmEmailPledge.Id;
+            givingPage.ConfirmationEmailOneTime = confirmEmailOneTime.Id;
+            givingPage.ConfirmationEmailRecurring = confirmEmailRecurring.Id;
+            campusId = 1;
+            if (campusId != null)
+            {
+                givingPage.Campu = (from c in CurrentDatabase.Campus where c.Id == campusId select c).FirstOrDefault();
+            }
             givingPage.CampusId = givingPage.CampusId;
-            givingPage.EntryPointId = entryPoint;
+            givingPage.EntryPoint = (from ep in CurrentDatabase.EntryPoints where ep.Id == entryPoint.Id select ep).FirstOrDefault();
+            givingPage.EntryPointId = entryPoint.Id;
 
-            UpdateModel(givingPage);
-            CurrentDatabase.SubmitChanges();
+            foreach (var item in availFundsArray)
+            {
+                var newGivingPageFund = new GivingPageFund()
+                {
+                    GivingPageId = pageId,
+                    FundId = item.FundId
+                };
+                //CurrentDatabase.GivingPageFunds.InsertOnSubmit(newGivingPageFund);
+            }
+            //CurrentDatabase.SubmitChanges();
+
+            var onlineNotifyPersonString = "";
+            foreach (var item in onlineNotifyPerson)
+            {
+                onlineNotifyPersonString += item.PeopleId + ",";
+            }
+            onlineNotifyPersonString = onlineNotifyPersonString.Remove(onlineNotifyPersonString.Length - 1, 1);
+
+            //UpdateModel(givingPage);
+            //CurrentDatabase.SubmitChanges();
         }
 
         [HttpGet]
@@ -159,14 +244,21 @@ namespace CmsWeb.Areas.Giving.Controllers
         [HttpGet]
         public JsonResult GetOnlineNotifyPersonList()
         {
-            var onlineNotifyPersonList = (from p in CurrentDatabase.People select new { p.PeopleId, p.Name }).Take(50).ToList();
+            var onlineNotifyPersonList = (from p in CurrentDatabase.People
+                                          join u in CurrentDatabase.Users on p.PeopleId equals u.PeopleId
+                                          join ur in CurrentDatabase.UserRoles on u.UserId equals ur.UserId
+                                          where ur.RoleId == 3
+                                          select new { p.PeopleId, p.Name }).Distinct().ToList();
             return Json(onlineNotifyPersonList, JsonRequestBehavior.AllowGet);
         }
 
         [HttpGet]
         public JsonResult GetConfirmationEmailList()
         {
-            var confirmationEmailList = (from p in CurrentDatabase.People where p.EmailAddress.Length > 0 select new { p.PeopleId, p.EmailAddress }).Take(50).ToList();
+            var confirmationEmailList = (from c in CurrentDatabase.Contents
+                   where ContentTypeCode.EmailTemplates.Contains(c.TypeID)
+                   orderby c.Name
+                   select new { c.Id, c.Title }).ToList();
             return Json(confirmationEmailList, JsonRequestBehavior.AllowGet);
         }
 
