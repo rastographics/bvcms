@@ -404,6 +404,7 @@ namespace CmsData.Codes
         public const int FindSub = 2;
         public const int SubFound = 3;
         public const int Substitute = 4;
+
         public static IEnumerable<KeyValuePair<int, string>> GetCodePairs()
         {
             yield return new KeyValuePair<int, string>(Uncommitted, "Uncommitted");
