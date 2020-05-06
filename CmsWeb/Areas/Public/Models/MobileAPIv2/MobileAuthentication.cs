@@ -7,6 +7,7 @@ using System.Linq;
 using System.Net;
 using System.Security.Cryptography;
 using System.Text;
+using System.Web;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Public.Models.MobileAPIv2
@@ -477,5 +478,21 @@ namespace CmsWeb.Areas.Public.Models.MobileAPIv2
 			"Cannot impersonate finance user", // -13
 			"Cannot access with API only user" // -14
 		};
+
+        public static string GetAuthenticatedLink(User user, CMSDataContext db, string url)
+        {
+            OneTimeLink ot = new OneTimeLink
+            {
+                Id = Guid.NewGuid(),
+                Querystring = user.Username,
+                Expires = DateTime.Now.AddMinutes(15)
+            };
+
+            db.OneTimeLinks.InsertOnSubmit(ot);
+            db.SubmitChanges();
+
+            var returnUrl = HttpUtility.UrlEncode(url);
+            return $"{db.ServerLink($"Logon?otltoken={ot.Id.ToCode()}&ReturnUrl={returnUrl}")}";
+        }
     }
 }

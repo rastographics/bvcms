@@ -396,31 +396,68 @@ namespace CmsWeb.Areas.Public.Controllers
             }
 
             User user = authentication.getUser();
+            MobileMessage response = new MobileMessage();
+            response.setNoError();
 
-            int? orgID;
+            int? orgID = null;
+            string route = null;
+            string campus = null;
+            string link = message.argBool
+                ? CurrentDatabase.Setting("ExternalManageGivingUrl", "")
+                : CurrentDatabase.Setting("ExternalOneTimeGiftUrl", "");
 
-            if (message.argBool)
+            if (link.IsEmpty())
             {
-                // Managed Giving
-                orgID = CurrentDatabase.Organizations.Where(o => o.RegistrationTypeId == RegistrationTypeCode.ManageGiving).Select(x => x.OrganizationId).FirstOrDefault();
+                if (message.argBool) // Managed Giving
+                {
+                    orgID = APIContribution.ManagedGivingOrgId(CurrentDatabase);
+                    if ((orgID.HasValue == false) || (orgID == 0))
+                    {
+                        response.setError((int)MobileMessage.Error.INVALID_RECURRING_GIVING_ORGID);
+                    }
+                    else
+                    {
+                        var c = user.Person.Campu?.Code?.GetChars();
+                        if (c.HasValue())
+                        {
+                            campus = $"&campus={c}";
+                        }
+                    }
+                }
+                else // One-time Giving
+                {
+                    route = CurrentDatabase.Setting($"OneTimeGiftCampusRoute-{user.Person.CampusId}", "");
+                    if (route.IsEmpty())
+                    {
+                        orgID = APIContribution.OneTimeGiftOrgId(CurrentDatabase);
+                        if ((orgID.HasValue == false) || (orgID == 0))
+                        {
+                            response.setError((int)MobileMessage.Error.INVALID_ONETIME_GIFT_ORGID);
+                        }
+                    }
+                    else
+                    {
+                        link = MobileAuthentication.GetAuthenticatedLink(
+                            authentication.getUser(),
+                            CurrentDatabase,
+                            CurrentDatabase.ServerLink($"{route}?{message.getSourceQueryString()}"));
+                    }
+                }
+            }
+
+            if (link.IsEmpty())
+            {
+                OneTimeLink ot = GetOneTimeLink(orgID ?? 0, user.PeopleId ?? 0);
+
+                CurrentDatabase.OneTimeLinks.InsertOnSubmit(ot);
+                CurrentDatabase.SubmitChanges();
+
+                response.data = CurrentDatabase.ServerLink($"OnlineReg/RegisterLink/{ot.Id.ToCode()}?{message.getSourceQueryString()}{campus}");
             }
             else
             {
-                // Normal Giving
-                const string sql = @"SELECT OrganizationId FROM dbo.Organizations WHERE RegistrationTypeId = 8 AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
-
-                orgID = CurrentDatabase.Connection.ExecuteScalar(sql) as int?;
+                response.data = link;
             }
-
-            OneTimeLink ot = GetOneTimeLink(orgID ?? 0, user.PeopleId ?? 0);
-
-            CurrentDatabase.OneTimeLinks.InsertOnSubmit(ot);
-            CurrentDatabase.SubmitChanges();
-
-            MobileMessage response = new MobileMessage();
-            response.setNoError();
-            response.data = CurrentDatabase.ServerLink($"OnlineReg/RegisterLink/{ot.Id.ToCode()}?{message.getSourceQueryString()}");
-
             return response;
         }
 

@@ -182,7 +182,11 @@ namespace CmsWeb.Areas.Public.Models.MobileAPIv2
 
 			// Meetings
 			MEETING_NOT_FOUND = 301,
-			MEETING_CATEGORY_NOT_FOUND = 302
-		}
+			MEETING_CATEGORY_NOT_FOUND = 302,
+
+            // Giving orgs setup
+            INVALID_ONETIME_GIFT_ORGID = 303,
+            INVALID_RECURRING_GIVING_ORGID = 304,
+        }
 	}
 }
