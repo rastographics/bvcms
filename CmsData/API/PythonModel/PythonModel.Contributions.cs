@@ -207,8 +207,15 @@ namespace CmsData
             var cn = db.ReadonlyConnection();
             var parameters = new DynamicParameters();
             if (declarations != null)
+            {
                 parameters.AddDynamicParams(declarations);
+            }
             return cn.Query<int>(sql, parameters, commandTimeout: 600);
+        }
+
+        public void RetrieveBatchData(string startDate = null, string endDate = null)
+        {
+            db.RetrieveBatchData(startDate, endDate);
         }
     }
 }
