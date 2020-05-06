@@ -9,13 +9,14 @@ namespace CmsDataTests.GivingSettings
     public class GivingPageTests : DatabaseTestBase
     {
         [Theory]
-        [InlineData("Giving Page One")]
-        [InlineData("Giving Page Two")]
-        [InlineData("Giving Page Three")]
-        public void GivingPageCRUDTest(string givingPageName)
+        [InlineData("Giving Page One", 1)]
+        [InlineData("Giving Page Two", 1)]
+        [InlineData("Giving Page Three", 1)]
+        [InlineData("Giving Page Four", 1)]
+        public void GivingPageCRUDTest(string givingPageName, int pageType)
         {
             var contributionFund = MockFunds.CreateContributionFund(db, null);
-            var givingPage = MockGivingPage.CreateGivingPage(db, givingPageName, contributionFund.FundId);
+            var givingPage = MockGivingPage.CreateGivingPage(db, givingPageName, contributionFund.FundId, pageType);
             var givingPageFund = MockGivingPage.CreateGivingPageFund(db, givingPage.GivingPageId, contributionFund.FundId);
 
             var expectedName = givingPageName;

@@ -178,7 +178,6 @@ export default {
   },
   methods: {
     createNewGivingPage() {
-      //alert("create new giving page button worked!");
       this.showMyModal = false;
       axios
         .post("/Giving/CreateNewGivingPage", {
@@ -234,7 +233,7 @@ export default {
 };
 </script>
 
-<style src="vue-multiselect/dist/vue-multiselect.min.css"></style>
+
 
 <style scoped>
 .modal-overlay {
@@ -257,7 +256,7 @@ export default {
   z-index: 9999;
 
   overflow-y: auto;
-  width: 600px;
+  width: 750px;
   height: 550px;
   background-color: #fff;
   display: table;
@@ -272,7 +271,7 @@ export default {
   .modal {
     top: 48%;
     left: 50%;
-    width: 600px;
+    width: 750px;
     height: 90%;
   }
 }

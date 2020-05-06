@@ -1,8 +1,23 @@
 <template>
-  <label class="switch">
-    <input type="checkbox" @click="toggleMySlider()" />
-    <span class="slider round"></span>
-  </label>
+  <div
+    data-toggle="toggle"
+    style="width: 100px; height: 0px;"
+    v-bind:class="['toggle', 'btn', mySliderValue ? 'btn-primary' : 'btn-default', mySliderValue ? 'on' : 'off']"
+    @click="mySliderValue = !mySliderValue"
+  >
+    <input
+      type="checkbox"
+      data-toggle="toggle"
+      data-width="100"
+      v-model="mySliderValue"
+      checked="mySliderValue"
+    />
+    <div class="toggle-group">
+      <label class="btn btn-primary toggle-on">Enabled</label>
+      <label class="btn btn-default active toggle-off">Disabled</label>
+      <span class="toggle-handle btn btn-default"></span>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -13,16 +28,17 @@ export default {
       mySliderValue: this.sliderValue
     };
   },
-  methods: {
-    toggleMySlider() {
-      this.$emit('toggleSlider', this.mySliderValue);
+  watch: {
+    mySliderValue() {
+      this.$emit("toggleSlider");
     }
-  }
+  },
+  methods: {}
 };
 </script>
 
 <style scoped>
-.switch {
+/* .switch {
   position: relative;
   display: inline-block;
   width: 54px;
@@ -82,5 +98,5 @@ input:focus + .slider {
 
 .slider.round:before {
   border-radius: 50%;
-}
+} */
 </style>
