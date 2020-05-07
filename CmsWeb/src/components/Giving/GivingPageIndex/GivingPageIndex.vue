@@ -83,15 +83,17 @@
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="items in givingPageList" :key="items.GivingPageId">
+                <tr v-for="(items, index) in givingPageList" :key="items.GivingPageId">
                   <td>
                     <generic-slider
                       v-bind:sliderValue="items.Enabled"
+                      v-bind:class="['toggle', 'btn', items.Enabled ? 'btn-primary' : 'btn-default', items.Enabled ? 'on' : 'off']"
                       v-on:toggleSlider="[toggleIndexSlider(items.GivingPageId, items.Enabled), items.Enabled = !items.Enabled]"
                     ></generic-slider>
                   </td>
                   <td>{{ items.PageName }}</td>
-                  <td>{{ items.SkinFile.Title }}</td>
+                  <td v-if="items.SkinFile != null">{{ items.SkinFile.Title }}</td>
+                  <td v-else></td>
                   <td>{{ items.PageTypeString }}</td>
                   <td v-if="items.DefaultFund != null">{{ items.DefaultFund.FundName }}</td>
                   <td v-else></td>
@@ -121,27 +123,13 @@
                       :onlineNotifyPersonList="OnlineNotifyPersonList"
                       :confirmationEmailList="ConfirmationEmailList"
                       :shellList="ShellList"
-                      @click="showEditModal = true"
-                      v-on:updatePage="[updateCurrentPage(), items.Enabled = !items.Enabled]"
+                      :currentIndex="index"
+                      v-on:updatePage="UpdateCurrentGivingPage"
                     ></edit-giving-page>
                   </td>
                 </tr>
               </tbody>
             </table>
-          </div>
-          <div class="row visible-xs-block">
-            <div class="col-sm-12">
-              <div style="text-align: center;">
-                <!-- <add-giving-page
-                  v-bind:showAddModal="showAddModal"
-                  :pageTypes="PageTypeList"
-                  :availableFunds="AvailableFunds"
-                  :entryPoints="EntryPoints"
-                  @click="showAddModal = true"
-                  v-on:add-givingPage="AddNewGivingPageToList"
-                ></add-giving-page>-->
-              </div>
-            </div>
           </div>
         </div>
       </div>
@@ -163,13 +151,15 @@ export default {
       EntryPoints: [],
       OnlineNotifyPersonList: [],
       ConfirmationEmailList: [],
-      ShellList: []
+      ShellList: [],
+      myCurrentIndex: null,
+      testee: null
     };
   },
   methods: {
     fetchGivingPages() {
       axios
-        .get("/Giving/GetGivingPageList")
+        .get("/Giving/List")
         .then(
           response => {
             if (response.status === 200) {
@@ -325,8 +315,11 @@ export default {
         .then()
         .catch(err => console.log(err));
     },
-    updateCurrentPage() {
-      //alert("success");
+    UpdateCurrentGivingPage(updatedGivingPage) {
+      this.testee = updatedGivingPage[0];
+      let myUpdatedPage = updatedGivingPage[0];
+      this.givingPageList.splice(myUpdatedPage.CurrentIndex, 1, myUpdatedPage);
+      //alert(myUpdatedPage.CurrentIndex);
     }
   },
   mounted() {
