@@ -54,6 +54,7 @@
             :pageTypes="PageTypeList"
             :availableFunds="AvailableFunds"
             :entryPoints="EntryPoints"
+            :shellList="ShellList"
             @click="showAddModal = true"
             v-on:add-givingPage="AddNewGivingPageToList"
           ></add-giving-page>
@@ -90,7 +91,7 @@
                     ></generic-slider>
                   </td>
                   <td>{{ items.PageName }}</td>
-                  <td>{{ items.SkinFile }}</td>
+                  <td>{{ items.SkinFile.Title }}</td>
                   <td>{{ items.PageTypeString }}</td>
                   <td v-if="items.DefaultFund != null">{{ items.DefaultFund.FundName }}</td>
                   <td v-else></td>
@@ -119,6 +120,7 @@
                       :entryPointList="EntryPoints"
                       :onlineNotifyPersonList="OnlineNotifyPersonList"
                       :confirmationEmailList="ConfirmationEmailList"
+                      :shellList="ShellList"
                       @click="showEditModal = true"
                       v-on:updatePage="[updateCurrentPage(), items.Enabled = !items.Enabled]"
                     ></edit-giving-page>
@@ -161,7 +163,7 @@ export default {
       EntryPoints: [],
       OnlineNotifyPersonList: [],
       ConfirmationEmailList: [],
-      tester: ""
+      ShellList: []
     };
   },
   methods: {
@@ -291,6 +293,26 @@ export default {
           console.log(error);
         });
     },
+    getShellList: function() {
+      axios
+        .get("/Giving/GetShellList")
+        .then(
+          response => {
+            if (response.status === 200) {
+              this.ShellList = response.data;
+            } else {
+              warning_swal("Warning!", "Something went wrong, try again later");
+            }
+          },
+          err => {
+            console.log(err);
+            error_swal("Fatal Error!", "We are working to fix it");
+          }
+        )
+        .catch(function(error) {
+          console.log(error);
+        });
+    },
     AddNewGivingPageToList(newGivingPage) {
       this.givingPageList = [...this.givingPageList, newGivingPage[0]];
     },
@@ -314,6 +336,7 @@ export default {
     this.getEntryPoints();
     this.getOnlineNotifyPersonList();
     this.getConfirmationEmailList();
+    this.getShellList();
   }
 };
 </script>

@@ -10,7 +10,7 @@
 			[FundId] [INT] CONSTRAINT FK_GivingPages_ContributionFund FOREIGN KEY REFERENCES ContributionFund(FundId),
             [Enabled] [bit] NOT NULL,
             [DisabledRedirect] [NVARCHAR](max),
-            [SkinFile] [NVARCHAR](max),
+            [SkinFile] [INT],
             [TopText] [NVARCHAR](max),
             [ThankYouText] [NVARCHAR](max),
             [OnlineNotifyPerson] [NVARCHAR](max),

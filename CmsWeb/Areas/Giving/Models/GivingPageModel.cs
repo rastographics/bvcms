@@ -1,4 +1,5 @@
 ﻿using CmsData;
+using CmsData.Codes;
 using CmsWeb.Models;
 using MoreLinq;
 using System;
@@ -35,7 +36,7 @@ namespace CmsWeb.Areas.Giving.Models
                                 PageName = gp.PageName,
                                 PageTitle = gp.PageTitle,
                                 Enabled = gp.Enabled,
-                                SkinFile = gp.SkinFile,
+                                SkinFileId = gp.SkinFile,
                                 PageType = gp.PageType,
                                 DefaultFundId = gp.FundId,
                                 DisabledRedirect = gp.DisabledRedirect,
@@ -55,7 +56,7 @@ namespace CmsWeb.Areas.Giving.Models
                     PageName = response[i].PageName,
                     PageTitle = response[i].PageTitle,
                     Enabled = response[i].Enabled,
-                    SkinFile = response[i].SkinFile,
+                    //SkinFile = response[i].SkinFile,
                     DisabledRedirect = response[i].DisabledRedirect,
                     TopText = response[i].TopText,
                     ThankYouText = response[i].ThankYouText,
@@ -73,53 +74,95 @@ namespace CmsWeb.Areas.Giving.Models
                     }
                 }
 
-                var newPageType = new List<PageTypesClass>();
-                var temp = new PageTypesClass();
+                if (response[i].SkinFileId != null)
+                {
+                    var tempSkinFile = (from c in CurrentDatabase.Contents
+                                        where c.TypeID == ContentTypeCode.TypeHtml
+                                        where c.ContentKeyWords.Any(vv => vv.Word == "Shell")
+                                        where c.Id == response[i].SkinFileId
+                                        select new { c.Id, c.Title }).FirstOrDefault();
+                    if (tempSkinFile != null)
+                    {
+                        givingPage.SkinFile = new ShellClass()
+                        {
+                            Id = tempSkinFile.Id,
+                            Title = tempSkinFile.Title
+                        };
+                    }
+                }
+
+                var newPageTypeList = new List<PageTypesClass>();
+                var temp1 = new PageTypesClass();
+                var temp2 = new PageTypesClass();
+                var temp3 = new PageTypesClass();
                 switch (response[i].PageType)
                 {
                     case 1:
-                        temp.id = 1;
-                        temp.pageTypeName = "Pledge";
-                        newPageType.Add(temp);
+                        temp1.id = 1;
+                        temp1.pageTypeName = "Pledge";
+                        newPageTypeList.Add(temp1);
+                        break;
+                    case 2:
+                        temp2.id = 2;
+                        temp2.pageTypeName = "One Time";
+                        newPageTypeList.Add(temp2);
                         break;
                     case 3:
-                        temp.id = 2;
-                        temp.pageTypeName = "One Time";
-                        newPageType.Add(temp);
+                        temp1.id = 1;
+                        temp1.pageTypeName = "Pledge";
+                        newPageTypeList.Add(temp1);
+                        temp2.id = 2;
+                        temp2.pageTypeName = "One Time";
+                        newPageTypeList.Add(temp2);
+                        break;
+                    case 4:
+                        temp3.id = 3;
+                        temp3.pageTypeName = "Recurring";
+                        newPageTypeList.Add(temp3);
+                        break;
+                    case 5:
+                        temp1.id = 1;
+                        temp1.pageTypeName = "Pledge";
+                        newPageTypeList.Add(temp1);
+                        temp3.id = 3;
+                        temp3.pageTypeName = "Recurring";
+                        newPageTypeList.Add(temp3);
+                        break;
+                    case 6:
+                        temp2.id = 2;
+                        temp2.pageTypeName = "One Time";
+                        newPageTypeList.Add(temp2);
+                        temp3.id = 3;
+                        temp3.pageTypeName = "Recurring";
+                        newPageTypeList.Add(temp3);
                         break;
                     case 7:
-                        temp.id = 3;
-                        temp.pageTypeName = "Recurring";
-                        newPageType.Add(temp);
+                        temp1.id = 1;
+                        temp1.pageTypeName = "Pledge";
+                        newPageTypeList.Add(temp1);
+                        temp2.id = 2;
+                        temp2.pageTypeName = "One Time";
+                        newPageTypeList.Add(temp2);
+                        temp3.id = 3;
+                        temp3.pageTypeName = "Recurring";
+                        newPageTypeList.Add(temp3);
                         break;
                     default:
                         break;
                 }
-                givingPage.PageType = newPageType.ToArray();
-                if(newPageType.Count() > 0)
+                givingPage.PageType = newPageTypeList.ToArray();
+                givingPage.PageTypeString = "";
+                foreach (var item in newPageTypeList)
                 {
-                    givingPage.PageTypeString = newPageType[0].pageTypeName;
+                    if(givingPage.PageTypeString.Length > 0)
+                    {
+                        givingPage.PageTypeString += ", " + item.pageTypeName;
+                    }
+                    else
+                    {
+                        givingPage.PageTypeString += item.pageTypeName;
+                    }
                 }
-                //var newPageType = new PageTypesClass();
-                //switch (response[i].PageType)
-                //{
-                //    case 1:
-                //        newPageType.id = 1;
-                //        newPageType.pageTypeName = "Pledge";
-                //        break;
-                //    case 2:
-                //        newPageType.id = 2;
-                //        newPageType.pageTypeName = "One Time";
-                //        break;
-                //    case 3:
-                //        newPageType.id = 3;
-                //        newPageType.pageTypeName = "Recurring";
-                //        break;
-                //    default:
-                //        break;
-                //}
-                //givingPage.PageType = newPageType;
-
 
                 var tempAvailableFunds = (from gpf in CurrentDatabase.GivingPageFunds where gpf.GivingPageId == response[i].GivingPageId select new { gpf.GivingPageFundId, gpf.FundId, gpf.GivingPageId }).ToList();
                 var j = 0;
@@ -220,7 +263,7 @@ public class GivingPageItem
     public string PageName { get; set; }
     public string PageTitle { get; set; }
     public bool Enabled { get; set; }
-    public string SkinFile { get; set; }
+    public ShellClass SkinFile { get; set; }
     public PageTypesClass[] PageType { get; set; }
     public string PageTypeString { get; set; }
     public FundsClass DefaultFund { get; set; }
@@ -257,6 +300,11 @@ public class PeopleClass
     public string Name { get; set; }
 }
 public class ConfirmEmailClass
+{
+    public int Id { get; set; }
+    public string Title { get; set; }
+}
+public class ShellClass
 {
     public int Id { get; set; }
     public string Title { get; set; }
