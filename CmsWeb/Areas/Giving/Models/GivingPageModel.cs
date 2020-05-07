@@ -254,6 +254,116 @@ namespace CmsWeb.Areas.Giving.Models
             }
             return outputList;
         }
+
+        public List<GivingPageItem> AddNewGivingPage(GivingPageViewModel viewModel)
+        {
+            #region
+            var newGivingPage = new GivingPage()
+            {
+                PageName = viewModel.pageName,
+                PageTitle = viewModel.pageTitle,
+                Enabled = viewModel.enabled,
+                DisabledRedirect = viewModel.disRedirect
+            };
+            newGivingPage.PageType = 0;
+            foreach (var item in viewModel.pageType)
+            {
+                if (item.id == 1)
+                {
+                    newGivingPage.PageType = newGivingPage.PageType + 1;
+                }
+                if (item.id == 2)
+                {
+                    newGivingPage.PageType = newGivingPage.PageType + 2;
+                }
+                if (item.id == 3)
+                {
+                    newGivingPage.PageType = newGivingPage.PageType + 4;
+                }
+            }
+            if (viewModel.defaultFund != null)
+            {
+                newGivingPage.FundId = viewModel.defaultFund.FundId;
+            }
+            if (viewModel.entryPoint != null)
+            {
+                newGivingPage.EntryPointId = viewModel.entryPoint.Id;
+            }
+            if (viewModel.skinFile != null)
+            {
+                newGivingPage.SkinFile = viewModel.skinFile.Id;
+            }
+            CurrentDatabase.GivingPages.InsertOnSubmit(newGivingPage);
+            CurrentDatabase.SubmitChanges();
+            #endregion
+
+            #region
+            if (viewModel.availFundsArray != null)
+            {
+                foreach (var item in viewModel.availFundsArray)
+                {
+                    var newGivingPageFund = new GivingPageFund()
+                    {
+                        GivingPageId = newGivingPage.GivingPageId,
+                        FundId = item.FundId
+                    };
+                    CurrentDatabase.GivingPageFunds.InsertOnSubmit(newGivingPageFund);
+                }
+                CurrentDatabase.SubmitChanges();
+            }
+            #endregion
+
+            #region
+            var newGivingPageList = new List<GivingPageItem>();
+            var givingPageItem = new GivingPageItem()
+            {
+                GivingPageId = newGivingPage.GivingPageId,
+                PageName = newGivingPage.PageName,
+                PageTitle = newGivingPage.PageTitle,
+                Enabled = newGivingPage.Enabled,
+                SkinFile = viewModel.skinFile
+            };
+
+            if (viewModel.defaultFund != null)
+            {
+                var tempDefaultFund = (from d in CurrentDatabase.ContributionFunds where d.FundId == viewModel.defaultFund.FundId select d).FirstOrDefault();
+                givingPageItem.DefaultFund = new FundsClass()
+                {
+                    FundId = tempDefaultFund.FundId,
+                    FundName = tempDefaultFund.FundName
+                };
+            }
+
+            givingPageItem.PageType = viewModel.pageType;
+            givingPageItem.PageTypeString = "";
+            foreach (var item in viewModel.pageType)
+            {
+                if (givingPageItem.PageTypeString.Length > 0)
+                {
+                    givingPageItem.PageTypeString += ", " + item.pageTypeName;
+                }
+                else
+                {
+                    givingPageItem.PageTypeString += item.pageTypeName;
+                }
+            }
+
+            givingPageItem.AvailableFunds = viewModel.availFundsArray;
+
+            if (viewModel.entryPoint != null)
+            {
+                var tempEntryPoint = (from ep in CurrentDatabase.EntryPoints where ep.Id == viewModel.entryPoint.Id select new { ep.Id, ep.Description }).FirstOrDefault();
+                givingPageItem.EntryPoint = new EntryPointClass()
+                {
+                    Id = (int)viewModel.entryPoint.Id,
+                    Description = tempEntryPoint.Description
+                };
+            }
+
+            newGivingPageList.Add(givingPageItem);
+            #endregion
+            return newGivingPageList;
+        }
     }
 }
 

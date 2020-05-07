@@ -205,7 +205,7 @@ export default {
           enabled: this.newGivingEnabled,
           pageType: this.newGivingPageType,
           defaultFund: this.newDefaultFund,
-          skin: this.newGivingSkinFile,
+          skinFile: this.newGivingSkinFile,
           availFundsArray: this.newGivingFundsArray,
           disRedirect: this.newGivingDisabledRedirect,
           entryPoint: this.newGivingEntryPoint
