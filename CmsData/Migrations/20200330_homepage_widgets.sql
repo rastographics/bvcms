@@ -154,7 +154,8 @@ INSERT INTO [dbo].[Content]
        [DateCreated],[TypeID],[ThumbID],[RoleID],[OwnerID],[CreatedBy])
      VALUES
            ('WidgetNewsPython','Edit Python Script',
-           'from datetime import datetime
+           'import re
+from datetime import datetime
 from datetime import timedelta
 import xml.etree.ElementTree as ET 
 
@@ -166,6 +167,8 @@ def Get():
     headers = { ''content-type'': ''application/json'' }
     template = Data.HTMLContent
     response = model.RestGet(feedurl, headers)
+    response = response.replace(u''\u201c'', ''"'').replace(u''\u201d'', ''"'').replace(u''\u2018'', "''").replace(u''\u2019'', "''").replace(u''\u0027'', "''").replace(u''\u2014'', "-").replace(u''\u2013'', "-").replace(u''\u2012'', "-").replace(u''\u2011'', "-").replace(u''\u2010'', "-")
+    response = re.sub(r''[^\x00-\x7F]+'', '''', response)
     
     tree = ET.fromstring(response) 
   
