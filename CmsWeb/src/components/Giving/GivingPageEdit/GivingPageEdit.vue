@@ -270,7 +270,8 @@ export default {
     entryPointList: Array,
     onlineNotifyPersonList: Array,
     confirmationEmailList: Array,
-    shellList: Array
+    shellList: Array,
+    currentIndex: Number
   },
   components: {
     MultiSelect
@@ -319,7 +320,7 @@ export default {
     },
     saveGivingPage() {
       axios
-        .post("/Giving/UpdateGivingPage", {
+        .post("/Giving/Update", {
           pageId: this.currentPageId,
           pageName: this.currentPageName,
           pageTitle: this.currentPageTitle,
@@ -336,13 +337,15 @@ export default {
           confirmEmailOneTime: this.currentConfirmEmailOneTime,
           confirmEmailRecurring: this.currentConfirmEmailRecurring,
           campusId: this.currentCampusId,
-          entryPoint: this.currentPageEntryPoint
+          entryPoint: this.currentPageEntryPoint,
+          currentIndex: this.currentIndex
         })
         .then(
           response => {
             if (response.status === 200) {
               this.tester = response.data;
-              //this.$emit('updatePage', response.data);
+              this.$emit('updatePage', response.data);
+              // this.$emit('updateIndex');
               // this.$emit('updatePage', [this.currentPageId, this.currentPageName, this.currentPageTitle, this.currentPageEnabled]);
             } else {
               warning_swal("Warning!", "Something went wrong, try again later");

@@ -199,7 +199,7 @@ export default {
     createNewGivingPage() {
       this.showMyModal = false;
       axios
-        .post("/Giving/CreateNewGivingPage", {
+        .post("/Giving/CreateNew", {
           pageName: this.newGivingPageName,
           pageTitle: this.newGivingPageTitle,
           enabled: this.newGivingEnabled,

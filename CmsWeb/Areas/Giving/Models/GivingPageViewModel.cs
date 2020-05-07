@@ -25,5 +25,6 @@ namespace CmsWeb.Areas.Giving.Models
         public ConfirmEmailClass confirmEmailRecurring { get; set; }
         public int? campusId { get; set; }
         public EntryPointClass entryPoint { get; set; }
+        public int? currentIndex { get; set; }
     }
 }

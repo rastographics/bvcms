@@ -2,6 +2,7 @@
 using CmsData.Codes;
 using CmsWeb.Models;
 using MoreLinq;
+using OpenXmlPowerTools;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -56,7 +57,6 @@ namespace CmsWeb.Areas.Giving.Models
                     PageName = response[i].PageName,
                     PageTitle = response[i].PageTitle,
                     Enabled = response[i].Enabled,
-                    //SkinFile = response[i].SkinFile,
                     DisabledRedirect = response[i].DisabledRedirect,
                     TopText = response[i].TopText,
                     ThankYouText = response[i].ThankYouText,
@@ -116,7 +116,7 @@ namespace CmsWeb.Areas.Giving.Models
                         newPageTypeList.Add(temp2);
                         break;
                     case 4:
-                        temp3.id = 3;
+                        temp3.id = 4;
                         temp3.pageTypeName = "Recurring";
                         newPageTypeList.Add(temp3);
                         break;
@@ -124,7 +124,7 @@ namespace CmsWeb.Areas.Giving.Models
                         temp1.id = 1;
                         temp1.pageTypeName = "Pledge";
                         newPageTypeList.Add(temp1);
-                        temp3.id = 3;
+                        temp3.id = 4;
                         temp3.pageTypeName = "Recurring";
                         newPageTypeList.Add(temp3);
                         break;
@@ -132,7 +132,7 @@ namespace CmsWeb.Areas.Giving.Models
                         temp2.id = 2;
                         temp2.pageTypeName = "One Time";
                         newPageTypeList.Add(temp2);
-                        temp3.id = 3;
+                        temp3.id = 4;
                         temp3.pageTypeName = "Recurring";
                         newPageTypeList.Add(temp3);
                         break;
@@ -143,7 +143,7 @@ namespace CmsWeb.Areas.Giving.Models
                         temp2.id = 2;
                         temp2.pageTypeName = "One Time";
                         newPageTypeList.Add(temp2);
-                        temp3.id = 3;
+                        temp3.id = 4;
                         temp3.pageTypeName = "Recurring";
                         newPageTypeList.Add(temp3);
                         break;
@@ -257,7 +257,6 @@ namespace CmsWeb.Areas.Giving.Models
 
         public List<GivingPageItem> AddNewGivingPage(GivingPageViewModel viewModel)
         {
-            #region
             var newGivingPage = new GivingPage()
             {
                 PageName = viewModel.pageName,
@@ -265,39 +264,13 @@ namespace CmsWeb.Areas.Giving.Models
                 Enabled = viewModel.enabled,
                 DisabledRedirect = viewModel.disRedirect
             };
-            newGivingPage.PageType = 0;
-            foreach (var item in viewModel.pageType)
-            {
-                if (item.id == 1)
-                {
-                    newGivingPage.PageType = newGivingPage.PageType + 1;
-                }
-                if (item.id == 2)
-                {
-                    newGivingPage.PageType = newGivingPage.PageType + 2;
-                }
-                if (item.id == 3)
-                {
-                    newGivingPage.PageType = newGivingPage.PageType + 4;
-                }
-            }
-            if (viewModel.defaultFund != null)
-            {
-                newGivingPage.FundId = viewModel.defaultFund.FundId;
-            }
-            if (viewModel.entryPoint != null)
-            {
-                newGivingPage.EntryPointId = viewModel.entryPoint.Id;
-            }
-            if (viewModel.skinFile != null)
-            {
-                newGivingPage.SkinFile = viewModel.skinFile.Id;
-            }
+            newGivingPage.PageType = viewModel.pageType.Sum(p => p.id);
+            newGivingPage.FundId = viewModel.defaultFund?.FundId;
+            newGivingPage.EntryPointId = viewModel.entryPoint?.Id;
+            newGivingPage.SkinFile = viewModel.skinFile?.Id;
             CurrentDatabase.GivingPages.InsertOnSubmit(newGivingPage);
             CurrentDatabase.SubmitChanges();
-            #endregion
 
-            #region
             if (viewModel.availFundsArray != null)
             {
                 foreach (var item in viewModel.availFundsArray)
@@ -311,9 +284,7 @@ namespace CmsWeb.Areas.Giving.Models
                 }
                 CurrentDatabase.SubmitChanges();
             }
-            #endregion
 
-            #region
             var newGivingPageList = new List<GivingPageItem>();
             var givingPageItem = new GivingPageItem()
             {
@@ -361,12 +332,153 @@ namespace CmsWeb.Areas.Giving.Models
             }
 
             newGivingPageList.Add(givingPageItem);
-            #endregion
+            
             return newGivingPageList;
+        }
+
+        public List<GivingPageItem> UpdateGivingPage(GivingPageViewModel viewModel, GivingPage givingPage)
+        {
+            givingPage.PageName = viewModel.pageName;
+            givingPage.PageTitle = viewModel.pageTitle;
+            givingPage.PageType = viewModel.pageType.Sum(p => p.id);
+            givingPage.Enabled = viewModel.enabled;
+            if (viewModel.defaultFund != null)
+            {
+                givingPage.ContributionFund = (from cf in CurrentDatabase.ContributionFunds where cf.FundId == viewModel.defaultFund.FundId select cf).FirstOrDefault();
+            }
+            else
+            {
+                givingPage.ContributionFund = null;
+            }
+            givingPage.FundId = viewModel.defaultFund?.FundId;
+            givingPage.DisabledRedirect = viewModel.disRedirect;
+            givingPage.SkinFile = viewModel.skinFile?.Id;
+            givingPage.TopText = viewModel.topText;
+            givingPage.ThankYouText = viewModel.thankYouText;
+            givingPage.ConfirmationEmailPledge = viewModel.confirmEmailPledge?.Id;
+            givingPage.ConfirmationEmailOneTime = viewModel.confirmEmailOneTime?.Id;
+            givingPage.ConfirmationEmailRecurring = viewModel.confirmEmailRecurring?.Id;
+            if (viewModel.campusId != null)
+            {
+                givingPage.Campu = (from c in CurrentDatabase.Campus where c.Id == viewModel.campusId select c).FirstOrDefault();
+            }
+            else
+            {
+                givingPage.Campu = null;
+            }
+            givingPage.CampusId = viewModel.campusId;
+            if (viewModel.entryPoint != null)
+            {
+                givingPage.EntryPoint = (from ep in CurrentDatabase.EntryPoints where ep.Id == viewModel.entryPoint.Id select ep).FirstOrDefault();
+            }
+            else
+            {
+                givingPage.EntryPoint = null;
+            }
+            givingPage.EntryPointId = viewModel.entryPoint?.Id;
+            var tempAnonymousArray = (from gpf in CurrentDatabase.GivingPageFunds
+                                      join cf in CurrentDatabase.ContributionFunds on gpf.FundId equals cf.FundId
+                                      where gpf.GivingPageId == givingPage.GivingPageId
+                                      select new { cf.FundId, cf.FundName }).ToArray();
+            var tempGivingPagesList = (from gpf in CurrentDatabase.GivingPageFunds
+                                       join cf in CurrentDatabase.ContributionFunds on gpf.FundId equals cf.FundId
+                                       where gpf.GivingPageId == givingPage.GivingPageId
+                                       select gpf).ToList();
+            if (tempAnonymousArray.Length > 0)
+            {
+                var tempAvailFundsArray = new FundsClass[tempAnonymousArray.Length];
+                var tempAvailFundsList = new List<FundsClass>();
+                foreach (var item in tempAnonymousArray)
+                {
+                    var t = new FundsClass()
+                    {
+                        FundId = item.FundId,
+                        FundName = item.FundName
+                    };
+                    tempAvailFundsList.Add(t);
+                }
+                tempAvailFundsArray = tempAvailFundsList.ToArray();
+                if (viewModel.availFundsArray != tempAvailFundsArray)
+                {
+                    foreach (var item in tempGivingPagesList)
+                    {
+                        CurrentDatabase.GivingPageFunds.DeleteOnSubmit(item);
+                    }
+                }
+                foreach (var item in viewModel.availFundsArray)
+                {
+                    var newGivingPageFund = new GivingPageFund()
+                    {
+                        GivingPageId = viewModel.pageId,
+                        FundId = item.FundId
+                    };
+                    CurrentDatabase.GivingPageFunds.InsertOnSubmit(newGivingPageFund);
+                }
+            }
+            else
+            {
+                foreach (var item in viewModel.availFundsArray)
+                {
+                    var newGivingPageFund = new GivingPageFund()
+                    {
+                        GivingPageId = viewModel.pageId,
+                        FundId = item.FundId
+                    };
+                    CurrentDatabase.GivingPageFunds.InsertOnSubmit(newGivingPageFund);
+                }
+            }
+            var onlineNotifyPersonString = "";
+            if (viewModel.onlineNotifyPerson != null)
+            {
+                foreach (var item in viewModel.onlineNotifyPerson)
+                {
+                    onlineNotifyPersonString += item.PeopleId + ",";
+                }
+                givingPage.OnlineNotifyPerson = onlineNotifyPersonString.Remove(onlineNotifyPersonString.Length - 1, 1);
+            }
+            else
+            {
+                givingPage.OnlineNotifyPerson = null;
+            }
+            CurrentDatabase.SubmitChanges();
+            var returningGivingPageList = new List<GivingPageItem>();
+            var givingPageItem = new GivingPageItem()
+            {
+                GivingPageId = viewModel.pageId,
+                PageName = viewModel.pageName,
+                PageTitle = viewModel.pageTitle,
+                Enabled = viewModel.enabled,
+                SkinFile = viewModel.skinFile,
+                PageType = viewModel.pageType,
+                DefaultFund = viewModel.defaultFund,
+                AvailableFunds = viewModel.availFundsArray,
+                DisabledRedirect = viewModel.disRedirect,
+                EntryPoint = viewModel.entryPoint,
+                TopText = viewModel.topText,
+                ThankYouText = viewModel.thankYouText,
+                OnlineNotifyPerson = viewModel.onlineNotifyPerson,
+                ConfirmEmailPledge = viewModel.confirmEmailPledge,
+                ConfirmEmailOneTime = viewModel.confirmEmailOneTime,
+                ConfirmEmailRecurring = viewModel.confirmEmailRecurring
+            };
+            givingPageItem.PageTypeString = "";
+            foreach (var item in viewModel.pageType)
+            {
+                if (givingPageItem.PageTypeString.Length > 0)
+                {
+                    givingPageItem.PageTypeString += ", " + item.pageTypeName;
+                }
+                else
+                {
+                    givingPageItem.PageTypeString += item.pageTypeName;
+                }
+            }
+            givingPageItem.CurrentIndex = viewModel.currentIndex;
+            returningGivingPageList.Add(givingPageItem);
+            return returningGivingPageList;
         }
     }
 }
-
 public class GivingPageItem
 {
     public int GivingPageId { get; set; }
@@ -377,7 +489,6 @@ public class GivingPageItem
     public PageTypesClass[] PageType { get; set; }
     public string PageTypeString { get; set; }
     public FundsClass DefaultFund { get; set; }
-    public string DefaultFundId { get; set; }
     public FundsClass[] AvailableFunds { get; set; }
     public string DisabledRedirect { get; set; }
     public EntryPointClass EntryPoint { get; set; }
@@ -387,8 +498,8 @@ public class GivingPageItem
     public ConfirmEmailClass ConfirmEmailPledge { get; set; }
     public ConfirmEmailClass ConfirmEmailOneTime { get; set; }
     public ConfirmEmailClass ConfirmEmailRecurring { get; set; }
+    public int? CurrentIndex { get; set; }
 }
-
 public class PageTypesClass
 {
     public int id { get; set; }
