@@ -37,18 +37,14 @@ namespace CmsWeb.Areas.Giving.Controllers
             return Json(givingPageList, JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult CreateNewGivingPage(string pageName, string pageTitle, bool enabled, PageTypesClass[] pageType, FundsClass defaultFund = null, string skin = null, FundsClass[] availFundsArray = null, string disRedirect = null, EntryPointClass entryPoint = null)
+        public ActionResult CreateNewGivingPage(string pageName, string pageTitle, bool enabled, PageTypesClass[] pageType, FundsClass defaultFund = null, ShellClass skin = null, FundsClass[] availFundsArray = null, string disRedirect = null, EntryPointClass entryPoint = null)
         {
             var newGivingPage = new GivingPage()
             {
                 PageName = pageName,
                 PageTitle = pageTitle,
                 Enabled = enabled,
-                SkinFile = skin,
-                //PageType = pageType.id,
-                //FundId = defaultFund.FundId,
                 DisabledRedirect = disRedirect,
-                //EntryPointId = entryPoint.Id
             };
             var pageTypeBitWise = 0;
             foreach(var item in pageType)
@@ -78,6 +74,11 @@ namespace CmsWeb.Areas.Giving.Controllers
             CurrentDatabase.GivingPages.InsertOnSubmit(newGivingPage);
             CurrentDatabase.SubmitChanges();
 
+            if(skin != null)
+            {
+                newGivingPage.SkinFile = skin.Id;
+            }
+
             if(availFundsArray != null)
             {
                 foreach (var item in availFundsArray)
@@ -98,8 +99,9 @@ namespace CmsWeb.Areas.Giving.Controllers
             {
                 GivingPageId = newGivingPage.GivingPageId,
                 PageName = newGivingPage.PageName,
+                PageTitle = newGivingPage.PageTitle,
                 Enabled = newGivingPage.Enabled,
-                SkinFile = newGivingPage.SkinFile
+                SkinFile = skin
             };
 
             if(defaultFund != null)
@@ -112,28 +114,19 @@ namespace CmsWeb.Areas.Giving.Controllers
                 };
             }
 
-            #region
-            //var newPageType = new PageTypesClass();
-            //switch (pageType.id)
-            //{
-            //    case 1:
-            //        newPageType.id = 1;
-            //        newPageType.pageTypeName = "Pledge";
-            //        break;
-            //    case 2:
-            //        newPageType.id = 2;
-            //        newPageType.pageTypeName = "One Time";
-            //        break;
-            //    case 3:
-            //        newPageType.id = 3;
-            //        newPageType.pageTypeName = "Recurring";
-            //        break;
-            //    default:
-            //        break;
-            //}
             givingPageItem.PageType = pageType;
-            givingPageItem.PageTypeString = givingPageItem.PageType[0].pageTypeName;
-            #endregion
+            givingPageItem.PageTypeString = "";
+            foreach (var item in pageType)
+            {
+                if (givingPageItem.PageTypeString.Length > 0)
+                {
+                    givingPageItem.PageTypeString += ", " + item.pageTypeName;
+                }
+                else
+                {
+                    givingPageItem.PageTypeString += item.pageTypeName;
+                }
+            }
 
             givingPageItem.AvailableFunds = availFundsArray;
 
@@ -153,18 +146,21 @@ namespace CmsWeb.Areas.Giving.Controllers
         }
 
         public void UpdateGivingPage(int pageId, string pageName, string pageTitle, PageTypesClass pageType, bool enabled, FundsClass defaultFund = null, FundsClass[] availFundsArray = null,
-            string disRedirect = null, string skinFile = null, string topText = null, string thankYouText = null, PeopleClass[] onlineNotifyPerson = null,
+            string disRedirect = null, ShellClass skinFile = null, string topText = null, string thankYouText = null, PeopleClass[] onlineNotifyPerson = null,
             ConfirmEmailClass confirmEmailPledge = null, ConfirmEmailClass confirmEmailOneTime = null, ConfirmEmailClass confirmEmailRecurring = null, int? campusId = null, EntryPointClass entryPoint = null)
         {
             var givingPage = CurrentDatabase.GivingPages.Where(g => g.GivingPageId == pageId).FirstOrDefault();
             givingPage.PageName = pageName;
             givingPage.PageTitle = pageTitle;
-            givingPage.PageType = pageType.id;
+            //givingPage.PageType = pageType.id;
+            givingPage.Enabled = enabled;
             givingPage.ContributionFund = (from cf in CurrentDatabase.ContributionFunds where cf.FundId == defaultFund.FundId select cf).FirstOrDefault();
             givingPage.FundId = defaultFund.FundId;
-            givingPage.Enabled = enabled;
             givingPage.DisabledRedirect = disRedirect;
-            givingPage.SkinFile = skinFile;
+            if(skinFile != null)
+            {
+                givingPage.SkinFile = skinFile.Id;
+            }
             givingPage.TopText = topText;
             givingPage.ThankYouText = thankYouText;
             givingPage.ConfirmationEmailPledge = confirmEmailPledge.Id;
@@ -186,16 +182,16 @@ namespace CmsWeb.Areas.Giving.Controllers
                     GivingPageId = pageId,
                     FundId = item.FundId
                 };
-                //CurrentDatabase.GivingPageFunds.InsertOnSubmit(newGivingPageFund);
+                CurrentDatabase.GivingPageFunds.InsertOnSubmit(newGivingPageFund);
             }
-            //CurrentDatabase.SubmitChanges();
+            CurrentDatabase.SubmitChanges();
 
-            var onlineNotifyPersonString = "";
-            foreach (var item in onlineNotifyPerson)
-            {
-                onlineNotifyPersonString += item.PeopleId + ",";
-            }
-            onlineNotifyPersonString = onlineNotifyPersonString.Remove(onlineNotifyPersonString.Length - 1, 1);
+            //var onlineNotifyPersonString = "";
+            //foreach (var item in onlineNotifyPerson)
+            //{
+            //    onlineNotifyPersonString += item.PeopleId + ",";
+            //}
+            //onlineNotifyPersonString = onlineNotifyPersonString.Remove(onlineNotifyPersonString.Length - 1, 1);
 
             //UpdateModel(givingPage);
             //CurrentDatabase.SubmitChanges();
@@ -260,6 +256,17 @@ namespace CmsWeb.Areas.Giving.Controllers
                    orderby c.Name
                    select new { c.Id, c.Title }).ToList();
             return Json(confirmationEmailList, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpGet]
+        public JsonResult GetShellList()
+        {
+            var shellList = (from c in CurrentDatabase.Contents
+                        where c.TypeID == ContentTypeCode.TypeHtml
+                        where c.ContentKeyWords.Any(vv => vv.Word == "Shell")
+                        orderby c.Name
+                        select new { c.Id, c.Title }).ToList();
+            return Json(shellList, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]

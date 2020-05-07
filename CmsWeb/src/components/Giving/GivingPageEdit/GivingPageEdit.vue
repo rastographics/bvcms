@@ -49,7 +49,16 @@
                 <div class="col-lg-5 col-md-5 col-sm-5">
                   <div class="form-group">
                     <label class="control-label">Shell</label>
-                    <input type="text" v-model="currentPageSkin" class="form-control" />
+                    <MultiSelect
+                      v-model="currentPageSkin"
+                      :options="shellList"
+                      :searchable="true"
+                      :close-on-select="true"
+                      :show-labels="false"
+                      :allowEmpty="true"
+                      trackBy="Id"
+                      :custom-label="ShellCustomLabel"
+                    ></MultiSelect>
                   </div>
                 </div>
                 <div class="col-lg-5 col-md-5 col-sm-5">
@@ -242,7 +251,7 @@ export default {
     pageName: String,
     pageTitle: String,
     pageEnabled: Boolean,
-    pageSkin: String,
+    pageSkin: Object,
     pageType: Array,
     defaultFund: Object,
     availableFunds: Array,
@@ -260,7 +269,8 @@ export default {
     fundsList: Array,
     entryPointList: Array,
     onlineNotifyPersonList: Array,
-    confirmationEmailList: Array
+    confirmationEmailList: Array,
+    shellList: Array
   },
   components: {
     MultiSelect
@@ -302,6 +312,9 @@ export default {
       return `${Name}`;
     },
     ConfirmEmailCustomLabel({ Title }) {
+      return `${Title}`;
+    },
+    ShellCustomLabel({ Title }) {
       return `${Title}`;
     },
     saveGivingPage() {

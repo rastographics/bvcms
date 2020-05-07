@@ -58,7 +58,16 @@
             <div class="col-lg-5 col-md-5 col-sm-5">
               <div class="form-group">
                 <label class="control-label">Shell</label>
-                <input type="text" v-model="newGivingSkinFile" class="form-control" />
+                <MultiSelect
+                  v-model="newGivingSkinFile"
+                  :options="shellList"
+                  :searchable="true"
+                  :close-on-select="true"
+                  :show-labels="false"
+                  :allowEmpty="true"
+                  trackBy="Id"
+                  :custom-label="ShellCustomLabel"
+                ></MultiSelect>
               </div>
             </div>
             <div class="col-lg-5 col-md-5 col-sm-5">
@@ -166,7 +175,8 @@ export default {
     showAddModal: Boolean,
     pageTypes: Array,
     availableFunds: Array,
-    entryPoints: Array
+    entryPoints: Array,
+    shellList: Array
   },
   components: {
     MultiSelect
@@ -177,7 +187,7 @@ export default {
       newGivingPageName: "",
       newGivingPageTitle: "",
       newGivingEnabled: false,
-      newGivingSkinFile: "",
+      newGivingSkinFile: null,
       newGivingPageType: null,
       newDefaultFund: null,
       newGivingFundsArray: [],
@@ -207,7 +217,7 @@ export default {
               this.newGivingPageName = "";
               this.newGivingPageTitle = "";
               this.newGivingEnabled = false;
-              this.newGivingSkinFile = "";
+              this.newGivingSkinFile = null;
               this.newGivingPageType = null;
               this.newDefaultFund = null;
               this.newGivingFundsArray = null;
@@ -234,6 +244,9 @@ export default {
     },
     EntryPointCustomLabel({ Description }) {
       return `${Description}`;
+    },
+    ShellCustomLabel({ Title }) {
+      return `${Title}`;
     },
     customLabel({ pageTypeName }) {
       return `${pageTypeName}`;

@@ -31,7 +31,7 @@ namespace CmsData
 
         private string _DisabledRedirect;
 
-        private string _SkinFile;
+        private int? _SkinFile;
 
         private string _TopText;
 
@@ -84,7 +84,7 @@ namespace CmsData
         partial void OnDisabledRedirectChanging(string value);
         partial void OnDisabledRedirectChanged();
 
-        partial void OnSkinFileChanging(string value);
+        partial void OnSkinFileChanging(int? value);
         partial void OnSkinFileChanged();
 
         partial void OnTopTextChanging(string value);
@@ -257,8 +257,8 @@ namespace CmsData
             }
         }
 
-        [Column(Name = "SkinFile", UpdateCheck = UpdateCheck.Never, Storage = "_SkinFile", DbType = "nvarchar")]
-        public string SkinFile
+        [Column(Name = "SkinFile", UpdateCheck = UpdateCheck.Never, Storage = "_SkinFile", DbType = "int")]
+        public int? SkinFile
         {
             get { return _SkinFile; }
 
