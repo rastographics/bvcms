@@ -37,130 +37,131 @@ namespace CmsWeb.Areas.Giving.Controllers
             return Json(givingPageList, JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult CreateNewGivingPage(string pageName, string pageTitle, bool enabled, PageTypesClass[] pageType, FundsClass defaultFund = null, ShellClass skin = null, FundsClass[] availFundsArray = null, string disRedirect = null, EntryPointClass entryPoint = null)
+        public ActionResult CreateNewGivingPage(GivingPageViewModel viewModel)
         {
+            var model = new GivingPageModel(CurrentDatabase);
+            var newGivingPageList = model.AddNewGivingPage(viewModel);
             #region
-            var newGivingPage = new GivingPage()
-            {
-                PageName = pageName,
-                PageTitle = pageTitle,
-                Enabled = enabled,
-                DisabledRedirect = disRedirect
-            };
-            newGivingPage.PageType = 0;
-            foreach (var item in pageType)
-            {
-                if (item.id == 1)
-                {
-                    newGivingPage.PageType = newGivingPage.PageType + 1;
-                }
-                if (item.id == 2)
-                {
-                    newGivingPage.PageType = newGivingPage.PageType + 2;
-                }
-                if (item.id == 3)
-                {
-                    newGivingPage.PageType = newGivingPage.PageType + 4;
-                }
-            }
-            if (defaultFund != null)
-            {
-                newGivingPage.FundId = defaultFund.FundId;
-            }
-            if (entryPoint != null)
-            {
-                newGivingPage.EntryPointId = entryPoint.Id;
-            }
-            if (skin != null)
-            {
-                newGivingPage.SkinFile = skin.Id;
-            }
-            CurrentDatabase.GivingPages.InsertOnSubmit(newGivingPage);
-            CurrentDatabase.SubmitChanges();
-            #endregion
+            //#region
+            //var newGivingPage = new GivingPage()
+            //{
+            //    PageName = viewModel.pageName,
+            //    PageTitle = viewModel.pageTitle,
+            //    Enabled = viewModel.enabled,
+            //    DisabledRedirect = viewModel.disRedirect
+            //};
+            //newGivingPage.PageType = 0;
+            //foreach (var item in viewModel.pageType)
+            //{
+            //    if (item.id == 1)
+            //    {
+            //        newGivingPage.PageType = newGivingPage.PageType + 1;
+            //    }
+            //    if (item.id == 2)
+            //    {
+            //        newGivingPage.PageType = newGivingPage.PageType + 2;
+            //    }
+            //    if (item.id == 3)
+            //    {
+            //        newGivingPage.PageType = newGivingPage.PageType + 4;
+            //    }
+            //}
+            //if (viewModel.defaultFund != null)
+            //{
+            //    newGivingPage.FundId = viewModel.defaultFund.FundId;
+            //}
+            //if (viewModel.entryPoint != null)
+            //{
+            //    newGivingPage.EntryPointId = viewModel.entryPoint.Id;
+            //}
+            //if (viewModel.skinFile != null)
+            //{
+            //    newGivingPage.SkinFile = viewModel.skinFile.Id;
+            //}
+            //CurrentDatabase.GivingPages.InsertOnSubmit(newGivingPage);
+            //CurrentDatabase.SubmitChanges();
+            //#endregion
 
-            #region
-            if (availFundsArray != null)
-            {
-                foreach (var item in availFundsArray)
-                {
-                    var newGivingPageFund = new GivingPageFund()
-                    {
-                        GivingPageId = newGivingPage.GivingPageId,
-                        FundId = item.FundId
-                    };
-                    CurrentDatabase.GivingPageFunds.InsertOnSubmit(newGivingPageFund);
-                }
-                CurrentDatabase.SubmitChanges();
-            }
-            #endregion
+            //#region
+            //if (viewModel.availFundsArray != null)
+            //{
+            //    foreach (var item in viewModel.availFundsArray)
+            //    {
+            //        var newGivingPageFund = new GivingPageFund()
+            //        {
+            //            GivingPageId = newGivingPage.GivingPageId,
+            //            FundId = item.FundId
+            //        };
+            //        CurrentDatabase.GivingPageFunds.InsertOnSubmit(newGivingPageFund);
+            //    }
+            //    CurrentDatabase.SubmitChanges();
+            //}
+            //#endregion
 
-            #region
-            var newGivingPageList = new List<GivingPageItem>();
-            var givingPageItem = new GivingPageItem()
-            {
-                GivingPageId = newGivingPage.GivingPageId,
-                PageName = newGivingPage.PageName,
-                PageTitle = newGivingPage.PageTitle,
-                Enabled = newGivingPage.Enabled,
-                SkinFile = skin
-            };
+            //#region
+            //var newGivingPageList = new List<GivingPageItem>();
+            //var givingPageItem = new GivingPageItem()
+            //{
+            //    GivingPageId = newGivingPage.GivingPageId,
+            //    PageName = newGivingPage.PageName,
+            //    PageTitle = newGivingPage.PageTitle,
+            //    Enabled = newGivingPage.Enabled,
+            //    SkinFile = viewModel.skinFile
+            //};
 
-            if (defaultFund != null)
-            {
-                var tempDefaultFund = (from d in CurrentDatabase.ContributionFunds where d.FundId == defaultFund.FundId select d).FirstOrDefault();
-                givingPageItem.DefaultFund = new FundsClass()
-                {
-                    FundId = tempDefaultFund.FundId,
-                    FundName = tempDefaultFund.FundName
-                };
-            }
+            //if (viewModel.defaultFund != null)
+            //{
+            //    var tempDefaultFund = (from d in CurrentDatabase.ContributionFunds where d.FundId == viewModel.defaultFund.FundId select d).FirstOrDefault();
+            //    givingPageItem.DefaultFund = new FundsClass()
+            //    {
+            //        FundId = tempDefaultFund.FundId,
+            //        FundName = tempDefaultFund.FundName
+            //    };
+            //}
 
-            givingPageItem.PageType = pageType;
-            givingPageItem.PageTypeString = "";
-            foreach (var item in pageType)
-            {
-                if (givingPageItem.PageTypeString.Length > 0)
-                {
-                    givingPageItem.PageTypeString += ", " + item.pageTypeName;
-                }
-                else
-                {
-                    givingPageItem.PageTypeString += item.pageTypeName;
-                }
-            }
+            //givingPageItem.PageType = viewModel.pageType;
+            //givingPageItem.PageTypeString = "";
+            //foreach (var item in viewModel.pageType)
+            //{
+            //    if (givingPageItem.PageTypeString.Length > 0)
+            //    {
+            //        givingPageItem.PageTypeString += ", " + item.pageTypeName;
+            //    }
+            //    else
+            //    {
+            //        givingPageItem.PageTypeString += item.pageTypeName;
+            //    }
+            //}
 
-            givingPageItem.AvailableFunds = availFundsArray;
+            //givingPageItem.AvailableFunds = viewModel.availFundsArray;
 
-            if (entryPoint != null)
-            {
-                var tempEntryPoint = (from ep in CurrentDatabase.EntryPoints where ep.Id == entryPoint.Id select new { ep.Id, ep.Description }).FirstOrDefault();
-                givingPageItem.EntryPoint = new EntryPointClass()
-                {
-                    Id = (int)entryPoint.Id,
-                    Description = tempEntryPoint.Description
-                };
-            }
+            //if (viewModel.entryPoint != null)
+            //{
+            //    var tempEntryPoint = (from ep in CurrentDatabase.EntryPoints where ep.Id == viewModel.entryPoint.Id select new { ep.Id, ep.Description }).FirstOrDefault();
+            //    givingPageItem.EntryPoint = new EntryPointClass()
+            //    {
+            //        Id = (int)viewModel.entryPoint.Id,
+            //        Description = tempEntryPoint.Description
+            //    };
+            //}
 
-            newGivingPageList.Add(givingPageItem);
+            //newGivingPageList.Add(givingPageItem);
+            //#endregion
             #endregion
             return Json(newGivingPageList, JsonRequestBehavior.AllowGet);
         }
 
-        public void UpdateGivingPage(int pageId, string pageName, string pageTitle, PageTypesClass[] pageType, bool enabled, FundsClass defaultFund = null,
-            FundsClass[] availFundsArray = null, string disRedirect = null, ShellClass skinFile = null, string topText = null, string thankYouText = null,
-            PeopleClass[] onlineNotifyPerson = null, ConfirmEmailClass confirmEmailPledge = null, ConfirmEmailClass confirmEmailOneTime = null,
-            ConfirmEmailClass confirmEmailRecurring = null, int? campusId = null, EntryPointClass entryPoint = null)
+        public void UpdateGivingPage(GivingPageViewModel viewModel)
         {
-            var givingPage = (from gp in CurrentDatabase.GivingPages where gp.GivingPageId == pageId select gp).FirstOrDefault();
+            var givingPage = (from gp in CurrentDatabase.GivingPages where gp.GivingPageId == viewModel.pageId select gp).FirstOrDefault();
 
             #region
-            givingPage.PageName = pageName;
+            givingPage.PageName = viewModel.pageName;
 
-            givingPage.PageTitle = pageTitle;
+            givingPage.PageTitle = viewModel.pageTitle;
 
             givingPage.PageType = 0;
-            foreach (var item in pageType)
+            foreach (var item in viewModel.pageType)
             {
                 if (item.id == 1)
                 {
@@ -176,71 +177,71 @@ namespace CmsWeb.Areas.Giving.Controllers
                 }
             }
 
-            givingPage.Enabled = enabled;
+            givingPage.Enabled = viewModel.enabled;
 
-            if (defaultFund != null)
+            if (viewModel.defaultFund != null)
             {
-                givingPage.ContributionFund = (from cf in CurrentDatabase.ContributionFunds where cf.FundId == defaultFund.FundId select cf).FirstOrDefault();
-                givingPage.FundId = defaultFund.FundId;
+                givingPage.ContributionFund = (from cf in CurrentDatabase.ContributionFunds where cf.FundId == viewModel.defaultFund.FundId select cf).FirstOrDefault();
+                givingPage.FundId = viewModel.defaultFund.FundId;
             }
             else
             {
                 givingPage.FundId = null;
             }
 
-            givingPage.DisabledRedirect = disRedirect;
+            givingPage.DisabledRedirect = viewModel.disRedirect;
 
-            if (skinFile != null)
+            if (viewModel.skinFile != null)
             {
-                givingPage.SkinFile = skinFile.Id;
+                givingPage.SkinFile = viewModel.skinFile.Id;
             }
             else
             {
                 givingPage.SkinFile = null;
             }
 
-            givingPage.TopText = topText;
+            givingPage.TopText = viewModel.topText;
 
-            givingPage.ThankYouText = thankYouText;
+            givingPage.ThankYouText = viewModel.thankYouText;
 
-            if(confirmEmailPledge != null)
+            if(viewModel.confirmEmailPledge != null)
             {
-                givingPage.ConfirmationEmailPledge = confirmEmailPledge.Id;
+                givingPage.ConfirmationEmailPledge = viewModel.confirmEmailPledge.Id;
             }
             else
             {
                 givingPage.ConfirmationEmailPledge = null;
             }
 
-            if (confirmEmailOneTime != null)
+            if (viewModel.confirmEmailOneTime != null)
             {
-                givingPage.ConfirmationEmailOneTime = confirmEmailOneTime.Id;
+                givingPage.ConfirmationEmailOneTime = viewModel.confirmEmailOneTime.Id;
             }
             else
             {
                 givingPage.ConfirmationEmailOneTime = null;
             }
 
-            if (confirmEmailRecurring != null)
+            if (viewModel.confirmEmailRecurring != null)
             {
-                givingPage.ConfirmationEmailRecurring = confirmEmailRecurring.Id;
+                givingPage.ConfirmationEmailRecurring = viewModel.confirmEmailRecurring.Id;
             }
             else
             {
                 givingPage.ConfirmationEmailRecurring = null;
             }
 
-            if (campusId != null)
+            if (viewModel.campusId != null)
             {
-                givingPage.Campu = (from c in CurrentDatabase.Campus where c.Id == campusId select c).FirstOrDefault();
-                givingPage.CampusId = campusId;
+                givingPage.Campu = (from c in CurrentDatabase.Campus where c.Id == viewModel.campusId select c).FirstOrDefault();
+                givingPage.CampusId = viewModel.campusId;
             }
-            givingPage.CampusId = campusId;
+            givingPage.CampusId = viewModel.campusId;
 
-            if (entryPoint != null)
+            if (viewModel.entryPoint != null)
             {
-                givingPage.EntryPoint = (from ep in CurrentDatabase.EntryPoints where ep.Id == entryPoint.Id select ep).FirstOrDefault();
-                givingPage.EntryPointId = entryPoint.Id;
+                givingPage.EntryPoint = (from ep in CurrentDatabase.EntryPoints where ep.Id == viewModel.entryPoint.Id select ep).FirstOrDefault();
+                givingPage.EntryPointId = viewModel.entryPoint.Id;
             }
             else
             {
@@ -271,18 +272,18 @@ namespace CmsWeb.Areas.Giving.Controllers
                     tempAvailFundsList.Add(t);
                 }
                 tempAvailFundsArray = tempAvailFundsList.ToArray();
-                if (availFundsArray != tempAvailFundsArray)
+                if (viewModel.availFundsArray != tempAvailFundsArray)
                 {
                     foreach (var item in tempGivingPagesList)
                     {
                         CurrentDatabase.GivingPageFunds.DeleteOnSubmit(item);
                     }
                 }
-                foreach (var item in availFundsArray)
+                foreach (var item in viewModel.availFundsArray)
                 {
                     var newGivingPageFund = new GivingPageFund()
                     {
-                        GivingPageId = pageId,
+                        GivingPageId = viewModel.pageId,
                         FundId = item.FundId
                     };
                     CurrentDatabase.GivingPageFunds.InsertOnSubmit(newGivingPageFund);
@@ -290,11 +291,11 @@ namespace CmsWeb.Areas.Giving.Controllers
             }
             else
             {
-                foreach (var item in availFundsArray)
+                foreach (var item in viewModel.availFundsArray)
                 {
                     var newGivingPageFund = new GivingPageFund()
                     {
-                        GivingPageId = pageId,
+                        GivingPageId = viewModel.pageId,
                         FundId = item.FundId
                     };
                     CurrentDatabase.GivingPageFunds.InsertOnSubmit(newGivingPageFund);
@@ -304,9 +305,9 @@ namespace CmsWeb.Areas.Giving.Controllers
 
             #region
             var onlineNotifyPersonString = "";
-            if(onlineNotifyPerson != null)
+            if(viewModel.onlineNotifyPerson != null)
             {
-                foreach (var item in onlineNotifyPerson)
+                foreach (var item in viewModel.onlineNotifyPerson)
                 {
                     onlineNotifyPersonString += item.PeopleId + ",";
                 }
@@ -319,6 +320,11 @@ namespace CmsWeb.Areas.Giving.Controllers
             #endregion
 
             CurrentDatabase.SubmitChanges();
+            #region
+            //var returningGivingPageList = new List<GivingPageViewModel>();
+            //returningGivingPageList.Add(givingPage);
+            //return Json(givingPage, JsonRequestBehavior.AllowGet);
+            #endregion
         }
 
         [HttpGet]
