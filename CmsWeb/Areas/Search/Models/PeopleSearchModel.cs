@@ -163,7 +163,6 @@ namespace CmsWeb.Models
                             {
                                 people = altPeople;
                             }
-
                         }
                     }
                 }
