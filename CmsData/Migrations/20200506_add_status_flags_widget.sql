@@ -1,12 +1,12 @@
 -- add status flags widget
-IF (select count(*) from DashboardWidgets where [Name] like 'Status Flags' and [System] = 1) = 0
+IF (select count(*) from DashboardWidgets where [Name] like 'Vital Stats' and [System] = 1) = 0
 BEGIN
   INSERT INTO [dbo].[Content]
            ([Name],[Title],
        [Body],
        [DateCreated],[TypeID],[ThumbID],[RoleID],[OwnerID],[CreatedBy])
      VALUES
-           ('WidgetStatusFlagsHTML','Edit Text Content',
+           ('WidgetVitalStatsHTML','Edit Text Content',
            '<div class="box">
     <div class="box-title hidden-xs">
         <h5>{{WidgetName}}</h5>
@@ -21,9 +21,9 @@ BEGIN
             <ul class="list-group">
                 {{#each results}}
                     {{#ifEqual name "Total"}}
-                        <li class="list-group-item" title="{{flag}}"><strong>{{name}}</strong><span style="float:right;font-weight:bold;">{{count}}</span></li>
+                        <li class="list-group-item"><strong>{{name}}</strong><a href="{{url}}" class="badge badge-primary" style="float:right;font-weight:bold;">{{count}}</a></li>
                     {{else}}
-                        <li class="list-group-item" title="{{flag}}">{{name}}<span style="float:right;">{{count}}</span></li>
+                        <li class="list-group-item"><a href="{{url}}">{{name}}</a><a href="{{url}}" style="float:right;">{{count}}</a></li>
                     {{/ifEqual}}
                 {{/each}}
             </ul>
@@ -46,15 +46,17 @@ INSERT INTO [dbo].[Content]
        [Body],
        [DateCreated],[TypeID],[ThumbID],[RoleID],[OwnerID],[CreatedBy])
      VALUES
-           ('WidgetStatusFlagsPython','Edit Python Script',
-           '# You can report summary numbers for any status flag you have set up with this widget
-# Example data is below, to use put the name of each status flag you want to report on, followed by the code on each line
-# You can also use multiple codes in a line by separating them by a comma - this will show the number of people that have ALL of the specified flags
+           ('WidgetVitalStatsPython','Edit Python Script',
+           'import re
+# You can report summary numbers for any status flag or saved search you have set up with this widget
+# Example data is below, to use put the name you want to appear in the widget, followed by the status flag code or saved search name on each line
+# You can also use multiple status flag codes in a line by separating them by a comma - this will show the number of people that have ALL of the specified flags
+# You can link the number to any url as well with a third parameter
 
 statusFlags = [
     ( "Community Group", "F8" ),
-    ( "Leaders", "F16" ),
-    ( "Volunteers", "F5,F20" ),
+    ( "Leaders", "F16"),
+    ( "Volunteers", "Volunteers", "/Query/f9449433-f972-46b0-95ab-ce142b5d54cb"),
     ( "New Visitors", "F31" ),
     ( "Total", "F20" ),
 ]
@@ -67,7 +69,14 @@ def Get():
         flag = model.DynamicData()
         flag.name = item[0]
         flag.flag = item[1]
-        flag.count = q.StatusCount(item[1])
+        if re.search(''^F\d+(,F\d+)*$'',item[1]) is None:
+            flag.count = q.QueryCount(item[1])
+        else:
+            flag.count = q.StatusCount(item[1])
+        if len(item) > 2:
+            flag.url = item[2]
+        else:
+            flag.url = ''#''
         results.append(flag)
     
     Data.results = results
@@ -85,7 +94,7 @@ INSERT INTO [dbo].[ContentKeyWords]
 END
 GO
 
-IF (select count(*) from DashboardWidgets where [Name] like 'Status Flags' and [System] = 1) = 0
+IF (select count(*) from DashboardWidgets where [Name] like 'Vital Stats' and [System] = 1) = 0
 BEGIN
 INSERT INTO [dbo].[DashboardWidgets]
            ([Name]
@@ -99,10 +108,10 @@ INSERT INTO [dbo].[DashboardWidgets]
            ,[CachePolicy]
            ,[CacheHours])
      VALUES
-           ('Status Flags'
-           ,'Displays vital stats about your church'
-           ,(select max(Id) from Content where [Name] like 'WidgetStatusFlagsHTML')
-           ,(select max(Id) from Content where [Name] like 'WidgetStatusFlagsPython')
+           ('Vital Stats'
+           ,'Reports current counts of status flags and search queries'
+           ,(select max(Id) from Content where [Name] like 'WidgetVitalStatsHTML')
+           ,(select max(Id) from Content where [Name] like 'WidgetVitalStatsPython')
            ,NULL
            ,0
            ,(select isnull(max([Order]), 0)+1 from DashboardWidgets)
