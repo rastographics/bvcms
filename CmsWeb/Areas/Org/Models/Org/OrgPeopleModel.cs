@@ -303,6 +303,8 @@ namespace CmsWeb.Areas.Org.Models
 
         public bool MultiSelect { get; set; }
         public bool ShowMinistryInfo { get; set; }
+        public bool ShowAddIndividuals { get; set; }
+        public bool ShowAddFromTag { get; set; }
 
         public string GroupActive(string group)
         {
@@ -325,6 +327,9 @@ namespace CmsWeb.Areas.Org.Models
         public string ShowAddressActive => ShowAddress ? "active" : "";
         public string FilterTagActive => FilterTag ? "active" : "";
         public string FilterIndActive => FilterIndividuals ? "active" : "";
+
+        public string ShowAddIndividualsActive => ShowAddIndividuals ? "active" : "";
+        public string ShowAddFromTagActive => ShowAddFromTag ? "active" : "";
 
         private bool? orgLeaderAddDrop;
         public bool OrgLeaderAddDrop => orgLeaderAddDrop ?? (bool)(orgLeaderAddDrop = RoleChecker.HasSetting(SettingName.OrgMembersDropAdd, false));
