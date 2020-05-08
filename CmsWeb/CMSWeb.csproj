@@ -1930,7 +1930,6 @@
     <Content Include="Areas\Giving\Views\Web.config">
       <SubType>Designer</SubType>
     </Content>
-    <Content Include="Areas\Giving\Views\GivingPage\Edit.cshtml" />
     <Content Include="Areas\Giving\Views\GivingPage\Index.cshtml" />
     <Content Include="package-lock.json" />
     <Content Include="Content\dist\js\app.js.map" />
