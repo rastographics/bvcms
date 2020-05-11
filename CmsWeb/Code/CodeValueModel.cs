@@ -935,19 +935,6 @@ namespace CmsWeb.Code
                    };
         }
 
-        public IEnumerable<CodeValueItem> RegistrationTypes99()
-        {
-            var list = (from i in RegistrationTypeCode.GetCodePairs()
-                        select new CodeValueItem
-                        {
-                            Id = i.Key,
-                            Code = i.Key.ToString(),
-                            Value = i.Value
-                        }).ToList();
-            list.Insert(0, new CodeValueItem { Id = 99, Code = "99", Value = "(not specified)" });
-            return list;
-        }
-
         public IEnumerable<CodeValueItem> ResidentCodes()
         {
             return from c in Db.ResidentCodes
