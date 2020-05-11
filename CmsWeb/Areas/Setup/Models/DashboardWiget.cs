@@ -235,6 +235,7 @@ namespace CmsWeb.Areas.Setup.Models
         private string Generate()
         {
             var m = new PythonScriptModel(CurrentDatabase);
+            m.PrepareHttpPost();
             m.pythonModel.DictionaryAdd("HTMLContent", HTMLContent.Body);
             if (SQLContent != null)
             {
