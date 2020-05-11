@@ -439,7 +439,6 @@
     <Compile Include="Areas\Dialog\Models\AddToOrgFromTag.cs" />
     <Compile Include="Areas\Dialog\Models\CheckImageModel.cs" />
     <Compile Include="Areas\Dialog\Models\DeleteMeeting.cs" />
-    <Compile Include="Areas\Dialog\Models\InvolvementModel.cs" />
     <Compile Include="Areas\Dialog\Models\NewMeetingInfo.cs" />
     <Compile Include="Areas\Dialog\Models\OrganizationModel.cs" />
     <Compile Include="Areas\Dialog\Models\OrgPrevMember\OrgPrevMemberModel.cs" />

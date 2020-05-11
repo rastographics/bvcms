@@ -18,38 +18,38 @@ namespace CmsWeb.Areas.Dialog.Controllers
         [Route("~/AddInvolvement")]
         public ActionResult Index(bool displayCopySettings = false)
         {
-            var m = new NewInvolvementModel(CurrentDatabase, CurrentDatabase.CurrentSessionOrgId, displayCopySettings);
-            m.org.InvolvementName = "";
+            var m = new NewOrganizationModel(CurrentDatabase, CurrentDatabase.CurrentSessionOrgId, displayCopySettings);
+            m.org.OrganizationName = "";
             m.org.Location = "";
             return View(m);
         }
 
         [HttpPost, Route("Submit/{id:int}")]
-        public ActionResult Submit(int id, NewInvolvementModel m)
+        public ActionResult Submit(int id, NewOrganizationModel m)
         {
-            var org = CurrentDatabase.LoadInvolvementById(id);
+            var org = CurrentDatabase.LoadOrganizationById(id);
             m.org.CreatedDate = Util.Now;
             m.org.CreatedBy = CurrentDatabase.UserId1;
             m.org.EntryPointId = org.EntryPointId;
-            m.org.InvolvementTypeId = org.InvolvementTypeId;
+            m.org.OrganizationTypeId = org.OrganizationTypeId;
             if (m.org.CampusId == 0)
             {
                 m.org.CampusId = null;
             }
 
-            if (!m.org.InvolvementName.HasValue())
+            if (!m.org.OrganizationName.HasValue())
             {
-                m.org.InvolvementName = $"New Involvement needs a name ({Util.UserFullName})";
+                m.org.OrganizationName = $"New Involvement needs a name ({Util.UserFullName})";
             }
 
-            m.org.InvolvementStatusId = 30;
+            m.org.OrganizationStatusId = 30;
             m.org.DivisionId = org.DivisionId;
 
-            CurrentDatabase.Involvements.InsertOnSubmit(m.org);
+            CurrentDatabase.Organizations.InsertOnSubmit(m.org);
             CurrentDatabase.SubmitChanges();
             foreach (var div in org.DivOrgs)
             {
-                m.org.DivOrgs.Add(new DivOrg { Involvement = m.org, DivId = div.DivId });
+                m.org.DivOrgs.Add(new DivOrg { Organization = m.org, DivId = div.DivId });
             }
 
             if (m.copysettings)
@@ -58,7 +58,7 @@ namespace CmsWeb.Areas.Dialog.Controllers
                 {
                     m.org.OrgSchedules.Add(new OrgSchedule
                     {
-                        InvolvementId = m.org.InvolvementId,
+                        OrganizationId = m.org.OrganizationId,
                         AttendCreditId = sc.AttendCreditId,
                         SchedDay = sc.SchedDay,
                         SchedTime = sc.SchedTime,
@@ -79,8 +79,8 @@ namespace CmsWeb.Areas.Dialog.Controllers
             }
 
             CurrentDatabase.SubmitChanges();
-            DbUtil.LogActivity($"Add new org {m.org.InvolvementName}");
-            return Redirect($"/Org/{m.org.InvolvementId}");
+            DbUtil.LogActivity($"Add new org {m.org.OrganizationName}");
+            return Redirect($"/Org/{m.org.OrganizationId}");
         }
     }
 }
