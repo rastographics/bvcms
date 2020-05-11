@@ -3487,6 +3487,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Areas\CheckIn\Views\Shared\" />
+    <Folder Include="Areas\Dialog\Views\Shared\" />
     <Folder Include="Areas\Figures\Views\Shared\" />
     <Folder Include="Areas\Involvement\Models\" />
     <Folder Include="Areas\Involvement\Views\InvolvementSearch\" />
