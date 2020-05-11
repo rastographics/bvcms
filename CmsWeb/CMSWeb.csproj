@@ -1921,8 +1921,6 @@
     <Content Include="Content\touchpoint\src\less\unlayer-editor.less" />
     <Content Include="Areas\Dialog\Views\RemoteDeposit\Index.cshtml" />
     <Content Include="Areas\Dialog\Views\RemoteDeposit\NotConfigured.cshtml" />
-    <Content Include="Areas\Dialog\Views\_ViewStart.cshtml" />
-    <Content Include="Areas\Dialog\Views\Shared\_Layout.cshtml" />
     <Content Include="Areas\Dialog\Views\AddInvolvement\index.cshtml" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
@@ -3440,6 +3438,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Areas\CheckIn\Views\Shared\" />
+    <Folder Include="Areas\Dialog\Views\Shared\" />
     <Folder Include="Areas\Figures\Views\Shared\" />
     <Folder Include="Areas\Main\Views\Shared\" />
     <Folder Include="Areas\Manage\Views\Shared\" />
