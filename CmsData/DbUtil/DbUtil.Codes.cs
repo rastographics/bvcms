@@ -228,10 +228,15 @@ namespace CmsData.Codes
         public const int RegisterLinkMaster = 20;
         public const int TicketedEvent = 22;
 
-        public static IEnumerable<KeyValuePair<int, string>> GetCodePairs()
+        public static IEnumerable<KeyValuePair<int, string>> GetCodePairs(CMSDataContext db = null)
         {
             yield return new KeyValuePair<int, string>(None, "No Online Registration");
-            yield return new KeyValuePair<int, string>(TicketedEvent, "Ticketed Event");
+
+            if (db != null && db.Setting("UseTicketed", "true").ToBool())
+            {
+                yield return new KeyValuePair<int, string>(TicketedEvent, "Ticketed Event");
+            }
+
             yield return new KeyValuePair<int, string>(JoinOrganization, "Join Organization");
             yield return new KeyValuePair<int, string>(UserSelects, "User Selects Organization");
             yield return new KeyValuePair<int, string>(ComputeOrgByAge, "Compute Org By Birthday");
