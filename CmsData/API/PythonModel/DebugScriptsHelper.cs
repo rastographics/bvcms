@@ -99,7 +99,7 @@ namespace CmsData
         }
         private static void WalkTree(DirectoryInfo dirinfo, string ext, Dictionary<string, string> list)
         {
-            var files = dirinfo.GetFiles($"*{ext}");
+            var files = dirinfo.GetFiles();
 
             foreach (var fi in files)
             {

@@ -551,6 +551,8 @@
     <Compile Include="Generated\ContactExtra.cs" />
     <Compile Include="Generated\ContributionTag.cs" />
     <Compile Include="Generated\CustomColumn.cs" />
+    <Compile Include="Generated\DashboardWidget.cs" />
+    <Compile Include="Generated\DashboardWidgetRole.cs" />
     <Compile Include="Generated\Downline.cs" />
     <Compile Include="Generated\DownlineLeader.cs" />
     <Compile Include="Generated\Functions\ActivityLogSearch.cs" />
@@ -1190,6 +1192,7 @@
     <Content Include="Migrations\20200312_AddSettingMetaData_ContributionsCampusColumn.sql" />
     <Content Include="Migrations\20200312_Add_FK_Contribution_Campus.sql" />
     <Content Include="Migrations\20200311_AddSettingMetaData_BundleEntryCampusCode.sql" />
+    <Content Include="Migrations\20200430_alter-OrgFilterPeople-Function_FixNickName.sql" />
     <Content Include="Migrations\20200413_alter-OrgFilterPeople-Function.sql" />
     <Content Include="Migrations\20200401_alter-TopGivers.sql" />
     <Content Include="Migrations\20200401_alter-FirstTimeGivers.sql" />
