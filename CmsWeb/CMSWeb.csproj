@@ -564,6 +564,7 @@
     <Compile Include="Areas\Finance\Models\TotalsByFundAgeRangeModel.cs" />
     <Compile Include="Areas\Involvement\Controllers\InvolvementSearchController.cs" />
     <Compile Include="Areas\Involvement\InvolvementAreaRegistration.cs" />
+    <Compile Include="Areas\Involvement\Controllers\InvController.cs" />
     <Compile Include="Areas\Main\Models\Other\CouponResponseModel.cs" />
     <Compile Include="Areas\Manage\Controllers\ActivityController.cs" />
     <Compile Include="Areas\Manage\Controllers\BatchMoveAndDelete.cs" />
@@ -1969,6 +1970,8 @@
     <Content Include="Areas\Dialog\Views\Shared\_Layout.cshtml" />
     <Content Include="Areas\Dialog\Views\AddInvolvement\index.cshtml" />
     <Content Include="Areas\Involvement\Views\web.config" />
+    <Content Include="Areas\Involvement\Views\Involvement\People.cshtml" />
+    <Content Include="Areas\Involvement\Views\Involvement\FilterPeople.cshtml" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
