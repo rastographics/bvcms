@@ -23,18 +23,29 @@ BEGIN
             <h4 class="text-center">{{fund}}</h4>
             <div class="chart">
             </div>
-            <p class="text-center" style="margin-top:10px;">Online giving past {{days}} days</p>
+            <p class="text-center" style="margin-top:10px;">Giving past {{days}} days</p>
         </div>
     </div>
 </div>
 <script type="text/javascript">
     var {{WidgetId}} = function() {
         var data = {{{results}}};
+        var totalOnline = 0;
         data = Object.values(data).map(function(item) {
+            // add up online giving to find the "Other" amount
+            if (item.name != ''All'') totalOnline += item.results[0].Total;
             return [item.name, item.results[0].Total]
         }).filter(function(item) {
             return item[1] > 0
         });
+        // convert All row to Other
+        for(var i = 0; i < data.length; i++) {
+            if (data[i][0] == ''All'') {
+                data[i][0] = ''Other'';
+                data[i][1] -= totalOnline;
+                break;
+            }
+        }
         data = [[''Item'', ''Dollars'']].concat(data);
         data = google.visualization.arrayToDataTable(data);
         var formatter = new google.visualization.NumberFormat({
@@ -88,7 +99,6 @@ Days = 30
 MaxDate = DateTime.Today
 GivingTypesData = model.DynamicData()
 Priority = 0
-
 Base = model.DynamicData()
 Base.MinDate = MaxDate.AddDays(-Days).ToString("d")
 # Base.MinDate = DateTime(MaxDate.Year, 1, 1).ToString("d") # YTD
@@ -100,7 +110,7 @@ def NextPriority():
     global Priority 
     Priority += 1
     return Priority
-
+    
 def GetResults(tagName):
     results = q.QuerySql(Data.SQLContent, { ''Tag'': tagName })
     return results
@@ -114,29 +124,33 @@ def CreateTag(fundSet, typeCategory, searchParameters):
     dd.link = ''/ContributionsJsonSearch/{}/{}''.format(''GivingTypesData'', NamePriority)
     tag = model.CreateContributionTag(TagName, searchParameters)
     dd.results = GetResults(TagName)
-    GivingTypesData.AddValue(NamePriority, dd)
-
+    GivingTypesData.AddValue(TagName, dd)
+    
 def CreateTags(fundSet):
     RowType = ''Mobile'' 
     SearchParameters = model.DynamicData(Base)
     SearchParameters.Priority = NextPriority()
-    SearchParameters.Source = 1
+    SearchParameters.Source = 1 # Mobile
     CreateTag(fundSet, RowType, SearchParameters)
-
     RowType = ''One Time''
     SearchParameters = model.DynamicData(Base)
     SearchParameters.Priority = NextPriority()
     SearchParameters.BundleTypes = ''Online''
     SearchParameters.TransactionDesc = ''<>Recurring Giving''
+    SearchParameters.Source = 0 # Not Mobile
     CreateTag(fundSet, RowType, SearchParameters)
-
     RowType = ''Recurring''
     SearchParameters = model.DynamicData(Base)
     SearchParameters.BundleTypes = ''Online''
     SearchParameters.Priority = NextPriority()
+    SearchParameters.Source = 0 # Not Mobile
     SearchParameters.TransactionDesc = ''Recurring Giving''
     CreateTag(fundSet, RowType, SearchParameters)
-
+    RowType = ''All'' # row used to determine the non online gifts later
+    SearchParameters = model.DynamicData(Base)
+    SearchParameters.Priority = NextPriority()
+    CreateTag(fundSet, RowType, SearchParameters)
+    
 Priority=100 
 CreateTags(''MainFund'')
 Data.days = Days
