@@ -8,7 +8,7 @@ BEGIN
      VALUES
            ('WidgetVitalStatsHTML','Edit Text Content',
            '<div class="box">
-    <div class="box-title hidden-xs">
+    <div class="box-title hidden-xs" style="border:0;">
         <h5>{{WidgetName}}</h5>
     </div>
     <a class="visible-xs-block" id="{{WidgetId}}-collapse" data-toggle="collapse" href="#{{WidgetId}}-section" aria-expanded="true" aria-controls="{{WidgetId}}-section">
@@ -18,7 +18,7 @@ BEGIN
     </a>
     <div class="collapse in" id="{{WidgetId}}-section">
         {{#ifGT results.Count 0}}
-            <ul class="list-group">
+            <ul class="list-group bordered">
                 {{#each results}}
                     {{#ifEqual name "Total"}}
                         <li class="list-group-item"><strong>{{name}}</strong><a href="{{url}}" class="badge badge-primary" style="float:right;font-weight:bold;">{{count}}</a></li>
