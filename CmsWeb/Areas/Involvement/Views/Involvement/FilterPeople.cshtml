@@ -1,0 +1,28 @@
+﻿@model CmsWeb.Areas.Involvement.Models.OrgPeopleModel
+<div class="filter well hidden-print" style="margin-top: 15px;">
+    <div class="row">
+        <div class="btn-group">
+            <div class="form-group">
+                <a href="Inv/Delete" class="btn btn-sm btn-danger"><i class="fa fa-trash"></i></a>
+                <a href="Inv/Tag" class="btn btn-sm btn-danger"><i class="fa fa-tag"></i></a>
+                <a href="Inv/Edit" class="btn btn-sm btn-danger"><i class="fa fa-edit"></i></a>
+                <a href="Inv/Print" class="btn btn-sm btn-danger"><i class="fa fa-print"></i></a>
+            </div>
+            <button data-toggle="dropdown" class="btn dropdown-toggle btn-info">
+                @Model.AddPersonOptions
+                <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu">
+                <li class="@Model.ShowAddIndividualsActive">
+                    <a id="multigroup" href="#" class="grp2 @Model.ShowAddIndividualsActive">Add Individuals</a>
+                </li>
+                <li class="@Model.ShowAddFromTagActive">
+                    <a id="showhide" href="#" class="grp2 @Model.ShowAddFromTagActive">Add from Tag</a>
+                </li>
+            </ul>
+            <div class="form-group">
+                <a href="/PeopleSearch/Results" id="search" class="btn btn-primary">Search</a>
+            </div>
+        </div>
+    </div>
+
