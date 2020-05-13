@@ -2,6 +2,7 @@
 using System.Configuration;
 using CmsData.Classes.Twilio;
 using RestSharp;
+using RestSharp.Extensions;
 
 namespace CmsData
 {
@@ -26,12 +27,13 @@ namespace CmsData
             }
             TwilioHelper.QueueSms(db, query, iSendGroup, sTitle, sMessage);
         }
+
         public static string CreateTinyUrl(string url)
         {
             var serviceurl = ConfigurationManager.AppSettings["UrlShortenerService"];
             var token = ConfigurationManager.AppSettings["UrlShortenerServiceToken"];
             var shorturl = url; // default return value if no service is configured
-            if (!string.IsNullOrEmpty(serviceurl) && !string.IsNullOrEmpty(token))
+            if (serviceurl.HasValue() && token.HasValue())
             {
                 var client = new RestClient(serviceurl);
                 var request = new RestRequest(Method.POST);
@@ -39,8 +41,10 @@ namespace CmsData
                 request.AddParameter("url", url);
                 shorturl = client.Execute(request).Content;
                 // if the request fails, return the original url
-                if (string.IsNullOrEmpty(shorturl))
+                if (!shorturl.HasValue())
+                {
                     return url;
+                }
             }
             return shorturl;
         }

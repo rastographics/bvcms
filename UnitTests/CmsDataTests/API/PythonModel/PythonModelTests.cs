@@ -4,11 +4,8 @@ using CmsDataTests.Properties;
 using SharedTestFixtures;
 using Shouldly;
 using System;
-using System.IO;
-using System.Reflection;
 using Xunit;
 using UtilityExtensions;
-using UtilityExtensions.Config;
 
 namespace CmsDataTests
 {

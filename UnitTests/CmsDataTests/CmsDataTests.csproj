@@ -120,7 +120,11 @@
     <Compile Include="..\SharedTestFixtures\DatabaseCollection.cs">
       <Link>DatabaseCollection.cs</Link>
     </Compile>
+    <Compile Include="..\SharedTestFixtures\Network\NetworkCollection.cs">
+      <Link>NetworkCollection.cs</Link>
+    </Compile>
     <Compile Include="API\APIContributionSearchModelTests.cs" />
+    <Compile Include="API\PythonModel\PythonModelSmsTests.cs" />
     <Compile Include="API\PythonModel\PythonModelTests.cs" />
     <Compile Include="API\QueryFunctions\QueryFunctionsTests.cs" />
     <Compile Include="Charts\GoogleChartsDataTest.cs" />
