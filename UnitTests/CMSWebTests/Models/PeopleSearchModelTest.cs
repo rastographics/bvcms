@@ -9,6 +9,7 @@ using Xunit;
 
 namespace CMSWebTests.Models
 {
+    [Collection(Collections.Database)]
     public class PeopleSearchModelTest
     {
         //This test ensures that search string without apostrophe retrieves surnames with apostrophe 

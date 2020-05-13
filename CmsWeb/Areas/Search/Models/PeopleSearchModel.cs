@@ -123,13 +123,14 @@ namespace CmsWeb.Models
                 {
                     string first, last;
                     Util.NameSplit(m.name, out first, out last);
+                    var altName = m.name.Replace("'", string.Empty);
                     var altPeople = from p in people
-                                    where p.LastName.Replace("'", string.Empty).Contains(m.name.Replace("'", string.Empty))
-                                    || p.MaidenName.Replace("'", string.Empty).Contains(m.name.Replace("'", string.Empty))
-                                    || p.AltName.Replace("'", string.Empty).Contains(m.name.Replace("'", string.Empty))
-                                    || p.FirstName.Replace("'", string.Empty).Contains(m.name.Replace("'", string.Empty))
-                                    || p.NickName.Replace("'", string.Empty).Contains(m.name.Replace("'", string.Empty))
-                                    || p.MiddleName.Replace("'", string.Empty).Contains(m.name.Replace("'", string.Empty))
+                                    where p.LastName.Replace("'", string.Empty).Contains(altName)
+                                    || p.MaidenName.Replace("'", string.Empty).Contains(altName)
+                                    || p.AltName.Replace("'", string.Empty).Contains(altName)
+                                    || p.FirstName.Replace("'", string.Empty).Contains(altName)
+                                    || p.NickName.Replace("'", string.Empty).Contains(altName)
+                                    || p.MiddleName.Replace("'", string.Empty).Contains(altName)
                                     select p;
                     if (m.name.AllDigits())
                     {
@@ -158,7 +159,7 @@ namespace CmsWeb.Models
                                   where p.LastName.StartsWith(m.name) || p.MaidenName.StartsWith(m.name) || p.AltName.StartsWith(m.name)
                                       || p.FirstName.StartsWith(m.name) || p.NickName.StartsWith(m.name) || p.MiddleName.StartsWith(m.name)
                                   select p;
-                            if (people.ToList().Count() < 1)
+                            if (!people.Any())
                             {
                                 people = altPeople;
                             }
