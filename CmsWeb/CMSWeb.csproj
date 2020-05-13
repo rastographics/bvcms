@@ -556,6 +556,8 @@
     <Compile Include="Areas\Finance\Models\TotalsByFundRange.cs" />
     <Compile Include="Areas\Finance\Models\TotalsByFundAgeRangeModel.cs" />
     <Compile Include="Areas\Involvement\Controllers\InvController.cs" />
+    <Compile Include="Areas\Involvement\Controllers\InvolvementSearchController.cs" />
+    <Compile Include="Areas\Involvement\InvolvementAreaRegistration.cs" />
     <Compile Include="Areas\Main\Models\Other\CouponResponseModel.cs" />
     <Compile Include="Areas\Manage\Controllers\ActivityController.cs" />
     <Compile Include="Areas\Manage\Controllers\BatchMoveAndDelete.cs" />
@@ -1922,6 +1924,7 @@
     <Content Include="Areas\Dialog\Views\RemoteDeposit\NotConfigured.cshtml" />
     <Content Include="Areas\Involvement\Views\Involvement\People.cshtml" />
     <Content Include="Areas\Involvement\Views\Involvement\FilterPeople.cshtml" />
+    <Content Include="Areas\Involvement\Views\web.config" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
@@ -2830,6 +2833,8 @@
     <Content Include="Views\Shared\_diagnostics.cshtml" />
     <Content Include="Views\Shared\Redirect.cshtml" />
     <Content Include="Views\Home\Dashboard.cshtml" />
+    <Content Include="Views\_ViewStart.cshtml" />
+    <Content Include="Views\Shared\Menu\Involvement.cshtml" />
     <None Include="Web.staging.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -3441,6 +3446,8 @@
     <Folder Include="Areas\Dialog\Views\Shared\" />
     <Folder Include="Areas\Figures\Views\Shared\" />
     <Folder Include="Areas\Involvement\Models\" />
+    <Folder Include="Areas\Involvement\Views\InvolvementSearch\" />
+    <Folder Include="Areas\Involvement\Views\Shared\" />
     <Folder Include="Areas\Main\Views\Shared\" />
     <Folder Include="Areas\Manage\Views\Shared\" />
     <Folder Include="Areas\MeetingCategory\Models\" />
