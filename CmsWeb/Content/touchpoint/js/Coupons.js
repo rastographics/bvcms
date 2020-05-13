@@ -140,7 +140,7 @@
                 swal({
                     type: 'info',
                     title: 'Warning',
-                    text: 'Please select a Registration Type'
+                    text: 'Please select an Involvement Type'
                 });
             }
             else {
@@ -368,7 +368,7 @@ var CreateApp = new Vue({
                 swal({
                     type: 'info',
                     title: 'Warning',
-                    text: 'Please select a Registration Type'
+                    text: 'Please select an Involvement Type'
                 });
             }
             else {
