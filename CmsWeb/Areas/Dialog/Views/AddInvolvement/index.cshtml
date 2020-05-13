@@ -1,0 +1,48 @@
+﻿@using CmsData
+@model CmsWeb.Areas.Dialog.Models.NewOrganizationModel
+<div class="modal-dialog modal-lg" id="new-involvement-modal">
+    <div class="modal-content">
+        <form action="/AddInvolvement/Submit/@Model.OrganizationId" method="post">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Add New Involvement</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label for="inv_InvolvementName" class="control-label">Name</label>
+                            @Html.TextBox("inv.InvolvementName", Model.InvolvementName, new { @class = "form-control" })
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label for="inv_InvolvementTypeId" class="control-label">Involvement Type</label>
+                            @Html.DropDownList("inv.InvolvementTypeId", OrgSearchModel.RegistrationTypeIds(), new { @class = "form-control" })
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label for="inv_CampusId" class="control-label">Campus</label>
+                            @Html.DropDownList("org.CampusId", Model.CampusList(), new { @class = "form-control" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        @if (Model.DisplayCopySettings)
+                        {
+                            <label class="checkbox-inline">
+                                @Html.CheckBox("copysettings") Copy settings from current organization?
+                            </label>
+                        }
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <a class="btn btn-default" data-dismiss="modal">Cancel</a>
+                <input type="submit" class="btn btn-primary" value="Submit" />
+            </div>
+        </form>
+    </div>
+</div>

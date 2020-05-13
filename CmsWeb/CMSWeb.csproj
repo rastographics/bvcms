@@ -406,6 +406,7 @@
     <Compile Include="Areas\Coordinator\Models\PostTargetInfo.cs" />
     <Compile Include="Areas\Coordinator\CoordinatorAreaRegistration.cs" />
     <Compile Include="Areas\Coordinator\Models\SubgroupModel.cs" />
+    <Compile Include="Areas\Dialog\Controllers\AddInvolvementController.cs" />
     <Compile Include="Areas\Dialog\Controllers\AddResourceController.cs" />
     <Compile Include="Areas\Dialog\Controllers\AddOrganizationController.cs" />
     <Compile Include="Areas\Dialog\Controllers\AddAttendeesFromTagController.cs" />
@@ -1249,6 +1250,7 @@
     <Content Include="Content\font-awesome-4.0.3\fonts\fontawesome-webfont.svg" />
     <Content Include="Content\images\check.png" />
     <Content Include="Content\img\textarealine.png" />
+    <Content Include="Content\Site.css" />
     <Content Include="Content\touchpoint\css\account.css" />
     <Content Include="Content\touchpoint\css\app.css" />
     <Content Include="Content\touchpoint\css\checkin.css" />
@@ -1925,6 +1927,7 @@
     <Content Include="Areas\Involvement\Views\Involvement\People.cshtml" />
     <Content Include="Areas\Involvement\Views\Involvement\FilterPeople.cshtml" />
     <Content Include="Areas\Involvement\Views\web.config" />
+    <Content Include="Areas\Dialog\Views\AddInvolvement\index.cshtml" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
