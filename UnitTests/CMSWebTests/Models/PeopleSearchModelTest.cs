@@ -11,22 +11,19 @@ namespace CMSWebTests.Models
     public class PeopleSearchModelTest
     {
         //This test ensures that search string without apostrophe retrieves surnames with apostrophe 
-        [Fact]
-        public void FetchPeople_ApostropheSearch_Test()
+        [Theory]
+        [InlineData("O'Neil")]
+        [InlineData("Del'hi")]
+        public void FetchPeople_ApostropheSearch_Test(string name)
         {
             using (var db = CMSDataContext.Create(DatabaseFixture.Host))
             {   
                 ContextTestUtils.CreateMockHttpContext();                
                 var m = new PeopleSearchModel(db);
                                 
-                var p = MockPeople.CreateSavePerson(db, lastName: "O'Neil");
-                m.m.name = "ONeil";
+                var p = MockPeople.CreateSavePerson(db, lastName: name);
+                m.m.name = name.Replace("'", string.Empty);
                 var people = m.FetchPeople();
-                people.ShouldNotBeNull();
-
-                p.LastName = "Del'hi";
-                m.m.name = "Delhi";
-                people = m.FetchPeople();
                 people.ShouldNotBeNull();
             }
         }
