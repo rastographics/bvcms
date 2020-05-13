@@ -2,6 +2,7 @@
 using CmsWeb.Models;
 using SharedTestFixtures;
 using Shouldly;
+using System.Linq.Dynamic;
 using System.Web.UI.WebControls;
 using UtilityExtensions;
 using Xunit;
@@ -19,12 +20,11 @@ namespace CMSWebTests.Models
             using (var db = CMSDataContext.Create(DatabaseFixture.Host))
             {   
                 ContextTestUtils.CreateMockHttpContext();                
-                var m = new PeopleSearchModel(db);
-                                
+                var m = new PeopleSearchModel(db);                                
                 var p = MockPeople.CreateSavePerson(db, lastName: name);
                 m.m.name = name.Replace("'", string.Empty);
-                var people = m.FetchPeople();
-                people.ShouldNotBeNull();
+                var people = m.FetchPeople().Any();
+                people.ShouldBeTrue();
             }
         }
     }
