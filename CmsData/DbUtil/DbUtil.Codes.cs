@@ -226,9 +226,17 @@ namespace CmsData.Codes
         public const int SpecialJavascript = 16;
         public const int RecordFamilyAttendance = 18;
         public const int RegisterLinkMaster = 20;
-        public static IEnumerable<KeyValuePair<int, string>> GetCodePairs()
+        public const int TicketedEvent = 22;
+
+        public static IEnumerable<KeyValuePair<int, string>> GetCodePairs(CMSDataContext db = null)
         {
             yield return new KeyValuePair<int, string>(None, "No Online Registration");
+
+            if (db != null && db.Setting("UseTicketed", "true").ToBool())
+            {
+                yield return new KeyValuePair<int, string>(TicketedEvent, "Ticketed Event");
+            }
+
             yield return new KeyValuePair<int, string>(JoinOrganization, "Join Organization");
             yield return new KeyValuePair<int, string>(UserSelects, "User Selects Organization");
             yield return new KeyValuePair<int, string>(ComputeOrgByAge, "Compute Org By Birthday");
@@ -240,11 +248,13 @@ namespace CmsData.Codes
             yield return new KeyValuePair<int, string>(ChooseVolunteerTimes, "Choose Volunteer Times");
             yield return new KeyValuePair<int, string>(RecordFamilyAttendance, "Record Family Attendance");
             yield return new KeyValuePair<int, string>(SpecialJavascript, "Special Script");
+
             if (Util.IsDebug())
             {
                 yield return new KeyValuePair<int, string>(CreateAccount, "Create Account");
             }
         }
+
         public static string Lookup(int? id)
         {
             var s = GetCodePairs().SingleOrDefault(ii => ii.Key == id);
@@ -399,6 +409,7 @@ namespace CmsData.Codes
         public const int FindSub = 2;
         public const int SubFound = 3;
         public const int Substitute = 4;
+
         public static IEnumerable<KeyValuePair<int, string>> GetCodePairs()
         {
             yield return new KeyValuePair<int, string>(Uncommitted, "Uncommitted");
