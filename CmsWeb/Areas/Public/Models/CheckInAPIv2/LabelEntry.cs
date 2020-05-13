@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using System.Web.WebPages;
 using CmsData;
 using CmsWeb.Areas.Public.Models.CheckInAPIv2.Caching;
@@ -32,7 +33,38 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
 
 		public LabelEntry( AttendanceCacheSet cacheSet, LabelFormatEntry formatEntry, Attendance attendance, AttendanceGroup group = null, int index = 0 )
 		{
+            bool conditionalRemovedEntry = false;
 			typeID = formatEntry.typeID;
+
+            if (formatEntry.orgEV.HasValue()) {
+                Organization org = cacheSet.getOrganization(group.groupID);
+                if (org != null)
+                {
+                    var ev = org.OrganizationExtras.SingleOrDefault(e => e.Field == formatEntry.orgEV);
+                    if (ev == null)
+                    {
+                        conditionalRemovedEntry = true;
+                    }
+                } else
+                {
+                    conditionalRemovedEntry = true;
+                }
+            }
+            if (formatEntry.personFlag.HasValue() && conditionalRemovedEntry == false)
+            {
+                CmsData.Person person = cacheSet.getPerson(attendance.peopleID);
+                if (person != null)
+                {
+                    var sf = cacheSet.dataContext.ViewAllStatusFlags.SingleOrDefault(f => f.Flag == formatEntry.personFlag && f.PeopleId == person.PeopleId);
+                    if (sf == null)
+                    {
+                        conditionalRemovedEntry = true;
+                    }
+                } else
+                {
+                    conditionalRemovedEntry = true;
+                }
+            }
 
 			switch( formatEntry.typeID ) {
 				case 1:
@@ -91,6 +123,11 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
 
             invert = formatEntry.invert;
             order = formatEntry.order;
+
+            if (conditionalRemovedEntry)
+            {
+                data = "ConditionalRemovedEntry";
+            }
 		}
 
 		public string getField( AttendanceCacheSet cacheSet, LabelField field, string format, Attendance attendance, AttendanceGroup group )

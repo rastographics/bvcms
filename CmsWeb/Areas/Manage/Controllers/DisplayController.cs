@@ -171,8 +171,27 @@ namespace CmsWeb.Areas.Manage.Controllers
 
             var bodytemplate = new { design = unlayerDesign, rawHtml = GetBody(body) };
             content.Body = JsonConvert.SerializeObject(bodytemplate);
-            
-            content.DateCreated = DateTime.Now;
+
+            if (content.TypeID == ContentTypeCode.TypeUnlayerTemplate)
+            {
+                try
+                {
+                    var captureWebPageBytes = CaptureWebPageBytes(body, 100, 150);
+                    var ii = CurrentImageDatabase.UpdateImageFromBits(content.ThumbID, captureWebPageBytes);
+                    if (ii == null)
+                    {
+                        content.ThumbID = ImageData.Image.NewImageFromBits(captureWebPageBytes, CurrentImageDatabase).Id;
+                    }
+
+                    content.DateCreated = DateTime.Now;
+                    content.CreatedBy = Util.UserName;
+                }
+                catch (Exception ex)
+                {
+                    var errorLog = ErrorLog.GetDefault(null);
+                    errorLog.Log(new Error(ex));
+                }
+            }
 
             if (!saveid.HasValue || saveid == 0)
             {
