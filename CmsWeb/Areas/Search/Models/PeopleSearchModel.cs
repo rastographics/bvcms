@@ -123,14 +123,13 @@ namespace CmsWeb.Models
                 {
                     string first, last;
                     Util.NameSplit(m.name, out first, out last);
-                    var altName = String.Concat(m.name.ToCharArray()[0].ToString(), "'", m.name.Substring(1));
                     var altPeople = from p in people
-                                    where p.LastName.Contains(altName)
-                                    || p.MaidenName.Contains(altName)
-                                    || p.AltName.Contains(altName)
-                                    || p.FirstName.Contains(altName)
-                                    || p.NickName.Contains(altName)
-                                    || p.MiddleName.Contains(altName)
+                                    where p.LastName.Replace("'", string.Empty).Contains(m.name.Replace("'", string.Empty))
+                                    || p.MaidenName.Replace("'", string.Empty).Contains(m.name.Replace("'", string.Empty))
+                                    || p.AltName.Replace("'", string.Empty).Contains(m.name.Replace("'", string.Empty))
+                                    || p.FirstName.Replace("'", string.Empty).Contains(m.name.Replace("'", string.Empty))
+                                    || p.NickName.Replace("'", string.Empty).Contains(m.name.Replace("'", string.Empty))
+                                    || p.MiddleName.Replace("'", string.Empty).Contains(m.name.Replace("'", string.Empty))
                                     select p;
                     if (m.name.AllDigits())
                     {
