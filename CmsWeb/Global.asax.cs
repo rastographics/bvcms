@@ -347,6 +347,7 @@ namespace CmsWeb
                 url.Contains("/Account/LogOff", ignoreCase: true) ||
                 url.Contains("/Content/touchpoint/", ignoreCase: true) ||
                 url.Contains("healthcheck.txt", ignoreCase: true) ||
+                url.Contains("version.txt", ignoreCase: true) ||
                 url.Contains("analytics.txt", ignoreCase: true) ||
                 url.Contains("favicon.ico", ignoreCase: true);
         }

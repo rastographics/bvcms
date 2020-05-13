@@ -156,6 +156,8 @@ GO
                         var script = File.ReadAllText(Path.Combine(sqlScriptsPath, "BuildDb", currentFile));
                         RunScripts(cn, script);
                     }
+                    cn.Execute(Properties.Resources.SetupNumbers);
+
                     currentFile = hostName == "testdb"
                         ? "datascriptTest.sql"
                         : "datascriptStarter.sql";
@@ -196,7 +198,7 @@ GO
                 using (var connection = new SqlConnection(Util.GetConnectionString(host)))
                 {
                     connection.Open();
-                    string path = Path.GetFullPath(Path.Combine(HttpContextFactory.Current.Server.MapPath(@"/"), @"..\CmsData\Migrations"));
+                    string path = Path.GetFullPath(Path.Combine(HttpContextFactory.Current?.Server?.MapPath(@"/") ?? ".", @"..\CmsData\Migrations"));
                     RunMigrations(connection, path);
                 }
             }

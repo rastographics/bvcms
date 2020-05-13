@@ -98,9 +98,7 @@ INSERT INTO [dbo].[DashboardWidgets]
 INSERT INTO [dbo].[DashboardWidgetRoles]
            ([WidgetId]
            ,[RoleId])
-     VALUES
-           ((select SCOPE_IDENTITY())
-           ,(select min(RoleId) from Roles where RoleName like 'Access'))
+    SELECT SCOPE_IDENTITY() [WidgetId], RoleId FROM dbo.Roles WHERE RoleName in ('Access')
 END
 GO
 
@@ -231,9 +229,7 @@ INSERT INTO [dbo].[DashboardWidgets]
 INSERT INTO [dbo].[DashboardWidgetRoles]
            ([WidgetId]
            ,[RoleId])
-     VALUES
-           ((select SCOPE_IDENTITY())
-           ,(select min(RoleId) from Roles where RoleName like 'Access'))
+    SELECT SCOPE_IDENTITY() [WidgetId], RoleId FROM dbo.Roles WHERE RoleName in ('Access')
 END
 GO
 
@@ -353,9 +349,7 @@ INSERT INTO [dbo].[DashboardWidgets]
 INSERT INTO [dbo].[DashboardWidgetRoles]
            ([WidgetId]
            ,[RoleId])
-     VALUES
-           ((select SCOPE_IDENTITY())
-           ,(select min(RoleId) from Roles where RoleName like 'Access'))
+    SELECT SCOPE_IDENTITY() [WidgetId], RoleId FROM dbo.Roles WHERE RoleName in ('Access')
 
 END
 GO
@@ -496,9 +490,7 @@ INSERT INTO [dbo].[DashboardWidgets]
 INSERT INTO [dbo].[DashboardWidgetRoles]
            ([WidgetId]
            ,[RoleId])
-     VALUES
-           ((select SCOPE_IDENTITY())
-           ,(select min(RoleId) from Roles where RoleName like 'Access'))
+    SELECT SCOPE_IDENTITY() [WidgetId], RoleId FROM dbo.Roles WHERE RoleName in ('Access')
 END
 GO
 
@@ -596,9 +588,7 @@ INSERT INTO [dbo].[DashboardWidgets]
 INSERT INTO [dbo].[DashboardWidgetRoles]
            ([WidgetId]
            ,[RoleId])
-     VALUES
-           ((select SCOPE_IDENTITY())
-           ,(select min(RoleId) from Roles where RoleName like 'Access'))
+    SELECT SCOPE_IDENTITY() [WidgetId], RoleId FROM dbo.Roles WHERE RoleName in ('Access')
 END
 GO
 
@@ -724,9 +714,7 @@ INSERT INTO [dbo].[DashboardWidgets]
 INSERT INTO [dbo].[DashboardWidgetRoles]
            ([WidgetId]
            ,[RoleId])
-     VALUES
-           ((select SCOPE_IDENTITY())
-           ,(select min(RoleId) from Roles where RoleName like 'Access'))
+    SELECT SCOPE_IDENTITY() [WidgetId], RoleId FROM dbo.Roles WHERE RoleName in ('Access')
 END
 GO
 
@@ -847,9 +835,7 @@ INSERT INTO [dbo].[DashboardWidgets]
 INSERT INTO [dbo].[DashboardWidgetRoles]
            ([WidgetId]
            ,[RoleId])
-     VALUES
-           ((select SCOPE_IDENTITY())
-           ,(select min(RoleId) from Roles where RoleName like 'Access'))
+    SELECT SCOPE_IDENTITY() [WidgetId], RoleId FROM dbo.Roles WHERE RoleName in ('Access')
 END
 GO
 
@@ -927,9 +913,7 @@ INSERT INTO [dbo].[DashboardWidgets]
 INSERT INTO [dbo].[DashboardWidgetRoles]
            ([WidgetId]
            ,[RoleId])
-     VALUES
-           ((select SCOPE_IDENTITY())
-           ,(select min(RoleId) from Roles where RoleName like 'Access'))
+    SELECT SCOPE_IDENTITY() [WidgetId], RoleId FROM dbo.Roles WHERE RoleName in ('Access')
 END
 GO
 
@@ -1222,13 +1206,7 @@ INSERT INTO [dbo].[DashboardWidgets]
 INSERT INTO [dbo].[DashboardWidgetRoles]
            ([WidgetId]
            ,[RoleId])
-     VALUES
-           ((select SCOPE_IDENTITY())
-           ,(select min(RoleId) from Roles where RoleName like 'Finance')),
-           ((select SCOPE_IDENTITY())
-           ,(select min(RoleId) from Roles where RoleName like 'FinanceAdmin')),
-           ((select SCOPE_IDENTITY())
-           ,(select min(RoleId) from Roles where RoleName like 'Admin'))
+    SELECT SCOPE_IDENTITY() [WidgetId], RoleId FROM dbo.Roles WHERE RoleName in ('Finance', 'FinanceAdmin', 'Admin')
 END
 GO
 
@@ -1419,10 +1397,6 @@ INSERT INTO [dbo].[DashboardWidgets]
 INSERT INTO [dbo].[DashboardWidgetRoles]
            ([WidgetId]
            ,[RoleId])
-     VALUES
-           ((select SCOPE_IDENTITY())
-           ,(select min(RoleId) from Roles where RoleName like 'Edit')),
-           ((select SCOPE_IDENTITY())
-           ,(select min(RoleId) from Roles where RoleName like 'Admin'))
+    select SCOPE_IDENTITY() [WidgetId], RoleId FROM dbo.Roles WHERE RoleName in ('Edit', 'Admin')
 END
 GO

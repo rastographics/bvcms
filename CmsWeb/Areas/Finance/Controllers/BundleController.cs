@@ -19,11 +19,9 @@ namespace CmsWeb.Areas.Finance.Controllers
         }
 
         [Route("~/Bundle/{id:int}")]
-        public ActionResult Index(int id, bool? create, bool? edit)
+        public ActionResult Index(int id)
         {
             var m = new Models.BundleModel(id, CurrentDatabase);
-            ViewBag.createbundle = create;
-            ViewBag.editbundle = edit;
             if (User.IsInRole("FinanceDataEntry") && m.BundleStatusId != BundleStatusCode.OpenForDataEntry)
             {
                 return Redirect("/Bundles");
@@ -52,7 +50,18 @@ namespace CmsWeb.Areas.Finance.Controllers
 
         public ActionResult Edit(int id)
         {
-            return RedirectToAction("Index", new { id, edit = true });
+            var m = new Models.BundleModel(id, CurrentDatabase);
+            if (User.IsInRole("FinanceDataEntry") && m.BundleStatusId != BundleStatusCode.OpenForDataEntry)
+            {
+                return Redirect("/Bundles");
+            }
+
+            if (m.Bundle == null)
+            {
+                return Content("no bundle");
+            }
+
+            return View(m);
         }
 
         [HttpPost]
@@ -98,18 +107,12 @@ namespace CmsWeb.Areas.Finance.Controllers
             CurrentDatabase.SubmitChanges();
             if (User.IsInRole("FinanceDataEntry"))
             {
-                return Redirect("/Bundles");
+                //return Redirect("/Bundles");
+                return RedirectToAction("Index", new { id });
             }
 
             m.BundleId = id; // refresh values
-            return View("Display", m);
-        }
-
-        [HttpPost]
-        public ActionResult Cancel(int id)
-        {
-            var m = new Models.BundleModel(id, CurrentDatabase);
-            return View("Display", m);
+            return RedirectToAction("Index", new { id });
         }
 
         [HttpPost]
