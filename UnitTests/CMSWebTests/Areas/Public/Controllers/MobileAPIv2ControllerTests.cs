@@ -279,6 +279,7 @@ namespace CmsWeb.Areas.Public.ControllersTests
             db = requestManager.CurrentDatabase;
             var membershipProvider = new MockCMSMembershipProvider { ValidUser = true };
             var roleProvider = new MockCMSRoleProvider();
+            var build = "2020.2.1";
             CMSMembershipProvider.SetCurrentProvider(membershipProvider);
             CMSRoleProvider.SetCurrentProvider(roleProvider);
             var person = CreatePerson();
@@ -305,7 +306,8 @@ namespace CmsWeb.Areas.Public.ControllersTests
             {
                 device = (int)MobileMessage.Device.ANDROID,
                 instance = RandomString(),
-                argString = person.CellPhone
+                argString = person.CellPhone,
+                build = build,
             };
 
             var data = message.ToString();
@@ -319,6 +321,7 @@ namespace CmsWeb.Areas.Public.ControllersTests
             {
                 device = (int)MobileMessage.Device.ANDROID,
                 instance = message.instance,
+                build = build,
             };
             data = message.ToString();
             result = controller.QuickSignInUsers(data) as MobileMessage;
@@ -333,6 +336,10 @@ namespace CmsWeb.Areas.Public.ControllersTests
             user.peopleID.ShouldBe(person.PeopleId);
             user.name.ShouldBe(person.Name);
             user.user.ShouldBe("Create User");
+            var device = db.MobileAppDevices.SingleOrDefault(m => m.InstanceID == message.instance);
+            device.ShouldNotBeNull();
+            device.AppVersion.ShouldBe(build);
+            Should.Equals(device.DeviceTypeID, MobileMessage.Device.ANDROID);
         }
 
         [Theory]
