@@ -150,7 +150,7 @@ namespace CmsWeb.Models
                         }
                         else
                         {
-                            people = DbUtil.Db.Setting("UseAltnameContains")
+                            people = CurrentDatabase.Setting("UseAltnameContains")
                                 ? from p in people
                                   where p.LastName.StartsWith(m.name) || p.MaidenName.StartsWith(m.name) || p.AltName.Contains(m.name)
                                       || p.FirstName.StartsWith(m.name) || p.NickName.StartsWith(m.name) || p.MiddleName.StartsWith(m.name)
