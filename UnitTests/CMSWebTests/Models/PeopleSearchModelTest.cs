@@ -18,10 +18,16 @@ namespace CMSWebTests.Models
             {   
                 ContextTestUtils.CreateMockHttpContext();                
                 var m = new PeopleSearchModel(db);
-                m.m.name = "ONeil";
+                                
                 var p = MockPeople.CreateSavePerson(db, lastName: "O'Neil");
+                m.m.name = "ONeil";
                 var people = m.FetchPeople();
-                people.ShouldNotBeNull();                
+                people.ShouldNotBeNull();
+
+                p.LastName = "Del'hi";
+                m.m.name = "Delhi";
+                people = m.FetchPeople();
+                people.ShouldNotBeNull();
             }
         }
     }
