@@ -287,23 +287,9 @@ namespace CmsWeb.Areas.People.Controllers
             return Json("OK");
         }
 
-        private string ExternalLink(string setting)
+        private string ExternalLink(string url)
         {
-            var url = setting;
-            if (setting.Contains("{token}"))
-            {
-                var expirationWindow = CurrentDatabase.Setting("OTLTokenExpirationMinutes", "5").ToInt();
-                var otl = new OneTimeLink
-                {
-                    Id = Guid.NewGuid(),
-                    Querystring = CurrentDatabase.UserPeopleId.ToString(),
-                    Expires = DateTime.Now.AddMinutes(expirationWindow)
-                };
-                CurrentDatabase.OneTimeLinks.InsertOnSubmit(otl);
-                CurrentDatabase.SubmitChanges();
-                url = url.Replace("{token}", otl.Id.ToCode());
-            }
-            return url;
+            return DbUtil.ExternalLink(CurrentDatabase, CurrentDatabase.UserPeopleId, url);
         }
     }
 }

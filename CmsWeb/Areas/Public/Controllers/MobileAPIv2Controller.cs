@@ -406,7 +406,11 @@ namespace CmsWeb.Areas.Public.Controllers
                 ? CurrentDatabase.Setting("ExternalManageGivingUrl", "")
                 : CurrentDatabase.Setting("ExternalOneTimeGiftUrl", "");
 
-            if (link.IsEmpty())
+            if (link.HasValue())
+            {
+                link = DbUtil.ExternalLink(CurrentDatabase, user.PeopleId, link);
+            }
+            else
             {
                 if (message.argBool) // Managed Giving
                 {
