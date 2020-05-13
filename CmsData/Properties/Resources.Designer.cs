@@ -19,7 +19,7 @@ namespace CmsData.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class Resources {
@@ -68,15 +68,14 @@ namespace CmsData.Properties {
         ///    &lt;Comparison Type=&quot;AllTrue&quot; /&gt;
         ///    &lt;Comparison Type=&quot;AnyTrue&quot; /&gt;
         ///    &lt;Comparison Type=&quot;AllFalse&quot; /&gt;
+        ///    &lt;Comparison Type=&quot;AnyFalse&quot; /&gt;
         ///  &lt;/FieldType&gt;
         ///  &lt;FieldType Name=&quot;Bit&quot;&gt;
         ///    &lt;Comparison Type=&quot;Equal&quot; Display=&quot;{0} = {1}&quot; /&gt;
         ///    &lt;Comparison Type=&quot;NotEqual&quot; Display=&quot;{0} &amp;lt;&amp;gt; {1}&quot; /&gt;
         ///  &lt;/FieldType&gt;
         ///  &lt;FieldType Name=&quot;EqualBit&quot;&gt;
-        ///    &lt;Comparison Type=&quot;Equal&quot; Display=&quot;{0} = {1}&quot; /&gt;
-        ///  &lt;/FieldType&gt;
-        ///  &lt;FieldType Name=&quot; [rest of string was truncated]&quot;;.
+        ///    &lt;Comparison Type=&quot;Equal&quot; Display=&quot;{0} = {1}&quot; /&gt;        /// [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string CompareMap {
             get {
@@ -91,7 +90,7 @@ namespace CmsData.Properties {
         ///    &lt;td colspan=&apos;2&apos; style=&apos;{{DataStyle}}{{BottomBorder}}&apos;&gt;
         ///      &lt;p&gt;
         ///        &lt;hr/&gt;
-        ///        Registrant: {{Name}}&lt;br/&gt;
+        ///        Registrant: &lt;registrant&gt;{{Name}}&lt;/registrant&gt;&lt;br/&gt;
         ///        for {{OrganizationName}}
         ///      &lt;/p&gt;
         ///    &lt;/td&gt;
@@ -103,10 +102,9 @@ namespace CmsData.Properties {
         ///      &lt;table&gt;
         ///        &lt;tr&gt;
         ///          &lt;td style=&apos;{{LabelStyle}}&apos;&gt;Registrant Fee&lt;/td&gt;
-        ///          {{#if HasDonation}}
-        ///            &lt;td style=&apos;{{LabelStyle}}&apos;&gt;Donation&lt;/td&gt;
-        ///          {{/if}}
-        ///     [rest of string was truncated]&quot;;.
+        ///          &lt;td align=&apos;right&apos; style=&apos;{{DataStyle}}&apos;&gt;{{AmtFee}}&lt;/td&gt;
+        ///        &lt;/tr&gt;
+        ///  [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string Details2 {
             get {
@@ -138,6 +136,31 @@ namespace CmsData.Properties {
         internal static string ManagedGiving_FailedGivingMessage {
             get {
                 return ResourceManager.GetString("ManagedGiving_FailedGivingMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to DECLARE @UpperLimit INT = 50000;	
+        ///	IF NOT EXISTS(SELECT NULL FROM dbo.Numbers)	
+        ///	BEGIN	
+        ///		WITH n AS	
+        ///		(	
+        ///		    SELECT	
+        ///		        rn = ROW_NUMBER() OVER	
+        ///		        (ORDER BY s1.[object_id])	
+        ///		    FROM sys.objects AS s1	
+        ///		    CROSS JOIN sys.objects AS s2	
+        ///		    CROSS JOIN sys.objects AS s3	
+        ///		)	
+        ///		INSERT dbo.Numbers ( Number )	
+        ///		(SELECT rn - 1	
+        ///		 FROM n	
+        ///		 WHERE rn &lt;= @UpperLimit + 1)	
+        ///	END.
+        /// </summary>
+        internal static string SetupNumbers {
+            get {
+                return ResourceManager.GetString("SetupNumbers", resourceCulture);
             }
         }
     }
