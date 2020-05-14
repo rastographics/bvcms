@@ -1,6 +1,6 @@
 ﻿@using CmsData
 @model CmsWeb.Areas.Dialog.Models.NewOrganizationModel
-<div class="modal-dialog modal-lg" id="new-involvement-modal">
+<div class="modal-dialog modal-lg" id="new-org-modal">
     <div class="modal-content">
         <form action="/AddInvolvement/Submit/@Model.OrganizationId" method="post">
             <div class="modal-header">
@@ -11,14 +11,14 @@
                 <div class="row">
                     <div class="col-sm-6">
                         <div class="form-group">
-                            <label for="inv_InvolvementName" class="control-label">Name</label>
-                            @Html.TextBox("inv.InvolvementName", Model.InvolvementName, new { @class = "form-control" })
+                            <label for="org_OrganizationName" class="control-label">Name</label>
+                            @Html.TextBox("org.OrganizationName", Model.org.OrganizationName, new { @class = "form-control" })
                         </div>
                     </div>
                     <div class="col-sm-6">
                         <div class="form-group">
                             <label for="inv_InvolvementTypeId" class="control-label">Involvement Type</label>
-                            @Html.DropDownList("inv.InvolvementTypeId", OrgSearchModel.RegistrationTypeIds(), new { @class = "form-control" })
+                            @Html.DropDownList("inv.InvolvementTypeId", Model.RegistrationTypeList(), new { @class = "form-control" })
                         </div>
                     </div>
                     <div class="col-sm-6">
