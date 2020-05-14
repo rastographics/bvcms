@@ -48,6 +48,25 @@ namespace CmsData
             }
         }
 
+        public static string ExternalLink(CMSDataContext db, int? peopleId, string url)
+        {
+
+            if (url.Contains("{token}"))
+            {
+                var expirationWindow = db.Setting("OTLTokenExpirationMinutes", "5").ToInt();
+                var otl = new OneTimeLink
+                {
+                    Id = Guid.NewGuid(),
+                    Querystring = peopleId.ToString(),
+                    Expires = DateTime.Now.AddMinutes(expirationWindow)
+                };
+                db.OneTimeLinks.InsertOnSubmit(otl);
+                db.SubmitChanges();
+                url = url.Replace("{token}", otl.Id.ToCode());
+            }
+            return url;
+        }
+
         private static void _logActivity(string host, string activity, int? orgId, int? peopleId, int? datumId, int? userId, string pageUrl = null, string clientIp = null)
         {
             var ip = HttpContextFactory.Current?.Request.UserHostAddress;

@@ -123,34 +123,46 @@ namespace CmsWeb.Models
                 {
                     string first, last;
                     Util.NameSplit(m.name, out first, out last);
-
+                    var altName = m.name.Replace("'", string.Empty);
+                    var altPeople = from p in people
+                                    where p.LastName.Replace("'", string.Empty).Contains(altName)
+                                    || p.MaidenName.Replace("'", string.Empty).Contains(altName)
+                                    || p.AltName.Replace("'", string.Empty).Contains(altName)
+                                    || p.FirstName.Replace("'", string.Empty).Contains(altName)
+                                    || p.NickName.Replace("'", string.Empty).Contains(altName)
+                                    || p.MiddleName.Replace("'", string.Empty).Contains(altName)
+                                    select p;
                     if (m.name.AllDigits())
                     {
                         people = from p in people
-                            where p.PeopleId == m.name.ToInt()
-                            select p;
+                                 where p.PeopleId == m.name.ToInt()
+                                 select p;
                     }
                     else
                     {
                         if (first.HasValue() || last.HasValue())
                         {
                             people = from p in people
-                                where p.LastName.StartsWith(last) || p.MaidenName.StartsWith(last) || p.AltName.StartsWith(last)
-                                where
-                                    p.FirstName.StartsWith(first) || p.NickName.StartsWith(first) || p.MiddleName.StartsWith(first)
-                                select p;
+                                     where p.LastName.StartsWith(last) || p.MaidenName.StartsWith(last) || p.AltName.StartsWith(last)
+                                     where
+                                         p.FirstName.StartsWith(first) || p.NickName.StartsWith(first) || p.MiddleName.StartsWith(first)
+                                     select p;
                         }
                         else
                         {
-                            people = DbUtil.Db.Setting("UseAltnameContains")
+                            people = CurrentDatabase.Setting("UseAltnameContains")
                                 ? from p in people
-                                where p.LastName.StartsWith(m.name) || p.MaidenName.StartsWith(m.name) || p.AltName.Contains(m.name)
-                                    || p.FirstName.StartsWith(m.name) || p.NickName.StartsWith(m.name) || p.MiddleName.StartsWith(m.name)
+                                  where p.LastName.StartsWith(m.name) || p.MaidenName.StartsWith(m.name) || p.AltName.Contains(m.name)
+                                      || p.FirstName.StartsWith(m.name) || p.NickName.StartsWith(m.name) || p.MiddleName.StartsWith(m.name)
                                   select p
                                 : from p in people
-                                where p.LastName.StartsWith(m.name) || p.MaidenName.StartsWith(m.name) || p.AltName.StartsWith(m.name)
-                                    || p.FirstName.StartsWith(m.name) || p.NickName.StartsWith(m.name) || p.MiddleName.StartsWith(m.name)
+                                  where p.LastName.StartsWith(m.name) || p.MaidenName.StartsWith(m.name) || p.AltName.StartsWith(m.name)
+                                      || p.FirstName.StartsWith(m.name) || p.NickName.StartsWith(m.name) || p.MiddleName.StartsWith(m.name)
                                   select p;
+                            if (!people.Any())
+                            {
+                                people = altPeople;
+                            }
                         }
                     }
                 }
@@ -252,7 +264,7 @@ namespace CmsWeb.Models
 
             return people;
         }
-
+       
         public IEnumerable<PeopleInfo> PeopleList()
         {
             var people = FetchPeople();
