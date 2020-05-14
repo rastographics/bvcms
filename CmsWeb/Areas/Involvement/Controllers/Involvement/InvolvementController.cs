@@ -7,7 +7,7 @@ using UtilityExtensions;
 
 namespace CmsWeb.Areas.Involvement.Controllers
 {
-    [RouteArea("Org", AreaPrefix = "Org"), Route("{action}/{id?}")]
+    [RouteArea("Involvement", AreaPrefix = "Involvement"), Route("{action}/{id?}")]
     [ValidateInput(false)]
     [SessionExpire]
     public class InvolvementController : CmsStaffController
