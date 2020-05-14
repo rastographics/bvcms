@@ -6,8 +6,7 @@
     </transition>
     <transition name="slide" appear>
       <div class="modal" v-if="showMyModal">
-        <h1>Lorem Ipsum</h1>
-        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptatem provident explicabo accusamus laudantium voluptatum nobis sed nesciunt neque possimus molestiae?</p>
+        
         <button class="button" @click="showMyModal = false">Close Modal</button>
       </div>
     </transition>

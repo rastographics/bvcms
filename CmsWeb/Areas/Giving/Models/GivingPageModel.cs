@@ -1,18 +1,15 @@
 ﻿using CmsData;
 using CmsData.Codes;
 using CmsWeb.Models;
-using MoreLinq;
-using OpenXmlPowerTools;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
+using CmsData.Classes.Giving;
 
 namespace CmsWeb.Areas.Giving.Models
 {
     public class GivingPageModel : IDbBinder
     {
-        public GivingPageModel(){}
+        public GivingPageModel() { }
         public GivingPageModel(CMSDataContext db)
         {
             CurrentDatabase = db;
@@ -33,21 +30,21 @@ namespace CmsWeb.Areas.Giving.Models
             var response = (from gp in CurrentDatabase.GivingPages
                             select new
                             {
-                                GivingPageId = gp.GivingPageId,
-                                PageName = gp.PageName,
-                                PageTitle = gp.PageTitle,
-                                Enabled = gp.Enabled,
+                                gp.GivingPageId,
+                                gp.PageName,
+                                gp.PageTitle,
+                                gp.Enabled,
                                 SkinFileId = gp.SkinFile,
-                                PageType = gp.PageType,
+                                gp.PageType,
                                 DefaultFundId = gp.FundId,
-                                DisabledRedirect = gp.DisabledRedirect,
-                                EntryPointId = gp.EntryPointId,
-                                TopText = gp.TopText,
-                                ThankYouText = gp.ThankYouText,
-                                OnlineNotifyPerson = gp.OnlineNotifyPerson,
-                                ConfirmEmailPledge = gp.ConfirmationEmailPledge,
-                                ConfirmEmailOneTime = gp.ConfirmationEmailOneTime,
-                                ConfirmEmailRecurring = gp.ConfirmationEmailRecurring
+                                gp.DisabledRedirect,
+                                gp.EntryPointId,
+                                gp.TopText,
+                                gp.ThankYouText,
+                                gp.OnlineNotifyPerson,
+                                gp.ConfirmationEmailPledge,
+                                gp.ConfirmationEmailOneTime,
+                                gp.ConfirmationEmailRecurring
                             }).ToList();
             for (var i = 0; i < response.Count(); i++)
             {
@@ -154,7 +151,7 @@ namespace CmsWeb.Areas.Giving.Models
                 givingPage.PageTypeString = "";
                 foreach (var item in newPageTypeList)
                 {
-                    if(givingPage.PageTypeString.Length > 0)
+                    if (givingPage.PageTypeString.Length > 0)
                     {
                         givingPage.PageTypeString += ", " + item.pageTypeName;
                     }
@@ -167,11 +164,11 @@ namespace CmsWeb.Areas.Giving.Models
                 var tempAvailableFunds = (from gpf in CurrentDatabase.GivingPageFunds where gpf.GivingPageId == response[i].GivingPageId select new { gpf.GivingPageFundId, gpf.FundId, gpf.GivingPageId }).ToList();
                 var j = 0;
                 var tempAvailFundsList = new List<FundsClass>();
-                foreach(var item in tempAvailableFunds)
+                foreach (var item in tempAvailableFunds)
                 {
                     var tempContributionFund = (from cf in CurrentDatabase.ContributionFunds
-                                       where cf.FundId == item.FundId
-                                       select cf).FirstOrDefault();
+                                                where cf.FundId == item.FundId
+                                                select cf).FirstOrDefault();
                     var tempFundsClass = new FundsClass()
                     {
                         FundId = item.FundId,
@@ -186,7 +183,7 @@ namespace CmsWeb.Areas.Giving.Models
                     j++;
                 }
                 var tempEntryPoint = (from ep in CurrentDatabase.EntryPoints where ep.Id == response[i].EntryPointId select new { ep.Id, ep.Description }).FirstOrDefault();
-                if(tempEntryPoint != null)
+                if (tempEntryPoint != null)
                 {
                     givingPage.EntryPoint = new EntryPointClass()
                     {
@@ -195,7 +192,7 @@ namespace CmsWeb.Areas.Giving.Models
                     };
                 }
 
-                if(response[i].OnlineNotifyPerson != null)
+                if (response[i].OnlineNotifyPerson != null)
                 {
                     var OnlineNotifyPersonList = response[i].OnlineNotifyPerson.Split(',').Select(int.Parse).ToList();
                     givingPage.OnlineNotifyPerson = new PeopleClass[OnlineNotifyPersonList.Count];
@@ -213,9 +210,9 @@ namespace CmsWeb.Areas.Giving.Models
                     }
                 }
 
-                if(response[i].ConfirmEmailPledge != null)
+                if (response[i].ConfirmationEmailPledge != null)
                 {
-                    var tempConfirmEmailPledge = (from c in CurrentDatabase.Contents where c.Id == response[i].ConfirmEmailPledge select new { c.Id, c.Title }).FirstOrDefault();
+                    var tempConfirmEmailPledge = (from c in CurrentDatabase.Contents where c.Id == response[i].ConfirmationEmailPledge select new { c.Id, c.Title }).FirstOrDefault();
                     if (tempConfirmEmailPledge != null)
                     {
                         givingPage.ConfirmEmailPledge = new ConfirmEmailClass()
@@ -225,9 +222,9 @@ namespace CmsWeb.Areas.Giving.Models
                         };
                     }
                 }
-                if (response[i].ConfirmEmailOneTime != null)
+                if (response[i].ConfirmationEmailOneTime != null)
                 {
-                    var tempConfirmEmailOneTime = (from c in CurrentDatabase.Contents where c.Id == response[i].ConfirmEmailOneTime select new { c.Id, c.Title }).FirstOrDefault();
+                    var tempConfirmEmailOneTime = (from c in CurrentDatabase.Contents where c.Id == response[i].ConfirmationEmailOneTime select new { c.Id, c.Title }).FirstOrDefault();
                     if (tempConfirmEmailOneTime != null)
                     {
                         givingPage.ConfirmEmailOneTime = new ConfirmEmailClass()
@@ -237,9 +234,9 @@ namespace CmsWeb.Areas.Giving.Models
                         };
                     }
                 }
-                if (response[i].ConfirmEmailRecurring != null)
+                if (response[i].ConfirmationEmailRecurring != null)
                 {
-                    var tempConfirmEmailRecurring = (from c in CurrentDatabase.Contents where c.Id == response[i].ConfirmEmailRecurring select new { c.Id, c.Title }).FirstOrDefault();
+                    var tempConfirmEmailRecurring = (from c in CurrentDatabase.Contents where c.Id == response[i].ConfirmationEmailRecurring select new { c.Id, c.Title }).FirstOrDefault();
                     if (tempConfirmEmailRecurring != null)
                     {
                         givingPage.ConfirmEmailRecurring = new ConfirmEmailClass()
@@ -332,7 +329,7 @@ namespace CmsWeb.Areas.Giving.Models
             }
 
             newGivingPageList.Add(givingPageItem);
-            
+
             return newGivingPageList;
         }
 
@@ -478,55 +475,50 @@ namespace CmsWeb.Areas.Giving.Models
             return returningGivingPageList;
         }
     }
-}
-public class GivingPageItem
-{
-    public int GivingPageId { get; set; }
-    public string PageName { get; set; }
-    public string PageTitle { get; set; }
-    public bool Enabled { get; set; }
-    public ShellClass SkinFile { get; set; }
-    public PageTypesClass[] PageType { get; set; }
-    public string PageTypeString { get; set; }
-    public FundsClass DefaultFund { get; set; }
-    public FundsClass[] AvailableFunds { get; set; }
-    public string DisabledRedirect { get; set; }
-    public EntryPointClass EntryPoint { get; set; }
-    public string TopText { get; set; }
-    public string ThankYouText { get; set; }
-    public PeopleClass[] OnlineNotifyPerson { get; set; }
-    public ConfirmEmailClass ConfirmEmailPledge { get; set; }
-    public ConfirmEmailClass ConfirmEmailOneTime { get; set; }
-    public ConfirmEmailClass ConfirmEmailRecurring { get; set; }
-    public int? CurrentIndex { get; set; }
-}
-public class PageTypesClass
-{
-    public int id { get; set; }
-    public string pageTypeName { get; set; }
-}
-public class FundsClass
-{
-    public int FundId { get; set; }
-    public string FundName { get; set; }
-}
-public class EntryPointClass
-{
-    public int Id { get; set; }
-    public string Description { get; set; }
-}
-public class PeopleClass
-{
-    public int PeopleId { get; set; }
-    public string Name { get; set; }
-}
-public class ConfirmEmailClass
-{
-    public int Id { get; set; }
-    public string Title { get; set; }
-}
-public class ShellClass
-{
-    public int Id { get; set; }
-    public string Title { get; set; }
+    public class GivingPageItem
+    {
+        public int GivingPageId { get; set; }
+        public string PageName { get; set; }
+        public string PageTitle { get; set; }
+        public bool Enabled { get; set; }
+        public ShellClass SkinFile { get; set; }
+        public PageTypesClass[] PageType { get; set; }
+        public string PageTypeString { get; set; }
+        public FundsClass DefaultFund { get; set; }
+        public FundsClass[] AvailableFunds { get; set; }
+        public string DisabledRedirect { get; set; }
+        public EntryPointClass EntryPoint { get; set; }
+        public string TopText { get; set; }
+        public string ThankYouText { get; set; }
+        public PeopleClass[] OnlineNotifyPerson { get; set; }
+        public ConfirmEmailClass ConfirmEmailPledge { get; set; }
+        public ConfirmEmailClass ConfirmEmailOneTime { get; set; }
+        public ConfirmEmailClass ConfirmEmailRecurring { get; set; }
+        public int? CurrentIndex { get; set; }
+    }
+    public class FundsClass
+    {
+        public int FundId { get; set; }
+        public string FundName { get; set; }
+    }
+    public class EntryPointClass
+    {
+        public int Id { get; set; }
+        public string Description { get; set; }
+    }
+    public class PeopleClass
+    {
+        public int PeopleId { get; set; }
+        public string Name { get; set; }
+    }
+    public class ConfirmEmailClass
+    {
+        public int Id { get; set; }
+        public string Title { get; set; }
+    }
+    public class ShellClass
+    {
+        public int Id { get; set; }
+        public string Title { get; set; }
+    }
 }

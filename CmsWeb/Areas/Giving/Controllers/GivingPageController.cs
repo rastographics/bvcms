@@ -1,17 +1,10 @@
 ﻿using CmsWeb.Lifecycle;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
-using CmsData;
 using UtilityExtensions;
 using CmsWeb.Areas.Giving.Models;
-using DocumentFormat.OpenXml.Wordprocessing;
-using DocumentFormat.OpenXml.Office2010.Excel;
 using CmsData.Codes;
-using System.Web.Http.Results;
-using OfficeOpenXml.FormulaParsing.Excel.Functions.Math;
+using CmsData.Classes.Giving;
 
 namespace CmsWeb.Areas.Giving.Controllers
 {
@@ -63,26 +56,7 @@ namespace CmsWeb.Areas.Giving.Controllers
         [HttpGet]
         public JsonResult GetPageTypes()
         {
-            var pageTypesList = new List<PageTypesClass>();
-            PageTypesClass pledge = new PageTypesClass
-            {
-                id = 1,
-                pageTypeName = "Pledge"
-            };
-            PageTypesClass oneTime = new PageTypesClass
-            {
-                id = 2,
-                pageTypeName = "One Time"
-            };
-            PageTypesClass recurring = new PageTypesClass
-            {
-                id = 4,
-                pageTypeName = "Recurring"
-            };
-            pageTypesList.Add(pledge);
-            pageTypesList.Add(oneTime);
-            pageTypesList.Add(recurring);
-
+            var pageTypesList = GivingPageTypes.GetGivingPageTypes();
             return Json(pageTypesList, JsonRequestBehavior.AllowGet);
         }
 

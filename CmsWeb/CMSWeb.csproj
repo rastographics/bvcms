@@ -2841,15 +2841,12 @@
     <Content Include="Views\Shared\_diagnostics.cshtml" />
     <Content Include="Views\Shared\Redirect.cshtml" />
     <Content Include="src\App.vue" />
-    <Content Include="src\components\UsersGrid\UsersGrid.vue" />
     <Content Include="src\components\GenericComponents\Modal.vue" />
     <Content Include="src\components\GenericComponents\Slider.vue" />
     <Content Include="src\components\Giving\GivingPageIndex\AddGivingPage.vue" />
     <Content Include="src\components\Giving\GivingPageIndex\GivingPageIndex.vue" />
     <Content Include="src\components\Giving\GivingPageEdit\GivingPageEdit.vue" />
     <Content Include="src\components\GenericComponents\ShowModalBtn.vue" />
-    <Content Include="src\components\UsersGrid\UserCard.vue" />
-    <Content Include="src\components\UsersGrid\UserCardGrid.vue" />
     <Content Include="Views\Home\Dashboard.cshtml" />
     <None Include="Web.staging.config">
       <DependentUpon>Web.config</DependentUpon>

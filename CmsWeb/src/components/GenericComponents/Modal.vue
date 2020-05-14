@@ -6,15 +6,15 @@
           <div class="modal-container">
 
             <div class="modal-header">
-              <h3>{{theHeader}}</h3>
+              <h3></h3>
             </div>
 
             <div class="modal-body">
-                {{theBody}}
+                
             </div>
 
             <div class="modal-footer">
-                {{theFooter}}
+                
               <button class="modal-default-button" @click="$emit('close')">OK</button>
             </div>
 
@@ -29,9 +29,7 @@
 export default {
   data: function() {
     return {
-      theHeader: "this is the header",
-      theBody: "this is the body",
-      theFooter: "this is the footer",
+      
     };
   },
   methods: {
@@ -81,15 +79,6 @@ export default {
 .modal-default-button {
   float: right;
 }
-
-/*
- * The following styles are auto-applied to elements with
- * transition="modal" when their visibility is toggled
- * by Vue.js.
- *
- * You can easily play with the modal transition by editing
- * these styles.
- */
 
 .modal-enter {
   opacity: 0;
