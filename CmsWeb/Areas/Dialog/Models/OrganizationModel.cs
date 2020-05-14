@@ -74,5 +74,9 @@ namespace CmsWeb.Areas.Dialog.Models
         {
             return CodeValueModel.ConvertToSelect(cv.SecurityTypeCodes(), "Id");
         }
+        public IEnumerable<SelectListItem> RegistrationTypeList()
+        {
+            return CodeValueModel.ConvertToSelect(cv.RegistrationTypes(), "Id");
+        }
     }
 }

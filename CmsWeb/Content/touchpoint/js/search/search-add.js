@@ -34,7 +34,7 @@ $(function () {
     $('#addinv').click(function (e)
     {
         e.preventDefault();
-        var url = '/AddOrganization/AddInvolvement';
+        var url = '/AddInvolvement';
         if ($('#OrganizationId').length > 0)
         {
             url = url + '?displayCopySettings=true';

@@ -24,10 +24,51 @@ namespace CmsWeb.Areas.Search.Controllers
         {
         }
 
-        // GET: Involvement/InvolvementSearch
-        public ActionResult Index()
+        [Route("~/InvolvementSearch/{progid:int?}/{div:int?}")]
+        public ActionResult Index(int? div, int? progid, int? onlinereg, string name)
         {
-            return View();
+            Response.NoCache();
+            var m = new OrgSearchModel(CurrentDatabase);
+            m.StatusId = OrgStatusCode.Active;
+
+            if (name.HasValue())
+            {
+                m.Name = name;
+                m.StatusId = null;
+            }
+            if (onlinereg.HasValue)
+            {
+                m.OnlineReg = onlinereg;
+            }
+
+            if (div.HasValue)
+            {
+                m.DivisionId = div;
+                if (progid.HasValue)
+                {
+                    m.ProgramId = progid;
+                }
+                else
+                {
+                    m.ProgramId = m.Division().ProgId;
+                }
+
+                m.TagProgramId = m.ProgramId;
+                m.TagDiv = div;
+            }
+            else if (progid.HasValue)
+            {
+                m.ProgramId = progid;
+                m.TagProgramId = m.ProgramId;
+            }
+            else if (Util.OrgSearch.IsNotNull())
+            {
+                // TODO: get this working...
+                //var search = JsonConvert.DeserializeObject<OrgSearchInfo>(Util.OrgSearch);
+                //search.CopyPropertiesTo(m);
+            }
+
+            return View(m);
         }
     }
 }

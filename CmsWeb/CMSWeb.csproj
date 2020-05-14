@@ -1928,6 +1928,7 @@
     <Content Include="Areas\Involvement\Views\Involvement\FilterPeople.cshtml" />
     <Content Include="Areas\Involvement\Views\web.config" />
     <Content Include="Areas\Dialog\Views\AddInvolvement\index.cshtml" />
+    <Content Include="Areas\Involvement\Views\InvolvementSearch\Index.cshtml" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
@@ -3449,7 +3450,6 @@
     <Folder Include="Areas\Dialog\Views\Shared\" />
     <Folder Include="Areas\Figures\Views\Shared\" />
     <Folder Include="Areas\Involvement\Models\" />
-    <Folder Include="Areas\Involvement\Views\InvolvementSearch\" />
     <Folder Include="Areas\Involvement\Views\Shared\" />
     <Folder Include="Areas\Main\Views\Shared\" />
     <Folder Include="Areas\Manage\Views\Shared\" />
