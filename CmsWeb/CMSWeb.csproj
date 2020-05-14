@@ -1981,6 +1981,7 @@
     <Content Include="Areas\Involvement\Views\Involvement\People\Table.cshtml" />
     <Content Include="Areas\Involvement\Views\Involvement\People.cshtml" />
     <Content Include="Areas\Involvement\Views\Involvement\Index.cshtml" />
+    <Content Include="Areas\Involvement\Views\Involvement\People\Hidden.cshtml" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
