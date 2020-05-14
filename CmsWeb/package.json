@@ -25,6 +25,7 @@
         "@vue/cli-plugin-babel": "~4.3.0",
         "@vue/cli-plugin-eslint": "~4.3.0",
         "@vue/cli-service": "~4.3.0",
+        "acorn": "^7.0.0",
         "babel-eslint": "^10.1.0",
         "clean-css": "^4.2.1",
         "eslint": "^6.7.2",
@@ -66,5 +67,10 @@
         "url": "https://github.com/bvcms/bvcms/issues"
     },
     "homepage": "https://github.com/bvcms/bvcms#readme",
-    "readme": "ERROR: No README data found!"
+    "readme": "ERROR: No README data found!",
+    "-vs-binding": {
+        "ProjectOpened": [
+            "watch"
+        ]
+    }
 }
