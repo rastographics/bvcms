@@ -10,11 +10,11 @@ namespace CmsWeb.Areas.Involvement.Controllers
     [RouteArea("Org", AreaPrefix = "Org"), Route("{action}/{id?}")]
     [ValidateInput(false)]
     [SessionExpire]
-    public class InvController : CmsStaffController
+    public class InvolvementController : CmsStaffController
     {
         private const string needNotify = "WARNING: please add the notify persons on messages tab.";
 
-        public InvController(IRequestManager requestManager) : base(requestManager)
+        public InvolvementController(IRequestManager requestManager) : base(requestManager)
         {
         }
 
