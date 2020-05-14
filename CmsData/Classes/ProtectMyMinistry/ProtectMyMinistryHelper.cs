@@ -15,7 +15,7 @@ namespace CmsData.Classes.ProtectMyMinistry
     public class ProtectMyMinistryHelper
     {
         public static string PMM_URL => IsSecureSearchFaithEnabled()
-            ? "https://orders.securesearchfaith.com/webservice/default.cfm"
+            ? "https://orders.activescreeningfaith.com/webservice/default.cfm"  //"https://orders.securesearchfaith.com/webservice/default.cfm"
             : "https://services.priorityresearch.com/webservice/default.cfm";
 
         public static string PMM_Append => "/ExternalServices/PMMResults";
