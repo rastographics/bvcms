@@ -359,6 +359,7 @@ namespace CmsData.Codes
         public const string Prospect = "40";
         public const string Previous = "50";
         public const string Guest = "60";
+        public const string TicketBuyer = "70";
     }
 
     public class VolApplicationStatusCode
