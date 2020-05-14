@@ -7,7 +7,7 @@ using UtilityExtensions;
 
 namespace CmsWeb.Areas.Involvement.Controllers
 {
-    [RouteArea("Org", AreaPrefix = "Org"), Route("{action}/{id?}")]
+    [RouteArea("Involvement", AreaPrefix = "Involvement"), Route("{action}/{id?}")]
     [ValidateInput(false)]
     [SessionExpire]
     public class InvolvementController : CmsStaffController
@@ -17,7 +17,6 @@ namespace CmsWeb.Areas.Involvement.Controllers
         public InvolvementController(IRequestManager requestManager) : base(requestManager)
         {
         }
-
 
         [HttpGet, Route("~/Inv/{id:int}")]
         public ActionResult Index(int id, int? peopleid = null)
