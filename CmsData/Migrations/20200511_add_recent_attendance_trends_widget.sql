@@ -71,23 +71,27 @@ INSERT INTO [dbo].[Content]
            ([Name],[Title],[Body],[DateCreated],[TypeID],[ThumbID],[RoleID],[OwnerID],[CreatedBy])
      VALUES
            ('WidgetRecentAttendanceTrendsPython','Edit Python Script',
-           'divisions = [
+           '# Users can add divisions to include in the line chart for this widget inside this divisions array.
+# This array is made up of objects. Each object contains a name and a division id number.
+# The first item in the object is the name you wish to display in the widget for the selected division.
+# The second item in the object is the division id you wish to display in the widget.
+divisions = [
     [''Young Couples'', 210],
     [''Young Marrieds'', 211],
     [''Adults 1'', 213]
 ]
+# You can change begindate to the date you wish to start the chart for your widget.
 begindate = ''11/15/2019''
-beginhour = 1
-endhour = 12
-Title = ''Recent Attendance Trends''
+# You can change Interval to change the horizontal axis of your chart.
 Interval = ''14''
 
-def GetData(divisions, begindate, beginhour, endhour):
+
+
+
+def GetData(divisions, begindate):
     sql = model.Content(''WidgetRecentAttendanceTrendsSQL'')
     divids = [row[1] for row in divisions]
     sql = sql.replace(''@begindate'', begindate)
-    sql = sql.replace(''@beginhour'', str(beginhour))
-    sql = sql.replace(''@endhour'', str(endhour))
     sql = sql.replace(''@divs'', str(divids)[1:-1])
     rowcountsql = ''isnull((select sum(HeadCount) from data d where d.DivisionId = {0} and d.ss = dd.ss group by d.ss), 0) d{0}''
     rlist = [rowcountsql.format(d) for d in divids]
@@ -95,26 +99,17 @@ def GetData(divisions, begindate, beginhour, endhour):
     sql = sql.replace(''@rowcounts'', s)
     return q.QuerySqlJsonArray(sql)
 
-def GetJavascript(divisions, data, Title):
-    js = model.Content(''WidgetRecentAttendanceTrendsHTML'')
-    addcolumn = "data.addColumn(''number'', ''{}'');"
-    alist = [addcolumn.format(s[0]) for s in divisions]
-    s = ''\n''.join(alist)
-    js = js.replace(''{addcolumns}'', s)
-    js = js.replace(''{rowdata}'', data)
-    return js
-
 def Get():
     sql = Data.SQLContent
     template = Data.HTMLContent
-    Data.results = GetData(divisions, begindate, beginhour, endhour)
-    Data.title = Title
+    Data.results = GetData(divisions, begindate)
+    Data.rowdata = Data.results
     Data.interval = Interval
-    data = GetData(divisions, begindate, beginhour, endhour)
     addcolumn = "data.addColumn(''number'', ''{}'');"
     alist = [addcolumn.format(s[0]) for s in divisions]
     Data.addcolumns = ''\n''.join(alist)
-    Data.rowdata = data
+    #for x in Data.rowdata:
+        #print(x)
     print model.RenderTemplate(template)
     
 Get()',
@@ -142,7 +137,7 @@ and HeadCount > 0
 ;with data as (
 	select HeadCount, DivisionId, ss, hh 
 	from #meetingdata
-	where ss >= ''@begindate'' and hh > @beginhour AND hh <= @endhour
+	where ss >= ''@begindate''
 )
 select
 	CONVERT(varchar, ss, 111) [Sunday],
@@ -190,6 +185,6 @@ INSERT INTO [dbo].[DashboardWidgets]
 INSERT INTO [dbo].[DashboardWidgetRoles]
            ([WidgetId]
            ,[RoleId])
-    SELECT SCOPE_IDENTITY() [WidgetId], RoleId FROM dbo.Roles WHERE RoleName in ('Finance', 'FinanceAdmin', 'Admin')
+    SELECT SCOPE_IDENTITY() [WidgetId], RoleId FROM dbo.Roles WHERE RoleName in ('Edit')
 END
 GO
