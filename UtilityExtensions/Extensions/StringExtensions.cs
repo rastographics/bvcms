@@ -176,7 +176,7 @@ namespace UtilityExtensions
                 return "";
             var chars = new StringBuilder();
             foreach (var c in s)
-                if (!char.IsDigit(c))
+                if (char.IsLetter(c))
                     chars.Append(c);
             return chars.ToString();
         }
