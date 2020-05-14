@@ -18,7 +18,6 @@ namespace CmsWeb.Areas.Involvement.Controllers
         {
         }
 
-
         [HttpGet, Route("~/Inv/{id:int}")]
         public ActionResult Index(int id, int? peopleid = null)
         {

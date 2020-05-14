@@ -1933,6 +1933,7 @@
     <Content Include="Areas\Dialog\Views\AddInvolvement\index.cshtml" />
     <Content Include="Areas\Involvement\Views\InvolvementSearch\Index.cshtml" />
     <Content Include="Areas\Involvement\Views\Involvement\Index.cshtml" />
+    <Content Include="Areas\Involvement\Views\Involvement\People\Hidden.cshtml" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
