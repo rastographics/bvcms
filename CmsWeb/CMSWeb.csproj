@@ -1265,8 +1265,6 @@
     <Content Include="Content\css\select2.png" />
     <Content Include="Content\css\select2x2.png" />
     <Content Include="Content\css\typeahead.js-bootstrap.css" />
-    <Content Include="Content\dist\css\app.css" />
-    <Content Include="Content\dist\js\app.js" />
     <Content Include="Content\font-awesome-4.0.3\css\font-awesome.css" />
     <Content Include="Content\font-awesome-4.0.3\css\font-awesome.min.css" />
     <Content Include="Content\font-awesome-4.0.3\fonts\fontawesome-webfont.svg" />
@@ -1974,7 +1972,6 @@
     </Content>
     <Content Include="Areas\Giving\Views\GivingPage\Index.cshtml" />
     <Content Include="package-lock.json" />
-    <Content Include="Content\dist\js\app.js.map" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
@@ -3513,6 +3510,7 @@
     <Folder Include="Areas\Public\Views\TestMobile\" />
     <Folder Include="Areas\Public\Views\TwilioIncoming\" />
     <Folder Include="Areas\Search\Views\Shared\" />
+    <Folder Include="Content\dist\" />
     <Folder Include="Pushpay\Enums\" />
     <Folder Include="Pushpay\Exceptions\" />
   </ItemGroup>
@@ -3555,4 +3553,8 @@ popd</PreBuildEvent>
     <Error Condition="!Exists('..\packages\NETStandard.Library.2.0.3\build\netstandard2.0\NETStandard.Library.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\NETStandard.Library.2.0.3\build\netstandard2.0\NETStandard.Library.targets'))" />
   </Target>
   <Import Project="..\packages\NETStandard.Library.2.0.3\build\netstandard2.0\NETStandard.Library.targets" Condition="Exists('..\packages\NETStandard.Library.2.0.3\build\netstandard2.0\NETStandard.Library.targets')" />
+  <PropertyGroup>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
 </Project>
