@@ -48,6 +48,7 @@ namespace CmsWeb.Areas.Public.Models.MobileAPIv2
         private int device { get; set; }
         private string instance { get; set; }
         private string key { get; set; }
+        private string build { get; set; }
 
         private User user { get; set; }
         private Person person { get; set; }
@@ -62,7 +63,7 @@ namespace CmsWeb.Areas.Public.Models.MobileAPIv2
             CurrentDatabase = Db;
         }
 
-        public void setCreateFields(string first, string last, string email, string phone, string dob, int device, string instance, string key)
+        public void setCreateFields(string first, string last, string email, string phone, string dob, int device, string instance, string key, string build)
         {
             this.first = first;
             this.last = last;
@@ -72,6 +73,7 @@ namespace CmsWeb.Areas.Public.Models.MobileAPIv2
             this.device = device;
             this.instance = instance;
             this.key = key;
+            this.build = build;
 
             if (Util.DateValid(dob, out var bd))
             {
@@ -158,7 +160,7 @@ namespace CmsWeb.Areas.Public.Models.MobileAPIv2
                     (p.CellPhone.Length > 0 && p.CellPhone == phone)
                 ))
             {
-                var code = createQuickSignInCode(device, instance, key, email);
+                var code = createQuickSignInCode(device, instance, key, email, build);
 
                 if (!code.HasValue())
                 {
@@ -216,7 +218,7 @@ namespace CmsWeb.Areas.Public.Models.MobileAPIv2
         {
             if (Db.People.Any(p => p.EmailAddress == email || p.EmailAddress2 == email))
             {
-                string code = createQuickSignInCode(device, instance, key, email);
+                string code = createQuickSignInCode(device, instance, key, email, build);
                 string deepLink = Db.Setting("MobileDeepLinkURL", "");
 
                 if (string.IsNullOrEmpty(code))
@@ -452,7 +454,7 @@ namespace CmsWeb.Areas.Public.Models.MobileAPIv2
                 return;
             }
 
-            string code = createQuickSignInCode(device, instance, key, email);
+            string code = createQuickSignInCode(device, instance, key, email, build);
             string deepLink = Db.Setting("MobileDeepLinkURL", "");
             string body = Db.ContentHtml("NewMobileUserWelcome", "");
 
@@ -502,7 +504,7 @@ namespace CmsWeb.Areas.Public.Models.MobileAPIv2
             Db.Email(new MailAddress(DbUtil.AdminMail, DbUtil.AdminMailName), person, null, "New User Account on " + Db.Host, message);
         }
 
-        private string createQuickSignInCode(int device, string instanceID, string key, string email)
+        private string createQuickSignInCode(int device, string instanceID, string key, string email, string version)
         {
             var rng = new Random();
             string code = rng.Next(0, 999999).ToString("D6");
@@ -518,7 +520,8 @@ namespace CmsWeb.Areas.Public.Models.MobileAPIv2
                 Authentication = "",
                 Code = hash,
                 CodeExpires = DateTime.Now.AddMinutes(15),
-                CodeEmail = email
+                CodeEmail = email,
+                AppVersion = version,
             };
 
             Db.MobileAppDevices.InsertOnSubmit(appDevice);

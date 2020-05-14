@@ -88,7 +88,6 @@ namespace CmsWeb.Models
             {
                 pythonModel.DictionaryAdd(key, request.Form[key]);
             }
-            pythonModel.HttpMethod = "post";
         }
 
         private void AddTextFileToDynamicData(string key, HttpPostedFileBase file)
