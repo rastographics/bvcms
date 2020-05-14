@@ -1,17 +1,38 @@
-﻿
-@{
-    Layout = null;
-}
-
-<!DOCTYPE html>
-
-<html>
-<head>
-    <meta name="viewport" content="width=device-width" />
-    <title>People</title>
-</head>
-<body>
-    <div> 
+﻿@model CmsWeb.Areas.Org.Models.OrgPeopleModel
+<form class="ajax" data-init="popovers">
+    @Html.Partial("People/Hidden", Model)
+    <div class="row">
+        <div class="col-sm-12">
+            <div id="groupSelector" class="btn-group">
+                @Html.Partial("People/GroupButtons", Model)
+                @if (Model.ShowOptions)
+                {
+                    @Html.Partial("People/GroupOptions", Model)
+                }
+            </div>
+        </div>
     </div>
-</body>
-</html>
+    @if (!Model.ShowSubgroupFilters)
+    {
+        <div style="display: none">
+            @Html.Partial("People/FilterPeople", Model)
+        </div>
+        <br />
+    }
+    else
+    {
+        @Html.Partial("People/FilterPeople", Model)
+        <br />
+    }
+    <div class="row">
+        <div class="col-sm-12">
+            @Html.Partial("PagerTop", Model)
+            <div class="table-responsive">
+                @Html.Partial("People/Table")
+            </div>
+            @Html.Partial("PagerBottom", Model)
+            @Html.Partial("PagerHidden", Model)
+        </div>
+    </div>
+    <br /><br /><br /><br />
+</form>
