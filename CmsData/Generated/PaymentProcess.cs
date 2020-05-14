@@ -1,5 +1,4 @@
 using CmsData.Infrastructure;
-using System;
 using System.ComponentModel;
 using System.Data.Linq;
 using System.Data.Linq.Mapping;
@@ -16,6 +15,9 @@ namespace CmsData
         private int _ProcessId;
         private string _ProcessName;
         private int? _GatewayAccountId;
+        private bool _AcceptACH = true;
+        private bool _AcceptCredit = true;
+        private bool _AcceptDebit = true;
 
         private EntityRef<GatewayAccount> _GatewayAccount;
         #endregion
@@ -34,6 +36,16 @@ namespace CmsData
 
         partial void OnGatewayAccountIdChanging(int? value);
         partial void OnGatewayAccountIdChanged();
+
+        partial void OnAcceptACHChanging(bool value);
+        partial void OnAcceptACHChanged();
+
+        partial void OnAcceptCreditChanging(bool value);
+        partial void OnAcceptCreditChanged();
+
+        partial void OnAcceptDebitChanging(bool value);
+        partial void OnAcceptDebitChanged();
+
         #endregion
 
         public PaymentProcess()
@@ -103,6 +115,60 @@ namespace CmsData
             }
         }
 
+        [Column(Name = "AcceptACH", UpdateCheck = UpdateCheck.Never, Storage = "_AcceptACH", AutoSync = AutoSync.OnInsert, DbType = "bit NOT NULL")]
+        public bool AcceptACH
+        {
+            get => _AcceptACH;
+
+            set
+            {
+                if (_AcceptACH != value)
+                {
+                    OnAcceptACHChanging(value);
+                    SendPropertyChanging();
+                    _AcceptACH = value;
+                    SendPropertyChanged("AcceptACH");
+                    OnAcceptACHChanged();
+                }
+            }
+        }
+
+        [Column(Name = "AcceptCredit", UpdateCheck = UpdateCheck.Never, Storage = "_AcceptCredit", AutoSync = AutoSync.OnInsert, DbType = "bit NOT NULL")]
+        public bool AcceptCredit
+        {
+            get => _AcceptCredit;
+
+            set
+            {
+                if (_AcceptCredit != value)
+                {
+                    OnAcceptCreditChanging(value);
+                    SendPropertyChanging();
+                    _AcceptCredit = value;
+                    SendPropertyChanged("AcceptCredit");
+                    OnAcceptCreditChanged();
+                }
+            }
+        }
+
+        [Column(Name = "AcceptDebit", UpdateCheck = UpdateCheck.Never, Storage = "_AcceptDebit", AutoSync = AutoSync.OnInsert, DbType = "bit NOT NULL")]
+        public bool AcceptDebit
+        {
+            get => _AcceptDebit;
+
+            set
+            {
+                if (_AcceptDebit != value)
+                {
+                    OnAcceptDebitChanging(value);
+                    SendPropertyChanging();
+                    _AcceptDebit = value;
+                    SendPropertyChanged("AcceptDebit");
+                    OnAcceptDebitChanged();
+                }
+            }
+        }
+
         #endregion
 
         #region Foreign Keys
@@ -112,19 +178,13 @@ namespace CmsData
         public event PropertyChangingEventHandler PropertyChanging;
         protected virtual void SendPropertyChanging()
         {
-            if ((PropertyChanging != null))
-            {
-                PropertyChanging(this, emptyChangingEventArgs);
-            }
+            PropertyChanging?.Invoke(this, emptyChangingEventArgs);
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
         protected virtual void SendPropertyChanged(string propertyName)
         {
-            if ((PropertyChanged != null))
-            {
-                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-            }
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }
