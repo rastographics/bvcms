@@ -1,4 +1,4 @@
-﻿@model CmsWeb.Areas.Involvement.Models.OrgPeopleModel
+﻿@model CmsWeb.Areas.Org.Models.OrgPeopleModel
 <div class="filter well hidden-print" style="margin-top: 15px;">
     <div class="row">
         <div class="btn-group">
@@ -8,7 +8,7 @@
                 <a href="Inv/Edit" class="btn btn-sm btn-danger"><i class="fa fa-edit"></i></a>
                 <a href="Inv/Print" class="btn btn-sm btn-danger"><i class="fa fa-print"></i></a>
             </div>
-            <button data-toggle="dropdown" class="btn dropdown-toggle btn-info">
+            @*<button data-toggle="dropdown" class="btn dropdown-toggle btn-info">
                 @Model.AddPersonOptions
                 <span class="caret"></span>
             </button>
@@ -19,7 +19,7 @@
                 <li class="@Model.ShowAddFromTagActive">
                     <a id="showhide" href="#" class="grp2 @Model.ShowAddFromTagActive">Add from Tag</a>
                 </li>
-            </ul>
+            </ul>*@
             <div class="form-group">
                 <a href="/PeopleSearch/Results" id="search" class="btn btn-primary">Search</a>
             </div>
