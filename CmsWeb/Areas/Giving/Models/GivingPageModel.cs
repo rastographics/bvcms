@@ -23,7 +23,6 @@ namespace CmsWeb.Areas.Giving.Models
                 _db = value;
             }
         }
-
         public List<GivingPageItem> GetGivingPageList()
         {
             var outputList = new List<GivingPageItem>();
@@ -35,7 +34,7 @@ namespace CmsWeb.Areas.Giving.Models
                                 gp.PageTitle,
                                 gp.Enabled,
                                 SkinFileId = gp.SkinFile,
-                                gp.PageType,
+                                PageTypeId = gp.PageType,
                                 DefaultFundId = gp.FundId,
                                 gp.DisabledRedirect,
                                 gp.EntryPointId,
@@ -58,198 +57,224 @@ namespace CmsWeb.Areas.Giving.Models
                     TopText = response[i].TopText,
                     ThankYouText = response[i].ThankYouText,
                 };
-                if (response[i].DefaultFundId != null)
-                {
-                    var tempDefaultFund = (from d in CurrentDatabase.ContributionFunds where d.FundId == response[i].DefaultFundId select d).FirstOrDefault();
-                    if (tempDefaultFund != null)
-                    {
-                        givingPage.DefaultFund = new FundsClass()
-                        {
-                            FundId = tempDefaultFund.FundId,
-                            FundName = tempDefaultFund.FundName
-                        };
-                    }
-                }
-
-                if (response[i].SkinFileId != null)
-                {
-                    var tempSkinFile = (from c in CurrentDatabase.Contents
-                                        where c.TypeID == ContentTypeCode.TypeHtml
-                                        where c.ContentKeyWords.Any(vv => vv.Word == "Shell")
-                                        where c.Id == response[i].SkinFileId
-                                        select new { c.Id, c.Title }).FirstOrDefault();
-                    if (tempSkinFile != null)
-                    {
-                        givingPage.SkinFile = new ShellClass()
-                        {
-                            Id = tempSkinFile.Id,
-                            Title = tempSkinFile.Title
-                        };
-                    }
-                }
-
-                var newPageTypeList = new List<PageTypesClass>();
-                var temp1 = new PageTypesClass();
-                var temp2 = new PageTypesClass();
-                var temp3 = new PageTypesClass();
-                switch (response[i].PageType)
-                {
-                    case 1:
-                        temp1.id = 1;
-                        temp1.pageTypeName = "Pledge";
-                        newPageTypeList.Add(temp1);
-                        break;
-                    case 2:
-                        temp2.id = 2;
-                        temp2.pageTypeName = "One Time";
-                        newPageTypeList.Add(temp2);
-                        break;
-                    case 3:
-                        temp1.id = 1;
-                        temp1.pageTypeName = "Pledge";
-                        newPageTypeList.Add(temp1);
-                        temp2.id = 2;
-                        temp2.pageTypeName = "One Time";
-                        newPageTypeList.Add(temp2);
-                        break;
-                    case 4:
-                        temp3.id = 4;
-                        temp3.pageTypeName = "Recurring";
-                        newPageTypeList.Add(temp3);
-                        break;
-                    case 5:
-                        temp1.id = 1;
-                        temp1.pageTypeName = "Pledge";
-                        newPageTypeList.Add(temp1);
-                        temp3.id = 4;
-                        temp3.pageTypeName = "Recurring";
-                        newPageTypeList.Add(temp3);
-                        break;
-                    case 6:
-                        temp2.id = 2;
-                        temp2.pageTypeName = "One Time";
-                        newPageTypeList.Add(temp2);
-                        temp3.id = 4;
-                        temp3.pageTypeName = "Recurring";
-                        newPageTypeList.Add(temp3);
-                        break;
-                    case 7:
-                        temp1.id = 1;
-                        temp1.pageTypeName = "Pledge";
-                        newPageTypeList.Add(temp1);
-                        temp2.id = 2;
-                        temp2.pageTypeName = "One Time";
-                        newPageTypeList.Add(temp2);
-                        temp3.id = 4;
-                        temp3.pageTypeName = "Recurring";
-                        newPageTypeList.Add(temp3);
-                        break;
-                    default:
-                        break;
-                }
-                givingPage.PageType = newPageTypeList.ToArray();
-                givingPage.PageTypeString = "";
-                foreach (var item in newPageTypeList)
-                {
-                    if (givingPage.PageTypeString.Length > 0)
-                    {
-                        givingPage.PageTypeString += ", " + item.pageTypeName;
-                    }
-                    else
-                    {
-                        givingPage.PageTypeString += item.pageTypeName;
-                    }
-                }
-
-                var tempAvailableFunds = (from gpf in CurrentDatabase.GivingPageFunds where gpf.GivingPageId == response[i].GivingPageId select new { gpf.GivingPageFundId, gpf.FundId, gpf.GivingPageId }).ToList();
-                var j = 0;
-                var tempAvailFundsList = new List<FundsClass>();
-                foreach (var item in tempAvailableFunds)
-                {
-                    var tempContributionFund = (from cf in CurrentDatabase.ContributionFunds
-                                                where cf.FundId == item.FundId
-                                                select cf).FirstOrDefault();
-                    var tempFundsClass = new FundsClass()
-                    {
-                        FundId = item.FundId,
-                        FundName = tempContributionFund.FundName
-                    };
-                    tempAvailFundsList.Add(tempFundsClass);
-                }
-                givingPage.AvailableFunds = new FundsClass[tempAvailFundsList.Count()];
-                foreach (var item in tempAvailFundsList)
-                {
-                    givingPage.AvailableFunds[j] = item;
-                    j++;
-                }
-                var tempEntryPoint = (from ep in CurrentDatabase.EntryPoints where ep.Id == response[i].EntryPointId select new { ep.Id, ep.Description }).FirstOrDefault();
-                if (tempEntryPoint != null)
-                {
-                    givingPage.EntryPoint = new EntryPointClass()
-                    {
-                        Id = (int)response[i].EntryPointId,
-                        Description = tempEntryPoint.Description
-                    };
-                }
-
-                if (response[i].OnlineNotifyPerson != null)
-                {
-                    var OnlineNotifyPersonList = response[i].OnlineNotifyPerson.Split(',').Select(int.Parse).ToList();
-                    givingPage.OnlineNotifyPerson = new PeopleClass[OnlineNotifyPersonList.Count];
-                    var k = 0;
-                    foreach (var item in OnlineNotifyPersonList)
-                    {
-                        var person = (from p in CurrentDatabase.People where p.PeopleId == item select new { p.PeopleId, p.Name }).FirstOrDefault();
-                        var notifyPerson = new PeopleClass()
-                        {
-                            PeopleId = person.PeopleId,
-                            Name = person.Name
-                        };
-                        givingPage.OnlineNotifyPerson[k] = notifyPerson;
-                        k++;
-                    }
-                }
-
-                if (response[i].ConfirmationEmailPledge != null)
-                {
-                    var tempConfirmEmailPledge = (from c in CurrentDatabase.Contents where c.Id == response[i].ConfirmationEmailPledge select new { c.Id, c.Title }).FirstOrDefault();
-                    if (tempConfirmEmailPledge != null)
-                    {
-                        givingPage.ConfirmEmailPledge = new ConfirmEmailClass()
-                        {
-                            Id = tempConfirmEmailPledge.Id,
-                            Title = tempConfirmEmailPledge.Title
-                        };
-                    }
-                }
-                if (response[i].ConfirmationEmailOneTime != null)
-                {
-                    var tempConfirmEmailOneTime = (from c in CurrentDatabase.Contents where c.Id == response[i].ConfirmationEmailOneTime select new { c.Id, c.Title }).FirstOrDefault();
-                    if (tempConfirmEmailOneTime != null)
-                    {
-                        givingPage.ConfirmEmailOneTime = new ConfirmEmailClass()
-                        {
-                            Id = tempConfirmEmailOneTime.Id,
-                            Title = tempConfirmEmailOneTime.Title
-                        };
-                    }
-                }
-                if (response[i].ConfirmationEmailRecurring != null)
-                {
-                    var tempConfirmEmailRecurring = (from c in CurrentDatabase.Contents where c.Id == response[i].ConfirmationEmailRecurring select new { c.Id, c.Title }).FirstOrDefault();
-                    if (tempConfirmEmailRecurring != null)
-                    {
-                        givingPage.ConfirmEmailRecurring = new ConfirmEmailClass()
-                        {
-                            Id = tempConfirmEmailRecurring.Id,
-                            Title = tempConfirmEmailRecurring.Title
-                        };
-                    }
-                }
-
+                givingPage.DefaultFund = GetSelectedDefaultFund(response[i].DefaultFundId);
+                givingPage.SkinFile = GetSelectedSkinFile(response[i].SkinFileId);
+                givingPage.PageType = GetSelectedPageTypesArray(response[i].PageTypeId);
+                givingPage.PageTypeString = GetSelectedPageTypesString(givingPage.PageType);
+                givingPage.AvailableFunds = GetSelectedAvailableFundsArray(response[i].GivingPageId);
+                givingPage.EntryPoint = GetSelectedEntryPoint(response[i].EntryPointId);
+                givingPage.OnlineNotifyPerson = GetSelectedOnlineNotifyPerson(response[i].OnlineNotifyPerson);
+                givingPage.ConfirmEmailPledge = GetSelectedEmail(response[i].ConfirmationEmailPledge);
+                givingPage.ConfirmEmailOneTime = GetSelectedEmail(response[i].ConfirmationEmailOneTime);
+                givingPage.ConfirmEmailRecurring = GetSelectedEmail(response[i].ConfirmationEmailRecurring);
                 outputList.Add(givingPage);
             }
             return outputList;
+        }
+        public FundsClass[] GetSelectedAvailableFundsArray(int id)
+        {
+            var tempAvailableFunds = (from gpf in CurrentDatabase.GivingPageFunds where gpf.GivingPageId == id select new { gpf.GivingPageFundId, gpf.FundId, gpf.GivingPageId }).ToList();
+            var tempAvailFundsList = new List<FundsClass>();
+            foreach (var item in tempAvailableFunds)
+            {
+                var tempContributionFund = (from cf in CurrentDatabase.ContributionFunds
+                                            where cf.FundId == item.FundId
+                                            select cf).FirstOrDefault();
+                var tempFundsClass = new FundsClass()
+                {
+                    FundId = item.FundId,
+                    FundName = tempContributionFund.FundName
+                };
+                tempAvailFundsList.Add(tempFundsClass);
+            }
+            var availableFunds = new FundsClass[tempAvailFundsList.Count()];
+            var j = 0;
+            foreach (var item in tempAvailFundsList)
+            {
+                availableFunds[j] = item;
+                j++;
+            }
+            return availableFunds;
+        }
+        public PeopleClass[] GetSelectedOnlineNotifyPerson(string onlineNotifyPerson)
+        {
+            if(onlineNotifyPerson != null)
+            {
+                var OnlineNotifyPersonList = onlineNotifyPerson.Split(',').Select(int.Parse).ToList();
+                var peopleClass = new PeopleClass[OnlineNotifyPersonList.Count];
+                var k = 0;
+                foreach (var item in OnlineNotifyPersonList)
+                {
+                    var person = (from p in CurrentDatabase.People where p.PeopleId == item select new { p.PeopleId, p.Name }).FirstOrDefault();
+                    var notifyPerson = new PeopleClass()
+                    {
+                        PeopleId = person.PeopleId,
+                        Name = person.Name
+                    };
+                    peopleClass[k] = notifyPerson;
+                    k++;
+                }
+                return peopleClass;
+            }
+            else
+            {
+                return null;
+            }
+        }
+        public EntryPointClass GetSelectedEntryPoint(int? id)
+        {
+            var tempEntryPoint = (from ep in CurrentDatabase.EntryPoints where ep.Id == id select new { ep.Id, ep.Description }).FirstOrDefault();
+            var entryPointClass = new EntryPointClass();
+            if (tempEntryPoint != null)
+            {
+                entryPointClass = new EntryPointClass()
+                {
+                    Id = (int)id,
+                    Description = tempEntryPoint.Description
+                };
+            }
+            else
+            {
+                entryPointClass = null;
+            }
+            return entryPointClass;
+        }
+        public ShellClass GetSelectedSkinFile(int? id)
+        {
+            var tempSkinFile = (from c in CurrentDatabase.Contents
+                                where c.TypeID == ContentTypeCode.TypeHtml
+                                where c.ContentKeyWords.Any(vv => vv.Word == "Shell")
+                                where c.Id == id
+                                select new { c.Id, c.Title }).FirstOrDefault();
+            var shellClass = new ShellClass();
+            if (tempSkinFile != null)
+            {
+                shellClass = new ShellClass()
+                {
+                    Id = tempSkinFile.Id,
+                    Title = tempSkinFile.Title
+                };
+            }
+            else
+            {
+                shellClass = null;
+            }
+            return shellClass;
+        }
+        public FundsClass GetSelectedDefaultFund(int? id)
+        {
+            var tempDefaultFund = (from d in CurrentDatabase.ContributionFunds where d.FundId == id select d).FirstOrDefault();
+            var fundsClass = new FundsClass();
+            if (tempDefaultFund != null)
+            {
+                fundsClass = new FundsClass()
+                {
+                    FundId = tempDefaultFund.FundId,
+                    FundName = tempDefaultFund.FundName
+                };
+            }
+            else
+            {
+                fundsClass = null;
+            }
+            return fundsClass;
+        }
+        public ConfirmEmailClass GetSelectedEmail(int? id)
+        {
+            var email = (from c in CurrentDatabase.Contents where c.Id == id select new { c.Id, c.Title }).FirstOrDefault();
+            var confirmEmailClass = new ConfirmEmailClass();
+            if (email != null)
+            {
+                confirmEmailClass = new ConfirmEmailClass()
+                {
+                    Id = email.Id,
+                    Title = email.Title
+                };
+            }
+            else
+            {
+                confirmEmailClass = null;
+            }
+            return confirmEmailClass;
+        }
+        public string GetSelectedPageTypesString(PageTypesClass[] pageTypeArray)
+        {
+            var tempString = "";
+            foreach (var item in pageTypeArray)
+            {
+                if (tempString.Length > 0)
+                {
+                    tempString += ", " + item.pageTypeName;
+                }
+                else
+                {
+                    tempString += item.pageTypeName;
+                }
+            }
+            return tempString;
+        }
+        public PageTypesClass[] GetSelectedPageTypesArray(int pageTypeId)
+        {
+            var newPageTypeList = new List<PageTypesClass>();
+            var temp1 = new PageTypesClass();
+            var temp2 = new PageTypesClass();
+            var temp3 = new PageTypesClass();
+            switch (pageTypeId)
+            {
+                case 1:
+                    temp1.id = 1;
+                    temp1.pageTypeName = "Pledge";
+                    newPageTypeList.Add(temp1);
+                    break;
+                case 2:
+                    temp2.id = 2;
+                    temp2.pageTypeName = "One Time";
+                    newPageTypeList.Add(temp2);
+                    break;
+                case 3:
+                    temp1.id = 1;
+                    temp1.pageTypeName = "Pledge";
+                    newPageTypeList.Add(temp1);
+                    temp2.id = 2;
+                    temp2.pageTypeName = "One Time";
+                    newPageTypeList.Add(temp2);
+                    break;
+                case 4:
+                    temp3.id = 4;
+                    temp3.pageTypeName = "Recurring";
+                    newPageTypeList.Add(temp3);
+                    break;
+                case 5:
+                    temp1.id = 1;
+                    temp1.pageTypeName = "Pledge";
+                    newPageTypeList.Add(temp1);
+                    temp3.id = 4;
+                    temp3.pageTypeName = "Recurring";
+                    newPageTypeList.Add(temp3);
+                    break;
+                case 6:
+                    temp2.id = 2;
+                    temp2.pageTypeName = "One Time";
+                    newPageTypeList.Add(temp2);
+                    temp3.id = 4;
+                    temp3.pageTypeName = "Recurring";
+                    newPageTypeList.Add(temp3);
+                    break;
+                case 7:
+                    temp1.id = 1;
+                    temp1.pageTypeName = "Pledge";
+                    newPageTypeList.Add(temp1);
+                    temp2.id = 2;
+                    temp2.pageTypeName = "One Time";
+                    newPageTypeList.Add(temp2);
+                    temp3.id = 4;
+                    temp3.pageTypeName = "Recurring";
+                    newPageTypeList.Add(temp3);
+                    break;
+                default:
+                    break;
+            }
+            return newPageTypeList.ToArray();
         }
 
         public List<GivingPageItem> AddNewGivingPage(GivingPageViewModel viewModel)
