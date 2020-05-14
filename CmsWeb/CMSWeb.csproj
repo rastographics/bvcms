@@ -556,7 +556,6 @@
     <Compile Include="Areas\Finance\Models\RemoteDepositCaptureError.cs" />
     <Compile Include="Areas\Finance\Models\TotalsByFundRange.cs" />
     <Compile Include="Areas\Finance\Models\TotalsByFundAgeRangeModel.cs" />
-    <Compile Include="Areas\Involvement\Controllers\InvController.cs" />
     <Compile Include="Areas\Involvement\Controllers\InvolvementSearchController.cs" />
     <Compile Include="Areas\Involvement\InvolvementAreaRegistration.cs" />
     <Compile Include="Areas\Involvement\Controllers\Involvement\InvolvementController.cs" />
