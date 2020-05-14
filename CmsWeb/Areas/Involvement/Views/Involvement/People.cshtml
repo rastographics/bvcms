@@ -1,43 +1,38 @@
-﻿@using CmsData.Codes
-@model CmsWeb.Areas.Org.Models.OrgPeopleModel
-<div class="btn-group">
-    <a class="btn btn-default" tabindex="0" href="#" data-toggle="popover" data-container="body" data-placement="bottom" data-trigger="focus" data-title="Group Buttons" data-content="@Model.GroupHelp"><i class="fa fa-info-circle"></i></a>
-    @GroupButton(GroupSelectCode.Member, "Ticket Buyers")
-</div>
-@if (!Model.HidePreviousButton)
-{
-    @GroupButton(GroupSelectCode.Previous, "Previous")
-}
-
-@helper GroupButton(string group, string name)
-{
-    if (!Model.GroupNeedsMenu(group))
-    {
-        <button class="btn btn-default grp @Model.GroupActive(group)" value="@group">@name</button>
-        return;
-    }
-    var showdrop = Model.Showdrop(group);
-    <div class="btn-group">
-        <button class="btn btn-default grp @Model.GroupActive(group)" value="@group">@name</button>
-        <button class="btn btn-info dropdown-toggle @(showdrop ? "" : "hide")" data-toggle="dropdown"><span class="caret"></span></button>
-        @switch (showdrop ? group : "")
-        {
-            case GroupSelectCode.TicketBuyer:
-                <ul class="dropdown-menu dropdown-menu-right">
-                    <li><a href="/SearchAdd2/Dialog/org/@Model.Id" class="searchadd"><i class="fa fa-plus-circle"></i>&nbsp;&nbsp;Add Members</a></li>
-                    @if (!Model.OrgLeaderAddDrop)
-                    {
-                        <li><a href="/AddToOrgFromTag/@Model.QueryId" class="longrunop" title="Add Members From Tag"><i class="fa fa-tag"></i>&nbsp;&nbsp;Add from Tag</a></li>
-                        <li><a href="/OrgMembersUpdate/@Model.QueryId" title="Update Members" class="members-dialog"><i class="fa fa-pencil"></i>&nbsp;&nbsp;Update Members</a></li>
-                        <li><a href="/OrgDrop/@Model.QueryId" title="Drop Members" class="longrunop"><i class="fa fa-trash"></i>&nbsp;&nbsp;Drop Members</a></li>
-                    }
-                </ul>
-                break;
-            case GroupSelectCode.Previous:
-                <ul class="dropdown-menu dropdown-menu-right">
-                    <li><a href="/AddToOrgFromTag/@Model.QueryId" class="longrunop" title="Add Previous Members From Tag"><i class="fa fa-tag"></i>&nbsp;&nbsp;Add From Tag</a></li>
-                </ul>
-                break;
-        }
+﻿@model CmsWeb.Areas.Org.Models.OrgPeopleModel
+<form class="ajax" data-init="popovers">
+    @Html.Partial("People/Hidden", Model)
+    <div class="row">
+        <div class="col-sm-12">
+            <div id="groupSelector" class="btn-group">
+                @Html.Partial("People/GroupButtons", Model)
+                @if (Model.ShowOptions)
+                {
+                    @Html.Partial("People/GroupOptions", Model)
+                }
+            </div>
+        </div>
     </div>
-}
+    @if (!Model.ShowSubgroupFilters)
+    {
+        <div style="display: none">
+            @Html.Partial("People/FilterPeople", Model)
+        </div>
+        <br />
+    }
+    else
+    {
+        @Html.Partial("People/FilterPeople", Model)
+        <br />
+    }
+    <div class="row">
+        <div class="col-sm-12">
+            @Html.Partial("PagerTop", Model)
+            <div class="table-responsive">
+                @Html.Partial("People/Table")
+            </div>
+            @Html.Partial("PagerBottom", Model)
+            @Html.Partial("PagerHidden", Model)
+        </div>
+    </div>
+    <br /><br /><br /><br />
+</form>
