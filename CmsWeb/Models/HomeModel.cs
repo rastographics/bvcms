@@ -5,8 +5,6 @@ using Dapper;
 using System;
 using System.Collections.Generic;
 using System.Data.Linq.SqlClient;
-using System.Data.SqlClient;
-using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Net;

@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Configuration;
 using CmsData.Classes.Twilio;
+using RestSharp;
+using RestSharp.Extensions;
 
 namespace CmsData
 {
@@ -23,6 +26,27 @@ namespace CmsData
                 throw new Exception($"The message length was {sMessage.Length} but cannot be over 1600.");
             }
             TwilioHelper.QueueSms(db, query, iSendGroup, sTitle, sMessage);
+        }
+
+        public static string CreateTinyUrl(string url)
+        {
+            var serviceurl = ConfigurationManager.AppSettings["UrlShortenerService"];
+            var token = ConfigurationManager.AppSettings["UrlShortenerServiceToken"];
+            var shorturl = url; // default return value if no service is configured
+            if (serviceurl.HasValue() && token.HasValue())
+            {
+                var client = new RestClient(serviceurl);
+                var request = new RestRequest(Method.POST);
+                request.AddParameter("token", token);
+                request.AddParameter("url", url);
+                shorturl = client.Execute(request).Content;
+                // if the request fails, return the original url
+                if (!shorturl.HasValue())
+                {
+                    return url;
+                }
+            }
+            return shorturl;
         }
     }
 }
