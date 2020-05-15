@@ -235,7 +235,7 @@
             </div>
         </div>
 
-        @if (Model.PaymentForm.NoCreditCardsAllowed || Model.PaymentForm.NoEChecksAllowed)
+        @if (!Model.PaymentForm.AcceptCredit || !Model.PaymentForm.AcceptACH)
         {
             @Html.Hidden("Type", Model.PaymentForm.Type)
         }
@@ -249,7 +249,7 @@
                 </div>
             </div>
         }
-        @if (Model.PaymentForm.NoCreditCardsAllowed == false)
+        @if (Model.PaymentForm.AcceptCredit)
         {
             <div class="Card">
                 <div class="form-group">
@@ -268,7 +268,7 @@
                 </div>
             </div>
         }
-        @if (Model.PaymentForm.NoEChecksAllowed == false)
+        @if (Model.PaymentForm.AcceptACH)
         {
             <div class="Bank">
                 <div class="form-group">
@@ -309,7 +309,7 @@
         @Html.Hidden("NeedsCityState", Model.PaymentForm.NeedsCityState)
         @Html.Hidden("URL", Model.PaymentForm.URL)
         @Html.Hidden("Description", Model.PaymentForm.Description)
-        @Html.Hidden("NoCreditCardsAllowed", Model.PaymentForm.NoCreditCardsAllowed)
+        @Html.Hidden("AcceptCredit", Model.PaymentForm.AcceptCredit)
         @Html.Hidden("IsLoggedIn", Model.PaymentForm.IsLoggedIn)
         @Html.Hidden("ProcessType", Model.PaymentForm.ProcessType)
     </form>

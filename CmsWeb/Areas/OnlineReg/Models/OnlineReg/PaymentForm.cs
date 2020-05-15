@@ -20,7 +20,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
     {
         private CMSDataContext _currentDatabase;
         public CMSDataContext CurrentDatabase { get => _currentDatabase ?? CMSDataContext.Create(HttpContextFactory.Current); set => _currentDatabase = value; }
-        private bool? _noEChecksAllowed;
+        private bool? _acceptACH;
         private int? timeOut;        
 
         public string source { get; set; }
@@ -93,22 +93,16 @@ namespace CmsWeb.Areas.OnlineReg.Models
         public bool SavePayInfo { get; set; }
         public bool? AllowSaveProgress { get; set; }
         public bool? IsGiving { get; set; }
-        public bool NoCreditCardsAllowed { get; set; }
+        public bool AcceptCredit { get; set; }
         public bool NeedsCityState { get; set; }
         public int? CampusId { get; set; }
-        public bool ShowCampusOnePageGiving => CurrentDatabase.Setting("ShowCampusOnRegistration", "false").ToBool();
+        public bool ShowCampusOnePageGiving => CurrentDatabase.Setting("ShowCampusOnRegistration");
 
-        public bool NoEChecksAllowed
+        public bool AcceptACH
         {
-            get
-            {
-                if (!_noEChecksAllowed.HasValue)
-                {
-                    _noEChecksAllowed = CurrentDatabase.Setting("NoEChecksAllowed");
-                }
-
-                return _noEChecksAllowed.Value;
-            }
+            get => _acceptACH.HasValue ? _acceptACH.Value : (_acceptACH = CurrentDatabase.PaymentProcess
+                .Where(x => x.ProcessId == (int)PaymentProcessTypes.RecurringGiving)
+                .Select(x => x.AcceptACH).Single()).Value;
         }
 
         public string Email { get; set; }
@@ -324,8 +318,8 @@ namespace CmsWeb.Areas.OnlineReg.Models
             ClearMaskedNumbers(pf, pi);
 
             var org = db.LoadOrganizationById(ti.OrgId);
-            pf.NoCreditCardsAllowed = org?.NoCreditCards == true;
-            pf.Type = pf.NoEChecksAllowed ? PaymentType.CreditCard : pf.NoCreditCardsAllowed ? PaymentType.Ach : "";
+            pf.AcceptCredit = org?.NoCreditCards != true;
+            pf.Type = !pf.AcceptACH ? PaymentType.CreditCard : pf.AcceptCredit ? PaymentType.Ach : "";
             return pf;
         }
 
@@ -367,13 +361,6 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 SupportMissionTrip = m.SupportMissionTrip,
                 extTransactionId = m.transactionId,
                 ProcessType = m.ProcessType,
-#if DEBUG2
-                 CreditCard = "4111111111111111",
-                 CVV = "123",
-                 Expires = "1017",
-                 Routing = "056008849",
-                 Account = "12345678901234",
-#endif
             };
             if (r.payinfo.PeopleId == m.UserPeopleId) // Is this the logged in user?
             {
@@ -401,14 +388,13 @@ namespace CmsWeb.Areas.OnlineReg.Models
             ClearMaskedNumbers(pf, r.payinfo);
 
             pf.AllowSaveProgress = m.AllowSaveProgress();
-            pf.NoCreditCardsAllowed = m.NoCreditCardsAllowed();
+            pf.AcceptCredit = !m.NoCreditCardsAllowed();
+
             if (m.OnlineGiving())
             {
-#if DEBUG
-                pf.NoCreditCardsAllowed = false;
-#else
-                pf.NoCreditCardsAllowed = DbUtil.Db.Setting("NoCreditCardGiving", "false").ToBool();
-#endif
+                pf.AcceptCredit = m.CurrentDatabase.PaymentProcess
+                    .Where(x => x.ProcessId == (int)m.ProcessType)
+                    .Select(x => x.AcceptCredit || x.AcceptDebit).Single();
                 pf.IsGiving = true;
                 pf.FinanceOnly = true;
                 pf.Type = r.payinfo.PreferredGivingType;
@@ -417,16 +403,17 @@ namespace CmsWeb.Areas.OnlineReg.Models
             {
                 pf.FinanceOnly = true;
             }
-            if (pf.NoCreditCardsAllowed)
+
+            if (!pf.AcceptCredit)
             {
                 pf.Type = PaymentType.Ach; // bank account only
             }
-            else if (pf.NoEChecksAllowed)
+            else if (!pf.AcceptACH)
             {
                 pf.Type = PaymentType.CreditCard; // credit card only
             }
 
-            pf.Type = pf.NoEChecksAllowed ? PaymentType.CreditCard : pf.Type;
+            pf.Type = !pf.AcceptACH ? PaymentType.CreditCard : pf.Type;
             pf.DatumId = m.DatumId ?? 0;
             return pf;
         }

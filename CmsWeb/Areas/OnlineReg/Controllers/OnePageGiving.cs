@@ -69,22 +69,9 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 pf.AmtToPay = null;
 
                 if (string.IsNullOrWhiteSpace(pf.Type))
-                    pf.Type = pf.NoCreditCardsAllowed ? "B" : "C";
-
-#if DEBUG
-                if (!pid.HasValue)
                 {
-                    pf.First = "Otis";
-                    pf.Last = "Sukamotis";
-                    pf.Email = "davcar@pobox.com";
-                    pf.Address = "135 Riveredge Cv";
-                    pf.Zip = "";
-                    pf.CreditCard = "3111111111111111";
-                    pf.Expires = "1018";
-                    pf.CVV = "123";
-                    pf.AmtToPay = 23M;
+                    pf.Type = pf.AcceptCredit ? "C" : "B";
                 }
-#endif
 
                 var p = m.List[0];
                 if (pf.ShowCampusOnePageGiving)

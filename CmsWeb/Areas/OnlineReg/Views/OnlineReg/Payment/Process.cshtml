@@ -77,7 +77,7 @@
         @Html.HiddenFor(m => m.FinanceOnly)
         @Html.HiddenFor(m => m.AskDonation)
         @Html.HiddenFor(m => m.Donate)
-        @Html.HiddenFor(m => m.NoCreditCardsAllowed)
+        @Html.HiddenFor(m => m.AcceptCredit)
         @Html.HiddenFor(m => m.ProcessType)
         @Html.HiddenFor(m => m.TermsSignature)
 
@@ -96,7 +96,7 @@
             @Html.EditorFor(m => m.Email)
         </div>
         <div class="well">
-            @if (Model.NoCreditCardsAllowed || Model.NoEChecksAllowed)
+            @if (!Model.AcceptCredit || !Model.AcceptACH)
             {
                 @Html.Hidden("Type", Model.Type)
             }
@@ -110,7 +110,7 @@
                     </div>
                 </div>
             }
-            @if (Model.NoCreditCardsAllowed == false)
+            @if (Model.AcceptCredit)
             {
                 <div class="Card">
                     @Html.EditorFor(m => m.CreditCard, new { autocomplete = Model.AutocompleteOnOff, Label = debitcredit })
@@ -129,7 +129,7 @@
                 </div>
             }
             <input type="hidden" id="useRecaptcha" value="@useRecaptcha" />
-            @if (Model.NoEChecksAllowed == false)
+            @if (Model.AcceptACH)
             {
                 <div class="Bank">
                     @Html.EditorFor(m => m.Routing)

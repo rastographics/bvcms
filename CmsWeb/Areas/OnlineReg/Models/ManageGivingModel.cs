@@ -150,17 +150,19 @@ namespace CmsWeb.Areas.OnlineReg.Models
         [JsonIgnore]
         public Settings Setting => _setting ?? (_setting = CurrentDatabase.CreateRegistrationSettings(orgid));
 
+        bool? _AcceptCredit;
         [JsonIgnore]
-        public bool NoCreditCardsAllowed
-        {
-            get => CurrentDatabase.Setting("NoCreditCardGiving", "false").ToBool();
-            set { }
-        }
+        public bool AcceptCredit => _AcceptCredit.HasValue ? _AcceptCredit.Value : (_AcceptCredit = CurrentDatabase.PaymentProcess
+                .Where(x => x.ProcessId == (int)PaymentProcessTypes.RecurringGiving)
+                .Select(x => x.AcceptCredit || x.AcceptDebit).Single()).Value;
+
+        bool? _AcceptACH;
         [JsonIgnore]
-        public bool NoEChecksAllowed
+        public bool AcceptACH
         {
-            get => CurrentDatabase.Setting("NoEChecksAllowed", "false").ToBool();
-            set { }
+            get => _AcceptACH.HasValue ? _AcceptACH.Value : (_AcceptACH = CurrentDatabase.PaymentProcess
+                .Where(x => x.ProcessId == (int)PaymentProcessTypes.RecurringGiving)
+                .Select(x => x.AcceptACH).Single()).Value;
         }
 
         [JsonIgnore]
@@ -258,17 +260,16 @@ namespace CmsWeb.Areas.OnlineReg.Models
             Account = pi.MaskedAccount;
             Expires = pi.Expires;
             Routing = Util.Mask(new StringBuilder(pi.Routing), 2);
-            NoCreditCardsAllowed = CurrentDatabase.Setting("NoCreditCardGiving", "false").ToBool();
             Type = pi.PreferredGivingType;
-            if (NoCreditCardsAllowed)
+            if (!AcceptCredit)
             {
                 Type = PaymentType.Ach; // bank account only
             }
-            else if (NoEChecksAllowed)
+            else if (!AcceptACH)
             {
                 Type = PaymentType.CreditCard; // credit card only
             }
-            Type = NoEChecksAllowed ? PaymentType.CreditCard : Type;
+            Type = AcceptACH ? Type : PaymentType.CreditCard;
             ClearMaskedNumbers(pi);
             total = FundItem.Sum(ff => ff.Value) ?? 0;
 

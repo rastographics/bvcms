@@ -132,7 +132,7 @@
             }
         </div>
         <div class="well">
-            @if (!Model.NoCreditCardsAllowed && !Model.NoEChecksAllowed)
+            @if (Model.AcceptCredit && Model.AcceptACH)
             {
                 <div class="form-group" style="text-align: center; margin-bottom: 1em;">
                     <div class="btn-group" data-toggle="buttons">
@@ -142,7 +142,7 @@
                     </div>
                 </div>
             }
-            else if (Model.NoCreditCardsAllowed)
+            else if (!Model.AcceptCredit)
             {
                 @Html.Hidden("Type", PaymentType.Ach);
             }
@@ -150,7 +150,7 @@
             {
                 @Html.Hidden("Type", PaymentType.CreditCard);
             }
-            @if (Model.NoCreditCardsAllowed == false)
+            @if (Model.AcceptCredit)
             {
                 <div class="Card paymentinfo">
                     @Html.EditorFor(m => m.CreditCard, new { autocomplete = Model.AutocompleteOnOff, Label = Model.debitcredit })
@@ -168,7 +168,7 @@
             </div>
         }
         <input type="hidden" id="useRecaptcha" value="@Model.useRecaptcha" />
-            @if (Model.NoEChecksAllowed == false)
+            @if (Model.AcceptACH)
             {
                 <div class="Bank paymentinfo">
                     @Html.EditorFor(m => m.Routing)
