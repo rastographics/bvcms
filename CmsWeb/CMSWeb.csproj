@@ -1265,6 +1265,7 @@
     <Content Include="Content\css\select2.png" />
     <Content Include="Content\css\select2x2.png" />
     <Content Include="Content\css\typeahead.js-bootstrap.css" />
+    <Content Include="Content\dist\js\app.js" />
     <Content Include="Content\font-awesome-4.0.3\css\font-awesome.css" />
     <Content Include="Content\font-awesome-4.0.3\css\font-awesome.min.css" />
     <Content Include="Content\font-awesome-4.0.3\fonts\fontawesome-webfont.svg" />
@@ -1801,7 +1802,6 @@
     <Content Include="chart.py" />
     <Content Include="Properties\Files\ContributionStatementTemplate.html" />
     <Content Include="Properties\Files\ContributionStatementTemplateBody.html" />
-    <Content Include="src\assets\logo.png" />
     <Content Include="src\main.js" />
     <Content Include="Views\Shared\Account\_Layout.cshtml" />
     <Content Include="Areas\Reports\Views\Reports\EditCustomReport.cshtml" />
@@ -3510,7 +3510,6 @@
     <Folder Include="Areas\Public\Views\TestMobile\" />
     <Folder Include="Areas\Public\Views\TwilioIncoming\" />
     <Folder Include="Areas\Search\Views\Shared\" />
-    <Folder Include="Content\dist\" />
     <Folder Include="Pushpay\Enums\" />
     <Folder Include="Pushpay\Exceptions\" />
   </ItemGroup>
@@ -3542,6 +3541,7 @@
     <PreBuildEvent>pushd $(ProjectDir)
 call npm install --silent
 call gulp --no-color
+if "$(ConfigurationName)" equ "Release" call npm run build
 popd</PreBuildEvent>
   </PropertyGroup>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
