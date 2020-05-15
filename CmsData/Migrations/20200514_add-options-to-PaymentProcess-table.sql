@@ -34,7 +34,7 @@ FROM newsettings s
 CROSS JOIN dbo.PaymentProcess pp
 )
 UPDATE process
-SET AcceptACH = updates.AcceptACH, AcceptCredit = updates.AcceptCredit, AcceptDebit = updates.AcceptDebit
+SET AcceptACH = u.AcceptACH, AcceptCredit = u.AcceptCredit, AcceptDebit = u.AcceptDebit
 FROM dbo.PaymentProcess process
 JOIN updates u ON u.ProcessId = process.ProcessId
 GO

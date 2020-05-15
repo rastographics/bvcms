@@ -10,7 +10,7 @@
     text-align: left !important;
 }
 
-.blue-avaiable {
+.blue-available {
     color: #003f72;
     border-bottom: dashed 1px #0088cc;
     text-decoration: none !important;
@@ -25,4 +25,8 @@
 .red-empty:hover {
     border-bottom: dashed 1px #0088cc;
     color: #DD1144;
+}
+#multipleGateway table .checkbox-inline > label {
+    font-weight: normal;
+    cursor: pointer;
 }

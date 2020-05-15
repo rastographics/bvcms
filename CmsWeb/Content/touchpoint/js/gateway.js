@@ -20,6 +20,15 @@
         myFunctionOnLoad: function () {
             this.GetGatewayDetails();
         },
+        oops: (message, title) => {
+            warning_swal(title || 'Warning', message || 'Something went wrong, try again later');
+        },
+        fail: (message, title) => {
+            error_swal(title || 'Error', message || 'We are working to fix it');
+        },
+        success: (message, title) => {
+            success_swal(title || 'Success', message || 'Configuration Saved');
+        },
         GetGatewayDetails: function () {
             this.$http.get('/Gateway/GetGatewayDetails').then(
                 response => {
@@ -29,12 +38,12 @@
                     }
                     else {
                         console.log(response);
-                        warning_swal('Warning!', 'Something went wrong, try again later');
+                        this.oops();
                     }
                 },
                 err => {
                     console.log(err);
-                    error_swal('Fatal Error!', 'We are working to fix it');
+                    this.fail();
                 }
             );
         },
@@ -42,6 +51,14 @@
             this.$http.get('/Gateway/GetProcesses').then(
                 response => {
                     if (response.status === 200) {
+                        for (var i in response.body) {
+                            var p = response.body[i];
+                            var list = [];
+                            p.AcceptACH && list.push("ACH");
+                            p.AcceptCredit && list.push("Credit");
+                            p.AcceptDebit && list.push("Debit");
+                            p.AcceptOptions = list.join(', ');
+                        }
                         this.Processes = response.body;
 
                         var nullProcesses = this.Processes.filter(function (item) {
@@ -54,12 +71,12 @@
                     }
                     else {
                         console.log(response);
-                        warning_swal('Warning!', 'Something went wrong, try again later');
+                        this.oops();
                     }
                 },
                 err => {
                     console.log(err);
-                    error_swal('Fatal Error!', 'We are working to fix it');
+                    this.fail();
                 }
             );
         },
@@ -72,12 +89,12 @@
                     }
                     else {
                         console.log(response);
-                        warning_swal('Warning!', 'Something went wrong, try again later');
+                        this.oops();
                     }
                 },
                 err => {
                     console.log(err);
-                    error_swal('Fatal Error!', 'We are working to fix it');
+                    this.fail();
                 }
             );
         },
@@ -89,12 +106,12 @@
                     }
                     else {
                         console.log(response);
-                        warning_swal('Warning!', 'Something went wrong, try again later');
+                        this.oops();
                     }
                 },
                 err => {
                     console.log(err);
-                    error_swal('Fatal Error!', 'We are working to fix it');
+                    this.fail();
                 }
             );
         },
@@ -147,12 +164,39 @@
                     }
                     else {
                         console.log(response);
-                        warning_swal('Warning!', 'Something went wrong, try again later');
+                        this.oops();
                     }
                 },
                 err => {
                     console.log(err);
-                    error_swal('Fatal Error!', 'We are working to fix it');
+                    this.fail();
+                }
+            );
+        },
+        checkboxesFor: function (process) {
+            var list = [];
+            var checked = (b) => b ? 'checked="checked"' : '';
+            var box = (b, l) => '<div class="checkbox-inline"><label class="control-label" for="Accept' + l + process.ProcessId +
+                '"><input type="checkbox" id="Accept' + l + process.ProcessId +'" name="Accept' + l +
+                '" value="true" ' + checked(b) + '> ' + l +
+                ' </label></div>';
+            list.push(box(process.AcceptACH, 'ACH'));
+            list.push(box(process.AcceptCredit, 'Credit'));
+            list.push(box(process.AcceptDebit, 'Debit'));
+            return list.join('');
+        },
+        acceptChange: function (event) {
+            var id = event.target.id.substr(-1);
+            var process = this.Processes.filter((i) => i.ProcessId == id)[0];
+            this.$http.post('/Gateway/UpdateAccept', process).then(
+                response => {
+                    if (response.status !== 200) {
+                        this.oops();
+                    }
+                },
+                err => {
+                    console.log(err);
+                    this.fail();
                 }
             );
         },
@@ -189,17 +233,17 @@
                     response => {
                         if (response.status === 200) {
                             this.myFunctionOnLoad();
-                            success_swal('Success', 'Configuration Saved');
+                            this.success();
                             $('#config-modal').modal('hide');
                         }
                         else {
                             console.log(response);
-                            warning_swal('Warning!', 'Something went wrong, try again later');
+                            this.oops();
                         }
                     },
                     err => {
                         console.log(err);
-                        error_swal('Fatal Error!', 'We are working to fix it');
+                        this.fail();
                     }
                 );
             }
@@ -214,17 +258,17 @@
                     response => {
                         if (response.status === 200) {
                             this.myFunctionOnLoad();
-                            success_swal('Success', 'Configuration Saved');
+                            this.success();
                             $('#config-modal').modal('hide');
                         }
                         else {
                             console.log(response);
-                            warning_swal('Warning!', 'Something went wrong, try again later');
+                            this.oops();
                         }
                     },
                     err => {
                         console.log(err);
-                        error_swal('Fatal Error!', 'We are working to fix it');
+                        this.fail();
                     }
                 );
             }
@@ -236,16 +280,16 @@
                 response => {
                     if (response.status === 200) {
                         this.myFunctionOnLoad();
-                        success_swal('Success', 'Configuration Saved');
+                        this.success();
                     }
                     else {
                         console.log(response);
-                        warning_swal('Warning!', 'Something went wrong, try again later');
+                        this.oops();
                     }
                 },
                 err => {
                     console.log(err);
-                    error_swal('Fatal Error!', 'We are working to fix it');
+                    this.fail();
                 }
             );
         }

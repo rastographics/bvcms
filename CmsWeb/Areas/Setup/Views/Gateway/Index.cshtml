@@ -19,6 +19,9 @@
                                     Account Name
                                 </th>
                                 <th style="width: 150px;">
+                                    Payment Methods
+                                </th>
+                                <th style="width: 150px;">
 
                                 </th>
                             </tr>
@@ -30,9 +33,29 @@
                                         {{process.ProcessName}}
                                     </td>
                                     <td>
-                                        <a v-on:click="modalInfo(process.ProcessId, process.GatewayAccountId)" class="blue-avaiable" href="#">
+                                        <a v-on:click="modalInfo(process.ProcessId, process.GatewayAccountId)" class="blue-available" href="#">
                                             {{process.GatewayAccountName}}
                                         </a>
+                                    </td>
+                                    <td>
+                                        <div class="checkbox-inline">
+                                            <label class="control-label" v-bind:for="'ach' + process.ProcessID">
+                                                <input type="checkbox" v-bind:id="'ach' + process.ProcessID" v-model="process.AcceptACH" name="AcceptACH" v-on:change="acceptChange($event)">
+                                                ACH
+                                            </label>
+                                        </div>
+                                        <div class="checkbox-inline">
+                                            <label class="control-label" v-bind:for="'credit' + process.ProcessID">
+                                                <input type="checkbox" v-bind:id="'credit' + process.ProcessID" v-model="process.AcceptCredit" name="AcceptCredit" v-on:change="acceptChange($event)">
+                                                Credit
+                                            </label>
+                                        </div>
+                                        <div class="checkbox-inline">
+                                            <label class="control-label" v-bind:for="'debit' + process.ProcessID">
+                                                <input type="checkbox" v-bind:id="'debit' + process.ProcessID" v-model="process.AcceptDebit" name="AcceptDebit" v-on:change="acceptChange($event)">
+                                                Debit
+                                            </label>
+                                        </div>
                                     </td>
                                     <td style="width: 50px;">
                                         <a v-on:click="deleteProcess(process.ProcessId)" href="#" class="btn btn-sm btn-danger deleteprocess">
@@ -48,6 +71,8 @@
                                         <a v-on:click="modalInfo(process.ProcessId, process.GatewayAccountId)" class="red-empty" href="#">
                                             Empty
                                         </a>
+                                    </td>
+                                    <td>
                                     </td>
                                     <td style="width: 50px;"></td>
                                 </tr>

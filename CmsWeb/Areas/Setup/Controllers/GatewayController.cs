@@ -1,5 +1,6 @@
 ﻿using CmsData;
 using CmsWeb.Lifecycle;
+using System;
 using System.Linq;
 using System.Web.Mvc;
 
@@ -34,9 +35,12 @@ namespace CmsWeb.Areas.Setup.Controllers
                                  e.ProcessName,
                                  sub.GatewayId,
                                  GatewayAccountId = e.GatewayAccountId ?? null,
-                                 GatewayAccountName = sub.GatewayAccountName ?? null
+                                 GatewayAccountName = sub.GatewayAccountName ?? null,
+                                 AcceptOptions = "",
+                                 e.AcceptACH,
+                                 e.AcceptCredit,
+                                 e.AcceptDebit,
                              }).ToList();
-
             return Json(Processes, JsonRequestBehavior.AllowGet);
         }
 
@@ -157,6 +161,19 @@ namespace CmsWeb.Areas.Setup.Controllers
             CurrentDatabase.SubmitChanges();
 
             return GetGatewayAccounts();
+        }
+
+        [HttpPost]
+        [Route("~/Gateway/UpdateAccept")]
+        public JsonResult UpdateAccept(PaymentProcess process)
+        {
+            var paymentProcess = CurrentDatabase.PaymentProcess.SingleOrDefault(x => x.ProcessId == process.ProcessId);
+            paymentProcess.AcceptACH = process.AcceptACH;
+            paymentProcess.AcceptCredit = process.AcceptCredit;
+            paymentProcess.AcceptDebit = process.AcceptDebit;
+            CurrentDatabase.SubmitChanges();
+
+            return Json(paymentProcess);
         }
 
         [HttpGet]
