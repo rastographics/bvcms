@@ -2271,12 +2271,20 @@ This search uses multiple steps which cannot be duplicated in a single query.
             return GetRoleUsers("Admin").Select(u => u.Person).Distinct();
         }
 
-        public string GetDebitCreditLabel(PaymentProcessTypes paymentProcess)
+        public string GetDebitCreditLabel(PaymentProcessTypes processId)
         {
-            var defaultLabel = Setting("DebitCreditLabel", "Debit/Credit Card");
-            return paymentProcess == PaymentProcessTypes.OneTimeGiving || paymentProcess == PaymentProcessTypes.RecurringGiving ?
-                Setting("DebitCreditLabel-Giving", defaultLabel) :
-                Setting("DebitCreditLabel-Registrations", defaultLabel);
+            var proc = PaymentProcess.Single(p => p.ProcessId == (int)processId);
+            var label = "";
+            if (proc.AcceptDebit)
+            {
+                label = "Debit";
+            }
+            if (proc.AcceptCredit )
+            {
+                label += proc.AcceptDebit ? "/Credit" : "Credit";
+            }
+            label += " Card";
+            return label;
         }
 
         [Function(Name = "dbo.UpdateAllSpouseId")]

@@ -259,5 +259,19 @@ namespace CmsData.Tests
 
             code1.Code.ShouldNotBe(code2.Code);
         }
+
+        [Theory]
+        [InlineData(true, true, "Debit/Credit Card")]
+        [InlineData(true, false, "Debit Card")]
+        [InlineData(false, true, "Credit Card")]
+        public void GetDebitCreditLabelTest(bool debit, bool credit, string label)
+        {
+            var process = db.PaymentProcess.First(p => p.ProcessId == 1);
+            process.AcceptCredit = credit;
+            process.AcceptDebit = debit;
+            db.SubmitChanges();
+
+            db.GetDebitCreditLabel(PaymentProcessTypes.OneTimeGiving).ShouldBe(label);
+        }
     }
 }

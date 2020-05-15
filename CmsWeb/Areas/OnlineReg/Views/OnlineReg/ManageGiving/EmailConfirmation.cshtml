@@ -7,9 +7,9 @@
     <td>
         <table class="@ViewExtensions2.GridClass" cellpadding="2">
 @{
-  var funds = CmsWeb.Areas.OnlineReg.Models.OnlineRegPersonModel.FullFundList(ViewExtensions2.CurrentDatabase);
-  var total = 0M;
-  var debitcredit = ViewExtensions2.CurrentDatabase.Setting("DebitCreditLabel-Registrations", ViewExtensions2.CurrentDatabase.Setting("DebitCreditLabel", "Debit/Credit Card"));
+    var funds = CmsWeb.Areas.OnlineReg.Models.OnlineRegPersonModel.FullFundList(ViewExtensions2.CurrentDatabase);
+    var total = 0M;
+    var debitcredit = ViewExtensions2.CurrentDatabase.GetDebitCreditLabel(PaymentProcessTypes.RecurringGiving);
 }
 @for (var n = 0; n < funds.Length; n++)
 {
