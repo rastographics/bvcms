@@ -22,22 +22,28 @@
             }
         }
         ul.list-group li {
-            border-left: none;
-            border-right: none;
+            border: none;
             padding-left: 20px;
         }
         ul.list-group li.section {
             font-weight: bold;
         }
-
         ul.list-group li.indent {
             padding-left: 25px;
         }
-
         .list-group-item > .label {
             float: right;
         }
-
+        ul.list-group.bordered li {
+            border-top: 1px solid #ddd;
+            border-bottom: 1px solid #ddd;
+        }
+        .box-title {
+            border-bottom: 1px solid #ddd;
+        }
+        .box-content {
+            border-top: 0;
+        }
         .widget-embed.loading {
             opacity: 0.5;
         }

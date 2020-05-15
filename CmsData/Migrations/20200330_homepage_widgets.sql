@@ -960,6 +960,7 @@ BEGIN
             pieHole: 0.4,
             legend: ''none'',
             pieSliceText: ''percentage'',
+            colors: [''#3366CC'',''#DC3912''],
             chartArea: {
                 left: 0,
                 top: 20,
