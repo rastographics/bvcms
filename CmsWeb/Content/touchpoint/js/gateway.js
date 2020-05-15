@@ -185,9 +185,7 @@
             list.push(box(process.AcceptDebit, 'Debit'));
             return list.join('');
         },
-        acceptChange: function (event) {
-            var id = event.target.id.substr(-1);
-            var process = this.Processes.filter((i) => i.ProcessId == id)[0];
+        acceptChange: function (process) {
             this.$http.post('/Gateway/UpdateAccept', process).then(
                 response => {
                     if (response.status !== 200) {

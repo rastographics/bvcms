@@ -21,13 +21,11 @@
                                 <th style="width: 150px;">
                                     Payment Methods
                                 </th>
-                                <th style="width: 150px;">
-
-                                </th>
+                                <th style="width: 150px;"></th>
                             </tr>
                         </thead>
                         <tbody>
-                            <template v-for="process in Processes">
+                            <template v-for="(process, index) in Processes">
                                 <tr v-if="process.GatewayAccountName !== null">
                                     <td>
                                         {{process.ProcessName}}
@@ -39,20 +37,20 @@
                                     </td>
                                     <td>
                                         <div class="checkbox-inline">
-                                            <label class="control-label" v-bind:for="'ach' + process.ProcessID">
-                                                <input type="checkbox" v-bind:id="'ach' + process.ProcessID" v-model="process.AcceptACH" name="AcceptACH" v-on:change="acceptChange($event)">
+                                            <label class="control-label" v-bind:for="'ach' + index">
+                                                <input type="checkbox" v-bind:id="'ach' + index" v-model="process.AcceptACH" v-on:change="acceptChange(process)">
                                                 ACH
                                             </label>
                                         </div>
                                         <div class="checkbox-inline">
-                                            <label class="control-label" v-bind:for="'credit' + process.ProcessID">
-                                                <input type="checkbox" v-bind:id="'credit' + process.ProcessID" v-model="process.AcceptCredit" name="AcceptCredit" v-on:change="acceptChange($event)">
+                                            <label class="control-label" v-bind:for="'credit' + index">
+                                                <input type="checkbox" v-bind:id="'credit' + index" v-model="process.AcceptCredit" v-on:change="acceptChange(process)">
                                                 Credit
                                             </label>
                                         </div>
                                         <div class="checkbox-inline">
-                                            <label class="control-label" v-bind:for="'debit' + process.ProcessID">
-                                                <input type="checkbox" v-bind:id="'debit' + process.ProcessID" v-model="process.AcceptDebit" name="AcceptDebit" v-on:change="acceptChange($event)">
+                                            <label class="control-label" v-bind:for="'debit' + index">
+                                                <input type="checkbox" v-bind:id="'debit' + index" v-model="process.AcceptDebit" v-on:change="acceptChange(process)">
                                                 Debit
                                             </label>
                                         </div>
