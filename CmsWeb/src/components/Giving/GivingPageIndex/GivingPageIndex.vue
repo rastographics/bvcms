@@ -63,22 +63,22 @@
               <thead>
                 <tr>
                   <th>
-                    <a v-on:click="sort('codiceCliente')" style="cursor:pointer">Enabled</a>
+                    <a style="cursor:pointer">Enabled</a>
                   </th>
                   <th>
-                    <a v-on:click="sort('ragioneSociale')" style="cursor:pointer">Page Name</a>
+                    <a style="cursor:pointer">Page Name</a>
                   </th>
                   <th>
-                    <a v-on:click="sort('provincia')" style="cursor:pointer">Shell</a>
+                    <a style="cursor:pointer">Shell</a>
                   </th>
                   <th>
-                    <a v-on:click="sort('indirizzo')" style="cursor:pointer">Page Type</a>
+                    <a style="cursor:pointer">Page Type</a>
                   </th>
                   <th>
-                    <a v-on:click="sort('provincia')" style="cursor:pointer">Default Fund</a>
+                    <a style="cursor:pointer">Default Fund</a>
                   </th>
                   <th>
-                    <a v-on:click="sort('provincia')" style="cursor:pointer">Action</a>
+                    <a style="cursor:pointer">Action</a>
                   </th>
                 </tr>
               </thead>

@@ -1,8 +1,4 @@
-﻿using CmsWeb.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+﻿using CmsData.Classes.Giving;
 
 namespace CmsWeb.Areas.Giving.Models
 {

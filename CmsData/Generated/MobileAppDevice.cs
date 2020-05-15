@@ -37,6 +37,8 @@ namespace CmsData
 
         private string _CodeEmail;
 
+        private string _AppVersion;
+
         private EntityRef<Person> _Person;
 
         private EntityRef<User> _User;
@@ -84,6 +86,9 @@ namespace CmsData
 
         partial void OnCodeEmailChanging(string value);
         partial void OnCodeEmailChanged();
+
+        partial void OnAppVersionChanging(string value);
+        partial void OnAppVersionChanged();
 
         #endregion
 
@@ -322,6 +327,24 @@ namespace CmsData
                     _CodeEmail = value;
                     SendPropertyChanged("CodeEmail");
                     OnCodeEmailChanged();
+                }
+            }
+        }
+
+        [Column(Name = "AppVersion", UpdateCheck = UpdateCheck.Never, Storage = "_AppVersion", DbType = "varchar(20) NOT NULL")]
+        public string AppVersion
+        {
+            get => _AppVersion;
+
+            set
+            {
+                if (_AppVersion != value)
+                {
+                    OnAppVersionChanging(value);
+                    SendPropertyChanging();
+                    _AppVersion = value;
+                    SendPropertyChanged("AppVersion");
+                    OnAppVersionChanged();
                 }
             }
         }
