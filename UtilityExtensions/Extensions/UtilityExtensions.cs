@@ -194,41 +194,6 @@ namespace UtilityExtensions
             return string.Format(h, page);
         }
 
-        public static void Cookie(string name, string value, int days)
-        {
-            if (Cookie(name) == value)
-            {
-                return;
-            }
-
-            var c = new HttpCookie(name, value);
-            c.Expires = DateTime.Now.AddDays(days);
-            HttpContextFactory.Current.Response.Cookies.Add(c);
-            HttpContextFactory.Current.Items["tCookie-" + name] = value;
-        }
-
-        public static string Cookie(string name)
-        {
-            return Cookie(name, null);
-        }
-
-        public static string Cookie(string name, string defaultValue)
-        {
-            var v = (string)HttpContextFactory.Current.Items["tCookie-" + name];
-            if (v.HasValue())
-            {
-                return v;
-            }
-
-            var c = HttpContextFactory.Current.Request.Cookies[name];
-            if (c != null && c.Value.HasValue())
-            {
-                return c.Value;
-            }
-
-            return defaultValue;
-        }
-
         public static void EndShowMessage(this HttpResponse Response, string message)
         {
             Response.EndShowMessage(message, "javascript: history.go(-1)", "Go Back");
