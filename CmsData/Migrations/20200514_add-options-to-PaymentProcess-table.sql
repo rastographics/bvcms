@@ -38,3 +38,6 @@ SET AcceptACH = u.AcceptACH, AcceptCredit = u.AcceptCredit, AcceptDebit = u.Acce
 FROM dbo.PaymentProcess process
 JOIN updates u ON u.ProcessId = process.ProcessId
 GO
+
+DELETE FROM dbo.SettingMetadata WHERE SettingId IN ('DebitCreditLabel', 'DebitCreditLabel-Giving', 'DebitCreditLabel-Registrations', 'NoCreditCardGiving', 'NoEChecksAllowed')
+GO
