@@ -237,122 +237,108 @@ namespace CmsData
 
         public IQueryable<int> GetContributionList(CMSDataContext db, CompareType option, DateTime? start, DateTime? end, int? fund, decimal? amt, bool nontaxded, bool useCreditor = true)
         {
+            //Get a list of Contributions filtered by fund
+            var donorOnlyList = from c in db.Contributions2(start, end, 0, false, nontaxded, true, null)
+                                where c.Amount > 0
+                                where fund == 0 || c.FundId == fund || fund == null
+                                select c;
+            var donorSpouseList = from c in db.Contributions2(start, end, 0, false, nontaxded, true, null)
+                                  where c.Amount > 0
+                                  where fund == 0 || c.FundId == fund || fund == null
+                                  where c.CreditGiverId2 != null
+                                  select c;
             switch (option)
             {
-                case CompareType.GreaterEqual:                    
-                    return !useCreditor ? (from c in db.Contributions2(start, end, 0, false, nontaxded, true, null)
-                                           where fund == 0 || c.FundId == fund || fund == null
-                                           group c by (useCreditor ? c.CreditGiverId : c.PeopleId) into g
-                                           where g.Sum(cc => cc.Amount) >= (decimal?)amt.ToDouble()
-                                           select g.Key ?? 0) : (from c in db.Contributions2(start, end, 0, false, nontaxded, true, null)
-                            where fund == 0 || c.FundId == fund || fund == null
-                            group c by (useCreditor ? c.CreditGiverId : c.PeopleId) into g
-                            where g.Sum(cc => cc.Amount) >= (decimal ?)amt.ToDouble()
-                            select g.Key ?? 0).Concat(from c2 in db.Contributions2(start, end, 0, false, nontaxded, true, null)
-                                                      where c2.CreditGiverId2 != null
-                                                      where fund == 0 || c2.FundId == fund || fund == null
-                                                      group c2 by (useCreditor ? c2.CreditGiverId2 : c2.PeopleId) into g
-                                                      where g.Sum(cc => cc.Amount) >= (decimal?)amt.ToDouble()
-                                                      select g.Key ?? 0);
+                case CompareType.GreaterEqual:
+                    return !useCreditor ?
+                        (from c in donorOnlyList
+                         group c by c.CreditGiverId into g
+                         where g.Sum(cc => cc.Amount) >= (decimal?)amt.ToDouble()
+                         select g.Key ?? 0) :
+                        (from c in donorOnlyList
+                         group c by c.CreditGiverId into g
+                         where g.Sum(cc => cc.Amount) >= (decimal?)amt.ToDouble()
+                         select g.Key ?? 0)
+                        .Concat(from c2 in donorSpouseList
+                                group c2 by c2.CreditGiverId2 into g
+                                where g.Sum(cc => cc.Amount) >= (decimal?)amt.ToDouble()
+                                select g.Key ?? 0);
                 case CompareType.Greater:
-                    return !useCreditor ? (from c in db.Contributions2(start, end, 0, false, nontaxded, true, null)
-                                           where fund == 0 || c.FundId == fund || fund == null
-                                           group c by (useCreditor ? c.CreditGiverId : c.PeopleId) into g
-                                           where g.Sum(cc => cc.Amount) > (decimal?)amt.ToDouble()
-                                           select g.Key ?? 0) : (from c in db.Contributions2(start, end, 0, false, nontaxded, true, null)
-                            where fund == 0 || c.FundId == fund || fund == null
-                            group c by (useCreditor ? c.CreditGiverId : c.PeopleId) into g
-                            where g.Sum(cc => cc.Amount) > (decimal?)amt.ToDouble()
-                            select g.Key ?? 0).Concat(from c2 in db.Contributions2(start, end, 0, false, nontaxded, true, null)
-                                                      where c2.CreditGiverId2 != null
-                                                      where fund == 0 || c2.FundId == fund || fund == null
-                                                      group c2 by (useCreditor ? c2.CreditGiverId2 : c2.PeopleId) into g
-                                                      where g.Sum(cc => cc.Amount) > (decimal?)amt.ToDouble()
-                                                      select g.Key ?? 0);
+                    return !useCreditor ?
+                        (from c in donorOnlyList
+                         group c by c.CreditGiverId into g
+                         where g.Sum(cc => cc.Amount) > (decimal?)amt.ToDouble()
+                         select g.Key ?? 0) :
+                        (from c in donorOnlyList
+                         group c by c.CreditGiverId into g
+                         where g.Sum(cc => cc.Amount) > (decimal?)amt.ToDouble()
+                         select g.Key ?? 0)
+                        .Concat(from c2 in donorSpouseList
+                                group c2 by c2.CreditGiverId2 into g
+                                where g.Sum(cc => cc.Amount) > (decimal?)amt.ToDouble()
+                                select g.Key ?? 0);
                 case CompareType.LessEqual:
-
-                    var x = (from c in db.Contributions2(start, end, 0, false, nontaxded, true, null)
-                             where fund == 0 || c.FundId == fund || fund == null
-                             where c.Amount > 0
-                             group c by (useCreditor ? c.CreditGiverId : c.PeopleId) into g
-                             where g.Sum(cc => cc.Amount) <= (decimal?)amt.ToDouble() || g.Sum(cc => cc.Amount) > 0
-                             select g.Key);
-
-                    return !useCreditor ? (from c in db.Contributions2(start, end, 0, false, nontaxded, true, null)
-                                           where fund == 0 || c.FundId == fund || fund == null
-                                           where c.Amount > 0
-                                           group c by (useCreditor ? c.CreditGiverId : c.PeopleId) into g
-                                           where g.Sum(cc => cc.Amount) <= (decimal?)amt.ToDouble()
-                                           select g.Key ?? 0) : (from c in db.Contributions2(start, end, 0, false, nontaxded, true, null)
-                        where fund == 0 || c.FundId == fund || fund == null
-                        where c.Amount > 0
-                        group c by (useCreditor ? c.CreditGiverId : c.PeopleId) into g
-                           where g.Sum(cc => cc.Amount) <= (decimal?)amt.ToDouble()
-                           select g.Key ?? 0).Concat(from c2 in db.Contributions2(start, end, 0, false, nontaxded, true, null)
-                                                     where c2.CreditGiverId2 != null
-                                                     where fund == 0 || c2.FundId == fund || fund == null
-                                                     where c2.Amount > 0
-                                                     group c2 by (useCreditor ? c2.CreditGiverId2 : c2.PeopleId) into g
-                                                     where g.Sum(cc => cc.Amount) <= (decimal?)amt.ToDouble()
-                                                     select g.Key ?? 0);
+                    return !useCreditor ?
+                        (from c in donorOnlyList
+                         group c by c.CreditGiverId into g
+                         where g.Sum(cc => cc.Amount) <= (decimal?)amt.ToDouble()
+                         select g.Key ?? 0) :
+                        (from c in donorOnlyList
+                         group c by c.CreditGiverId into g
+                         where g.Sum(cc => cc.Amount) <= (decimal?)amt.ToDouble()
+                         select g.Key ?? 0)
+                        .Concat(from c2 in donorSpouseList
+                                group c2 by c2.CreditGiverId2 into g
+                                where g.Sum(cc => cc.Amount) <= (decimal?)amt.ToDouble()
+                                select g.Key ?? 0);
                 case CompareType.Less:
-                    return !useCreditor ? (from c in db.Contributions2(start, end, 0, false, nontaxded, true, null)
-                              where fund == 0 || c.FundId == fund || fund == null
-                              where c.Amount > 0
-                              group c by (useCreditor ? c.CreditGiverId : c.PeopleId) into g
-                              where g.Sum(cc => cc.Amount) < (decimal?)amt.ToDouble()
-                              select g.Key ?? 0) : (from c in db.Contributions2(start, end, 0, false, nontaxded, true, null)
-                        where fund == 0 || c.FundId == fund || fund == null
-                        where c.Amount > 0
-                        group c by (useCreditor ? c.CreditGiverId : c.PeopleId) into g
-                           where g.Sum(cc => cc.Amount) < (decimal?)amt.ToDouble()
-                            select g.Key ?? 0).Concat(from c2 in db.Contributions2(start, end, 0, false, nontaxded, true, null)
-                                                     where c2.CreditGiverId2 != null
-                                                     where fund == 0 || c2.FundId == fund || fund == null
-                                                      where c2.Amount > 0
-                                                      group c2 by (useCreditor ? c2.CreditGiverId2 : c2.PeopleId) into g
-                                                     where g.Sum(cc => cc.Amount) < (decimal?)amt.ToDouble()
-                                                      select g.Key ?? 0);
+                    return !useCreditor ?
+                        (from c in donorOnlyList
+                         group c by c.CreditGiverId into g
+                         where g.Sum(cc => cc.Amount) < (decimal?)amt.ToDouble()
+                         select g.Key ?? 0) :
+                        (from c in donorOnlyList
+                         group c by c.CreditGiverId into g
+                         where g.Sum(cc => cc.Amount) < (decimal?)amt.ToDouble()
+                         select g.Key ?? 0)
+                        .Concat(from c2 in donorSpouseList
+                                group c2 by c2.CreditGiverId2 into g
+                                where g.Sum(cc => cc.Amount) < (decimal?)amt.ToDouble()
+                                select g.Key ?? 0);
                 case CompareType.Equal:
                     if (amt == 0) // This is a special case, use different approach
                     {
                         return from pid in db.Contributions0(start, end, fund, 0, false, nontaxded, true)
-                            select pid.PeopleId.Value;
+                               select pid.PeopleId.Value;
                     }
                     else
                     {
-                        var donorOnlyList = from c in db.Contributions2(start, end, 0, false, nontaxded, true, null)
-                                         where fund == 0 || c.FundId == fund || fund == null
-                                         group c by (useCreditor ? c.CreditGiverId : c.PeopleId) into g
-                                         where g.Sum(cc => cc.Amount) == (decimal?)amt.ToDouble()
-                                         select g.Key ?? 0;
-                        var donorSpouseList = from c2 in db.Contributions2(start, end, 0, false, nontaxded, true, null)
-                                              where c2.CreditGiverId2 != null
-                                              where fund == 0 || c2.FundId == fund || fund == null
-                                              group c2 by (useCreditor ? c2.CreditGiverId2 : c2.PeopleId) into g
-                                              where g.Sum(cc => cc.Amount) == (decimal?)amt.ToDouble()
-                                              select g.Key ?? 0;
-                        return !useCreditor ? (donorOnlyList) : (donorOnlyList).Concat(donorSpouseList);
+                        return !useCreditor ? (from c in donorOnlyList
+                                               group c by c.CreditGiverId into g
+                                               where g.Sum(cc => cc.Amount) == (decimal?)amt.ToDouble()
+                                               select g.Key ?? 0) :
+                        (from c in donorOnlyList
+                         group c by c.CreditGiverId into g
+                         where g.Sum(cc => cc.Amount) == (decimal?)amt.ToDouble()
+                         select g.Key ?? 0)
+                        .Concat(from c2 in donorSpouseList
+                                group c2 by c2.CreditGiverId2 into g
+                                where g.Sum(cc => cc.Amount) == (decimal?)amt.ToDouble()
+                                select g.Key ?? 0);
                     }
                 case CompareType.NotEqual:
-                    return !useCreditor ? (from c in db.Contributions2(start, end, 0, false, nontaxded, true, null)
-                                           where fund == 0 || c.FundId == fund || fund == null
-                                           where c.Amount > 0
-                                           group c by (useCreditor ? c.CreditGiverId : c.PeopleId) into g
+                    return !useCreditor ? (from c in donorOnlyList
+                                           group c by c.CreditGiverId into g
                                            where g.Sum(cc => cc.Amount) != (decimal?)amt.ToDouble()
-                                           select g.Key ?? 0)
-                                           : (from c in db.Contributions2(start, end, 0, false, nontaxded, true, null)
-                                            where fund == 0 || c.FundId == fund || fund == null
-                                            where c.Amount > 0
-                                            group c by (useCreditor ? c.CreditGiverId : c.PeopleId) into g
-                                            where g.Sum(cc => cc.Amount) != (decimal?)amt.ToDouble()
-                                            select g.Key ?? 0).Concat(from c2 in db.Contributions2(start, end, 0, false, nontaxded, true, null)
-                                            where c2.CreditGiverId2 != null
-                                            where fund == 0 || c2.FundId == fund || fund == null
-                                            where c2.Amount > 0
-                                            group c2 by (useCreditor ? c2.CreditGiverId2 : c2.PeopleId) into g
-                                            where g.Sum(cc => cc.Amount) != (decimal?)amt.ToDouble()
-                                            select g.Key ?? 0);
+                                           select g.Key ?? 0) :
+                        (from c in donorOnlyList
+                         group c by c.CreditGiverId into g
+                         where g.Sum(cc => cc.Amount) != (decimal?)amt.ToDouble()
+                         select g.Key ?? 0)
+                        .Concat(from c2 in donorSpouseList
+                                group c2 by c2.CreditGiverId2 into g
+                                where g.Sum(cc => cc.Amount) != (decimal?)amt.ToDouble()
+                                select g.Key ?? 0);
             }
             return null;
         }

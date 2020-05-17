@@ -61,6 +61,8 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
 
             // remove shaded box entries without data -- this means they are behind a blank field
             label.entries.RemoveAll(e => e.typeID == 6 && e.data == "");
+            // remove conditional entries that didn't match the specified condition(s)
+            label.entries.RemoveAll(e => e.data == "ConditionalRemovedEntry");
             return label;
 		}
 

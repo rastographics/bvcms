@@ -9,18 +9,19 @@ using System;
 
 namespace CmsWeb.Areas.Setup.Controllers
 {
-    [Authorize(Roles = "Admin")]
     [RouteArea("Setup", AreaPrefix = "HomeWidgets"), Route("{action=index}/{id?}")]
     public class DashboardWidgetController : CmsStaffController
     {
         public DashboardWidgetController(IRequestManager requestManager) : base(requestManager) { }
-        
+
+        [Authorize(Roles = "Admin")]
         public ActionResult Index()
         {
             var widgets = CurrentDatabase.DashboardWidgets.OrderBy(w => w.Order).ToList();
             return View(widgets);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpGet, Route("~/HomeWidgets/{id}")]
         public ActionResult Manage(string id)
         {
@@ -35,6 +36,7 @@ namespace CmsWeb.Areas.Setup.Controllers
             }
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public ActionResult Update(DashboardWidgetModel m)
         {
@@ -44,6 +46,7 @@ namespace CmsWeb.Areas.Setup.Controllers
             return Redirect("/HomeWidgets");
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public ActionResult Delete(int id)
         {
@@ -63,6 +66,7 @@ namespace CmsWeb.Areas.Setup.Controllers
             return Content("success");
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public ActionResult Reorder(List<int> widgets)
         {
@@ -77,6 +81,7 @@ namespace CmsWeb.Areas.Setup.Controllers
             }
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public ActionResult Toggle(int id, bool status)
         {
@@ -89,7 +94,7 @@ namespace CmsWeb.Areas.Setup.Controllers
             CurrentDatabase.SubmitChanges();
             return Content(widget.Name + " has been " + (widget.Enabled ? "enabled" : "disabled"));
         }
-
+        
         public ActionResult Embed(string id, bool preview = false)
         {
             try
@@ -102,6 +107,10 @@ namespace CmsWeb.Areas.Setup.Controllers
                 if (widget.CachePolicy != DashboardWidgetModel.CachePolicies.NeverCache.ToInt())
                 {
                     Response.SetCacheMinutes(widget.CacheHours * 60);
+                }
+                if (!widget.Roles.Intersect(CurrentDatabase.CurrentRoleIds()).Any())
+                {
+                    throw new Exception("Not authorized");
                 }
                 string html = widget.Embed();
                 return Content(html, "text/html");

@@ -6,6 +6,7 @@ using Xunit;
 using CMSWebTests;
 using System.Data.Linq;
 using System.Drawing;
+using ImageData;
 
 namespace IntegrationTests.Areas.Main.Views.Email
 {
@@ -45,6 +46,25 @@ namespace IntegrationTests.Areas.Main.Views.Email
             Wait(5);
 
             driver.PageSource.ShouldContain("<h2>Email has completed.</h2>");
+        }
+
+        [Fact]
+        public void SaveUnlayerTemplate_Should_Create_Thumbnail()
+        {
+            var db = CMSImageDataContext.Create(DatabaseFixture.Host);
+            db.ExecuteCommand("DELETE FROM Image");
+
+            username = RandomString();
+            password = RandomString();
+            var user = CreateUser(username, password, roles: new string[] { "Admin", "Edit", "Access", "Checkin" });
+            Login();
+            Wait(3);
+            Open($"{rootUrl}Display/#tab_emailTemplates");
+            Find(text: "Example Template").Click();
+            Find(id: "SaveTemplateButton").Click();
+            Wait(3);
+
+            db.Images.ShouldNotBeEmpty();
         }
     }
 }
