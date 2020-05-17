@@ -1,11 +1,11 @@
 using System.Collections.Generic;
-using System.Linq;
 using System.Web.Mvc;
+using System.Linq;
 using CmsData;
 using CmsWeb.Models;
 using Newtonsoft.Json;
 
-namespace CmsWeb.Areas.Manage.Models.SMSMessages
+namespace CmsWeb.Areas.Manage.Models.SmsMessages
 {
     public class SmsReplyWordsModel : IDbBinder
     {
@@ -14,12 +14,12 @@ namespace CmsWeb.Areas.Manage.Models.SMSMessages
         {
         }
         public int GroupId { get; set; }
-        public List<SmsActionModel> Actions { get; set; }
+        public List<SmsReplyWordsActionModel> Actions { get; set; }
 
         public SmsReplyWordsModel(CMSDataContext db)
         {
             CurrentDatabase = db;
-            Actions = new List<SmsActionModel>();
+            Actions = new List<SmsReplyWordsActionModel>();
         }
         public IEnumerable<SelectListItem> SmsGroups()
         {
@@ -36,14 +36,14 @@ namespace CmsWeb.Areas.Manage.Models.SMSMessages
 
         public void PopulateActions()
         {
-            Actions = new List<SmsActionModel>();
+            Actions = new List<SmsReplyWordsActionModel>();
             if (GroupId == -1)
                 return;
             string json = CurrentDatabase.SMSGroups.FirstOrDefault(
                 v => v.Id == GroupId)?.ReplyWords;
             if(json == null)
                 return;
-            Actions = JsonConvert.DeserializeObject<List<SmsActionModel>>(json);
+            Actions = JsonConvert.DeserializeObject<List<SmsReplyWordsActionModel>>(json);
             PopulateMetaData();
         }
 

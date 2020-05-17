@@ -1,0 +1,35 @@
+﻿@model CmsWeb.Areas.Manage.Models.SmsMessages.SmsReceivedMessagesModel
+<div id="receivedresults">
+    @Html.Partial("PagerTop", Model)
+    <style> tr.repliedto { color: #aaaaaa } </style>
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>@Model.SortLink("Received")</th>
+            <th>@Model.SortLink("Recipient")</th>
+            <th>@Model.SortLink("Sender")</th>
+            <th>@Model.SortLink("Message")</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var i in Model.ViewList())
+        {
+            <tr id="@i.Id" @(i.RepliedTo == true ? "class=repliedto" : "")>
+                <td>@i.DateReceived</td>
+                <td>@(i.SMSGroup?.Name) (@i.ToNumber)</td>
+                <td>
+                    <a href="#" class="replyto">
+                        <i class="fa fa-reply"></i>
+                    </a>
+                    @(i.Person?.Name) (@i.FromNumber)
+                </td>
+                <td>
+                    <a class="showdetails" href="/SmsMessages/ReceivedDetails/@i.Id">@i.Body</a>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+    @Html.Partial("PagerBottom", Model)
+    @Html.Partial("PagerHidden")
+</div>

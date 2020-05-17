@@ -25,9 +25,11 @@ namespace CmsData
         private EntitySet<SMSGroupMember> _SMSGroupMembers;
 
         private EntitySet<SMSList> _SMSLists;
+		
+		private string _ReplyWords;
 
-        private string _ReplyWords;
-
+   		private EntitySet<SmsReceived> _SmsReceiveds;
+ 
         #endregion
 
         #region Extensibility Method Definitions
@@ -62,6 +64,7 @@ namespace CmsData
 
             _SMSLists = new EntitySet<SMSList>(new Action<SMSList>(attach_SMSLists), new Action<SMSList>(detach_SMSLists));
 
+			this._SmsReceiveds = new EntitySet<SmsReceived>(new Action< SmsReceived>(this.attach_SmsReceiveds), new Action< SmsReceived>(this.detach_SmsReceiveds)); 
             OnCreated();
         }
 
@@ -196,6 +199,12 @@ namespace CmsData
 
            }
 
+   		[Association(Name="FK_SmsReceived_SMSGroups", Storage="_SmsReceiveds", OtherKey="ToGroupId")]
+   		public EntitySet<SmsReceived> SmsReceiveds
+   		{
+   		    get { return this._SmsReceiveds; }
+			set	{ this._SmsReceiveds.Assign(value); }
+   		}
         #endregion
 
         #region Foreign Keys
@@ -243,5 +252,15 @@ namespace CmsData
             SendPropertyChanging();
             entity.SMSGroup = null;
         }
+		private void attach_SmsReceiveds(SmsReceived entity)
+		{
+			this.SendPropertyChanging();
+			entity.SMSGroup = this;
     }
+		private void detach_SmsReceiveds(SmsReceived entity)
+		{
+			this.SendPropertyChanging();
+			entity.SMSGroup = null;
+		}
+	}
 }

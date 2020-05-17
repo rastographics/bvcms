@@ -1,76 +1,43 @@
-﻿@model CmsWeb.Areas.Manage.Models.SMSMessages.SmsReplyWordsModel
-<div class="row">
-    <div class="col-md-10">
-        <div class="box box-responsive">
-            <div class="box-content">
-                <form action="/SmsReplyWords/Save" method="post">
-                    <div class="well">
-                        <label for="GroupId" class="control-label">Sms Groups</label>
-                        <div class="row">
-                            <div class="col-sm-4">
-                                @Html.DropDownList("GroupId", Model.SmsGroups(), new { @class = "form-control" })
-                            </div>
-                            <div class="col-sm-4"><button type="submit" class="btn btn-success">Save Actions</button></div>
-                        </div>
-                    </div>
-                    <div id="ReplyWords">
-                        @Html.Partial("ReplyWordsList", Model)
-                    </div>
-                    <div class="box-title-btn">
-                        <div class="box-tools">
-                            <button id="AddReplyWord" type="button" class="btn btn-default"><i class="fa fa-plus-circle"></i> Add ReplyWord</button>
-                        </div>
-                    </div>
-                </form>
-            </div>
+﻿@using RestSharp.Extensions
+@model CmsWeb.Areas.Manage.Models.SmsMessages.SmsReplyWordsModel
+@{
+    var n = 0;
+}
+@foreach (var item in Model.Actions)
+{
+    <div class="row">
+        <div class="col-lg-2 col-sm-11">
+            <b>Reply Word</b>
+            <input name="Actions[@n].Word" placeholder="Reply Word" type="text" class="form-control" style="width:auto" required="required" value="@item.Word">
+        </div>
+        <div class="col-lg-2 col-sm-12">
+            <b>Action</b>
+            <select name="Actions[@n].Action" class="Action form-control" style="width:auto" required="required">
+                @item.ActionOptions()
+            </select>
+        </div>
+        <div class="col-lg-4 col-sm-12">
+            <b>Reply Message</b><input name='Actions[@n].ReplyMessage' placeholder="Default Message" type='text' class='form-control' value='@item.ReplyMessage' />
+        </div>
+        <div class="col-lg-2 col-sm-12">
+            @if (item.Arg1Name.HasValue())
+            {
+                <div>
+                    <b>@item.Arg1Description</b><br/>
+                    <input name='Actions[@n].@item.Arg1Name' type='text' class='form-control' value='@item.Arg1Value' />
+                </div>
+            }
+            @if (item.Arg2Name.HasValue())
+            {
+                <div>
+                    <b>@item.Arg2Description</b><br/>
+                    <input name='Actions[@n].@item.Arg2Name' type='text' class='form-control' value='@item.Arg2Value' />
+                </div>
+            }
+        </div>
+        <div class="col-lg-1 col-sm-1">
+            <a href="#" class="deleteaction pull-right"><i class="fa fa-trash" aria-hidden="true"></i></a>
         </div>
     </div>
-</div>
-@if (ViewBag.Message != null)
-{
-    <script type="text/javascript">
-                    window.onload = function() {
-                        snackbar('@ViewBag.Message', 'success');
-                    }
-    </script>
-}
-@section scripts
-{
-    <script type="text/javascript">
-        $(function () {
-            $("#GroupId").change(function (ev) {
-                ev.preventDefault();
-                var f = $(this).closest('form');
-                var q = f.serialize();
-                $.post("/SmsReplyWords/GroupChanged/",
-                    q,
-                    function (ret) {
-                        $("#ReplyWords").html(ret);
-                    });
-
-            });
-            $("#ReplyWords").on("change",
-                ".Action",
-                function (ev) {
-                    ev.preventDefault();
-                    var f = $(this).closest('form');
-                    var q = f.serialize();
-                    $.post("/SmsReplyWords/ActionChanged/",
-                        q,
-                        function (ret) {
-                            $("#ReplyWords").html(ret);
-                        });
-                });
-            $('#AddReplyWord').click(function (ev) {
-                ev.preventDefault();
-                var f = $(this).closest('form');
-                var q = f.serialize();
-                $.post("/SmsReplyWords/AddAction",
-                    q,
-                    function (ret) {
-                        $("#ReplyWords").html(ret);
-                    });
-            });
-        });
-    </script>
+    n++;
 }

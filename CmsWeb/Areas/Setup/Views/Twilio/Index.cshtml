@@ -2,7 +2,7 @@
     ViewBag.Title = "Twilio Management";
     ViewBag.PageHeader = "Twilio Management";
     Layout = ViewExtensions2.TouchPointLayout();
-    
+
     var gl = from e in ViewExtensions2.CurrentDatabase.SMSGroups
              where e.IsDeleted == false
              select e;
@@ -11,7 +11,6 @@
     <div class="col-sm-12">
         <div class="panel">
             <div class="panel-body">
-                <a href="/SmsReplyWords" class="btn btn-default"><i class="fa fa-edit"></i> Edit Incoming Reply Words</a>
                 <div class="row">
                     @foreach (var item in gl)
                     {
@@ -58,11 +57,34 @@
                                     </tr>
                                     <tr>
                                         <td colspan="2">
-                                            @foreach (var person in people)
-                                            {
-                                                @person.User.Name @:(<a href="/Twilio/UserRemove/@person.Id">Remove</a>)<br />
-                                            }
-                                            &nbsp;<br />
+                                            <table class="table users">
+                                                <thead>
+                                                <tr>
+                                                    <td><b>Name</b></td>
+                                                    <td><b>Receive Notices</b></td>
+                                                    <td><b>Remove</b></td>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                @foreach (var person in people)
+                                                {
+                                                    <tr>
+                                                        <td>
+                                                            @person.User.Name
+                                                        </td>
+                                                        <td class="text-center">
+                                                            <input type="checkbox" class="receivenotifications"
+                                                                   data-pid="@person.User.PeopleId"
+                                                                   data-gid="@item.Id"
+                                                                   @(person.ReceiveNotifications == true ? "checked" : "")/>
+                                                        </td>
+                                                        <td class="text-center">
+                                                            <a href="/Twilio/UserRemove/@person.Id"><i class="fa fa-trash"></i></a>
+                                                        </td>
+                                                    </tr>
+                                                }
+                                                </tbody>
+                                            </table>
                                         </td>
                                     </tr>
                                 </table>
@@ -94,12 +116,22 @@
 
                 var $elem = $(this);
 
-                $("#dialog .modal-content").load($elem.attr("dialogurl"), function() {
+                $("#dialog .modal-content").load($elem.attr("dialogurl"), function () {
                     $("#dialog").modal();
                     $(".bt").button();
                     enableClose();
                 });
             });
+            $("table.users").on("change",
+                "input.receivenotifications",
+                function(ev) {
+                    var q = {
+                        "receive": this.checked,
+                        "peopleid": $(this).data("pid"),
+                        "groupid": $(this).data("gid")
+                    };
+                    $.post("/Twilio/ReceiveNotificationsChanged", q);
+                });
         });
 
         function enableClose() {

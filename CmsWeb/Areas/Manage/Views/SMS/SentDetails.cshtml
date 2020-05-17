@@ -1,19 +1,16 @@
-﻿@model CmsWeb.Areas.Manage.Models.SMSMessages.SmsListModel
-@{
-    ViewBag.Title = "SMS Message Details";
-    ViewBag.PageHeader = "SMS Message Details";
-    Layout = ViewExtensions2.TouchPointLayout();
-}
+﻿@model CmsWeb.Areas.Manage.Models.SmsMessages.SmsSentDetailsModel
 <div class="row">
     <div class="col-sm-9">
         <div class="box box-responsive">
             <div class="box-title-btn">
                 <div class="box-tools">
-                    <a href="/SMS/List" class="btn btn-default"><i class="fa fa-arrow-circle-left"></i> Back to List</a>
+                    <button class="backtosent btn btn-default"><i class="fa fa-arrow-circle-left"></i> Back to Message List</button>
                 </div>
             </div>
             <div class="box-content">
+                <h4>Message Text</h4>
                 <blockquote>@Model.SmsList.Message</blockquote>
+                <h4>Recipients</h4>
                 <div class="table-responsive">
                     <table class="table table-striped">
                         <thead>
@@ -49,7 +46,7 @@
                         </tbody>
                     </table>
                 </div>
-                <a href="/SMS/List" class="btn btn-default visible-xs-block btn-block"><i class="fa fa-arrow-circle-left"></i> Back to List</a>
+                <button class="backtosent btn btn-default"><i class="fa fa-arrow-circle-left"></i> Back to Message List</button>
             </div>
         </div>
     </div>

@@ -699,6 +699,8 @@
     <Compile Include="Generated\SettingCategory.cs" />
     <Compile Include="Generated\SettingMetadatum.cs" />
     <Compile Include="Generated\SettingType.cs" />
+    <Compile Include="Generated\SmsGroupOptOut.cs" />
+    <Compile Include="Generated\SmsReceived.cs" />
     <Compile Include="Generated\Views\AccessUserInfo.cs" />
     <Compile Include="Generated\Views\ActiveRegistration.cs" />
     <Compile Include="Generated\Views\AllLookup.cs" />
@@ -1201,6 +1203,9 @@
     <Content Include="Migrations\20200326_alter-GetContributionsRange-func.sql" />
     <Content Include="Migrations\20200331_alter_GetTotalContributionsDonor2_func.sql" />
     <Content Include="Migrations\20200501_Add_ReplyWords_SmsGroups_Column.sql" />
+    <Content Include="Migrations\20200507_create_SmsReceived_table.sql" />
+    <Content Include="Migrations\20200513_create_SmsGroupOptOut_table.sql" />
+    <Content Include="Migrations\20200514_alter_SMSGroupMembers_table.sql" />
     <Content Include="QueryBuilder\CompareMap.xml">
       <SubType>Designer</SubType>
     </Content>

@@ -1,0 +1,39 @@
+﻿@model CmsWeb.Areas.Manage.Models.SmsMessages.SmsSentMessagesModel
+<div id="sentresults">
+    @Html.Partial("PagerTop", Model)
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>@Model.SortLink("Sent/Scheduled")</th>
+            <th>@Model.SortLink("From")</th>
+            <th>@Model.SortLink("Title")</th>
+            <th class="text-right">@Model.SortLink("Included")</th>
+            <th class="text-right">@Model.SortLink("Excluded")</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var i in Model.ViewList())
+        {
+            <tr>
+                <td>
+                    @i.Created
+                </td>
+                <td>
+                    @i.Person.Name
+                </td>
+                <td>
+                    <a class="showdetails" href="/SmsMessages/SentDetails/@i.Id">@i.Title</a>
+                </td>
+                <td class="text-right">
+                    @i.SentSMS
+                </td>
+                <td class="text-right">
+                    @i.SentNone
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+    @Html.Partial("PagerBottom", Model)
+    @Html.Partial("PagerHidden")
+</div>

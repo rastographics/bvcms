@@ -4,13 +4,13 @@ using System.Linq;
 using System.Web;
 using CmsData;
 
-namespace CmsWeb.Areas.Manage.Models.SMSMessages
+namespace CmsWeb.Areas.Manage.Models.SmsMessages
 {
-    public class SmsListModel
+    public class SmsSentDetailsModel
     {
         private CMSDataContext CurrentDatabase { get; set; }
         public SMSList SmsList { get; set; }
-        public SmsListModel(CMSDataContext db, int id)
+        public SmsSentDetailsModel(CMSDataContext db, int id)
         {
             CurrentDatabase = db;
             SmsList = CurrentDatabase.SMSLists.Single(vv => vv.Id == id);

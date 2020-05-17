@@ -1,7 +1,7 @@
 ﻿@model CmsWeb.Models.PagerModel2
 <div class="row hidden-print">
-    <div class="col-lg-4 col-md-4 col-sm-4 form-inline">
+    <div class="form-inline">
         @Model.ShowCount()
+        @Html.Partial("Pagination", Model)
     </div>
-    @Html.Partial("Pagination", Model)
 </div>

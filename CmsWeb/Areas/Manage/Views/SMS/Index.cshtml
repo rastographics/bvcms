@@ -1,10 +1,11 @@
-﻿@model CmsWeb.Areas.Manage.Models.SMSMessages.SmsMessagesModel
+﻿@using CmsData
+@model CmsWeb.Areas.Manage.Models.SmsMessages.SmsMessagesModel
 @{
     ViewBag.Title = "SMS Messages";
     ViewBag.PageHeader = "SMS Messages";
     Layout = ViewExtensions2.TouchPointLayout();
 }
-<div class="box box-responsive">
+<div class="box">
     <ul class="nav nav-tabs">
         <li class="active"><a href="#sent" data-toggle="tab">Sent</a></li>
         <li><a href="#received" data-toggle="tab">Received</a></li>
@@ -12,48 +13,55 @@
     </ul>
     <div class="tab-content">
         <div id="sent" class="tab-pane fade in active">
-            @Html.Partial("Sent", Model)
+            @Html.Partial("Sent", Model.SentMessages())
         </div>
         <div id="received" class="tab-pane fade">
-            <h3>Received stuff here</h3>
+            @Html.Partial("Received", Model.ReceivedMessages())
         </div>
         <div id="replywords" class="tab-pane fade">
-            @Html.Partial("ReplyWords", Model.ReplyWords())
+            @Html.Partial("ReplyWordsTab", Model.ReplyWords())
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="tagmessages-modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="tagAllForm" method="post">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Tag All</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-info">
+                        You are about to tag <span id="countpeople"></span> 
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="form-group">
+                                <label for="tagname" class="control-label">Tag Name</label>
+                                <input name="tagname" id="tagname" type="text" value="@Util2.CurrentTagName" data-rule-required="true" class="form-control" />
+                            </div>
+                            <div class="form-group">
+                                <div class="checkbox">
+                                    <label>
+                                        @Html.CheckBox("cleartagfirst", false) Clear tag first?
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a class="btn btn-default" data-dismiss="modal">Cancel</a>
+                    <a href="#" id="tagmessages" class="btn btn-primary">OK</a>
+                </div>
+            </form>
         </div>
     </div>
 </div>
 @section scripts
 {
-    <script type="text/javascript">
-        $(document).ready(function () {
-            $('body').on('click', '#clear', function (ev) {
-                ev.preventDefault();
-                $('#start').val('');
-                $('#end').val('');
-            });
-
-            $('a.sortable').on("click", function () {
-                var newsort = $(this).text();
-                var sort = $("#Sort");
-                var dir = $("#Direction");
-
-                if ($(sort).val() == newsort && $(dir).val() == 'asc')
-                    $(dir).val('desc');
-                else
-                    $(dir).val('asc');
-
-                $(sort).val(newsort);
-                $("#form").submit();
-                return false;
-            });
-        });
-
-        $.gotoPage = function (e, pg) {
-            $("#form").submit();
-        };
-
-        $.setPageSize = function (e) {
-            $("#form").submit();
-        };
-    </script>
+    @Fingerprint.Script("/Content/touchpoint/js/sms/sent.js")
+    @Fingerprint.Script("/Content/touchpoint/js/sms/received.js")
+    @Fingerprint.Script("/Content/touchpoint/js/sms/replywords.js")
 }

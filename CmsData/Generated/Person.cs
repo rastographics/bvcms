@@ -315,10 +315,12 @@ namespace CmsData
 		
    		private EntitySet<RecurringAmount> _RecurringAmounts;
 		
+   		private EntitySet<SmsGroupOptOut> _SmsGroupOptOuts;
    		private EntitySet<SMSItem> _SMSItems;
 		
    		private EntitySet<SMSList> _SMSLists;
 		
+   		private EntitySet<SmsReceived> _SmsReceiveds;
    		private EntitySet<GoerSupporter> _FK_Supporters;
 		
    		private EntitySet<TagShare> _TagShares;
@@ -839,10 +841,13 @@ namespace CmsData
 			
 			this._RecurringAmounts = new EntitySet<RecurringAmount>(new Action< RecurringAmount>(this.attach_RecurringAmounts), new Action< RecurringAmount>(this.detach_RecurringAmounts)); 
 			
+			this._SmsGroupOptOuts = new EntitySet<SmsGroupOptOut>(new Action< SmsGroupOptOut>(this.attach_SmsGroupOptOuts), new Action< SmsGroupOptOut>(this.detach_SmsGroupOptOuts)); 
+			
 			this._SMSItems = new EntitySet<SMSItem>(new Action< SMSItem>(this.attach_SMSItems), new Action< SMSItem>(this.detach_SMSItems)); 
 			
 			this._SMSLists = new EntitySet<SMSList>(new Action< SMSList>(this.attach_SMSLists), new Action< SMSList>(this.detach_SMSLists)); 
 			
+			this._SmsReceiveds = new EntitySet<SmsReceived>(new Action< SmsReceived>(this.attach_SmsReceiveds), new Action< SmsReceived>(this.detach_SmsReceiveds)); 
 			this._FK_Supporters = new EntitySet<GoerSupporter>(new Action< GoerSupporter>(this.attach_FK_Supporters), new Action< GoerSupporter>(this.detach_FK_Supporters)); 
 			
 			this._TagShares = new EntitySet<TagShare>(new Action< TagShare>(this.attach_TagShares), new Action< TagShare>(this.detach_TagShares)); 
@@ -3950,6 +3955,16 @@ namespace CmsData
    		}
 
 		
+   		[Association(Name="FK_SmsGroupOptOut_People", Storage="_SmsGroupOptOuts", OtherKey="ToPeopleId")]
+   		public EntitySet<SmsGroupOptOut> SmsGroupOptOuts
+   		{
+   		    get { return this._SmsGroupOptOuts; }
+
+			set	{ this._SmsGroupOptOuts.Assign(value); }
+
+   		}
+
+		
    		[Association(Name="FK_SMSItems_People", Storage="_SMSItems", OtherKey="PeopleID")]
    		public EntitySet<SMSItem> SMSItems
    		{
@@ -3970,6 +3985,12 @@ namespace CmsData
    		}
 
 		
+   		[Association(Name="FK_SmsReceived_People", Storage="_SmsReceiveds", OtherKey="FromPeopleId")]
+   		public EntitySet<SmsReceived> SmsReceiveds
+   		{
+   		    get { return this._SmsReceiveds; }
+			set	{ this._SmsReceiveds.Assign(value); }
+   		}
    		[Association(Name="FK_Supporters__Goer", Storage="_FK_Supporters", OtherKey="GoerId")]
    		public EntitySet<GoerSupporter> FK_Supporters
    		{
@@ -5487,6 +5508,19 @@ namespace CmsData
 		}
 
 		
+		private void attach_SmsGroupOptOuts(SmsGroupOptOut entity)
+		{
+			this.SendPropertyChanging();
+			entity.Person = this;
+		}
+
+		private void detach_SmsGroupOptOuts(SmsGroupOptOut entity)
+		{
+			this.SendPropertyChanging();
+			entity.Person = null;
+		}
+
+		
 		private void attach_SMSItems(SMSItem entity)
 		{
 			this.SendPropertyChanging();
@@ -5512,6 +5546,16 @@ namespace CmsData
 			entity.Person = null;
 		}
 
+		private void attach_SmsReceiveds(SmsReceived entity)
+		{
+			this.SendPropertyChanging();
+			entity.Person = this;
+		}
+		private void detach_SmsReceiveds(SmsReceived entity)
+		{
+			this.SendPropertyChanging();
+			entity.Person = null;
+		}
 		
 		private void attach_FK_Supporters(GoerSupporter entity)
 		{

@@ -565,6 +565,8 @@
     <Compile Include="Areas\Manage\Controllers\ActivityController.cs" />
     <Compile Include="Areas\Manage\Controllers\BatchMoveAndDelete.cs" />
     <Compile Include="Areas\Manage\Controllers\InvolvementController.cs" />
+    <Compile Include="Areas\Manage\Models\SmsMessages\ReceivedDetailViewModel.cs" />
+    <Compile Include="Areas\Manage\Models\SmsMessages\ReplyModel.cs" />
     <Compile Include="Areas\Manage\Controllers\UploadAddressesController.cs" />
     <Compile Include="Areas\Manage\Controllers\ResourceController.cs" />
     <Compile Include="Areas\Manage\Controllers\UploadExcelIpsController.cs" />
@@ -582,9 +584,11 @@
     <Compile Include="Areas\Manage\Models\Involvement\InvolvementType.cs" />
     <Compile Include="Areas\Manage\Models\ResourceModel.cs" />
     <Compile Include="Areas\Manage\Models\ResourceTypeModel.cs" />
-    <Compile Include="Areas\Manage\Models\SMSMessages\SmsActionModel.cs" />
-    <Compile Include="Areas\Manage\Models\SMSMessages\SmsListModel.cs" />
-    <Compile Include="Areas\Manage\Models\SMSMessages\SmsReplyWordsModel.cs" />
+    <Compile Include="Areas\Manage\Models\SmsMessages\SmsReceivedMessagesModel.cs" />
+    <Compile Include="Areas\Manage\Models\SmsMessages\SmsSentMessagesModel.cs" />
+    <Compile Include="Areas\Manage\Models\SmsMessages\SmsReplyWordsActionModel.cs" />
+    <Compile Include="Areas\Manage\Models\SmsMessages\SmsSentDetailsModel.cs" />
+    <Compile Include="Areas\Manage\Models\SmsMessages\SmsReplyWordsModel.cs" />
     <Compile Include="Areas\Manage\Models\UpdateFieldsLookups.cs" />
     <Compile Include="Areas\Manage\Models\UploadAddressesModel.cs" />
     <Compile Include="Areas\Manage\Models\UploadExcelIpsModel.cs" />
@@ -860,7 +864,7 @@
     <Compile Include="Areas\Org\Models\OrgChildrenModel.cs" />
     <Compile Include="Areas\Manage\Controllers\UsersController.cs" />
     <Compile Include="Areas\Manage\Models\ContentModel.cs" />
-    <Compile Include="Areas\Manage\Models\SMSMessages\SmsMessagesModel.cs" />
+    <Compile Include="Areas\Manage\Models\SmsMessages\SmsMessagesModel.cs" />
     <Compile Include="Areas\Manage\Models\UsersModel.cs" />
     <Compile Include="Areas\Manage\Models\UploadPeopleModel.cs" />
     <Compile Include="Areas\Manage\Models\AccountModel.cs" />
@@ -883,8 +887,6 @@
     <Compile Include="Areas\Search\Models\RegistrationSearch\RegistrationSearchModel.cs" />
     <Compile Include="Areas\Search\Models\SavedQuery\SavedQueryInfo.cs" />
     <Compile Include="Areas\Search\Models\SavedQuery\SavedQueryModel.cs" />
-    <Compile Include="Areas\Setup\Controllers\SmsReplyWordsController.cs" />
-    <Compile Include="Areas\Setup\Models\SmsActionModel.cs" />
     <Compile Include="Areas\Setup\Controllers\DashboardWidgetController.cs" />
     <Compile Include="Areas\Setup\Models\DashboardWiget.cs" />
     <Compile Include="Areas\Setup\Models\RoleModel.cs" />
@@ -894,7 +896,6 @@
     <Compile Include="Areas\Setup\Models\SettingListModel.cs" />
     <Compile Include="Areas\Setup\Models\SettingModel.cs" />
     <Compile Include="Areas\Setup\Models\SettingTypeModel.cs" />
-    <Compile Include="Areas\Setup\Models\SmsReplyWordsModel.cs" />
     <Compile Include="Code\BirthdateValidAttribute.cs" />
     <Compile Include="Code\CMSWebViewPage.cs" />
     <Compile Include="Areas\Setup\Controllers\PushpayController.cs" />
@@ -1307,6 +1308,9 @@
     <Content Include="Content\touchpoint\js\gateway.js" />
     <Content Include="Content\touchpoint\js\checkin.js" />
     <Content Include="Content\touchpoint\js\onlineregister.min.js" />
+    <Content Include="Content\touchpoint\js\sms\ReplyWords.js" />
+    <Content Include="Content\touchpoint\js\sms\Received.js" />
+    <Content Include="Content\touchpoint\js\sms\Sent.js" />
     <Content Include="Content\touchpoint\js\update-add-modal-results.js" />
     <Content Include="Content\touchpoint\js\update-modal-results.js" />
     <Content Include="Content\touchpoint\js\vue-search-add.js" />
@@ -1933,12 +1937,21 @@
     <Content Include="Content\touchpoint\src\less\unlayer-editor.less" />
     <Content Include="Areas\Dialog\Views\RemoteDeposit\Index.cshtml" />
     <Content Include="Areas\Dialog\Views\RemoteDeposit\NotConfigured.cshtml" />
-    <Content Include="Areas\Setup\Views\SmsReplyWords\ReplyWords.cshtml" />
-    <Content Include="Areas\Setup\Views\SmsReplyWords\ReplyWordsDetails.cshtml" />
-    <Content Include="Areas\Manage\Views\SMS\Sent.cshtml" />
-    <Content Include="Areas\Manage\Views\SMS\ReplyWords.cshtml" />
-    <Content Include="Areas\Setup\Views\SmsReplyWords\Index.cshtml" />
-    <Content Include="Areas\Manage\Views\SMS\ReplyWordsList.cshtml" />
+    <Content Include="Areas\Manage\Views\Sms\Sent.cshtml" />
+    <Content Include="Areas\Manage\Views\Sms\ReplyWordsTab.cshtml" />
+    <Content Include="Areas\Manage\Views\Sms\ReplyWords.cshtml" />
+    <Content Include="Areas\Manage\Views\Sms\SentResults.cshtml" />
+    <Content Include="Areas\Manage\Views\Sms\SentFilterMembersDropdown.cshtml" />
+    <Content Include="Areas\Manage\Views\Sms\Received.cshtml" />
+    <Content Include="Areas\Manage\Views\Sms\ReceivedResults.cshtml" />
+    <Content Include="Areas\Manage\Views\Sms\ReceivedDetails.cshtml" />
+    <Content Include="Areas\Manage\Views\Sms\Toolbar\Email.cshtml" />
+    <Content Include="Areas\Manage\Views\Sms\Toolbar\Gear.cshtml" />
+    <Content Include="Areas\Manage\Views\Sms\Toolbar\Reports.cshtml" />
+    <Content Include="Areas\Manage\Views\Sms\Toolbar\Toolbar.cshtml" />
+    <Content Include="Areas\Manage\Views\Sms\DisplayTemplates\String.cshtml" />
+    <Content Include="Areas\Manage\Views\Sms\DisplayTemplates\DateTime.cshtml" />
+    <Content Include="Areas\Manage\Views\Sms\DisplayTemplates\Int32.cshtml" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
@@ -2981,8 +2994,8 @@
     <Content Include="Areas\People\Views\Volunteering\DialogEdit.cshtml" />
     <Content Include="Areas\Main\Views\SMS\Options.cshtml" />
     <Content Include="Areas\Main\Views\SMS\Send.cshtml" />
-    <Content Include="Areas\Manage\Views\SMS\Details.cshtml" />
-    <Content Include="Areas\Manage\Views\SMS\Index.cshtml" />
+    <Content Include="Areas\Manage\Views\Sms\SentDetails.cshtml" />
+    <Content Include="Areas\Manage\Views\Sms\Index.cshtml" />
     <Content Include="Areas\Setup\Views\Twilio\GroupDialog.cshtml" />
     <Content Include="Areas\Setup\Views\Twilio\NumberDialog.cshtml" />
     <Content Include="Areas\Setup\Views\Twilio\UserDialog.cshtml" />

@@ -1,0 +1,35 @@
+﻿@model CmsWeb.Areas.Manage.Models.SmsMessages.ReceivedDetailViewModel
+    <div class="row">
+        <div class="col-sm-9">
+            <div class="box box-responsive">
+                <div class="box-title-btn">
+                    <div class="box-tools">
+                        <button class="backtoreceived btn btn-default">
+                            <i class="fa fa-arrow-circle-left"></i>
+                            Back to Message List
+                        </button>
+                    </div>
+                </div>
+                <div class="box-content">
+                    <h4>Message Text</h4>
+                    <blockquote>@Model.R.Body</blockquote>
+                    <table class="table notwide">
+                        @Html.DisplayFor(m => m.R.Action)
+                        @Html.DisplayFor(m => m.R.ActionResponse)
+                        @Html.DisplayFor(m => m.R.Args)
+                        @Html.DisplayFor(m => m.R.DateReceived)
+                        @Html.DisplayFor(m => m.R.FromNumber)
+                        @Html.DisplayFor(m => m.R.FromPeopleId)
+                        @Html.DisplayFor(m => m.PersonName)
+                        @Html.DisplayFor(m => m.R.ToNumber)
+                        @Html.DisplayFor(m => m.R.ToGroupId)
+                        @Html.DisplayFor(m => m.GroupName)
+                    </table>
+                    <button class="backtoreceived btn btn-default">
+                        <i class="fa fa-arrow-circle-left"></i>
+                        Back to Message List
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>

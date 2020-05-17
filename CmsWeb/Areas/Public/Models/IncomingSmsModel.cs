@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using CmsData;
 using CmsData.Codes;
-using CmsWeb.Areas.Setup.Models;
+using CmsWeb.Areas.Manage.Models.SmsMessages;
 using Dapper;
 using Twilio.AspNet.Common;
 using UtilityExtensions;
@@ -17,12 +19,25 @@ namespace CmsWeb.Areas.Public.Models
         private string From { get; set; }
         private string Body { get; set; }
 
+        private SmsReceived row;
+        private Person person;
+        private string groupName;
+        private SmsReplyWordsActionModel action;
+
         public IncomingSmsModel(CMSDataContext db, SmsRequest incomingMessage)
         {
             CurrentDatabase = db;
             To = incomingMessage.To;
             From = incomingMessage.From.Substring(2);
-            Body = incomingMessage.Body;
+            Body = incomingMessage.Body.Trim();
+            row = new SmsReceived
+            {
+                Body = Body,
+                ToNumber = To,
+                FromNumber = From,
+                DateReceived = Util.Now,
+            };
+
         }
 
         public Person FindPerson()
@@ -34,20 +49,29 @@ namespace CmsWeb.Areas.Public.Models
             {
                 throw new Exception($"could not find person with the number {From}");
             }
+
+            row.FromPeopleId = person.PeopleId;
             return person;
         }
+
+        SmsReplyWordsModel model;
         public SmsReplyWordsModel FindGroup()
         {
-            var model = new SmsReplyWordsModel(CurrentDatabase);
-            model.GroupId = CurrentDatabase.Connection.QueryFirstOrDefault<int?>(
-                "select GroupID from dbo.SMSNumbers where Number = @To", new {To}) ?? -1;
-            model.PopulateActions();
-            return model;
+            var m = new SmsReplyWordsModel(CurrentDatabase);
+            var g = CurrentDatabase.Connection.QueryFirstOrDefault(
+                @"select n.GroupID, g.[Name] from dbo.SMSNumbers n
+                  join dbo.SMSGroups g on g.ID = n.GroupID where n.Number = @To", new {To});
+            if(g == null)
+                throw new Exception($"could not find group from number {To}");
+            m.GroupId = g.GroupID;
+            groupName = g.Name;
+            m.PopulateActions();
+            row.ToGroupId = m.GroupId;
+            return m;
         }
-        private Person person;
+
         public string ProcessAndRespond()
         {
-            SmsReplyWordsModel model;
             try
             {
                 model = FindGroup();
@@ -55,109 +79,247 @@ namespace CmsWeb.Areas.Public.Models
             }
             catch (Exception e)
             {
-                return e.Message;
+                return GetError(e.Message);
             }
 
-            foreach (var r in model.Actions)
+            var rval = "";
+            foreach(var r in model.Actions)
             {
-                if (!Body.Equal(r.Word))
+                action = r;
+                if (!Body.Equal(action.Word))
                     continue;
-                switch (r.Action)
+                row.Action = action.Action;
+                switch (action.Action)
                 {
                     case "OptOut":
-                        break; // todo: Optout
+                        rval = GroupOptOut();
+                        break;
+                    case "OptIn":
+                        rval = GroupOptIn();
+                        break;
                     case "Attending":
-                        return MarkAttendingIntention(r, AttendCommitmentCode.Attending);
+                        rval = MarkAttendingIntention(AttendCommitmentCode.Attending);
+                        break;
                     case "Regrets":
-                        return MarkAttendingIntention(r, AttendCommitmentCode.Regrets);
+                        rval = MarkAttendingIntention(AttendCommitmentCode.Regrets);
+                        break;
                     case "AddToOrg":
-                        return AddToOrg(r);
+                        rval = AddToOrg();
+                        break;
                     case "AddToOrgSg":
-                        return AddToSmallGroup(r);
+                        rval = AddToSmallGroup();
+                        break;
                     case "SendAnEmail":
-                        return SendAnEmail(r);
+                        rval = SendAnEmail();
+                        break;
                     case "RunScript":
-                        break; // todo: add RunScript
+                        rval = RunScript();
+                        break;
                     default:
-                        return $"{r.Action} action not recognized for {r.Word} on number {To}";
+                        rval = GetError($"{action.Action} action not recognized for {action.Word} on number {To}");
+                        break;
                 }
+
             }
-            //Reply word never found in loop
-            return $"{Body} reply word not recognized for number {To}";
+            SendNotices();
+            if(rval.HasValue())
+                return rval;
+            //Reply word never found in loop, must be a regular text message
+            return ReceivedTextNoAction();
         }
 
-        private string MarkAttendingIntention(SmsActionModel r, int code)
+        private void SendNotices()
         {
-            Meeting meeting = null;
-            Organization o = null;
-            string markedas = null;
+            var q = from gm in CurrentDatabase.SMSGroupMembers
+                where gm.GroupID == model.GroupId
+                where gm.ReceiveNotifications == true
+                select gm.User.Person;
+            var subject = $"Received Text from {From}";
+            var body = $@"From {person.Name} to {groupName} at {row.DateReceived}<br>
+with message: {Body}<br><br>
+They received: {row.ActionResponse}";
+            foreach (var p in q)
+            {
+                CurrentDatabase.Email(Util.AdminMail, p, null, subject, body, false);
+            }
+        }
+
+        private string GetActionReplyMessage()
+        {
+            row.ActionResponse = DoReplacments(Util.PickFirst(action.ReplyMessage, action.DefaultMessage));
+            CurrentDatabase.SmsReceiveds.InsertOnSubmit(row);
+            CurrentDatabase.SubmitChanges();
+            if (action.ReplyMessage.Equal("NONE"))
+                return string.Empty;
+            return row.ActionResponse;
+        }
+        private string GetError(string message)
+        {
+            row.ErrorOccurred = true;
+            row.ActionResponse = message;
+            CurrentDatabase.SmsReceiveds.InsertOnSubmit(row);
+            CurrentDatabase.SubmitChanges();
+            return message;
+        }
+
+        private const string MatchCodeRe = "({[^}]*})";
+        private string DoReplacments(string message)
+        {
+            var stringlist = Regex.Split(message, MatchCodeRe, RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.IgnorePatternWhitespace);
+            var texta = new List<string>(stringlist);
+            for (var i = 1; i < texta.Count; i ++)
+                texta[i] = DoReplaceCode(texta[i]);
+
+            return string.Join("", texta);
+        }
+
+        private string DoReplaceCode(string item)
+        {
+            if (!item.StartsWith("{"))
+                return item;
+            switch (item.ToLower())
+            {
+                case "{meetingid}":
+                    return meeting.MeetingId.ToString();
+                case "{meetingdate}":
+                    return meeting.MeetingDate.FormatDateTm();
+                case "{groupname}":
+                    return groupName;
+                case "{orgname}":
+                    return organization.OrganizationName;
+                case "{name}":
+                    return person.Name;
+                case "{smallgroup}":
+                    return action.SmallGroup;
+                case "{markedas}":
+                    return markedas;
+            }
+            return item;
+        }
+
+        private string GroupOptOut()
+        {
+            var o = new SmsGroupOptOut
+            {
+                FromGroup = model.GroupId,
+                ToPeopleId = person.PeopleId
+            };
+            CurrentDatabase.SmsGroupOptOuts.InsertOnSubmit(o);
+            CurrentDatabase.SubmitChanges();
+            return GetActionReplyMessage();
+        }
+        private string GroupOptIn()
+        {
+            CurrentDatabase.Connection.Execute(
+                "delete dbo.SmsGroupOptOut where FromGroup = @gid and ToPeopleId = @pid",
+                new {gid = model.GroupId, pid = person.PeopleId});
+            return GetActionReplyMessage();
+        }
+        private Meeting meeting;
+        private string markedas;
+        private string MarkAttendingIntention(int code)
+        {
             try
             {
-                if (r.MeetingId == null)
+                row.Args = $"{{ \"MeetingId\": \"{action.MeetingId}\"}}";
+                if (action.MeetingId == null)
                     throw new Exception("meetingid null");
-                meeting = CurrentDatabase.Meetings.FirstOrDefault(mm => mm.MeetingId == r.MeetingId);
+                meeting = CurrentDatabase.Meetings.FirstOrDefault(mm => mm.MeetingId == action.MeetingId);
                 if (meeting == null)
-                    throw new Exception($"meetingid {r.MeetingId} not found");
-                o = CurrentDatabase.LoadOrganizationById(meeting.OrganizationId);
-                Attend.MarkRegistered(CurrentDatabase, person.PeopleId, r.MeetingId.Value, code);
+                    throw new Exception($"meetingid {action.MeetingId} not found");
+                organization = CurrentDatabase.LoadOrganizationById(meeting.OrganizationId);
+                Attend.MarkRegistered(CurrentDatabase, person.PeopleId, meeting.MeetingId, code);
                 markedas = code == AttendCommitmentCode.Attending ? "Attending" : "Regrets";
             }
             catch (Exception e)
             {
-                return $"No Meeting on action {r.Action}, {e.Message}";
+                return GetError($"No Meeting on action {action.Action}, {e.Message}");
             }
-            return $"{person.Name} has been marked as {markedas} to {o.OrganizationName} for {meeting.MeetingDate}";
+            return GetActionReplyMessage();
         }
 
-        private string AddToOrg(SmsActionModel r)
+        private Organization organization;
+        private string AddToOrg()
         {
-            Organization o = null;
             try
             {
-                if (r.OrgId == null)
+                row.Args = $"{{ \"OrgId\": \"{action.MeetingId}\"}}";
+                if (action.OrgId == null)
                     throw new Exception("orgid null");
-                o = CurrentDatabase.LoadOrganizationById(r.OrgId);
-                if (o == null)
-                    throw new Exception($"orgid {r.OrgId} not found");
-                o = CurrentDatabase.LoadOrganizationById(r.OrgId);
-                OrganizationMember.InsertOrgMembers(CurrentDatabase, r.OrgId.Value, person.PeopleId, 220, Util.Now, null, false);
+                organization = CurrentDatabase.LoadOrganizationById(action.OrgId);
+                if (organization == null)
+                    throw new Exception($"orgid {action.OrgId} not found");
+                organization = CurrentDatabase.LoadOrganizationById(action.OrgId);
+                OrganizationMember.InsertOrgMembers(CurrentDatabase, action.OrgId.Value, person.PeopleId, 220, Util.Now, null, false);
             }
             catch (Exception e)
             {
-                return $"Org not found on action {r.Action}, {e.Message}";
+                return GetError($"Org not found on action {action.Action}, {e.Message}");
             }
-            return $"{person.Name} has been added to {o.OrganizationName}";
+            return GetActionReplyMessage();
         }
 
-        private string AddToSmallGroup(SmsActionModel r)
+        private string AddToSmallGroup()
         {
-            Organization o = null;
             try
             {
-                if (r.OrgId == null)
+                row.Args = $"{{ \"OrgId\": \"{action.MeetingId}\", \"SmallGroup\": \"{action.SmallGroup}\"}}";
+                if (action.OrgId == null)
                     throw new Exception("OrgId is null");
-                o = CurrentDatabase.LoadOrganizationById(r.OrgId);
-                if (o == null)
-                    throw new Exception($"OrgId {r.OrgId} not found");
-                if (r.SmallGroup == null)
+                organization = CurrentDatabase.LoadOrganizationById(action.OrgId);
+                if (organization == null)
+                    throw new Exception($"OrgId {action.OrgId} not found");
+                if (action.SmallGroup == null)
                     throw new Exception("SmallGroup is null");
-                var om = OrganizationMember.InsertOrgMembers(CurrentDatabase, r.OrgId.Value, person.PeopleId, 220, Util.Now, null, false);
-                om.AddToGroup(CurrentDatabase, r.SmallGroup);
+                var om = OrganizationMember.InsertOrgMembers(CurrentDatabase, action.OrgId.Value, person.PeopleId, 220, Util.Now, null, false);
+                om.AddToGroup(CurrentDatabase, action.SmallGroup);
             }
             catch (Exception e)
             {
-                return e.Message;
+                return GetError(e.Message);
             }
-            return $"{person.Name} has been added to {r.SmallGroup} group for {o.OrganizationName}";
+            return GetActionReplyMessage();
         }
 
-        private string SendAnEmail(SmsActionModel r)
+        private string SendAnEmail()
         {
-            if (r.EmailId == null)
-                return $"Email Draft not found for id {r.EmailId}";
-            var email = CurrentDatabase.ContentFromID(r.EmailId.Value);
+            row.Args = $"{{ \"EmailId\": \"{action.EmailId}\"}}";
+            if (action.EmailId == null)
+                return GetError($"Email Draft not found for id {action.EmailId}");
+            var email = CurrentDatabase.ContentFromID(action.EmailId.Value);
             CurrentDatabase.Email(DbUtil.AdminMail, person, email.Title, email.Body);
-            return $"email sent to {person.Name}";
+            return GetActionReplyMessage();
+        }
+        private string ReceivedTextNoAction()
+        {
+            CurrentDatabase.SmsReceiveds.InsertOnSubmit(row);
+            CurrentDatabase.SubmitChanges();
+            return string.Empty;
+        }
+        private string RunScript()
+        {
+            var m = new PythonModel(CurrentDatabase);
+            var script = CurrentDatabase.ContentOfTypePythonScript(action.ScriptName);
+            if (!script.HasValue())
+                return GetError($"Script name {action.ScriptName} not found");
+            m.DictionaryAdd("ToNumber", To);
+            m.DictionaryAdd("ToGroupId", row.ToGroupId);
+            m.DictionaryAdd("FromNumber", From);
+            m.DictionaryAdd("Message", Body);
+            m.DictionaryAdd("PeopleId", row.FromPeopleId);
+            m.DictionaryAdd("Name", person.Name);
+            m.DictionaryAdd("First", person.FirstName);
+            m.DictionaryAdd("Last", person.LastName);
+            var msg = Util.PickFirst(
+                m.RunScript(script).Trim(),
+                action.ReplyMessage,
+                action.DefaultMessage);
+            row.ActionResponse = DoReplacments(msg);
+            CurrentDatabase.SmsReceiveds.InsertOnSubmit(row);
+            CurrentDatabase.SubmitChanges();
+            if(msg.Equal("NONE"))
+                return String.Empty;
+            return row.ActionResponse;
         }
     }
 }

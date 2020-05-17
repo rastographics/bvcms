@@ -1,0 +1,39 @@
+﻿@model CmsWeb.Areas.Manage.Models.SmsMessages.SmsReplyWordsModel
+<style>
+    .legend div.row {
+        padding: 20px 0
+    }
+    .legend div.row:nth-of-type(odd) {
+        background-color:#f8f8f8;
+    }
+    .legend div.row:nth-of-type(even) {
+        background: #FFFFFF;
+    }
+</style>
+<div class="row">
+    <div class="col-md-10">
+        <div class="box box-responsive">
+            <div class="box-content">
+                <form>
+                    <div class="well">
+                        <label for="GroupId" class="control-label">Sms Groups</label>
+                        <div class="row">
+                            <div class="col-sm-4">
+                                @Html.DropDownList("GroupId", Model.SmsGroups(), new { @class = "form-control" })
+                            </div>
+                            <div class="col-sm-4"><button id="SaveActions" type='button' class="btn btn-success">Save Actions</button></div>
+                        </div>
+                    </div>
+                    <div id="ReplyWordsList" class="legend">
+                        @Html.Partial("ReplyWords", Model)
+                    </div>
+                    <div class="box-title-btn">
+                        <div class="box-tools">
+                            <button id="AddReplyWord" type="button" class="btn btn-default"><i class="fa fa-plus-circle"></i> Add ReplyWord</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

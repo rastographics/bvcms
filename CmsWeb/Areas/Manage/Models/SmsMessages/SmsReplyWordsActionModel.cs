@@ -2,11 +2,10 @@ using System.Collections.Generic;
 using System.Text;
 using System.Web.Mvc;
 using Newtonsoft.Json;
-using RestSharp.Extensions;
 
-namespace CmsWeb.Areas.Manage.Models.SMSMessages
+namespace CmsWeb.Areas.Manage.Models.SmsMessages
 {
-    public class SmsActionModel
+    public class SmsReplyWordsActionModel
     {
         public string Word { get; set; }
         public string Action { get; set; }
@@ -16,6 +15,7 @@ namespace CmsWeb.Areas.Manage.Models.SMSMessages
         public int? EmailId { get; set; }
         public string SmallGroup { get; set; }
         public string ScriptName { get; set; }
+        public string ReplyMessage { get; set; }
 
         // Metadata
         [JsonIgnore] public string Description { get; set; }
@@ -23,6 +23,16 @@ namespace CmsWeb.Areas.Manage.Models.SMSMessages
         [JsonIgnore] public string Arg1Description { get; set; }
         [JsonIgnore] public string Arg2Name { get; set; }
         [JsonIgnore] public string Arg2Description { get; set; }
+
+        [JsonIgnore]
+        public string DefaultMessage
+        {
+            get
+            {
+                var a = StandardActions.Find(vv => vv.Action == Action);
+                return a.ReplyMessage;
+            }
+        }
 
         public object Arg1Value
         {
@@ -52,20 +62,29 @@ namespace CmsWeb.Areas.Manage.Models.SMSMessages
             }
         }
 
-        public static List<SmsActionModel> StandardActions = new List<SmsActionModel>
+        public static string OptOutMesssage = "{name} has been opted out of {groupname}";
+        public static string OptInMesssage = "{name} has been opted in to {groupname}";
+        public static string MarkAttendMessage = "{name} has been marked as {markedas} to {orgname} for {meetingdate}";
+        public static string AddToOrgMessage = "{name} has been added to {orgname}";
+        public static string AddToOrgSgMessage = "{name} has been added to {smallgroup} group for {orgname}";
+        public static string SendAnEmailMessage = "email sent to {name}";
+        public static string RunScriptMessage = "script run";
+
+        public static List<SmsReplyWordsActionModel> StandardActions = new List<SmsReplyWordsActionModel>
             {
-                New("OptOut", "Opt Out"),
-                New("Attending", "Attending", "MeetingId", "Meeting Id"),
-                New("Regrets", "Regrets", "MeetingId", "Meeting Id"),
-                New("AddToOrg", "Add To Organization", "OrgId", "Organization Id"),
-                New("AddToOrgSg", "Add To Smallgroup", "OrgId", "Organization Id", "SmallGroup", "Small Group Name"),
-                New("SendAnEmail", "Send an Email", "EmailId", "Email Id"),
-                New("RunScript", "Run Python Script", "ScriptName", "Script Name"),
+                New("OptOut", "Opt Out", reply: OptOutMesssage),
+                New("OptIn", "Opt In", reply: OptInMesssage),
+                New("Attending", "Attending", "MeetingId", "Meeting Id", reply: MarkAttendMessage),
+                New("Regrets", "Regrets", "MeetingId", "Meeting Id", reply: MarkAttendMessage),
+                New("AddToOrg", "Add To Organization", "OrgId", "Organization Id", reply: AddToOrgMessage),
+                New("AddToOrgSg", "Add To Smallgroup", "OrgId", "Organization Id", "SmallGroup", "Small Group Name", reply: AddToOrgSgMessage),
+                New("SendAnEmail", "Send an Email", "EmailId", "Email Id", reply: SendAnEmailMessage),
+                New("RunScript", "Run Python Script", "ScriptName", "Script Name", reply: RunScriptMessage),
             };
 
-        public static SmsActionModel New(string action, string description, string arg1 = null, string argdesc1 = null, string arg2 = null, string argdesc2 = null)
+        public static SmsReplyWordsActionModel New(string action, string description, string arg1 = null, string argdesc1 = null, string arg2 = null, string argdesc2 = null, string reply = null)
         {
-            return new SmsActionModel
+            return new SmsReplyWordsActionModel
             {
                 Action = action,
                 Description = description,
@@ -73,6 +92,7 @@ namespace CmsWeb.Areas.Manage.Models.SMSMessages
                 Arg1Description = argdesc1,
                 Arg2Name = arg2,
                 Arg2Description = argdesc2,
+                ReplyMessage = reply
             };
         }
         public MvcHtmlString ActionOptions()
@@ -92,22 +112,11 @@ namespace CmsWeb.Areas.Manage.Models.SMSMessages
             }
         }
 
-        public MvcHtmlString Input1(int n)
-        {
-            if (Arg1Name.HasValue())
-                return new MvcHtmlString($"<input name='Actions[{n}].{Arg1Name}' placeholder='{Arg1Description}' type='text' class='form-control' value='{Arg1Value}' />");
-            return MvcHtmlString.Empty;
-        }
-        public MvcHtmlString Input2(int n)
-        {
-            if (Arg2Name.HasValue())
-                return new MvcHtmlString($"<input name='Actions[{n}].{Arg2Name}' placeholder='{Arg2Description}' type='text' class='form-control' value='{Arg2Value}' />");
-            return MvcHtmlString.Empty;
-        }
-
         public void PopulateMetaData()
         {
             var t = StandardActions.Find(vv => vv.Action == Action);
+            if (t == null)
+                return;
             Description = t.Description;
             Arg1Name = t.Arg1Name;
             Arg2Name = t.Arg2Name;
