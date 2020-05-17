@@ -5,9 +5,9 @@ DECLARE @Security INT = 4, @dataBool INT = 1, @dataText INT = 3;
 
     INSERT INTO dbo.SettingMetadata
     (SettingId, Description, DataType, SettingCategoryId) VALUES
-    ('UseMobileQuickSignInCodes', 'Set this to <i>true</i> to enable quick mobile app sign in without a password using a 6-digit code. See <a href="https://docs.touchpointsoftware.com/" target="_blank">this help article</a> for more information.', @dataBool, @Security),
-    ('MobileQuickSignInCodeSMS', 'This is the SMS message template that will be sent to users when they sign in to the mobile app using quick sign in using their cell phone number. See <a href="https://docs.touchpointsoftware.com/" target="_blank">this help article</a> for more information.', @dataText, @Security),
-    ('MobileQuickSignInSubject', 'Set this to customize the subject line of the email for mobile quick sign in codes. See <a href="https://docs.touchpointsoftware.com/" target="_blank">this help article</a> for more information.', @dataText, @Security)
+    ('UseMobileQuickSignInCodes', 'Set this to <i>true</i> to enable quick mobile app sign in without a password using a 6-digit code. See <a href="https://docs.touchpointsoftware.com/MobileApp/QuickSignIn.html" target="_blank">this help article</a> for more information.', @dataBool, @Security),
+    ('MobileQuickSignInCodeSMS', 'This is the SMS message template that will be sent to users when they sign in to the mobile app using quick sign in using their cell phone number. See <a href="https://docs.touchpointsoftware.com/MobileApp/QuickSignIn.html" target="_blank">this help article</a> for more information.', @dataText, @Security),
+    ('MobileQuickSignInSubject', 'Set this to customize the subject line of the email for mobile quick sign in codes. See <a href="https://docs.touchpointsoftware.com/MobileApp/QuickSignIn.html" target="_blank">this help article</a> for more information.', @dataText, @Security)
 END
 GO
 
