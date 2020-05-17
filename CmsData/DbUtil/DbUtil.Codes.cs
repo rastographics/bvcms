@@ -359,6 +359,18 @@ namespace CmsData.Codes
         public const int Pending = 40;
     }
 
+    public class PaymentMethodTypeCode
+    {
+        public const int Bank = 1;
+        public const int Visa = 2;
+        public const int MasterCard = 3;
+        public const int Amex = 4;
+        public const int Discover = 5;
+        public const int Other = 99;
+
+        public bool IsCard(int paymentMethodTypeId) => paymentMethodTypeId != 1;
+    }
+
     public class ContributionTypeCode
     {
         public const int CheckCash = 1;
@@ -372,22 +384,22 @@ namespace CmsData.Codes
 
         public static int[] SpecialTypes =
         {
-            ContributionTypeCode.GiftInKind,
-            ContributionTypeCode.NonTaxDed,
-            ContributionTypeCode.Pledge,
-            ContributionTypeCode.Stock,
+            GiftInKind,
+            NonTaxDed,
+            Pledge,
+            Stock,
         };
 
         public static int[] NonTaxTypes =
         {
-            ContributionTypeCode.NonTaxDed,
-            ContributionTypeCode.Pledge
+            NonTaxDed,
+            Pledge
         };
 
         public static int[] ReturnedReversedTypes =
         {
-            ContributionTypeCode.ReturnedCheck,
-            ContributionTypeCode.Reversed
+            ReturnedCheck,
+            Reversed
         };
     }
 
