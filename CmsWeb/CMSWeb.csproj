@@ -39,6 +39,7 @@
     </UpgradeBackupLocation>
     <TargetFrameworkProfile />
     <MvcBuildViews>true</MvcBuildViews>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
