@@ -96,7 +96,6 @@ namespace CmsData
 			OnCreated();
 		}
 
-
     #region Columns
 
         [Column(Name="Id", UpdateCheck=UpdateCheck.Never, Storage="_Id", AutoSync=AutoSync.OnInsert, DbType="int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
@@ -108,7 +107,6 @@ namespace CmsData
 			{
 				if (this._Id != value)
 				{
-
                     this.OnIdChanging(value);
 					this.SendPropertyChanging();
 					this._Id = value;
@@ -117,7 +115,6 @@ namespace CmsData
 				}
 			}
 		}
-
 
 		[Column(Name="DateReceived", UpdateCheck=UpdateCheck.Never, Storage="_DateReceived", DbType="datetime")]
 		public DateTime? DateReceived
@@ -128,7 +125,6 @@ namespace CmsData
 			{
 				if (this._DateReceived != value)
 				{
-
                     this.OnDateReceivedChanging(value);
 					this.SendPropertyChanging();
 					this._DateReceived = value;
@@ -137,7 +133,6 @@ namespace CmsData
 				}
 			}
 		}
-
 
 		[Column(Name="FromNumber", UpdateCheck=UpdateCheck.Never, Storage="_FromNumber", DbType="varchar(15)")]
 		public string FromNumber
@@ -148,7 +143,6 @@ namespace CmsData
 			{
 				if (this._FromNumber != value)
 				{
-
                     this.OnFromNumberChanging(value);
 					this.SendPropertyChanging();
 					this._FromNumber = value;
@@ -157,7 +151,6 @@ namespace CmsData
 				}
 			}
 		}
-
 
 		[Column(Name="FromPeopleId", UpdateCheck=UpdateCheck.Never, Storage="_FromPeopleId", DbType="int")]
 		[IsForeignKey]
@@ -169,7 +162,6 @@ namespace CmsData
 			{
 				if (this._FromPeopleId != value)
 				{
-
 					if (this._Person.HasLoadedOrAssignedValue)
 						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
 
@@ -182,7 +174,6 @@ namespace CmsData
 			}
 		}
 
-
 		[Column(Name="ToNumber", UpdateCheck=UpdateCheck.Never, Storage="_ToNumber", DbType="varchar(15)")]
 		public string ToNumber
 		{
@@ -192,7 +183,6 @@ namespace CmsData
 			{
 				if (this._ToNumber != value)
 				{
-
                     this.OnToNumberChanging(value);
 					this.SendPropertyChanging();
 					this._ToNumber = value;
@@ -201,7 +191,6 @@ namespace CmsData
 				}
 			}
 		}
-
 
 		[Column(Name="ToGroupId", UpdateCheck=UpdateCheck.Never, Storage="_ToGroupId", DbType="int")]
 		[IsForeignKey]
@@ -213,7 +202,6 @@ namespace CmsData
 			{
 				if (this._ToGroupId != value)
 				{
-
 					if (this._SMSGroup.HasLoadedOrAssignedValue)
 						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
 
@@ -226,7 +214,6 @@ namespace CmsData
 			}
 		}
 
-
 		[Column(Name="Body", UpdateCheck=UpdateCheck.Never, Storage="_Body", DbType="varchar")]
 		public string Body
 		{
@@ -236,7 +223,6 @@ namespace CmsData
 			{
 				if (this._Body != value)
 				{
-
                     this.OnBodyChanging(value);
 					this.SendPropertyChanging();
 					this._Body = value;
@@ -256,7 +242,6 @@ namespace CmsData
 			{
 				if (this._Action != value)
 				{
-
                     this.OnActionChanging(value);
 					this.SendPropertyChanging();
 					this._Action = value;
@@ -276,7 +261,6 @@ namespace CmsData
 			{
 				if (this._Args != value)
 				{
-
                     this.OnArgsChanging(value);
 					this.SendPropertyChanging();
 					this._Args = value;
@@ -285,7 +269,6 @@ namespace CmsData
 				}
 			}
 		}
-
 
 		[Column(Name="ActionResponse", UpdateCheck=UpdateCheck.Never, Storage="_ActionResponse", DbType="varchar(200)")]
 		public string ActionResponse
@@ -296,7 +279,6 @@ namespace CmsData
 			{
 				if (this._ActionResponse != value)
 				{
-
                     this.OnActionResponseChanging(value);
 					this.SendPropertyChanging();
 					this._ActionResponse = value;
@@ -316,7 +298,6 @@ namespace CmsData
 			{
 				if (this._ErrorOccurred != value)
 				{
-
                     this.OnErrorOccurredChanging(value);
 					this.SendPropertyChanging();
 					this._ErrorOccurred = value;
@@ -334,7 +315,6 @@ namespace CmsData
 			{
 				if (this._RepliedTo != value)
 				{
-
                     this.OnErrorOccurredChanging(value);
 					this.SendPropertyChanging();
 					this._ErrorOccurred = value;
@@ -388,7 +368,6 @@ namespace CmsData
 			}
 		}
 
-
 		[Association(Name="FK_SmsReceived_SMSGroups", Storage="_SMSGroup", ThisKey="ToGroupId", IsForeignKey=true)]
 		public SMSGroup SMSGroup
 		{
@@ -422,7 +401,6 @@ namespace CmsData
 				}
 			}
 		}
-
 
 	#endregion
 

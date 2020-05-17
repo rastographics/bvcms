@@ -119,7 +119,6 @@ namespace CmsWeb.Areas.Public.Models
                         rval = GetError($"{action.Action} action not recognized for {action.Word} on number {To}");
                         break;
                 }
-
             }
             SendNotices();
             if(rval.HasValue())

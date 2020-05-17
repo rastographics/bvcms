@@ -49,7 +49,6 @@ namespace CmsData
 			OnCreated();
 		}
 
-
     #region Columns
 
 		[Column(Name="ToPeopleId", UpdateCheck=UpdateCheck.Never, Storage="_ToPeopleId", DbType="int NOT NULL", IsPrimaryKey=true)]
@@ -62,7 +61,6 @@ namespace CmsData
 			{
 				if (this._ToPeopleId != value)
 				{
-
 					if (this._Person.HasLoadedOrAssignedValue)
 						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
 
@@ -75,7 +73,6 @@ namespace CmsData
 			}
 		}
 
-
 		[Column(Name="FromGroup", UpdateCheck=UpdateCheck.Never, Storage="_FromGroup", DbType="int NOT NULL", IsPrimaryKey=true)]
 		public int FromGroup
 		{
@@ -85,7 +82,6 @@ namespace CmsData
 			{
 				if (this._FromGroup != value)
 				{
-
                     this.OnFromGroupChanging(value);
 					this.SendPropertyChanging();
 					this._FromGroup = value;
@@ -94,7 +90,6 @@ namespace CmsData
 				}
 			}
 		}
-
 
 		[Column(Name="Date", UpdateCheck=UpdateCheck.Never, Storage="_DateX", DbType="datetime")]
 		public DateTime? DateX
@@ -105,7 +100,6 @@ namespace CmsData
 			{
 				if (this._DateX != value)
 				{
-
                     this.OnDateXChanging(value);
 					this.SendPropertyChanging();
 					this._DateX = value;
@@ -114,7 +108,6 @@ namespace CmsData
 				}
 			}
 		}
-
 
     #endregion
 
@@ -158,7 +151,6 @@ namespace CmsData
 			}
 		}
 
-
 	#endregion
 
 		public event PropertyChangingEventHandler PropertyChanging;
@@ -167,7 +159,6 @@ namespace CmsData
 			if ((this.PropertyChanging != null))
 				this.PropertyChanging(this, emptyChangingEventArgs);
 		}
-
 		public event PropertyChangedEventHandler PropertyChanged;
 		protected virtual void SendPropertyChanged(String propertyName)
 		{
