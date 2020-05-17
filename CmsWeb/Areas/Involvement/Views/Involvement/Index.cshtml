@@ -2,12 +2,12 @@
 @using CmsData
 @using CmsWeb
 @using UtilityExtensions
-@model CmsWeb.Areas.Org.Models.OrganizationModel
+@model CmsWeb.Areas.Involvement.Models.InvolvementModel
 @{
     Layout = ViewExtensions2.TouchPointLayout();
     ViewBag.Title = "Organization";
-    ViewBag.PageHeader = Model.OrgMain.OrganizationName;
-    ViewBag.PageSubHeader = Model.OrgMain.LeaderId.HasValue ? Model.OrgMain.LeaderName : "";
+    //ViewBag.PageHeader = Model.OrgMain.OrganizationName;
+    //ViewBag.PageSubHeader = Model.OrgMain.LeaderId.HasValue ? Model.OrgMain.LeaderName : "";
     ViewBag.OrgMemberContext = true;
 }
 @section head
@@ -66,7 +66,7 @@
             <div class="box-content">
                 @if (Model.ShowBlueToolbar)
                 {
-                    @Html.Partial("Toolbar/Toolbar")
+                    @*@Html.Partial("Toolbar/Toolbar")*@
                 }
                 @*@Html.Partial("Settings/Main", Model.OrgMain)*@
                 <ul class="nav nav-tabs" id="organization-tabs">
@@ -75,10 +75,10 @@
                     {
                         <li><a href="#Meetings-tab" aria-controls="Meetings-tab" class="ajax" data-toggle="tab">Meetings</a></li>
                     }
-                    @if (Model.ShowContactsReceivedTab())
+                    @*@if (Model.ShowContactsReceivedTab())
                     {
                         <li><a href="#ContactsReceived-tab" aria-controls="ContactsReceived-tab" class="ajax" data-toggle="tab">@ViewExtensions2.CurrentDatabase.Setting("UX-CGVisitsTabLabel", "Visits")</a></li>
-                    }
+                    }*@
                     @if (Model.ShowSettingsTab)
                     {
                         <li><a href="#Settings-tab" aria-controls="Settings-tab" class="ajax" data-toggle="tab">Settings</a></li>
@@ -87,32 +87,32 @@
                     {
                         <li><a href="#Registrations-tab" aria-controls="Registrations-tab" class="ajax" data-toggle="tab">Registration</a></li>
                     }
-                    @if (Model.ShowCommunityGroupTab())
+                    @*@if (Model.ShowCommunityGroupTab())
                     {
                         <li><a href="#CommunityGroup-tab" aria-controls="CommunityGroup-tab" class="ajax" data-toggle="tab">@ViewExtensions2.CurrentDatabase.Setting("UX-CGInfoTabLabel", "CG Info")</a></li>
-                    }
+                    }*@
                 </ul>
                 <div class="tab-content">
-                    <div class="tab-pane fade in active" id="Members-tab" data-link="/Org/People">
+                    <div class="tab-pane fade in active" id="Members-tab" data-link="/Involvement/People">
                         @Html.Partial("People", Model)
                     </div>
-                    <div class="tab-pane fade" id="Meetings-tab" data-link="/Org/Meetings">
+                    <div class="tab-pane fade" id="Meetings-tab" data-link="/Involvement/Meetings">
                         @Helper.HiddenId("Id", Model.Id)
                     </div>
-                    @if (Model.ShowContactsReceivedTab())
+                    @*@if (Model.ShowContactsReceivedTab())
                     {
-                        <div class="tab-pane fade" id="ContactsReceived-tab" data-link="/Org/ContactsReceived/@Model.Id" data-init="showHideRegTypes" data-init2="SettingFormsInit">
+                        <div class="tab-pane fade" id="ContactsReceived-tab" data-link="/Involvement/ContactsReceived/@Model.Id" data-init="showHideRegTypes" data-init2="SettingFormsInit">
                         </div>
-                    }
-                    <div class="tab-pane fade" id="Settings-tab" data-link="/Org/Settings/@Model.Id" data-init="showHideRegTypes" data-init2="SettingFormsInit">
+                    }*@
+                    <div class="tab-pane fade" id="Settings-tab" data-link="/Involvement/Settings/@Model.Id" data-init="showHideRegTypes" data-init2="SettingFormsInit">
                     </div>
-                    <div class="tab-pane fade" id="Registrations-tab" data-link="/Org/Registrations/@Model.Id" data-init="showHideRegTypes" data-init2="SettingFormsInit">
+                    <div class="tab-pane fade" id="Registrations-tab" data-link="/Involvement/Registrations/@Model.Id" data-init="showHideRegTypes" data-init2="SettingFormsInit">
                     </div>
-                    @if (Model.ShowCommunityGroupTab())
+                    @*@if (Model.ShowCommunityGroupTab())
                     {
                         <div class="tab-pane fade" id="CommunityGroup-tab" data-link="/Org/CommunityGroup/@Model.Id" data-init="showHideRegTypes" data-init2="SettingFormsInit">
                         </div>
-                    }
+                    }*@
                 </div>
             </div>
         </div>

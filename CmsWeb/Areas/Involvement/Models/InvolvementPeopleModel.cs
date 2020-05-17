@@ -1,4 +1,4 @@
-using CmsData;
+﻿using CmsData;
 using CmsData.Classes.RoleChecker;
 using CmsData.Codes;
 using CmsData.View;
@@ -15,21 +15,21 @@ using System.Web;
 using System.Web.Mvc;
 using UtilityExtensions;
 
-namespace CmsWeb.Areas.Org.Models
+namespace CmsWeb.Areas.Involvement.Models
 {
-    public class OrgPeopleModel : PagedTableModel<OrgFilterPerson, OrgFilterPerson>, IDbBinder
+    public class InvolvementPeopleModel : PagedTableModel<OrgFilterPerson, OrgFilterPerson>, IDbBinder
     {
         internal CMSDataContext Db => CurrentDatabase;
         public Guid QueryId { get; set; }
         public User User => CurrentDatabase.CurrentUser;
 
         [Obsolete(Errors.ModelBindingConstructorError, true)]
-        public OrgPeopleModel()
+        public InvolvementPeopleModel()
         {
             Init();
         }
 
-        public OrgPeopleModel(CMSDataContext db) : base(db)
+        public InvolvementPeopleModel(CMSDataContext db) : base(db)
         {
             Init();
         }
@@ -69,7 +69,7 @@ namespace CmsWeb.Areas.Org.Models
             filter.LastUpdated = DateTime.Now;
             Db.SubmitChanges();
             var q = from p in Db.OrgFilterPeople(QueryId, ShowMinistryInfo)
-                                            select p;
+                    select p;
             return q;
         }
 
@@ -360,7 +360,8 @@ namespace CmsWeb.Areas.Org.Models
             {
                 _groupselect = value;
             }
-        } string _groupselect;
+        }
+        string _groupselect;
 
 
 

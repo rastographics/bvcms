@@ -557,8 +557,12 @@
     <Compile Include="Areas\Finance\Models\TotalsByFundRange.cs" />
     <Compile Include="Areas\Finance\Models\TotalsByFundAgeRangeModel.cs" />
     <Compile Include="Areas\Involvement\Controllers\InvolvementSearchController.cs" />
+    <Compile Include="Areas\Involvement\Controllers\Involvement\InvolvementPeople.cs" />
     <Compile Include="Areas\Involvement\InvolvementAreaRegistration.cs" />
     <Compile Include="Areas\Involvement\Controllers\Involvement\InvolvementController.cs" />
+    <Compile Include="Areas\Involvement\Models\InvolvementMain.cs" />
+    <Compile Include="Areas\Involvement\Models\InvolvementModel.cs" />
+    <Compile Include="Areas\Involvement\Models\InvolvementPeopleModel.cs" />
     <Compile Include="Areas\Main\Models\Other\CouponResponseModel.cs" />
     <Compile Include="Areas\Manage\Controllers\ActivityController.cs" />
     <Compile Include="Areas\Manage\Controllers\BatchMoveAndDelete.cs" />
@@ -3453,7 +3457,6 @@
     <Folder Include="Areas\CheckIn\Views\Shared\" />
     <Folder Include="Areas\Dialog\Views\Shared\" />
     <Folder Include="Areas\Figures\Views\Shared\" />
-    <Folder Include="Areas\Involvement\Models\" />
     <Folder Include="Areas\Involvement\Views\Shared\" />
     <Folder Include="Areas\Main\Views\Shared\" />
     <Folder Include="Areas\Manage\Views\Shared\" />

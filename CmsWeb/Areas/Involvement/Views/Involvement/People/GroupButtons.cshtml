@@ -1,8 +1,8 @@
 ﻿@using CmsData.Codes
-@model CmsWeb.Areas.Org.Models.OrgPeopleModel
+@model CmsWeb.Areas.Involvement.Models.InvolvementPeopleModel
 <div class="btn-group">
     <a class="btn btn-default" tabindex="0" href="#" data-toggle="popover" data-container="body" data-placement="bottom" data-trigger="focus" data-title="Group Buttons" data-content="@Model.GroupHelp"><i class="fa fa-info-circle"></i></a>
-    @GroupButton(GroupSelectCode.Member, "Ticket Buyers")
+    @GroupButton(GroupSelectCode.TicketBuyer, "Ticket Buyers")
 </div>
 @if (!Model.HidePreviousButton)
 {
@@ -35,7 +35,7 @@
                 break;
             case GroupSelectCode.Previous:
                 <ul class="dropdown-menu dropdown-menu-right">
-                    <li><a href="/AddToOrgFromTag/@Model.QueryId" class="longrunop" title="Add Previous Members From Tag"><i class="fa fa-tag"></i>&nbsp;&nbsp;Add From Tag</a></li>
+                    <li><a href="/AddToOrgFromTag/@Model.QueryId" class="longrunop" title="Add Previous Members From Tag"><i class="fa fa-tag"></i>&nbsp;&nbsp;Select Multiple</a></li>
                 </ul>
                 break;
         }

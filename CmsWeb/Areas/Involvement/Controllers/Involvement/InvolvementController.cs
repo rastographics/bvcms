@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using System.Web.Mvc;
 using CmsData;
+using CmsWeb.Areas.Involvement.Models;
 using CmsWeb.Areas.Org.Models;
 using CmsWeb.Lifecycle;
 using UtilityExtensions;
@@ -10,7 +11,7 @@ namespace CmsWeb.Areas.Involvement.Controllers
     [RouteArea("Involvement", AreaPrefix = "Involvement"), Route("{action}/{id?}")]
     [ValidateInput(false)]
     [SessionExpire]
-    public class InvolvementController : CmsStaffController
+    public partial class InvolvementController : CmsStaffController
     {
         private const string needNotify = "WARNING: please add the notify persons on messages tab.";
 
@@ -27,8 +28,8 @@ namespace CmsWeb.Areas.Involvement.Controllers
                 id = recent.Any() ? recent[0].Id : 1;
                 return Redirect($"/Org/{id}");
             }
-            var m = OrganizationModel.Create(CurrentDatabase, CurrentUser);
-            m.OrgId = id;
+            var m = InvolvementModel.Create(CurrentDatabase, CurrentUser);
+            m.InvolvementId = id;
             if (peopleid.HasValue)
                 m.NameFilter = peopleid.ToString();
 
@@ -56,7 +57,7 @@ namespace CmsWeb.Areas.Involvement.Controllers
             ViewBag.orgname = m.Org.FullName;
             ViewBag.model = m;
             ViewBag.selectmode = 0;
-            InitExportToolbar(m);
+            //InitExportToolbar(m);
             Util.ActiveOrganization = m.Org.OrganizationName;
             return View(m);
         }
