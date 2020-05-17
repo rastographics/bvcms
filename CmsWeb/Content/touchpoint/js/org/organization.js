@@ -208,7 +208,7 @@ $(function () {
             $("#groupSelector button.dropdown-toggle").hide();
             $this.addClass("active");
             $this.next().find("button.dropdown-toggle").show();
-            $("li.orgcontext").hide();;
+            $("li.orgcontext").hide();
             switch ($this.text()) {
                 case "Members":
                     $("li.current-list").show();
