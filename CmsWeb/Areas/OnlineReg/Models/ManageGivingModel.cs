@@ -525,7 +525,10 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
                 // store payment method in the gateway vault if not already saved.
                 if (updateVault)
+                {
                     gateway.StoreInVault(pid, Type, CreditCard, Expires, CVV, Routing, Account, giving: true);
+                    Log("Gateway Vault Updated");
+                }
 
                 // save all the managed giving data.
                 var mg = person.ManagedGiving();
