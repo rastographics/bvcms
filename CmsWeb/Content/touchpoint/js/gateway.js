@@ -37,12 +37,10 @@
                         this.GetProcesses();
                     }
                     else {
-                        console.log(response);
                         this.oops();
                     }
                 },
                 err => {
-                    console.log(err);
                     this.fail();
                 }
             );
@@ -70,12 +68,10 @@
                         this.GetGateways();
                     }
                     else {
-                        console.log(response);
                         this.oops();
                     }
                 },
                 err => {
-                    console.log(err);
                     this.fail();
                 }
             );
@@ -88,12 +84,10 @@
                         this.GetGatewayAccounts();
                     }
                     else {
-                        console.log(response);
                         this.oops();
                     }
                 },
                 err => {
-                    console.log(err);
                     this.fail();
                 }
             );
@@ -105,12 +99,10 @@
                         this.GatewayAccounts = response.body;
                     }
                     else {
-                        console.log(response);
                         this.oops();
                     }
                 },
                 err => {
-                    console.log(err);
                     this.fail();
                 }
             );
@@ -163,12 +155,10 @@
                             this.DetailValue.push(this.Inputs[i].GatewayDetailValue);
                     }
                     else {
-                        console.log(response);
                         this.oops();
                     }
                 },
                 err => {
-                    console.log(err);
                     this.fail();
                 }
             );
@@ -193,7 +183,6 @@
                     }
                 },
                 err => {
-                    console.log(err);
                     this.fail();
                 }
             );
@@ -235,12 +224,10 @@
                             $('#config-modal').modal('hide');
                         }
                         else {
-                            console.log(response);
                             this.oops();
                         }
                     },
                     err => {
-                        console.log(err);
                         this.fail();
                     }
                 );
@@ -260,12 +247,10 @@
                             $('#config-modal').modal('hide');
                         }
                         else {
-                            console.log(response);
                             this.oops();
                         }
                     },
                     err => {
-                        console.log(err);
                         this.fail();
                     }
                 );
@@ -281,12 +266,10 @@
                         this.success();
                     }
                     else {
-                        console.log(response);
                         this.oops();
                     }
                 },
                 err => {
-                    console.log(err);
                     this.fail();
                 }
             );
