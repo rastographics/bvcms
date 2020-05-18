@@ -418,16 +418,16 @@ export default {
 }
 @media only screen and (min-width: 992px) {
   .modal {
-    top: 41%;
+    top: 36%;
     width: 90%;
-    height: 75%;
+    height: 65%;
   }
 }
 @media only screen and (min-width: 1200px) {
   .modal {
-    top: 41%;
+    top: 36%;
     width: 90%;
-    height: 75%;
+    height: 65%;
   }
 }
 
