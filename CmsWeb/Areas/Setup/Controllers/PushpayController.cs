@@ -252,7 +252,7 @@ namespace CmsWeb.Areas.Setup.Controllers
             if (datum == null)
             {
                 ViewBag.Message = "Something went wrong";
-                CurrentDatabase.LogActivity($"No datum founded with id: {pf.DatumId}");
+                CurrentDatabase.LogActivity($"No datum found with id: {pf.DatumId}");
                 return View("~/Views/Shared/PageError.cshtml");
             }
 
@@ -263,7 +263,7 @@ namespace CmsWeb.Areas.Setup.Controllers
             if (org == null)
             {
                 ViewBag.Message = "Something went wrong";
-                CurrentDatabase.LogActivity($"No org founded with id: {pf.OrgId}");
+                CurrentDatabase.LogActivity($"No org found with id: {pf.OrgId}");
                 return View("~/Views/Shared/PageError.cshtml");
             }
 
