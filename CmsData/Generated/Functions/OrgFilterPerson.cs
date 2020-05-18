@@ -91,6 +91,11 @@ namespace CmsData.View
 
         private int? _TaskDelegatedId;
 
+        // TODO: Add the following to the table
+        private int? _NumberOfTickets;
+
+        private DateTime? _PurchaseDate;
+
         public OrgFilterPerson()
         {
         }
@@ -668,5 +673,34 @@ namespace CmsData.View
                 }
             }
         }
+
+        // TODO: Add this column to the database table
+        public int? NumberOfTickets
+        {
+            get => _NumberOfTickets;
+
+            set
+            {
+                if (_NumberOfTickets != value)
+                {
+                    _NumberOfTickets = value;
+                }
+            }
+        }
+
+        // TODO: Add this column to the database table
+        public DateTime? PurchaseDate
+        {
+            get => _PurchaseDate;
+
+            set
+            {
+                if (_PurchaseDate != value)
+                {
+                    _PurchaseDate = value;
+                }
+            }
+        }
+
     }
 }
