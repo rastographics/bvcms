@@ -28,6 +28,7 @@ namespace CmsWeb.Areas.Involvement.Controllers
                 id = recent.Any() ? recent[0].Id : 1;
                 return Redirect($"/Org/{id}");
             }
+
             var m = InvolvementModel.Create(CurrentDatabase, CurrentUser);
             m.InvolvementId = id;
             if (peopleid.HasValue)

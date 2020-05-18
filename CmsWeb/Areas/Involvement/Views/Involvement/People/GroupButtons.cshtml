@@ -23,7 +23,7 @@
         @switch (showdrop ? group : "")
         {
             case GroupSelectCode.TicketBuyer:
-                <ul class="dropdown-menu dropdown-menu-right">
+                @*<ul class="dropdown-menu dropdown-menu-right">
                     <li><a href="/SearchAdd2/Dialog/org/@Model.Id" class="searchadd"><i class="fa fa-plus-circle"></i>&nbsp;&nbsp;Add Ticket Buyers</a></li>
                     @if (!Model.OrgLeaderAddDrop)
                     {
@@ -31,7 +31,7 @@
                         <li><a href="/OrgMembersUpdate/@Model.QueryId" title="Update Members" class="members-dialog"><i class="fa fa-pencil"></i>&nbsp;&nbsp;Update Members</a></li>
                         <li><a href="/OrgDrop/@Model.QueryId" title="Drop Members" class="longrunop"><i class="fa fa-trash"></i>&nbsp;&nbsp;Drop Members</a></li>
                     }
-                </ul>
+                </ul>*@
                 break;
             case GroupSelectCode.Previous:
                 <ul class="dropdown-menu dropdown-menu-right">

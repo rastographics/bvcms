@@ -348,24 +348,7 @@ namespace CmsWeb.Areas.Involvement.Models
 
         public bool ShowAddress { get; set; }
         public int? Id { get; set; }
-
-        // public string GroupSelect { get; set; }
-        public string GroupSelect
-        {
-            get
-            {
-                return _groupselect; // ????
-            }
-            set
-            {
-                _groupselect = value;
-            }
-        }
-        string _groupselect;
-
-
-
-
+        public string GroupSelect { get; set; }
         public string NameFilter { get; set; }
         public string SgFilter { get; set; }
         public bool ShowHidden { get; set; }
