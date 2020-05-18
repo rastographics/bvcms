@@ -556,8 +556,9 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         private bool IsSameBillingAddress(int accountId)
         {
-            return CurrentDatabase.PaymentInfos.Any(
-                p => p.GatewayAccountId == accountId &&
+            var db = CurrentDatabase;
+            var isSameAddress = db.PaymentInfos.Any(p =>
+                p.GatewayAccountId == accountId &&
                 p.PeopleId == person.PeopleId &&
                 p.FirstName == FirstName.Truncate(50) &&
                 p.MiddleInitial == Middle.Truncate(10) &&
@@ -570,6 +571,8 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 p.Country == Country.Truncate(50) &&
                 p.Zip == Zip.Truncate(15) &&
                 p.Phone == Phone.Truncate(25));
+
+            return isSameAddress;
         }
 
         private bool IsCardTester(PaymentForm pf, string from)

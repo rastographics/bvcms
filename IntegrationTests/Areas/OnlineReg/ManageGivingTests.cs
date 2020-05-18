@@ -90,8 +90,7 @@ namespace IntegrationTests.Areas.OnlineReg
         }
 
         public override void Dispose()
-        {
-            
+        {            
         }
     }
 }
