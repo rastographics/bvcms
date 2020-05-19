@@ -1919,6 +1919,7 @@
     <Content Include="Content\touchpoint\src\less\unlayer-editor.less" />
     <Content Include="Areas\Dialog\Views\RemoteDeposit\Index.cshtml" />
     <Content Include="Areas\Dialog\Views\RemoteDeposit\NotConfigured.cshtml" />
+    <Content Include="Areas\Involvement\Views\Involvement\People\Table.cshtml" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
