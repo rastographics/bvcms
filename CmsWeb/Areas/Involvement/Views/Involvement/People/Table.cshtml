@@ -33,14 +33,7 @@
             <th>Communication</th>
             <th>@Model.SortLink("# of Tickets")</th>
             <th>Purchase Date</th>
-            @if (!Model.OrgLeaderAddDrop && Model.ShowTagButtons)
-            {
-                <th>Tag</th>
-            }
-            else if (Model.GroupSelect == GroupSelectCode.Member || Model.GroupSelect == GroupSelectCode.Prospect)
-            {
-                <th>Actions</th>
-            }
+            <th>Actions</th>
         </tr>
     </thead>
     <tbody>
@@ -110,20 +103,27 @@
                 <td>
                     <text>@p.PurchaseDate</text>
                 </td>
-                @if (!Model.OrgLeaderAddDrop && Model.ShowTagButtons)
-                {
-                    <td>
-                        <a href="#" class="taguntag btn btn-sm @(hastag ? "btn-default" : "btn-success")" title="Add to/Remove from Active Tag" pid="@p.PeopleId">
-                            <i class="fa fa-tag"></i> @(hastag ? "Remove" : "Add")
-                        </a>
-                    </td>
-                }
-                else if (Model.GroupSelect == GroupSelectCode.Member || Model.GroupSelect == GroupSelectCode.Prospect)
-                {
-                    <td>
-                        <a href="#" class="btn btn-sm btn-danger dropMember" title="Drop Member" data-people-id="@p.PeopleId"><i class="fa fa-trash"></i> Drop</a>
-                    </td>
-                }
+                <td>
+                    @if (p.CustomerTicketStatus == (int)CustomerTicketStatusEnum.PrintedByCustomer)
+                    {
+                        <a href="Inv/Print"><i class="fa fa-print" style="color:#008000;"></i></a>&nbsp; &nbsp;
+                    }
+                    else if (p.CustomerTicketStatus == (int)CustomerTicketStatusEnum.WillCallPrintedByChurch)
+                    {
+                        <a href="Inv/Print"><i class="fa fa-print" style="color:#FF0000;"></i></a>&nbsp; &nbsp;
+                    }
+                    else
+                    {
+                        <a href="Inv/Print"><i class="fa fa-print"></i></a>&nbsp; &nbsp;
+                    }
+
+                    <a href="Inv/Tag"><i class="fa fa-tag"></i></a>&nbsp;
+                    <a href="Inv/Edit"><i class="fa fa-edit"></i></a>&nbsp;
+
+
+
+                    @*<a href="#" class="btn btn-sm btn-danger dropMember" title="Drop Member" data-people-id="@p.PeopleId"><i class="fa fa-trash"></i> Drop</a>*@
+                </td>
             </tr>
         }
     </tbody>

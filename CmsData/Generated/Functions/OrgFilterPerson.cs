@@ -96,6 +96,8 @@ namespace CmsData.View
 
         private DateTime? _PurchaseDate;
 
+        private int? _CustomerTicketStatus;
+
         public OrgFilterPerson()
         {
         }
@@ -674,7 +676,7 @@ namespace CmsData.View
             }
         }
 
-        // TODO: Add this column to the database table
+        // TODO: Add the following columns to the database table
         public int? NumberOfTickets
         {
             get => _NumberOfTickets;
@@ -688,7 +690,6 @@ namespace CmsData.View
             }
         }
 
-        // TODO: Add this column to the database table
         public DateTime? PurchaseDate
         {
             get => _PurchaseDate;
@@ -702,5 +703,30 @@ namespace CmsData.View
             }
         }
 
+        public int? CustomerTicketStatus
+        {
+            get => _CustomerTicketStatus;
+
+            set
+            {
+                if (_CustomerTicketStatus != value)
+                {
+                    _CustomerTicketStatus = value;
+                }
+            }
+        }
+
+
     }
+
+    public enum CustomerTicketStatusEnum
+    {
+        NoAction = 0,
+        PrintedByCustomer = 1,
+        WillCallPrintedByChurch = 2,
+        WillCallNotPrintedByChurch = 3,
+
+
+    }
+
 }
