@@ -45,21 +45,25 @@ BEGIN
         }
         var overUnderYTD = budgetYTD - givingTotalYTD;
         var weeklyAverageYTD = (givingTotalYTD/weekOfYear)
+        var myCurrencyFormatter = new Intl.NumberFormat(''en-US'', {
+          style: ''currency'',
+          currency: ''USD'',
+        });
         
         let p1 = document.createElement("p");
-        p1.innerHTML = "Total Given YTD:   $" + Math.round(givingTotalYTD);
+        p1.innerHTML = "Total Given YTD: " + myCurrencyFormatter.format(givingTotalYTD);
         p1.className = "text-center";
         p1.style = "margin:0px;";
         document.querySelector(''#{{WidgetId}}-section .chartSummary'').appendChild(p1);
         
         let p2 = document.createElement("p");
-        p2.innerHTML = "Budget YTD:   $" + Math.round(budgetYTD);
+        p2.innerHTML = "Budget YTD: " + myCurrencyFormatter.format(budgetYTD);
         p2.className = "text-center";
         p2.style = "margin:0px;";
         document.querySelector(''#{{WidgetId}}-section .chartSummary'').appendChild(p2);
         
         let p3 = document.createElement("p");
-        p3.innerHTML = "Over/Under YTD:   $" + Math.round(overUnderYTD);
+        p3.innerHTML = "Over/Under YTD: " + myCurrencyFormatter.format(overUnderYTD);
         if(overUnderYTD < 0){
             p3.style = "color:red;margin-top:10px;";
         } else{
@@ -69,13 +73,13 @@ BEGIN
         document.querySelector(''#{{WidgetId}}-section .chartSummary'').appendChild(p3);
         
         let p4 = document.createElement("p");
-        p4.innerHTML = "Weekly Average YTD:   $" + Math.round(weeklyAverageYTD);
+        p4.innerHTML = "Weekly Average YTD: " + myCurrencyFormatter.format(weeklyAverageYTD);
         p4.className = "text-center";
         p4.style = "margin:0px;";
         document.querySelector(''#{{WidgetId}}-section .chartSummary'').appendChild(p4);
         
         let p5 = document.createElement("p");
-        p5.innerHTML = "Last 7 Days:   $" + Math.round(givingLastSevenDays);
+        p5.innerHTML = "Last 7 Days: " + myCurrencyFormatter.format(givingLastSevenDays);
         p5.className = "text-center";
         p5.style = "margin:0px;";
         document.querySelector(''#{{WidgetId}}-section .chartSummary'').appendChild(p5);
@@ -88,11 +92,11 @@ BEGIN
           [''Label'', ''Value''],
           ['''', 0]
         ]);
-        var formatter = new google.visualization.NumberFormat({
+        var googleNumFormatter = new google.visualization.NumberFormat({
             prefix: ''$'',
             fractionDigits: 1
         });
-        formatter.format(data, 1);
+        googleNumFormatter.format(data, 1);
         
         var oneThird = (budgetYTD * 0.33)/1000;
         var oneThirdString = ''$'' + oneThird.toFixed(1);
@@ -120,7 +124,7 @@ BEGIN
           [''Label'', ''Value''],
           ['''', givingTotalYTD]
         ]);
-        formatter.format(data2, 1);
+        googleNumFormatter.format(data2, 1);
         
         setInterval(function() {
           chart.draw(data2, options);
