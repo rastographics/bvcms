@@ -1,10 +1,10 @@
-﻿-- add Giving Metrics widget
-IF (select count(*) from DashboardWidgets where [Name] like 'Giving Metrics' and [System] = 1) = 0
+﻿-- add Giving to Budget Comparison widget
+IF (select count(*) from DashboardWidgets where [Name] like 'Giving to Budget Comparison' and [System] = 1) = 0
 BEGIN
   INSERT INTO [dbo].[Content]
            ([Name],[Title],[Body],[DateCreated],[TypeID],[ThumbID],[RoleID],[OwnerID],[CreatedBy])
      VALUES
-           ('WidgetGivingMetricsHTML','Edit Text Content',
+           ('WidgetGivingToBudgetComparisonHTML','Edit Text Content',
            '<div class="box">
     <div class="box-title hidden-xs">
         <h5><a href="#">{{WidgetName}}</a></h5>
@@ -17,10 +17,9 @@ BEGIN
         </div>
     </a>
     <div class="collapse in" id="{{WidgetId}}-section">
-        <div class="box-content">
-            <div class="chart" style="display: inline-block;">
-            </div>
-            <div id="chartSummary" style="display: inline-block;width: 250px;vertical-align: top;margin-top: 50px;"></div>
+        <div class="box-content" style="text-align: -webkit-center;">
+            <div class="chart" style="display: inline-block;width:200px;"></div>
+            <div class="chartSummary" style="display: inline-block;width:200px;vertical-align: top;margin-top: 50px;"></div>
         </div>
     </div>
 </div>
@@ -51,13 +50,13 @@ BEGIN
         p1.innerHTML = "Total Given YTD:   $" + Math.round(givingTotalYTD);
         p1.className = "text-center";
         p1.style = "margin:0px;";
-        document.getElementById("chartSummary").appendChild(p1);
+        document.querySelector(''#{{WidgetId}}-section .chartSummary'').appendChild(p1);
         
         let p2 = document.createElement("p");
         p2.innerHTML = "Budget YTD:   $" + Math.round(budgetYTD);
         p2.className = "text-center";
         p2.style = "margin:0px;";
-        document.getElementById("chartSummary").appendChild(p2);
+        document.querySelector(''#{{WidgetId}}-section .chartSummary'').appendChild(p2);
         
         let p3 = document.createElement("p");
         p3.innerHTML = "Over/Under YTD:   $" + Math.round(overUnderYTD);
@@ -67,35 +66,48 @@ BEGIN
             p3.style = "margin:0px;";
         }
         p3.className = "text-center";
-        document.getElementById("chartSummary").appendChild(p3);
+        document.querySelector(''#{{WidgetId}}-section .chartSummary'').appendChild(p3);
         
         let p4 = document.createElement("p");
         p4.innerHTML = "Weekly Average YTD:   $" + Math.round(weeklyAverageYTD);
         p4.className = "text-center";
         p4.style = "margin:0px;";
-        document.getElementById("chartSummary").appendChild(p4);
+        document.querySelector(''#{{WidgetId}}-section .chartSummary'').appendChild(p4);
         
         let p5 = document.createElement("p");
         p5.innerHTML = "Last 7 Days:   $" + Math.round(givingLastSevenDays);
         p5.className = "text-center";
         p5.style = "margin:0px;";
-        document.getElementById("chartSummary").appendChild(p5);
+        document.querySelector(''#{{WidgetId}}-section .chartSummary'').appendChild(p5);
         
         var YTDgiving = Math.round(givingTotalYTD);
         var YTDbudget = Math.round(budgetYTD);
         
+        
         var data = google.visualization.arrayToDataTable([
           [''Label'', ''Value''],
-          [''Giving'', 0]
+          ['''', 0]
         ]);
-
+        var formatter = new google.visualization.NumberFormat({
+            prefix: ''$'',
+            fractionDigits: 1
+        });
+        formatter.format(data, 1);
+        
+        var oneThird = (budgetYTD * 0.33)/1000;
+        var oneThirdString = ''$'' + oneThird.toFixed(1);
+        var twoThird = (budgetYTD * 0.66)/1000;
+        var twoThirdString = ''$'' + twoThird.toFixed(1);
+        var threeThird = budgetYTD/1000;
+        var threeThirdString = ''$'' + threeThird.toFixed(1);
         var options = {
-          height: 200, max: Math.round(budgetYTD),
-          redFrom: 0, redTo: Math.round(budgetYTD*0.33),
-          yellowFrom:Math.round(budgetYTD*0.33), yellowTo: Math.round(budgetYTD*0.67),
-          greenFrom: Math.round(budgetYTD*0.67), greenTo: Math.round(budgetYTD),
+          height: 200, max: (Math.round(YTDbudget*1.33)/1000),
+          yellowFrom: (Math.round(YTDbudget*0.665)/1000), yellowTo: (Math.round(YTDbudget*0.85)/1000), yellowColor: ''#F5D762'',
+          greenFrom: (Math.round(YTDbudget*0.85)/1000), greenTo: (Math.round(YTDbudget)/1000), greenColor: ''#37968D'',
+          redFrom: (Math.round(YTDbudget)/1000), redTo: (Math.round(YTDbudget*1.33)/1000), redColor: ''#757375'',
+          majorTicks: ['''',oneThirdString,twoThirdString,threeThirdString,''''],
           animation:{
-            duration: 20000,
+            duration: 2000,
             easing: ''out'',
           }
         };
@@ -103,10 +115,22 @@ BEGIN
         var chart = new google.visualization.Gauge(document.querySelector(''#{{WidgetId}}-section .chart''));
         chart.draw(data, options);
         
+        givingTotalYTD = givingTotalYTD/1000;
+        var data2 = google.visualization.arrayToDataTable([
+          [''Label'', ''Value''],
+          ['''', givingTotalYTD]
+        ]);
+        formatter.format(data2, 1);
+        
         setInterval(function() {
-          data.setValue(0, 1, Math.round(givingTotalYTD));
-          chart.draw(data, options);
+          chart.draw(data2, options);
         }, 2000);
+        
+        let p6 = document.createElement("p");
+        p6.innerHTML = "(Dollars In Thousands)";
+        p6.className = "text-center";
+        p6.style = "margin:0px;";
+        document.querySelector(''#{{WidgetId}}-section .chart'').appendChild(p6);
     }
     // load and register the chart
     google.charts.load("current", {packages:["gauge"]});
@@ -124,11 +148,11 @@ INSERT INTO [dbo].[ContentKeyWords]
 INSERT INTO [dbo].[Content]
            ([Name],[Title],[Body],[DateCreated],[TypeID],[ThumbID],[RoleID],[OwnerID],[CreatedBy])
      VALUES
-           ('WidgetGivingMetricsPython','Edit Python Script',
+           ('WidgetGivingToBudgetComparisonPython','Edit Python Script',
            '# Change FundId to select the fund you wish to use for this widget. Don''t delete the quotes.
 FundId = ''9''
 # Change AnnualBudget to the target budget for this fund for this time frame.
-AnnualBudget = 24000 # in dollars
+AnnualBudget = 240000 # in dollars
 # Change StartDate to the beginning of time frame you wish to keep track of.
 StartDate = ''01/01/2020''
 
@@ -160,7 +184,7 @@ INSERT INTO [dbo].[ContentKeyWords]
 INSERT INTO [dbo].[Content]
            ([Name],[Title],[Body],[DateCreated],[TypeID],[ThumbID],[RoleID],[OwnerID],[CreatedBy])
      VALUES
-           ('WidgetGivingMetricsSQL','Edit Sql Script',
+           ('WidgetGivingToBudgetComparisonSQL','Edit Sql Script',
            'select ContributionAmount, ContributionDate from Contribution where FundId = @FundId and ContributionDate >= ''@StartDate'';',
            GETDATE(),4,0,0,0,'admin')
 
@@ -173,7 +197,7 @@ INSERT INTO [dbo].[ContentKeyWords]
 END
 GO
 
-IF (select count(*) from DashboardWidgets where [Name] like 'Giving Metrics' and [System] = 1) = 0
+IF (select count(*) from DashboardWidgets where [Name] like 'Giving to Budget Comparison' and [System] = 1) = 0
 BEGIN
 INSERT INTO [dbo].[DashboardWidgets]
            ([Name]
@@ -187,11 +211,11 @@ INSERT INTO [dbo].[DashboardWidgets]
            ,[CachePolicy]
            ,[CacheHours])
      VALUES
-           ('Giving Metrics'
+           ('Giving to Budget Comparison'
            ,'Displays progress of giving against budget by month to date'
-           ,(select max(Id) from Content where [Name] like 'WidgetGivingMetricsHTML')
-           ,(select max(Id) from Content where [Name] like 'WidgetGivingMetricsPython')
-           ,(select max(Id) from Content where [Name] like 'WidgetGivingMetricsSQL')
+           ,(select max(Id) from Content where [Name] like 'WidgetGivingToBudgetComparisonHTML')
+           ,(select max(Id) from Content where [Name] like 'WidgetGivingToBudgetComparisonPython')
+           ,(select max(Id) from Content where [Name] like 'WidgetGivingToBudgetComparisonSQL')
            ,0
            ,(select isnull(max([Order]), 0)+1 from DashboardWidgets)
            ,1
