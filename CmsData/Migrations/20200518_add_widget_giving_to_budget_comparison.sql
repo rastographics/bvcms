@@ -229,6 +229,6 @@ INSERT INTO [dbo].[DashboardWidgets]
 INSERT INTO [dbo].[DashboardWidgetRoles]
            ([WidgetId]
            ,[RoleId])
-    SELECT SCOPE_IDENTITY() [WidgetId], RoleId FROM dbo.Roles WHERE RoleName in ('Edit')
+    SELECT SCOPE_IDENTITY() [WidgetId], RoleId FROM dbo.Roles WHERE RoleName in ('Finance', 'FinanceAdmin', 'Admin')
 END
 GO
