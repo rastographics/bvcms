@@ -61,6 +61,8 @@ namespace CmsData
         {
             _Person = default;
 
+            _ScheduledGiftAmounts = new EntitySet<ScheduledGiftAmount>(new Action<ScheduledGiftAmount>(attach_ScheduledGiftAmounts), new Action<ScheduledGiftAmount>(detach_ScheduledGiftAmounts));
+
             OnCreated();
         }
 
@@ -127,7 +129,6 @@ namespace CmsData
         public DateTime StartDate
         {
             get => _StartDate;
-
             set
             {
                 if (_StartDate != value)
@@ -145,7 +146,6 @@ namespace CmsData
         public DateTime? EndDate
         {
             get => _EndDate;
-
             set
             {
                 if (_EndDate != value)
@@ -185,6 +185,14 @@ namespace CmsData
         #endregion
 
         #region Foreign Key Tables
+
+        [Association(Name = "FK_ScheduledGift_ScheduledGiftAmounts", Storage = "_ScheduledGiftAmounts", OtherKey = "ScheduledGiftAmountId")]
+        public EntitySet<ScheduledGiftAmount> ScheduledGiftAmounts
+        {
+            get => _ScheduledGiftAmounts;
+            set => _ScheduledGiftAmounts.Assign(value);
+
+        }
 
         #endregion
 
@@ -234,6 +242,18 @@ namespace CmsData
         protected virtual void SendPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        private void attach_ScheduledGiftAmounts(ScheduledGiftAmount entity)
+        {
+            SendPropertyChanging();
+            entity.ScheduledGift = this;
+        }
+
+        private void detach_ScheduledGiftAmounts(ScheduledGiftAmount entity)
+        {
+            SendPropertyChanging();
+            entity.ScheduledGift = null;
         }
     }
 }
