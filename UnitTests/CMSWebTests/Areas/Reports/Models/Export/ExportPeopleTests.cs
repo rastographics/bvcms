@@ -225,7 +225,6 @@ namespace CmsWeb.Models.Tests
                     }
                 }
             }
-
         }
 
         [Theory]
