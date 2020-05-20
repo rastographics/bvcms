@@ -173,8 +173,6 @@ namespace CmsWeb.Models.Tests
                         var amountpledged = Double.Parse(q.Select(x => x.ItemArray[3]).SingleOrDefault().ToString());
                         amountpledged.ShouldBe(500.00);
                     }
-                    
-                    
                 }
                 catch (Exception ex)
                 {
@@ -188,9 +186,6 @@ namespace CmsWeb.Models.Tests
                     }
                 }
             }
-
-            
-            
         }
 
         [Theory]
@@ -217,8 +212,6 @@ namespace CmsWeb.Models.Tests
                         //The pledged amount correspond to the pledge amount created in CreateTestContributionSet()
                         amountpledged.ShouldBe(1000.00);
                     }
-
-
                 }
                 catch (Exception ex)
                 {
