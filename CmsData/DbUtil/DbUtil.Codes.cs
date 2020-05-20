@@ -371,6 +371,16 @@ namespace CmsData.Codes
         public bool IsCard(int paymentMethodTypeId) => paymentMethodTypeId != 1;
     }
 
+    public class ScheduledGiftTypeCode
+    {
+        public const int Weekly = 1;
+        public const int BiWeekly = 2;
+        public const int SemiMonthly = 3;
+        public const int Monthly = 4;
+        public const int Quarterly = 5;
+        public const int Annually = 6;
+    }
+
     public class ContributionTypeCode
     {
         public const int CheckCash = 1;

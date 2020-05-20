@@ -19,7 +19,7 @@ namespace CmsData
 
         private int _ScheduledGiftTypeId;
 
-        private int _PaymentMethodId;
+        private Guid _PaymentMethodId;
 
         private DateTime _StartDate;
 
@@ -52,7 +52,7 @@ namespace CmsData
         partial void OnEndDateChanging(DateTime? value);
         partial void OnEndDateChanged();
 
-        partial void OnPaymentMethodIdChanging(int value);
+        partial void OnPaymentMethodIdChanging(Guid value);
         partial void OnPaymentMethodIdChanged();
 
         #endregion
@@ -159,9 +159,9 @@ namespace CmsData
             }
         }
 
-        [Column(Name = "PaymentMethodId", UpdateCheck = UpdateCheck.Never, Storage = "_PaymentMethodId", DbType = "int")]
+        [Column(Name = "PaymentMethodId", UpdateCheck = UpdateCheck.Never, Storage = "_PaymentMethodId", DbType = "uniqueidentifier NOT NULL")]
         [IsForeignKey]
-        public int PaymentMethodId
+        public Guid PaymentMethodId
         {
             get => _PaymentMethodId;
             set
