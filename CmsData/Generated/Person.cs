@@ -312,6 +312,8 @@ namespace CmsData
 
         private EntitySet<RecurringAmount> _RecurringAmounts;
 
+        private EntitySet<ScheduledGift> _ScheduledGifts;
+
         private EntitySet<SMSItem> _SMSItems;
 
         private EntitySet<SMSList> _SMSLists;
@@ -828,7 +830,7 @@ namespace CmsData
 
             _PaymentInfos = new EntitySet<PaymentInfo>(new Action<PaymentInfo>(attach_PaymentInfos), new Action<PaymentInfo>(detach_PaymentInfos));
 
-            _PaymentMethods = new EntitySet<PaymentMethod>(new Action<PaymentMethod>(this.attach_PaymentMethods), new Action<PaymentMethod>(this.detach_PaymentMethods));
+            _PaymentMethods = new EntitySet<PaymentMethod>(new Action<PaymentMethod>(this.attach_PaymentMethods), new Action<PaymentMethod>(detach_PaymentMethods));
 
             _PeopleExtras = new EntitySet<PeopleExtra>(new Action<PeopleExtra>(attach_PeopleExtras), new Action<PeopleExtra>(detach_PeopleExtras));
 
@@ -837,6 +839,8 @@ namespace CmsData
             _RecRegs = new EntitySet<RecReg>(new Action<RecReg>(attach_RecRegs), new Action<RecReg>(detach_RecRegs));
 
             _RecurringAmounts = new EntitySet<RecurringAmount>(new Action<RecurringAmount>(attach_RecurringAmounts), new Action<RecurringAmount>(detach_RecurringAmounts));
+
+            _ScheduledGifts = new EntitySet<ScheduledGift>(new Action<ScheduledGift>(attach_ScheduledGifts), new Action<ScheduledGift>(detach_ScheduledGifts));
 
             _SMSItems = new EntitySet<SMSItem>(new Action<SMSItem>(attach_SMSItems), new Action<SMSItem>(detach_SMSItems));
 
@@ -3313,6 +3317,13 @@ namespace CmsData
             set => _RecurringAmounts.Assign(value);
         }
 
+        [Association(Name = "FK_ScheduledGifts_People", Storage = "_ScheduledGifts", OtherKey = "PeopleId")]
+        public EntitySet<ScheduledGift> ScheduledGifts
+        {
+            get => _ScheduledGifts;
+            set => _ScheduledGifts.Assign(value);
+        }
+
         [Association(Name = "FK_SMSItems_People", Storage = "_SMSItems", OtherKey = "PeopleID")]
         public EntitySet<SMSItem> SMSItems
         {
@@ -4584,6 +4595,18 @@ namespace CmsData
         }
 
         private void detach_RecurringAmounts(RecurringAmount entity)
+        {
+            SendPropertyChanging();
+            entity.Person = null;
+        }
+
+        private void attach_ScheduledGifts(ScheduledGift entity)
+        {
+            SendPropertyChanging();
+            entity.Person = this;
+        }
+
+        private void detach_ScheduledGifts(ScheduledGift entity)
         {
             SendPropertyChanging();
             entity.Person = null;

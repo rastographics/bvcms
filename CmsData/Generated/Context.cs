@@ -1236,6 +1236,10 @@ namespace CmsData
 
         public Table<RssFeed> RssFeeds => GetTable<RssFeed>();
 
+        public Table<ScheduledGiftAmount> ScheduledGiftAmounts => GetTable<ScheduledGiftAmount>();
+
+        public Table<ScheduledGift> ScheduledGifts => GetTable<ScheduledGift>();
+
         public Table<SecurityCode> SecurityCodes => GetTable<SecurityCode>();
 
         public Table<SessionValue> SessionValues => GetTable<SessionValue>();
