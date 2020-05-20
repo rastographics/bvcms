@@ -9,7 +9,7 @@ namespace SharedTestFixtures
 {
     public class MockGivingPage
     {
-        public static GivingPage CreateGivingPage(CMSDataContext db, string pageName = null, int? fundId = null, int? pageTypeId = null)
+        public static GivingPage CreateGivingPage(CMSDataContext db, string pageName = null, int? fundId = null, int pageTypeId = 7)
         {
             if (pageName == null)
             {
@@ -23,8 +23,8 @@ namespace SharedTestFixtures
             {
                 GivingPageId = DatabaseTestBase.RandomNumber(),
                 PageName = pageName,
-                PageTitle = DatabaseTestBase.RandomString(),
-                PageType = pageTypeId > 0 ? (int)pageTypeId : DatabaseTestBase.RandomNumber(),
+                PageUrl = DatabaseTestBase.RandomString(),
+                PageType = pageTypeId,
                 FundId = (int)fundId,
                 Enabled = true,
                 DisabledRedirect = DatabaseTestBase.RandomString()

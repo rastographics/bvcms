@@ -31,7 +31,7 @@ namespace CmsWeb.Areas.Giving.Models
                             {
                                 GivingPageId = gp.GivingPageId,
                                 PageName = gp.PageName,
-                                PageTitle = gp.PageTitle,
+                                PageTitle = gp.PageUrl,
                                 Enabled = gp.Enabled,
                                 SkinFile = new ContentFile
                                 {
@@ -124,7 +124,7 @@ namespace CmsWeb.Areas.Giving.Models
             var newGivingPage = new GivingPage()
             {
                 PageName = viewModel.pageName,
-                PageTitle = viewModel.pageTitle,
+                PageUrl = viewModel.pageTitle,
                 Enabled = viewModel.enabled,
                 DisabledRedirect = viewModel.disRedirect
             };
@@ -154,7 +154,7 @@ namespace CmsWeb.Areas.Giving.Models
             {
                 GivingPageId = newGivingPage.GivingPageId,
                 PageName = newGivingPage.PageName,
-                PageTitle = newGivingPage.PageTitle,
+                PageTitle = newGivingPage.PageUrl,
                 Enabled = newGivingPage.Enabled,
                 SkinFile = viewModel.skinFile,
                 DefaultFundId = viewModel.defaultFund?.FundId,
@@ -170,7 +170,7 @@ namespace CmsWeb.Areas.Giving.Models
         public List<GivingPageItem> UpdateGivingPage(GivingPageViewModel viewModel, GivingPage givingPage)
         {
             givingPage.PageName = viewModel.pageName;
-            givingPage.PageTitle = viewModel.pageTitle;
+            givingPage.PageUrl = viewModel.pageTitle;
             givingPage.PageType = viewModel.pageType;
             givingPage.Enabled = viewModel.enabled;
             givingPage.FundId = viewModel.defaultFund?.FundId;
