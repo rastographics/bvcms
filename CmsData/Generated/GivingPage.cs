@@ -21,7 +21,7 @@ namespace CmsData
 
         private string _PageName;
 
-        private string _PageTitle;
+        private string _PageUrl;
 
         private int _PageType;
 
@@ -78,8 +78,8 @@ namespace CmsData
         partial void OnPageNameChanging(string value);
         partial void OnPageNameChanged();
 
-        partial void OnPageTitleChanging(string value);
-        partial void OnPageTitleChanged();
+        partial void OnPageUrlChanging(string value);
+        partial void OnPageUrlChanged();
 
         partial void OnPageTypeChanging(int value);
         partial void OnPageTypeChanged();
@@ -179,20 +179,20 @@ namespace CmsData
             }
         }
 
-        [Column(Name = "PageTitle", UpdateCheck = UpdateCheck.Never, Storage = "_PageTitle", DbType = "nvarchar NOT NULL")]
-        public string PageTitle
+        [Column(Name = "PageUrl", UpdateCheck = UpdateCheck.Never, Storage = "_PageUrl", DbType = "nvarchar NOT NULL")]
+        public string PageUrl
         {
-            get => _PageTitle;
+            get => _PageUrl;
 
             set
             {
-                if (_PageTitle != value)
+                if (_PageUrl != value)
                 {
-                    OnPageTitleChanging(value);
+                    OnPageUrlChanging(value);
                     SendPropertyChanging();
-                    _PageTitle = value;
-                    SendPropertyChanged("PageTitle");
-                    OnPageTitleChanged();
+                    _PageUrl = value;
+                    SendPropertyChanged("PageUrl");
+                    OnPageUrlChanged();
                 }
             }
         }

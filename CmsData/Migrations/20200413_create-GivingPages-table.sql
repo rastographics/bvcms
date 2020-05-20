@@ -5,19 +5,18 @@
 		    CREATE TABLE [dbo].[GivingPages](
 			[GivingPageId] [INT] PRIMARY KEY IDENTITY (1,1),
 			[PageName] [NVARCHAR](max) NOT NULL,
-			[PageTitle] [NVARCHAR](max) NOT NULL,
+			[PageUrl] [NVARCHAR](max) NOT NULL,
 			[PageType] [INT] NOT NULL,
 			[FundId] [INT] CONSTRAINT FK_GivingPages_ContributionFund FOREIGN KEY REFERENCES ContributionFund(FundId),
             [Enabled] [bit] NOT NULL,
             [DisabledRedirect] [NVARCHAR](max),
-            [SkinFile] [INT],
+            [SkinFileId] [INT],
             [TopText] [NVARCHAR](max),
             [ThankYouText] [NVARCHAR](max),
             [OnlineNotifyPerson] [NVARCHAR](max),
-            [ConfirmationEmail_Pledge] [INT],
-            [ConfirmationEmail_OneTime] [INT],
-            [ConfirmationEmail_Recurring] [INT],
-
+            [ConfirmationEmail_PledgeId] [INT],
+            [ConfirmationEmail_OneTimeId] [INT],
+            [ConfirmationEmail_RecurringId] [INT],
 			[CampusId] [INT] CONSTRAINT FK_GivingPages_Campus FOREIGN KEY REFERENCES [lookup].[Campus](Id),
             [EntryPointId] [INT] CONSTRAINT FK_GivingPages_EntryPoint FOREIGN KEY REFERENCES [lookup].[EntryPoint](Id)
 			)

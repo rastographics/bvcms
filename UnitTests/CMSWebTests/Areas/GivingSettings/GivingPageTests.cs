@@ -1,5 +1,5 @@
-﻿using CmsData.View;
-using SharedTestFixtures;
+﻿using SharedTestFixtures;
+using Shouldly;
 using System.Linq;
 using Xunit;
 
@@ -20,8 +20,9 @@ namespace CmsDataTests.GivingSettings
             var givingPageFund = MockGivingPage.CreateGivingPageFund(db, givingPage.GivingPageId, contributionFund.FundId);
 
             var expectedName = givingPageName;
-            var actualName = givingPage.PageName;
-            Assert.Equal(expectedName, actualName);
+            db.Copy().GivingPages
+                .Count(p => p.PageName == givingPageName)
+                .ShouldBeGreaterThan(0);
 
             MockGivingPage.DeleteGivingPageFund(db, givingPageFund);
             MockGivingPage.DeleteGivingPage(db, givingPage);
