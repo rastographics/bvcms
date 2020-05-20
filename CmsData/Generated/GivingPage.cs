@@ -31,7 +31,7 @@ namespace CmsData
 
         private string _DisabledRedirect;
 
-        private int? _SkinFile;
+        private int? _SkinFileId;
 
         private string _TopText;
 
@@ -39,11 +39,11 @@ namespace CmsData
 
         private string _OnlineNotifyPerson;
 
-        private int? _ConfirmationEmailPledge;
+        private int? _ConfirmationEmailPledgeId;
 
-        private int? _ConfirmationEmailOneTime;
+        private int? _ConfirmationEmailOneTimeId;
 
-        private int? _ConfirmationEmailRecurring;
+        private int? _ConfirmationEmailRecurringId;
 
         private int? _CampusId;
 
@@ -56,6 +56,15 @@ namespace CmsData
         private EntityRef<ContributionFund> _ContributionFund;
 
         private EntityRef<EntryPoint> _EntryPoint;
+
+        private EntityRef<Content> _SkinFile;
+
+        private EntityRef<Content> _ConfirmationEmailPledge;
+
+        private EntityRef<Content> _ConfirmationEmailOneTime;
+
+        private EntityRef<Content> _ConfirmationEmailRecurring;
+
         #endregion
 
         #region Extensibility Method Definitions
@@ -84,8 +93,8 @@ namespace CmsData
         partial void OnDisabledRedirectChanging(string value);
         partial void OnDisabledRedirectChanged();
 
-        partial void OnSkinFileChanging(int? value);
-        partial void OnSkinFileChanged();
+        partial void OnSkinFileIdChanging(int? value);
+        partial void OnSkinFileIdChanged();
 
         partial void OnTopTextChanging(string value);
         partial void OnTopTextChanged();
@@ -96,14 +105,14 @@ namespace CmsData
         partial void OnOnlineNotifyPersonChanging(string value);
         partial void OnOnlineNotifyPersonChanged();
 
-        partial void OnConfirmationEmailPledgeChanging(int? value);
-        partial void OnConfirmationEmailPledgeChanged();
+        partial void OnConfirmationEmailPledgeIdChanging(int? value);
+        partial void OnConfirmationEmailPledgeIdChanged();
 
-        partial void OnConfirmationEmailOneTimeChanging(int? value);
-        partial void OnConfirmationEmailOneTimeChanged();
+        partial void OnConfirmationEmailOneTimeIdChanging(int? value);
+        partial void OnConfirmationEmailOneTimeIdChanged();
 
-        partial void OnConfirmationEmailRecurringChanging(int? value);
-        partial void OnConfirmationEmailRecurringChanged();
+        partial void OnConfirmationEmailRecurringIdChanging(int? value);
+        partial void OnConfirmationEmailRecurringIdChanged();
 
         partial void OnCampusIdChanging(int? value);
         partial void OnCampusIdChanged();
@@ -116,11 +125,19 @@ namespace CmsData
         {
             _GivingPageFunds = new EntitySet<GivingPageFund>(new Action<GivingPageFund>(attach_GivingPageFunds), new Action<GivingPageFund>(detach_GivingPageFunds));
 
-            _Campu = default(EntityRef<Campu>);
+            _Campu = default;
 
-            _ContributionFund = default(EntityRef<ContributionFund>);
+            _ContributionFund = default;
 
-            _EntryPoint = default(EntityRef<EntryPoint>);
+            _EntryPoint = default;
+
+            _SkinFile = default;
+
+            _ConfirmationEmailPledge = default;
+
+            _ConfirmationEmailOneTime = default;
+
+            _ConfirmationEmailRecurring = default;
 
             OnCreated();
         }
@@ -129,7 +146,7 @@ namespace CmsData
         [Column(Name = "GivingPageId", UpdateCheck = UpdateCheck.Never, Storage = "_GivingPageId", AutoSync = AutoSync.OnInsert, DbType = "int NOT NULL IDENTITY", IsPrimaryKey = true, IsDbGenerated = true)]
         public int GivingPageId
         {
-            get { return _GivingPageId; }
+            get => _GivingPageId;
 
             set
             {
@@ -147,7 +164,7 @@ namespace CmsData
         [Column(Name = "PageName", UpdateCheck = UpdateCheck.Never, Storage = "_PageName", DbType = "nvarchar NOT NULL")]
         public string PageName
         {
-            get { return _PageName; }
+            get => _PageName;
 
             set
             {
@@ -165,7 +182,7 @@ namespace CmsData
         [Column(Name = "PageTitle", UpdateCheck = UpdateCheck.Never, Storage = "_PageTitle", DbType = "nvarchar NOT NULL")]
         public string PageTitle
         {
-            get { return _PageTitle; }
+            get => _PageTitle;
 
             set
             {
@@ -183,7 +200,7 @@ namespace CmsData
         [Column(Name = "PageType", UpdateCheck = UpdateCheck.Never, Storage = "_PageType", DbType = "int NOT NULL")]
         public int PageType
         {
-            get { return _PageType; }
+            get => _PageType;
 
             set
             {
@@ -224,7 +241,7 @@ namespace CmsData
         [Column(Name = "Enabled", UpdateCheck = UpdateCheck.Never, Storage = "_Enabled", DbType = "bit NOT NULL")]
         public bool Enabled
         {
-            get { return _Enabled; }
+            get => _Enabled;
 
             set
             {
@@ -242,7 +259,7 @@ namespace CmsData
         [Column(Name = "DisabledRedirect", UpdateCheck = UpdateCheck.Never, Storage = "_DisabledRedirect", DbType = "nvarchar")]
         public string DisabledRedirect
         {
-            get { return _DisabledRedirect; }
+            get => _DisabledRedirect;
 
             set
             {
@@ -257,20 +274,20 @@ namespace CmsData
             }
         }
 
-        [Column(Name = "SkinFile", UpdateCheck = UpdateCheck.Never, Storage = "_SkinFile", DbType = "int")]
-        public int? SkinFile
+        [Column(Name = "SkinFileId", UpdateCheck = UpdateCheck.Never, Storage = "_SkinFileId", DbType = "int")]
+        public int? SkinFileId
         {
-            get { return _SkinFile; }
+            get => _SkinFileId;
 
             set
             {
-                if (_SkinFile != value)
+                if (_SkinFileId != value)
                 {
-                    OnSkinFileChanging(value);
+                    OnSkinFileIdChanging(value);
                     SendPropertyChanging();
-                    _SkinFile = value;
-                    SendPropertyChanged("SkinFile");
-                    OnSkinFileChanged();
+                    _SkinFileId = value;
+                    SendPropertyChanged("SkinFileId");
+                    OnSkinFileIdChanged();
                 }
             }
         }
@@ -278,7 +295,7 @@ namespace CmsData
         [Column(Name = "TopText", UpdateCheck = UpdateCheck.Never, Storage = "_TopText", DbType = "nvarchar")]
         public string TopText
         {
-            get { return _TopText; }
+            get => _TopText;
 
             set
             {
@@ -296,7 +313,7 @@ namespace CmsData
         [Column(Name = "ThankYouText", UpdateCheck = UpdateCheck.Never, Storage = "_ThankYouText", DbType = "nvarchar")]
         public string ThankYouText
         {
-            get { return _ThankYouText; }
+            get => _ThankYouText;
 
             set
             {
@@ -314,7 +331,7 @@ namespace CmsData
         [Column(Name = "OnlineNotifyPerson", UpdateCheck = UpdateCheck.Never, Storage = "_OnlineNotifyPerson", DbType = "nvarchar")]
         public string OnlineNotifyPerson
         {
-            get { return _OnlineNotifyPerson; }
+            get => _OnlineNotifyPerson;
 
             set
             {
@@ -329,56 +346,56 @@ namespace CmsData
             }
         }
 
-        [Column(Name = "ConfirmationEmail_Pledge", UpdateCheck = UpdateCheck.Never, Storage = "_ConfirmationEmailPledge", DbType = "int")]
-        public int? ConfirmationEmailPledge
+        [Column(Name = "ConfirmationEmail_PledgeId", UpdateCheck = UpdateCheck.Never, Storage = "_ConfirmationEmailPledgeId", DbType = "int")]
+        public int? ConfirmationEmailPledgeId
         {
-            get { return _ConfirmationEmailPledge; }
+            get => _ConfirmationEmailPledgeId;
 
             set
             {
-                if (_ConfirmationEmailPledge != value)
+                if (_ConfirmationEmailPledgeId != value)
                 {
-                    OnConfirmationEmailPledgeChanging(value);
+                    OnConfirmationEmailPledgeIdChanging(value);
                     SendPropertyChanging();
-                    _ConfirmationEmailPledge = value;
-                    SendPropertyChanged("ConfirmationEmailPledge");
-                    OnConfirmationEmailPledgeChanged();
+                    _ConfirmationEmailPledgeId = value;
+                    SendPropertyChanged("ConfirmationEmailPledgeId");
+                    OnConfirmationEmailPledgeIdChanged();
                 }
             }
         }
 
-        [Column(Name = "ConfirmationEmail_OneTime", UpdateCheck = UpdateCheck.Never, Storage = "_ConfirmationEmailOneTime", DbType = "int")]
-        public int? ConfirmationEmailOneTime
+        [Column(Name = "ConfirmationEmail_OneTimeId", UpdateCheck = UpdateCheck.Never, Storage = "_ConfirmationEmailOneTimeId", DbType = "int")]
+        public int? ConfirmationEmailOneTimeId
         {
-            get { return _ConfirmationEmailOneTime; }
+            get => _ConfirmationEmailOneTimeId;
 
             set
             {
-                if (_ConfirmationEmailOneTime != value)
+                if (_ConfirmationEmailOneTimeId != value)
                 {
-                    OnConfirmationEmailOneTimeChanging(value);
+                    OnConfirmationEmailOneTimeIdChanging(value);
                     SendPropertyChanging();
-                    _ConfirmationEmailOneTime = value;
-                    SendPropertyChanged("ConfirmationEmailOneTime");
-                    OnConfirmationEmailOneTimeChanged();
+                    _ConfirmationEmailOneTimeId = value;
+                    SendPropertyChanged("ConfirmationEmailOneTimeId");
+                    OnConfirmationEmailOneTimeIdChanged();
                 }
             }
         }
 
-        [Column(Name = "ConfirmationEmail_Recurring", UpdateCheck = UpdateCheck.Never, Storage = "_ConfirmationEmailRecurring", DbType = "int")]
-        public int? ConfirmationEmailRecurring
+        [Column(Name = "ConfirmationEmail_RecurringId", UpdateCheck = UpdateCheck.Never, Storage = "_ConfirmationEmailRecurringId", DbType = "int")]
+        public int? ConfirmationEmailRecurringId
         {
-            get { return _ConfirmationEmailRecurring; }
+            get => _ConfirmationEmailRecurringId;
 
             set
             {
-                if (_ConfirmationEmailRecurring != value)
+                if (_ConfirmationEmailRecurringId != value)
                 {
-                    OnConfirmationEmailRecurringChanging(value);
+                    OnConfirmationEmailRecurringIdChanging(value);
                     SendPropertyChanging();
-                    _ConfirmationEmailRecurring = value;
-                    SendPropertyChanged("ConfirmationEmailRecurring");
-                    OnConfirmationEmailRecurringChanged();
+                    _ConfirmationEmailRecurringId = value;
+                    SendPropertyChanged("ConfirmationEmailRecurringId");
+                    OnConfirmationEmailRecurringIdChanged();
                 }
             }
         }
@@ -387,7 +404,7 @@ namespace CmsData
         [IsForeignKey]
         public int? CampusId
         {
-            get { return _CampusId; }
+            get => _CampusId;
 
             set
             {
@@ -434,8 +451,8 @@ namespace CmsData
         [Association(Name = "FK_GivingPageFunds_GivingPages", Storage = "_GivingPageFunds", OtherKey = "GivingPageId")]
         public EntitySet<GivingPageFund> GivingPageFunds
         {
-            get { return _GivingPageFunds; }
-            set { _GivingPageFunds.Assign(value); }
+            get => _GivingPageFunds;
+            set => _GivingPageFunds.Assign(value);
         }
         #endregion
 
@@ -448,7 +465,7 @@ namespace CmsData
             set
             {
                 Campu previousValue = _Campu.Entity;
-                if (((previousValue != value) || (_Campu.HasLoadedOrAssignedValue == false)))
+                if ((previousValue != value) || (_Campu.HasLoadedOrAssignedValue == false))
                 {
                     SendPropertyChanging();
                     if (previousValue != null)
@@ -464,7 +481,7 @@ namespace CmsData
                     }
                     else
                     {
-                        _CampusId = default(int?);
+                        _CampusId = default;
                     }
                     SendPropertyChanged("Campu");
                 }
@@ -479,7 +496,7 @@ namespace CmsData
             set
             {
                 ContributionFund previousValue = _ContributionFund.Entity;
-                if (((previousValue != value) || (_ContributionFund.HasLoadedOrAssignedValue == false)))
+                if ((previousValue != value) || (_ContributionFund.HasLoadedOrAssignedValue == false))
                 {
                     SendPropertyChanging();
                     if (previousValue != null)
@@ -495,7 +512,7 @@ namespace CmsData
                     }
                     else
                     {
-                        _FundId = default(int?);
+                        _FundId = default;
                     }
                     SendPropertyChanged("ContributionFund");
                 }
@@ -510,7 +527,7 @@ namespace CmsData
             set
             {
                 EntryPoint previousValue = _EntryPoint.Entity;
-                if (((previousValue != value) || (_EntryPoint.HasLoadedOrAssignedValue == false)))
+                if ((previousValue != value) || (_EntryPoint.HasLoadedOrAssignedValue == false))
                 {
                     SendPropertyChanging();
                     if (previousValue != null)
@@ -526,18 +543,135 @@ namespace CmsData
                     }
                     else
                     {
-                        _EntryPointId = default(int?);
+                        _EntryPointId = default;
                     }
                     SendPropertyChanged("EntryPoint");
                 }
             }
         }
+
+        [Association(Name = "FK_GivingPages_SkinFile", Storage = "_SkinFile", ThisKey = "SkinFileId", IsForeignKey = true)]
+        public Content SkinFile
+        {
+            get => _SkinFile.Entity;
+
+            set
+            {
+                var previousValue = _SkinFile.Entity;
+                if ((previousValue != value) || (_SkinFile.HasLoadedOrAssignedValue == false))
+                {
+                    SendPropertyChanging();
+                    if (previousValue != null)
+                    {
+                        _SkinFile.Entity = null;
+                    }
+                    _SkinFile.Entity = value;
+                    if (value != null)
+                    {
+                        _SkinFileId = value.Id;
+                    }
+                    else
+                    {
+                        _SkinFileId = default;
+                    }
+                    SendPropertyChanged("SkinFile");
+                }
+            }
+        }
+
+        [Association(Name = "FK_GivingPages_ConfirmationEmailPledge", Storage = "_ConfirmationEmailPledge", ThisKey = "ConfirmationEmailPledgeId", IsForeignKey = true)]
+        public Content ConfirmationEmailPledge
+        {
+            get => _ConfirmationEmailPledge.Entity;
+
+            set
+            {
+                var previousValue = _ConfirmationEmailPledge.Entity;
+                if ((previousValue != value) || (_ConfirmationEmailPledge.HasLoadedOrAssignedValue == false))
+                {
+                    SendPropertyChanging();
+                    if (previousValue != null)
+                    {
+                        _ConfirmationEmailPledge.Entity = null;
+                    }
+                    _ConfirmationEmailPledge.Entity = value;
+                    if (value != null)
+                    {
+                        _ConfirmationEmailPledgeId = value.Id;
+                    }
+                    else
+                    {
+                        _ConfirmationEmailPledgeId = default;
+                    }
+                    SendPropertyChanged("ConfirmationEmailPledge");
+                }
+            }
+        }
+
+        [Association(Name = "FK_GivingPages_ConfirmationEmailOneTime", Storage = "_ConfirmationEmailOneTime", ThisKey = "ConfirmationEmailOneTimeId", IsForeignKey = true)]
+        public Content ConfirmationEmailOneTime
+        {
+            get => _ConfirmationEmailOneTime.Entity;
+
+            set
+            {
+                var previousValue = _ConfirmationEmailOneTime.Entity;
+                if ((previousValue != value) || (_ConfirmationEmailOneTime.HasLoadedOrAssignedValue == false))
+                {
+                    SendPropertyChanging();
+                    if (previousValue != null)
+                    {
+                        _ConfirmationEmailOneTime.Entity = null;
+                    }
+                    _ConfirmationEmailOneTime.Entity = value;
+                    if (value != null)
+                    {
+                        _ConfirmationEmailOneTimeId = value.Id;
+                    }
+                    else
+                    {
+                        _ConfirmationEmailOneTimeId = default;
+                    }
+                    SendPropertyChanged("ConfirmationEmailOneTime");
+                }
+            }
+        }
+
+        [Association(Name = "FK_GivingPages_ConfirmationEmailRecurring", Storage = "_ConfirmationEmailRecurring", ThisKey = "ConfirmationEmailRecurringId", IsForeignKey = true)]
+        public Content ConfirmationEmailRecurring
+        {
+            get => _ConfirmationEmailRecurring.Entity;
+
+            set
+            {
+                var previousValue = _ConfirmationEmailRecurring.Entity;
+                if ((previousValue != value) || (_ConfirmationEmailRecurring.HasLoadedOrAssignedValue == false))
+                {
+                    SendPropertyChanging();
+                    if (previousValue != null)
+                    {
+                        _ConfirmationEmailRecurring.Entity = null;
+                    }
+                    _ConfirmationEmailRecurring.Entity = value;
+                    if (value != null)
+                    {
+                        _ConfirmationEmailRecurringId = value.Id;
+                    }
+                    else
+                    {
+                        _ConfirmationEmailRecurringId = default;
+                    }
+                    SendPropertyChanged("ConfirmationEmailRecurring");
+                }
+            }
+        }
+
         #endregion
 
         public event PropertyChangingEventHandler PropertyChanging;
         protected virtual void SendPropertyChanging()
         {
-            if ((PropertyChanging != null))
+            if (PropertyChanging != null)
             {
                 PropertyChanging(this, emptyChangingEventArgs);
             }
@@ -546,7 +680,7 @@ namespace CmsData
         public event PropertyChangedEventHandler PropertyChanged;
         protected virtual void SendPropertyChanged(String propertyName)
         {
-            if ((PropertyChanged != null))
+            if (PropertyChanged != null)
             {
                 PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
