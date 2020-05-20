@@ -574,7 +574,6 @@ This search uses multiple steps which cannot be duplicated in a single query.
         {
             var ft = PopulateTempTag(list);
             AddTag1ToTag2(ft.Id, tag.Id);
-            SubmitChanges();
         }
 
         public void UnTagAll(IQueryable<Person> list)

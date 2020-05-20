@@ -65,13 +65,14 @@ namespace CmsWeb.Areas.Manage.Models.SmsMessages
         public IEnumerable<SelectListItem> Groups()
         {
             var q = from c in CurrentDatabase.SMSGroups
-                    select new SelectListItem
-                    {
-                        Value = c.Id.ToString(),
-                        Text = c.Name
-                    };
+                where !c.IsDeleted
+                select new SelectListItem
+                {
+                    Value = c.Id.ToString(),
+                    Text = c.Name
+                };
             var groups = q.ToList();
-            groups.Insert(0, new SelectListItem { Text = "(select group)", Value= "0" });
+            groups.Insert(0, new SelectListItem {Text = "(select group)", Value = "0"});
             return groups;
         }
 

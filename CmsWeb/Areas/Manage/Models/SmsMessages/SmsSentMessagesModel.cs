@@ -61,11 +61,12 @@ namespace CmsWeb.Areas.Manage.Models.SmsMessages
         public IEnumerable<SelectListItem> Groups()
         {
             var q = from c in CurrentDatabase.SMSGroups
-                    select new SelectListItem
-                    {
-                        Value = c.Id.ToString(),
-                        Text = c.Name
-                    };
+                where !c.IsDeleted
+                select new SelectListItem
+                {
+                    Value = c.Id.ToString(),
+                    Text = c.Name
+                };
             var groups = q.ToList();
             groups.Insert(0, new SelectListItem { Text = "(select group)", Value= "0" });
             return groups;
@@ -74,12 +75,12 @@ namespace CmsWeb.Areas.Manage.Models.SmsMessages
         public IEnumerable<SelectListItem> GroupMembers()
         {
             var q = from c in CurrentDatabase.SMSGroupMembers
-                    where SentFilterGroupId.ToInt() == c.GroupID
-                    select new SelectListItem
-                    {
-                        Value = c.User.PeopleId.ToString(),
-                        Text = c.User.Name2,
-                    };
+                where SentFilterGroupId.ToInt() == c.GroupID
+                select new SelectListItem
+                {
+                    Value = c.User.PeopleId.ToString(),
+                    Text = c.User.Name2,
+                };
             var groupMembers = q.ToList();
             groupMembers.Insert(0, new SelectListItem { Text = "(select group member)", Value = "0"});
             return groupMembers;

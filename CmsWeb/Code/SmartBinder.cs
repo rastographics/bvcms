@@ -14,14 +14,11 @@ namespace CmsWeb
 {
     internal class SmartBinder : DefaultModelBinder
     {
-        
+
         protected override object CreateModel(ControllerContext controllerContext, ModelBindingContext bindingContext, Type modelType)
         {
-            if(!(controllerContext.Controller is CMSBaseController))
-                return base.CreateModel(controllerContext, bindingContext, modelType);
-
             var db = ((CMSBaseController)controllerContext?.Controller)?.CurrentDatabase;
-            string type = null;            
+            string type = null;
             if (modelType == typeof(Ask))
             {
                 var requestname = bindingContext.ModelName + ".Type";
@@ -86,7 +83,7 @@ namespace CmsWeb
                 b.CurrentDatabase = c.CurrentDatabase;
             return m;
         }
-        
+
         protected override ICustomTypeDescriptor GetTypeDescriptor(ControllerContext controllerContext, ModelBindingContext bindingContext)
         {
             if (bindingContext.ModelType == typeof (Ask) && bindingContext.Model != null)

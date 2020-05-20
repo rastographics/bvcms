@@ -28,7 +28,9 @@ namespace CmsWeb.Areas.Public.Models
         {
             CurrentDatabase = db;
             To = incomingMessage.To;
-            From = incomingMessage.From.Substring(2);
+            From = incomingMessage.From.StartsWith("+1")
+                ? incomingMessage.From.Substring(2)
+                : incomingMessage.From;
             Body = incomingMessage.Body.Trim();
             row = new SmsReceived
             {
@@ -58,13 +60,14 @@ namespace CmsWeb.Areas.Public.Models
         public SmsReplyWordsModel FindGroup()
         {
             var m = new SmsReplyWordsModel(CurrentDatabase);
-            var g = CurrentDatabase.Connection.QueryFirstOrDefault(
-                @"select n.GroupID, g.[Name] from dbo.SMSNumbers n
-                  join dbo.SMSGroups g on g.ID = n.GroupID where n.Number = @To", new {To});
-            if(g == null)
+            var group = (from grp in CurrentDatabase.SMSGroups
+                join num in CurrentDatabase.SMSNumbers on grp.Id equals num.Id
+                where num.Number == To
+                select grp).FirstOrDefault();
+            if(group == null)
                 throw new Exception($"could not find group from number {To}");
-            m.GroupId = g.GroupID;
-            groupName = g.Name;
+            m.GroupId = group.Id;
+            groupName = group.Name;
             m.PopulateActions();
             row.ToGroupId = m.GroupId;
             return m;
@@ -242,7 +245,7 @@ They received: {row.ActionResponse}";
         {
             try
             {
-                row.Args = $"{{ \"OrgId\": \"{action.MeetingId}\"}}";
+                row.Args = $"{{ \"OrgId\": \"{action.OrgId}\"}}";
                 if (action.OrgId == null)
                     throw new Exception("orgid null");
                 organization = CurrentDatabase.LoadOrganizationById(action.OrgId);
@@ -262,7 +265,7 @@ They received: {row.ActionResponse}";
         {
             try
             {
-                row.Args = $"{{ \"OrgId\": \"{action.MeetingId}\", \"SmallGroup\": \"{action.SmallGroup}\"}}";
+                row.Args = $"{{ \"OrgId\": \"{action.OrgId}\", \"SmallGroup\": \"{action.SmallGroup}\"}}";
                 if (action.OrgId == null)
                     throw new Exception("OrgId is null");
                 organization = CurrentDatabase.LoadOrganizationById(action.OrgId);

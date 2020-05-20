@@ -10,9 +10,11 @@ namespace CmsWeb.Areas.Manage.Models.SmsMessages
     public class SmsReplyWordsModel : IDbBinder
     {
         public CMSDataContext CurrentDatabase { get; set; }
+
         public SmsReplyWordsModel()
         {
         }
+
         public int GroupId { get; set; }
         public List<SmsReplyWordsActionModel> Actions { get; set; }
 
@@ -21,16 +23,18 @@ namespace CmsWeb.Areas.Manage.Models.SmsMessages
             CurrentDatabase = db;
             Actions = new List<SmsReplyWordsActionModel>();
         }
+
         public IEnumerable<SelectListItem> SmsGroups()
         {
             var q = from c in CurrentDatabase.SMSGroups
-                    select new SelectListItem
-                    {
-                        Value = c.Id.ToString(),
-                        Text = c.Name
-                    };
+                where !c.IsDeleted
+                select new SelectListItem
+                {
+                    Value = c.Id.ToString(),
+                    Text = c.Name
+                };
             var list = q.ToList();
-            list.Insert(0, new SelectListItem { Text = "(select group)" });
+            list.Insert(0, new SelectListItem {Text = "(select group)"});
             return list;
         }
 
@@ -41,7 +45,7 @@ namespace CmsWeb.Areas.Manage.Models.SmsMessages
                 return;
             string json = CurrentDatabase.SMSGroups.FirstOrDefault(
                 v => v.Id == GroupId)?.ReplyWords;
-            if(json == null)
+            if (json == null)
                 return;
             Actions = JsonConvert.DeserializeObject<List<SmsReplyWordsActionModel>>(json);
             PopulateMetaData();
@@ -65,6 +69,7 @@ namespace CmsWeb.Areas.Manage.Models.SmsMessages
                     NullValueHandling = NullValueHandling.Ignore
                 });
         }
+
         public void PopulateMetaData()
         {
             foreach (var a in Actions)

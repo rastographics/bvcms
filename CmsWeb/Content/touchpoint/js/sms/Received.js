@@ -1,6 +1,6 @@
 ﻿$(document).ready(function () {
-    $('#received').on('click',
-        '#clearreceived',
+    $('#receivedform')
+        .on('click', '#clearreceived',
         function (ev) {
             ev.preventDefault();
             $('#RecdFilterStart').val(null);
@@ -8,35 +8,34 @@
             $('#RecdFilterMessage').val(null);
             $('#RecdFilterGroupId').val(0);
             $('#RecdFilterSender').val(null);
+        }).on('click', "a.addtotag",
+        function (ev) {
+            ev.preventDefault();
+            var q = $('#receivedform').serialize();
+            $.post("/SmsMessages/TagReceivedDialog", q,
+                function (ret) {
+                    $("#countpeople").html(ret);
+                });
+            $('#tagmessages').addClass("tabreceived");
+            $('#tagmessages-modal').modal();
+        }).on('keypress', 'input[type=text]',
+        function (e) {
+            var key = e.which;
+            if (key == 13)  // the enter key code
+            {
+                $('#searchreceived').click();
+                return false;
+            }
         });
 
-    $('#received').on("click",
-        'a.sortable',
-        function () {
-            var newsort = $(this).text();
-            var sort = $("#Sort");
-            var dir = $("#Direction");
-
-            if ($(sort).val() == newsort && $(dir).val() == 'asc')
-                $(dir).val('desc');
-            else
-                $(dir).val('asc');
-
-            $(sort).val(newsort);
-            $("#form").submit();
-            return false;
-        });
-    $('#received').on('click',
-        'a.showdetails',
+$('#receivedresults').on('click', 'a.showdetails',
         function (ev) {
             ev.preventDefault();
             $.post(this.href,
                 function (ret) {
                     $('#receivedresults').html(ret);
                 });
-        });
-    $('#received').on('click',
-        'button.backtoreceived',
+        }).on('click', 'button.backtoreceived',
         function (ev) {
             ev.preventDefault();
             var f = $(this).closest('form');
@@ -46,10 +45,7 @@
                 function (ret) {
                     $('#receivedresults').html(ret);
                 });
-        });
-
-    $('#received').on('click',
-        'a.replyto',
+        }).on('click', 'a.replyto',
         function (ev) {
             ev.preventDefault();
             var mid = $(this).closest("tr").attr("id");
@@ -64,7 +60,7 @@
                     $('#replyto-modal').modal();
                 });
         });
-    $('#sendmessage').on('click',
+    $('#SendReplyForm').on('click', '#sendmessage',
         function (ev) {
             ev.preventDefault();
             var q = $("#SendReplyForm").serialize();
@@ -76,20 +72,7 @@
                     var tr = $(`tr[id=${id}]`);
                     tr.addClass('repliedto');
                     snackbar(ret);
-            });
-        });
-
-    $('#receivedform').on('click',
-        "a.addtotag",
-        function (ev) {
-            ev.preventDefault();
-            var q = $('#receivedform').serialize();
-            $.post("/SmsMessages/TagReceivedDialog", q,
-                function (ret) {
-                    $("#countpeople").html(ret);
                 });
-            $('#tagmessages').addClass("tabreceived");
-            $('#tagmessages-modal').modal();
         });
 
     $('#tagmessages-modal').on('click',

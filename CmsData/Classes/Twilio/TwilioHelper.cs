@@ -47,43 +47,42 @@ namespace CmsData.Classes.Twilio
 
             // Load all people but tell why they can or can't be sent to
 
-            var qq = from p in q
-                select new {p, optOutGroup = p.SmsGroupOptOuts.Any(vv => vv.FromGroup == iSendGroupID)};
-            foreach (var o in qq)
-            {
-                var item = new SMSItem();
-
-                item.ListID = list.Id;
-                item.PeopleID = o.p.PeopleId;
-
-                if (!string.IsNullOrEmpty(o.p.CellPhone))
+            var personOptouts = from person in q
+                select new
                 {
-                    item.Number = o.p.CellPhone;
+                    person,
+                    optOutGroup = person.SmsGroupOptOuts.Any(vv => vv.FromGroup == iSendGroupID)
+                };
+            foreach (var personOptout in personOptouts)
+            {
+                var item = new SMSItem {ListID = list.Id, PeopleID = personOptout.person.PeopleId};
+
+                if (!string.IsNullOrEmpty(personOptout.person.CellPhone))
+                {
+                    item.Number = personOptout.person.CellPhone;
                 }
                 else
                 {
                     item.Number = "";
                     item.NoNumber = true;
                 }
-
-                if (!o.p.ReceiveSMS || o.optOutGroup)
+                if (!personOptout.person.ReceiveSMS || personOptout.optOutGroup)
                 {
                     item.NoOptIn = true;
                 }
-
                 db.SMSItems.InsertOnSubmit(item);
             }
 
             db.SubmitChanges();
 
             // Check for how many people have cell numbers and want to receive texts
-            var qSMS = from o in qq
-                       where o.p.CellPhone != null
-                       where o.p.ReceiveSMS
-                       where !o.optOutGroup
-                       select o.p;
+            var qSMS = from personOptout in personOptouts
+                       where personOptout.person.CellPhone != null
+                       where personOptout.person.ReceiveSMS
+                       where !personOptout.optOutGroup
+                       select personOptout.person;
 
-            var countSMS = qSMS.Count();
+                var countSMS = qSMS.Count();
 
             // Add counts for SMS, e-Mail and none
             list.SentSMS = countSMS;
