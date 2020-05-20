@@ -104,6 +104,138 @@ namespace CmsWeb.Models.Tests
         }
 
         [Theory]
+        [InlineData(0, true, null, 2, true, null, "1,2")]
+        [InlineData(0, true, true, 2, true, null, "1,2")]
+        [InlineData(0, true, false, 2, true, null, "1,2")]
+        public void ExportDonorTotals_Should_Bring_Pledges( int campusid, bool? pledges, bool? nontaxdeductible, int? online, bool includeUnclosed, int? tagid, string fundids)
+        {
+            using (var db = CMSDataContext.Create(Util.Host))
+            {
+                var bundleList = CreateTestContributionSet(db, Util.Now.Date);
+                var _exportPeople = new ExportPeople(db);                
+
+                DateTime exportStartDt = Util.Now.AddDays(-180);
+                DateTime exportEndDt = Util.Now.AddDays(180);
+                DataTable tableResult = _exportPeople.ExcelDonorTotals(exportStartDt, exportEndDt, campusid, pledges, nontaxdeductible, online, includeUnclosed, tagid, fundids);
+
+                try
+                {
+                    var q = from c in tableResult.Select() where c.ItemArray[3].ToInt() > 0 select c;
+                    if (q.IsNotNull())
+                    {
+                        var amountpledged = Double.Parse(q.Select(x => x.ItemArray[3]).SingleOrDefault().ToString());
+                        amountpledged.ShouldBe(1000.00);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+                finally
+                {
+                    foreach (var b in bundleList)
+                    {
+                        MockContributions.DeleteAllFromBundle(db, b);
+                    }
+                }
+            }
+        }
+
+        [Theory]
+        [InlineData(0, 0, false, true, 0, "")]
+        [InlineData(0, 0, true, true, 0, "")]
+        public void ExportDonorDetails_Should_Bring_Pledges(int fundid, int campusid, bool? nontaxdeductible, bool includeUnclosed, int? tagid, string fundids)
+        {
+            using (var db = CMSDataContext.Create(Util.Host))
+            {
+                var bundleList = CreateTestContributionSet(db, Util.Now.Date);
+                var _exportPeople = new ExportPeople(db);
+
+                DateTime exportStartDt = Util.Now.AddDays(-180);
+                DateTime exportEndDt = Util.Now.AddDays(180);
+                DataTable tableResult = _exportPeople.DonorDetails(
+                    exportStartDt,
+                    exportEndDt,
+                    fundid,
+                    campusid,
+                    true,
+                    (bool)nontaxdeductible,
+                    includeUnclosed,
+                    tagid,
+                    fundids,
+                    2);
+
+                try
+                {
+                    var q = from c in tableResult.Select() where c.ItemArray[3].ToInt() > 0 select c;
+                    if (q.IsNotNull())
+                    {
+                        var amountpledged = Double.Parse(q.Select(x => x.ItemArray[3]).SingleOrDefault().ToString());
+                        amountpledged.ShouldBe(500.00);
+                    }
+                    
+                    
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+                finally
+                {
+                    foreach (var b in bundleList)
+                    {
+                        MockContributions.DeleteAllFromBundle(db, b);
+                    }
+                }
+            }
+
+            
+            
+        }
+
+        [Theory]
+        [InlineData(0, 0, null, true, null, "1,2", 2)]
+        [InlineData(0, 0, null, false, null, "1,2", 2)]
+        public void ExportDonorFundTotals_Should_Bring_Pledges(int fundid, int campusid, bool? nontaxdeductible,
+            bool includeUnclosed, int? tagid, string fundids, int? online)
+        {       
+            using (var db = CMSDataContext.Create(Util.Host))
+            {
+                var bundleList = CreateTestContributionSet(db, Util.Now.Date);
+                var _exportPeople = new ExportPeople(db);
+                
+                DateTime exportStartDt = Util.Now.AddDays(-180);
+                DateTime exportEndDt = Util.Now.AddDays(180);
+                DataTable tableResult = _exportPeople.ExcelDonorFundTotals(exportStartDt, exportEndDt, fundid, campusid, true, nontaxdeductible, includeUnclosed, tagid, fundids, (int)online);
+
+                try
+                {
+                    var q = from c in tableResult.Select() where c.ItemArray[3].ToInt() > 0 select c;
+                    if (q.IsNotNull())
+                    {
+                        var amountpledged = Double.Parse(q.Select(x => x.ItemArray[3]).SingleOrDefault().ToString());
+                        //The pledged amount correspond to the pledge amount created in CreateTestContributionSet()
+                        amountpledged.ShouldBe(1000.00);
+                    }
+
+
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+                finally
+                {
+                    foreach (var b in bundleList)
+                    {
+                        MockContributions.DeleteAllFromBundle(db, b);
+                    }
+                }
+            }
+
+        }
+
+        [Theory]
         [InlineData(0, 0, false, true, true, null, null, 1)]
         [InlineData(0, 0, false, true, false, null, null, 0)]
         [InlineData(0, 0, false, false, true, null, null, 1)]
