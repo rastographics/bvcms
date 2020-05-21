@@ -139,7 +139,7 @@ namespace CmsWeb.Areas.Setup.Models
             HTMLContent = widget.HTMLContent;
             PythonContent = widget.PythonContent;
             SQLContent = widget.SQLContent;
-            CachePolicy = widget.CachePolicy;
+            CachePolicy = widget.CachePolicy == CachePolicies.NeverCache.ToInt() ? CachePolicies.PerUser.ToInt() : widget.CachePolicy;
             CacheHours = widget.CacheHours;
             CacheExpires = widget.CacheExpires;
             CachedContent = widget.CachedContent;
@@ -235,7 +235,7 @@ namespace CmsWeb.Areas.Setup.Models
         private string Generate()
         {
             var m = new PythonScriptModel(CurrentDatabase);
-            m.pythonModel.HttpMethod = "get";
+            m.PrepareHttpPost();
             m.pythonModel.DictionaryAdd("HTMLContent", HTMLContent.Body);
             if (SQLContent != null)
             {

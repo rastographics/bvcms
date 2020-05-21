@@ -1,10 +1,14 @@
 ﻿@using System.Globalization
+@using CmsWeb
 @model CmsWeb.Areas.Finance.Models.BundleModel
 @{
-    object statusattributes = new {@class = "form-control"};
+    ViewBag.Title = "Contribution Bundle";
+    ViewBag.PageHeader = $"Contribution Bundle #{Model.BundleId}";
+    Layout = ViewExtensions2.TouchPointLayout();
+    object statusattributes = new { @class = "form-control" };
     if (!Model.CanChangeStatus)
     {
-        statusattributes = new {@class = "form-control", disabled = "disabled"};
+        statusattributes = new { @class = "form-control", disabled = "disabled" };
     }
 }
 <div class="row">
@@ -16,8 +20,9 @@
                 </div>
             </div>
             <div class="box-content">
-                <form id="bundleform">
-                    @if (!Model.CanChangeStatus)
+                @using (Html.BeginForm("Update", "Bundle", new { id = Model.BundleId }))
+                {
+                    if (!Model.CanChangeStatus)
                     {
                         <div class="alert alert-warning">
                             <p>
@@ -88,15 +93,16 @@
                         </li>
                     </ul>
                     <div class="hidden-xs">
-                        <a href="/Bundle/Cancel/@Model.BundleId" class="btn btn-default displayedit">Cancel</a> <a href="/Bundle/Update/@Model.BundleId" class="btn btn-primary displayedit">Save</a>
+                        <a href="/Bundle/@Model.BundleId" class="btn btn-default displayedit">Cancel</a> <button type="submit" class="btn btn-primary displayedit">Save</button>
                     </div>
                     <div class="visible-xs-block">
-                        <a href="/Bundle/Update/@Model.BundleId" class="btn btn-primary displayedit btn-block">Save</a>
-                        <a href="/Bundle/Cancel/@Model.BundleId" class="btn btn-default displayedit btn-block">Cancel</a>
-                        <hr/>
+                        <button type="submit" class="btn btn-primary displayedit btn-block">Save</button>
+                        <a href="/Bundle/@Model.BundleId" class="btn btn-default displayedit btn-block">Cancel</a>
+                        <hr />
                         <a class="btn btn-default btn-block" href="/Bundles"><i class="fa fa-arrow-circle-left"></i> Back to List</a>
                     </div>
-                </form>
+                }
+
             </div>
         </div>
     </div>

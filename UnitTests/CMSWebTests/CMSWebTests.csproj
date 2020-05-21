@@ -136,6 +136,7 @@
     <Compile Include="..\SharedTestFixtures\DatabaseCollection.cs">
       <Link>DatabaseCollection.cs</Link>
     </Compile>
+    <Compile Include="Areas\Finance\Models\BundleModelsTests.cs" />
     <Compile Include="Areas\Finance\Models\PostBundleModelTests.cs" />
     <Compile Include="Areas\Finance\Models\Statements\ContributionStatementsExtractTests.cs" />
     <Compile Include="Areas\Main\Controllers\EmailControllerTests.cs" />
@@ -151,6 +152,7 @@
     <Compile Include="Areas\People\Models\Person\Profile\MemberDocModelTests.cs" />
     <Compile Include="Areas\Public\Controllers\CheckInAPIControllerTests.cs" />
     <Compile Include="Areas\Public\Controllers\APIPersonControllerTests.cs" />
+    <Compile Include="Areas\Public\Controllers\CheckInAPIv2ControllerTests.cs" />
     <Compile Include="Areas\Public\Controllers\ExternalServicesControllerTests.cs" />
     <Compile Include="Areas\Public\Controllers\MobileAPIControllerTests.cs" />
     <Compile Include="Areas\Public\Controllers\MobileAPIv2ControllerTests.cs" />
@@ -172,6 +174,7 @@
     <Compile Include="Controllers\Api\CustomControllerTests.cs" />
     <Compile Include="Controllers\HomeControllerTests.cs" />
     <Compile Include="Models\IDbBinderTests.cs" />
+    <Compile Include="Models\PeopleSearchModelTest.cs" />
     <Compile Include="Properties\CMSWebTestsResources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

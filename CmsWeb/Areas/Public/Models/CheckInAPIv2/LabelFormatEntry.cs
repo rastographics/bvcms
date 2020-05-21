@@ -44,7 +44,11 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
         public bool invert;
         public int order;
 
-		public static List<LabelFormatEntry> forLabelID( SqlConnection db, int id )
+        public string orgEV;
+        public string personFlag;
+
+
+        public static List<LabelFormatEntry> forLabelID( SqlConnection db, int id )
 		{
 			List<LabelFormatEntry> entries = new List<LabelFormatEntry>();
 			DataTable table = new DataTable();

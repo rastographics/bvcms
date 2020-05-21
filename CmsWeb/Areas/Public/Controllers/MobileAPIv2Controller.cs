@@ -69,7 +69,7 @@ namespace CmsWeb.Areas.Public.Controllers
                 bool useMobileMessages = CurrentDatabase.Setting("UseMobileMessages", "false") == "true";
 
                 MobileAccount account = new MobileAccount(CurrentDatabase);
-                account.setCreateFields(mpc.first, mpc.last, mpc.email, mpc.phone, mpc.dob, message.device, message.instance, message.key);
+                account.setCreateFields(mpc.first, mpc.last, mpc.email, mpc.phone, mpc.dob, message.device, message.instance, message.key, message.build);
                 account.create();
 
                 return account.getMobileResponse(useMobileMessages);
@@ -121,7 +121,7 @@ namespace CmsWeb.Areas.Public.Controllers
         {
             MobileMessage message = MobileMessage.createFromString(data);
 
-            MobileAuthentication authentication = new MobileAuthentication(CurrentDatabase);
+            MobileAuthentication authentication = new MobileAuthentication(CurrentDatabase, message.build);
             authentication.authenticate(message.instance, message.data);
 
             if (authentication.hasError())
@@ -190,7 +190,7 @@ namespace CmsWeb.Areas.Public.Controllers
         {
             MobileMessage message = MobileMessage.createFromString(data);
 
-            MobileAuthentication authentication = new MobileAuthentication(CurrentDatabase);
+            MobileAuthentication authentication = new MobileAuthentication(CurrentDatabase, message.build);
             authentication.authenticate(message.instance, allowQuick: true);
 
             if (authentication.hasError())
@@ -247,7 +247,7 @@ namespace CmsWeb.Areas.Public.Controllers
         {
             MobileMessage message = MobileMessage.createFromString(data);
 
-            MobileAuthentication authentication = new MobileAuthentication(CurrentDatabase);
+            MobileAuthentication authentication = new MobileAuthentication(CurrentDatabase, message.build);
             authentication.authenticate(message.instance, allowQuick: true);
 
             if (authentication.hasError())
@@ -277,7 +277,7 @@ namespace CmsWeb.Areas.Public.Controllers
         {
             MobileMessage message = MobileMessage.createFromString(data);
 
-            MobileAuthentication authentication = new MobileAuthentication(CurrentDatabase);
+            MobileAuthentication authentication = new MobileAuthentication(CurrentDatabase, message.build);
             authentication.authenticate(message.instance, allowQuick: true, userID: message.argInt);
 
             if (authentication.hasError())
@@ -295,14 +295,14 @@ namespace CmsWeb.Areas.Public.Controllers
                 return MobileMessage.createErrorReturn("Invalid PIN", (int)MobileMessage.Error.INVALID_PIN);
             }
 
-            if (!authentication.setPIN(message.device, message.instance, message.key, message.argString))
+            if (!authentication.setPIN(message.device, message.instance, message.key, message.argString, message.build))
             {
                 return MobileMessage.createErrorReturn("PIN was not set", (int)MobileMessage.Error.PIN_NOT_SET);
             }
 
             if (message.argInt > 0 && authentication.getType() == MobileAuthentication.Type.QUICK)
             {
-                authentication.setDeviceUser();
+                authentication.setDeviceUser(message.build);
             }
 
             User user = authentication.getUser();
@@ -336,7 +336,7 @@ namespace CmsWeb.Areas.Public.Controllers
             // Link in data string is path only include leading slash
             MobileMessage message = MobileMessage.createFromString(data);
 
-            MobileAuthentication authentication = new MobileAuthentication(CurrentDatabase);
+            MobileAuthentication authentication = new MobileAuthentication(CurrentDatabase, message.build);
             authentication.authenticate(message.instance);
 
             if (authentication.hasError())
@@ -387,7 +387,7 @@ namespace CmsWeb.Areas.Public.Controllers
         {
             MobileMessage message = MobileMessage.createFromString(data);
 
-            MobileAuthentication authentication = new MobileAuthentication(CurrentDatabase);
+            MobileAuthentication authentication = new MobileAuthentication(CurrentDatabase, message.build);
             authentication.authenticate(message.instance);
 
             if (authentication.hasError())
@@ -396,31 +396,72 @@ namespace CmsWeb.Areas.Public.Controllers
             }
 
             User user = authentication.getUser();
+            MobileMessage response = new MobileMessage();
+            response.setNoError();
 
-            int? orgID;
+            int? orgID = null;
+            string route = null;
+            string campus = null;
+            string link = message.argBool
+                ? CurrentDatabase.Setting("ExternalManageGivingUrl", "")
+                : CurrentDatabase.Setting("ExternalOneTimeGiftUrl", "");
 
-            if (message.argBool)
+            if (link.HasValue())
             {
-                // Managed Giving
-                orgID = CurrentDatabase.Organizations.Where(o => o.RegistrationTypeId == RegistrationTypeCode.ManageGiving).Select(x => x.OrganizationId).FirstOrDefault();
+                link = DbUtil.ExternalLink(CurrentDatabase, user.PeopleId, link);
             }
             else
             {
-                // Normal Giving
-                const string sql = @"SELECT OrganizationId FROM dbo.Organizations WHERE RegistrationTypeId = 8 AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
-
-                orgID = CurrentDatabase.Connection.ExecuteScalar(sql) as int?;
+                if (message.argBool) // Managed Giving
+                {
+                    orgID = APIContribution.ManagedGivingOrgId(CurrentDatabase);
+                    if ((orgID.HasValue == false) || (orgID == 0))
+                    {
+                        response.setError((int)MobileMessage.Error.INVALID_RECURRING_GIVING_ORGID);
+                    }
+                    else
+                    {
+                        var c = user.Person.Campu?.Code?.GetChars();
+                        if (c.HasValue())
+                        {
+                            campus = $"&campus={c}";
+                        }
+                    }
+                }
+                else // One-time Giving
+                {
+                    route = CurrentDatabase.Setting($"OneTimeGiftCampusRoute-{user.Person.CampusId}", "");
+                    if (route.IsEmpty())
+                    {
+                        orgID = APIContribution.OneTimeGiftOrgId(CurrentDatabase);
+                        if ((orgID.HasValue == false) || (orgID == 0))
+                        {
+                            response.setError((int)MobileMessage.Error.INVALID_ONETIME_GIFT_ORGID);
+                        }
+                    }
+                    else
+                    {
+                        link = MobileAuthentication.GetAuthenticatedLink(
+                            authentication.getUser(),
+                            CurrentDatabase,
+                            CurrentDatabase.ServerLink($"{route}?{message.getSourceQueryString()}"));
+                    }
+                }
             }
 
-            OneTimeLink ot = GetOneTimeLink(orgID ?? 0, user.PeopleId ?? 0);
+            if (link.IsEmpty())
+            {
+                OneTimeLink ot = GetOneTimeLink(orgID ?? 0, user.PeopleId ?? 0);
 
-            CurrentDatabase.OneTimeLinks.InsertOnSubmit(ot);
-            CurrentDatabase.SubmitChanges();
+                CurrentDatabase.OneTimeLinks.InsertOnSubmit(ot);
+                CurrentDatabase.SubmitChanges();
 
-            MobileMessage response = new MobileMessage();
-            response.setNoError();
-            response.data = CurrentDatabase.ServerLink($"OnlineReg/RegisterLink/{ot.Id.ToCode()}?{message.getSourceQueryString()}");
-
+                response.data = CurrentDatabase.ServerLink($"OnlineReg/RegisterLink/{ot.Id.ToCode()}?{message.getSourceQueryString()}{campus}");
+            }
+            else
+            {
+                response.data = link;
+            }
             return response;
         }
 
@@ -429,7 +470,7 @@ namespace CmsWeb.Areas.Public.Controllers
         {
             MobileMessage message = MobileMessage.createFromString(data);
 
-            MobileAuthentication authentication = new MobileAuthentication(CurrentDatabase);
+            MobileAuthentication authentication = new MobileAuthentication(CurrentDatabase, message.build);
             authentication.authenticate(message.instance);
 
             if (authentication.hasError())
@@ -457,7 +498,7 @@ namespace CmsWeb.Areas.Public.Controllers
         {
             MobileMessage message = MobileMessage.createFromString(data);
 
-            MobileAuthentication authentication = new MobileAuthentication(CurrentDatabase);
+            MobileAuthentication authentication = new MobileAuthentication(CurrentDatabase, message.build);
             authentication.authenticate(message.instance);
 
             if (authentication.hasError())
@@ -487,7 +528,7 @@ namespace CmsWeb.Areas.Public.Controllers
         {
             MobileMessage message = MobileMessage.createFromString(data);
 
-            MobileAuthentication authentication = new MobileAuthentication(CurrentDatabase);
+            MobileAuthentication authentication = new MobileAuthentication(CurrentDatabase, message.build);
             authentication.authenticate(message.instance);
 
             if (authentication.hasError())
@@ -670,7 +711,7 @@ namespace CmsWeb.Areas.Public.Controllers
         {
             MobileMessage message = MobileMessage.createFromString(data);
 
-            MobileAuthentication authentication = new MobileAuthentication(CurrentDatabase);
+            MobileAuthentication authentication = new MobileAuthentication(CurrentDatabase, message.build);
             authentication.authenticate(message.instance);
 
             if (authentication.hasError())
@@ -716,7 +757,7 @@ namespace CmsWeb.Areas.Public.Controllers
         {
             MobileMessage message = MobileMessage.createFromString(data);
 
-            MobileAuthentication authentication = new MobileAuthentication(CurrentDatabase);
+            MobileAuthentication authentication = new MobileAuthentication(CurrentDatabase, message.build);
             authentication.authenticate(message.instance);
 
             if (authentication.hasError())
@@ -758,7 +799,7 @@ namespace CmsWeb.Areas.Public.Controllers
         {
             MobileMessage message = MobileMessage.createFromString(data);
 
-            MobileAuthentication authentication = new MobileAuthentication(CurrentDatabase);
+            MobileAuthentication authentication = new MobileAuthentication(CurrentDatabase, message.build);
             authentication.authenticate(message.instance);
 
             if (authentication.hasError())
@@ -837,7 +878,7 @@ namespace CmsWeb.Areas.Public.Controllers
         {
             MobileMessage message = MobileMessage.createFromString(data);
 
-            MobileAuthentication authentication = new MobileAuthentication(CurrentDatabase);
+            MobileAuthentication authentication = new MobileAuthentication(CurrentDatabase, message.build);
             authentication.authenticate(message.instance);
 
             if (authentication.hasError())
@@ -917,7 +958,7 @@ namespace CmsWeb.Areas.Public.Controllers
         {
             MobileMessage message = MobileMessage.createFromString(data);
 
-            MobileAuthentication authentication = new MobileAuthentication(CurrentDatabase);
+            MobileAuthentication authentication = new MobileAuthentication(CurrentDatabase, message.build);
             authentication.authenticate(message.instance);
 
             if (authentication.hasError())
@@ -968,7 +1009,7 @@ namespace CmsWeb.Areas.Public.Controllers
         {
             MobileMessage message = MobileMessage.createFromString(data);
 
-            MobileAuthentication authentication = new MobileAuthentication(CurrentDatabase);
+            MobileAuthentication authentication = new MobileAuthentication(CurrentDatabase, message.build);
             authentication.authenticate(message.instance);
 
             if (authentication.hasError())
@@ -1024,7 +1065,7 @@ namespace CmsWeb.Areas.Public.Controllers
         {
             MobileMessage message = MobileMessage.createFromString(data);
 
-            MobileAuthentication authentication = new MobileAuthentication(CurrentDatabase);
+            MobileAuthentication authentication = new MobileAuthentication(CurrentDatabase, message.build);
             authentication.authenticate(message.instance);
 
             if (authentication.hasError())
@@ -1105,7 +1146,7 @@ namespace CmsWeb.Areas.Public.Controllers
         {
             MobileMessage message = MobileMessage.createFromString(data);
 
-            MobileAuthentication authentication = new MobileAuthentication(CurrentDatabase);
+            MobileAuthentication authentication = new MobileAuthentication(CurrentDatabase, message.build);
             authentication.authenticate(message.instance);
 
             if (authentication.hasError())
@@ -1189,7 +1230,7 @@ namespace CmsWeb.Areas.Public.Controllers
         {
             MobileMessage message = MobileMessage.createFromString(data);
 
-            MobileAuthentication authentication = new MobileAuthentication(CurrentDatabase);
+            MobileAuthentication authentication = new MobileAuthentication(CurrentDatabase, message.build);
             authentication.authenticate(message.instance);
 
             if (authentication.hasError())
@@ -1271,7 +1312,7 @@ namespace CmsWeb.Areas.Public.Controllers
         {
             MobileMessage message = MobileMessage.createFromString(data);
 
-            MobileAuthentication authentication = new MobileAuthentication(CurrentDatabase);
+            MobileAuthentication authentication = new MobileAuthentication(CurrentDatabase, message.build);
             authentication.authenticate(message.instance);
 
             if (authentication.hasError())
@@ -1347,7 +1388,7 @@ namespace CmsWeb.Areas.Public.Controllers
         {
             MobileMessage message = MobileMessage.createFromString(data);
 
-            MobileAuthentication authentication = new MobileAuthentication(CurrentDatabase);
+            MobileAuthentication authentication = new MobileAuthentication(CurrentDatabase, message.build);
             authentication.authenticate(message.instance);
 
             if (authentication.hasError())
@@ -1378,7 +1419,7 @@ namespace CmsWeb.Areas.Public.Controllers
         {
             MobileMessage message = MobileMessage.createFromString(data);
 
-            MobileAuthentication authentication = new MobileAuthentication(CurrentDatabase);
+            MobileAuthentication authentication = new MobileAuthentication(CurrentDatabase, message.build);
             authentication.authenticate(message.instance);
 
             if (authentication.hasError())
@@ -1409,7 +1450,7 @@ namespace CmsWeb.Areas.Public.Controllers
         {
             MobileMessage message = MobileMessage.createFromString(data);
 
-            MobileAuthentication authentication = new MobileAuthentication(CurrentDatabase);
+            MobileAuthentication authentication = new MobileAuthentication(CurrentDatabase, message.build);
             authentication.authenticate(message.instance);
 
             if (authentication.hasError())
@@ -1440,7 +1481,7 @@ namespace CmsWeb.Areas.Public.Controllers
         {
             MobileMessage message = MobileMessage.createFromString(data);
 
-            MobileAuthentication authentication = new MobileAuthentication(CurrentDatabase);
+            MobileAuthentication authentication = new MobileAuthentication(CurrentDatabase, message.build);
             authentication.authenticate(message.instance);
 
             if (authentication.hasError())
@@ -1465,7 +1506,7 @@ namespace CmsWeb.Areas.Public.Controllers
         {
             MobileMessage message = MobileMessage.createFromString(data);
 
-            MobileAuthentication authentication = new MobileAuthentication(CurrentDatabase);
+            MobileAuthentication authentication = new MobileAuthentication(CurrentDatabase, message.build);
             authentication.authenticate(message.instance);
 
             if (authentication.hasError())
@@ -1498,7 +1539,7 @@ namespace CmsWeb.Areas.Public.Controllers
         {
             MobileMessage message = MobileMessage.createFromString(data);
 
-            MobileAuthentication authentication = new MobileAuthentication(CurrentDatabase);
+            MobileAuthentication authentication = new MobileAuthentication(CurrentDatabase, message.build);
             authentication.authenticate(message.instance);
 
             if (authentication.hasError())
@@ -1572,7 +1613,7 @@ namespace CmsWeb.Areas.Public.Controllers
         {
             MobileMessage message = MobileMessage.createFromString(data);
 
-            MobileAuthentication authentication = new MobileAuthentication(CurrentDatabase);
+            MobileAuthentication authentication = new MobileAuthentication(CurrentDatabase, message.build);
             authentication.authenticate(message.instance);
 
             if (authentication.hasError())
@@ -1642,7 +1683,7 @@ namespace CmsWeb.Areas.Public.Controllers
         {
             MobileMessage message = MobileMessage.createFromString(data);
 
-            MobileAuthentication authentication = new MobileAuthentication(CurrentDatabase);
+            MobileAuthentication authentication = new MobileAuthentication(CurrentDatabase, message.build);
             authentication.authenticate(message.instance);
 
             if (authentication.hasError())
@@ -1690,7 +1731,7 @@ namespace CmsWeb.Areas.Public.Controllers
 
             MobileMessage message = MobileMessage.createFromString(data);
 
-            MobileAuthentication authentication = new MobileAuthentication(CurrentDatabase);
+            MobileAuthentication authentication = new MobileAuthentication(CurrentDatabase, message.build);
             authentication.authenticate(message.instance);
 
             if (authentication.hasError())
@@ -1732,7 +1773,7 @@ namespace CmsWeb.Areas.Public.Controllers
         {
             MobileMessage message = MobileMessage.createFromString(data);
 
-            MobileAuthentication authentication = new MobileAuthentication(CurrentDatabase);
+            MobileAuthentication authentication = new MobileAuthentication(CurrentDatabase, message.build);
             authentication.authenticate(message.instance);
 
             if (authentication.hasError())
@@ -1770,7 +1811,7 @@ namespace CmsWeb.Areas.Public.Controllers
         {
             MobileMessage message = MobileMessage.createFromString(data);
 
-            MobileAuthentication authentication = new MobileAuthentication(CurrentDatabase);
+            MobileAuthentication authentication = new MobileAuthentication(CurrentDatabase, message.build);
             authentication.authenticate(message.instance);
 
             if (authentication.hasError())
@@ -1933,7 +1974,7 @@ namespace CmsWeb.Areas.Public.Controllers
         {
             MobileMessage message = MobileMessage.createFromString(data);
 
-            MobileAuthentication authentication = new MobileAuthentication(CurrentDatabase);
+            MobileAuthentication authentication = new MobileAuthentication(CurrentDatabase, message.build);
             authentication.authenticate(message.instance);
 
             if (authentication.hasError())
@@ -2086,7 +2127,7 @@ namespace CmsWeb.Areas.Public.Controllers
         {
             MobileMessage message = MobileMessage.createFromString(data);
 
-            MobileAuthentication authentication = new MobileAuthentication(CurrentDatabase);
+            MobileAuthentication authentication = new MobileAuthentication(CurrentDatabase, message.build);
             authentication.authenticate(message.instance);
 
             if (authentication.hasError())

@@ -22,22 +22,28 @@
             }
         }
         ul.list-group li {
-            border-left: none;
-            border-right: none;
+            border: none;
             padding-left: 20px;
         }
         ul.list-group li.section {
             font-weight: bold;
         }
-
         ul.list-group li.indent {
             padding-left: 25px;
         }
-
         .list-group-item > .label {
             float: right;
         }
-
+        ul.list-group.bordered li {
+            border-top: 1px solid #ddd;
+            border-bottom: 1px solid #ddd;
+        }
+        .box-title {
+            border-bottom: 1px solid #ddd;
+        }
+        .box-content {
+            border-top: 0;
+        }
         .widget-embed.loading {
             opacity: 0.5;
         }
@@ -67,7 +73,7 @@
         <div class="col-sm-4">
             @foreach (DashboardWidget widget in column)
             {
-                <div class="widget-embed" data-url="/HomeWidgets/Embed/@widget.Id.ToString()" data-name="@widget.Name">
+                <div class="widget-embed" data-url="/HomeWidgets/Embed/@widget.Id.ToString()?pid=@ViewExtensions2.CurrentUser.PeopleId" data-name="@widget.Name">
                     <div class="box">
                         <div class="center">
                             <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>

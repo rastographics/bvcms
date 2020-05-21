@@ -385,6 +385,14 @@ namespace CmsData.API
             return oid;
         }
 
+        public static int? ManagedGivingOrgId(CMSDataContext db)
+        {
+            return db.Organizations
+                .Where(o => o.RegistrationTypeId == RegistrationTypeCode.ManageGiving)
+                .Select(x => x.OrganizationId)
+                .FirstOrDefault();
+        }
+
         [Serializable]
         public class FamilyContributions
         {
