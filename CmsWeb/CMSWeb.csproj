@@ -1778,7 +1778,6 @@
     <Content Include="chart.py" />
     <Content Include="Properties\Files\ContributionStatementTemplate.html" />
     <Content Include="Properties\Files\ContributionStatementTemplateBody.html" />
-    <Content Include="src\assets\logo.png" />
     <Content Include="src\main.js" />
     <Content Include="Views\Shared\Account\_Layout.cshtml" />
     <Content Include="Areas\Reports\Views\Reports\EditCustomReport.cshtml" />
