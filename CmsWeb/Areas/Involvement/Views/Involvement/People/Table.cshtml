@@ -106,23 +106,20 @@
                 <td>
                     @if (p.CustomerTicketStatus == (int)CustomerTicketStatusEnum.PrintedByCustomer)
                     {
-                        <a href="Inv/Print"><i class="fa fa-print" style="color:#008000;"></i></a>&nbsp; &nbsp;
+                        <a href="Inv/Print"><i class="fa fa-print" style="color:#008000;"></i></a>
                     }
                     else if (p.CustomerTicketStatus == (int)CustomerTicketStatusEnum.WillCallPrintedByChurch)
                     {
-                        <a href="Inv/Print"><i class="fa fa-print" style="color:#FF0000;"></i></a>&nbsp; &nbsp;
+                        <a href="Inv/Print"><i class="fa fa-print" style="color:#FF0000;"></i></a>
                     }
                     else
                     {
-                        <a href="Inv/Print"><i class="fa fa-print"></i></a>&nbsp; &nbsp;
+                        <a href="Inv/Print"><i class="fa fa-print"></i></a>
                     }
 
+                    &nbsp; &nbsp;
                     <a href="Inv/Tag"><i class="fa fa-tag"></i></a>&nbsp;
                     <a href="Inv/Edit"><i class="fa fa-edit"></i></a>&nbsp;
-
-
-
-                    @*<a href="#" class="btn btn-sm btn-danger dropMember" title="Drop Member" data-people-id="@p.PeopleId"><i class="fa fa-trash"></i> Drop</a>*@
                 </td>
             </tr>
         }
