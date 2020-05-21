@@ -25,6 +25,8 @@ namespace CmsData
 
         private DateTime? _EndDate;
 
+        private DateTime? _LastProcessed;
+
         private EntityRef<Person> _Person;
 
         private EntitySet<ScheduledGiftAmount> _ScheduledGiftAmounts;
@@ -51,6 +53,9 @@ namespace CmsData
 
         partial void OnEndDateChanging(DateTime? value);
         partial void OnEndDateChanged();
+
+        partial void OnLastProcessedChanging(DateTime? value);
+        partial void OnLastProcessedChanged();
 
         partial void OnPaymentMethodIdChanging(Guid value);
         partial void OnPaymentMethodIdChanged();
@@ -155,6 +160,23 @@ namespace CmsData
                     _EndDate = value;
                     SendPropertyChanged("EndDate");
                     OnEndDateChanged();
+                }
+            }
+        }
+
+        [Column(Name = "LastProcessed", UpdateCheck = UpdateCheck.Never, Storage = "_LastProcessed", DbType = "datetime")]
+        public DateTime? LastProcessed
+        {
+            get => _LastProcessed;
+            set
+            {
+                if (_LastProcessed != value)
+                {
+                    OnLastProcessedChanging(value);
+                    SendPropertyChanging();
+                    _LastProcessed = value;
+                    SendPropertyChanged("LastProcessed");
+                    OnLastProcessedChanged();
                 }
             }
         }
