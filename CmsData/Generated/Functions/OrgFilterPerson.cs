@@ -98,6 +98,8 @@ namespace CmsData.View
 
         private int? _CustomerTicketStatus;
 
+        private bool? _CustomerOnActiveTag;
+
         public OrgFilterPerson()
         {
         }
@@ -716,6 +718,18 @@ namespace CmsData.View
             }
         }
 
+        public bool? CustomerOnActiveTag
+        {
+            get => _CustomerOnActiveTag;
+
+            set
+            {
+                if (_CustomerOnActiveTag != value)
+                {
+                    _CustomerOnActiveTag = value;
+                }
+            }
+        }
 
     }
 
