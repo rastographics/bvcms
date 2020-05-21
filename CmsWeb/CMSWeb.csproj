@@ -556,6 +556,7 @@
     <Compile Include="Areas\Finance\Models\TotalsByFundRange.cs" />
     <Compile Include="Areas\Finance\Models\TotalsByFundAgeRangeModel.cs" />
     <Compile Include="Areas\Giving\Controllers\GivingPageController.cs" />
+    <Compile Include="Areas\Giving\Controllers\GivingManagementController.cs" />
     <Compile Include="Areas\Giving\Models\GivingPageModel.cs" />
     <Compile Include="Areas\Giving\Models\GivingPageViewModel.cs" />
     <Compile Include="Areas\Main\Models\Other\CouponResponseModel.cs" />
@@ -1284,7 +1285,6 @@
     <Content Include="Content\touchpoint\js\admin\users-email-for.js" />
     <Content Include="Content\touchpoint\js\admin\users.js" />
     <Content Include="Content\touchpoint\js\app.min.js" />
-    <Content Include="Content\touchpoint\js\checkin\checkinsetup.js" />
     <Content Include="Content\touchpoint\js\Coupons.js" />
     <Content Include="Content\touchpoint\js\dialog\search-users.js" />
     <Content Include="Content\touchpoint\js\edit-custom-report.js" />
@@ -1295,7 +1295,6 @@
     <Content Include="Content\touchpoint\js\finance\totals-by-fund.js" />
     <Content Include="Content\touchpoint\js\finance\transactions.js" />
     <Content Include="Content\touchpoint\js\form-ajax.js" />
-    <Content Include="Content\touchpoint\js\gateway.js" />
     <Content Include="Content\touchpoint\js\checkin.js" />
     <Content Include="Content\touchpoint\js\onlineregister.min.js" />
     <Content Include="Content\touchpoint\js\update-add-modal-results.js" />
@@ -1314,7 +1313,6 @@
     <Content Include="Content\touchpoint\js\tranhistory.js" />
     <Content Include="Content\touchpoint\js\volunteer\AltCalendar.js" />
     <Content Include="Content\touchpoint\js\volunteer\calendar.js" />
-    <Content Include="Content\touchpoint\js\vue-number-input.js" />
     <Content Include="Content\touchpoint\lib\bootstrap-sweetalert\js\sweetalert.min.js" />
     <Content Include="Content\touchpoint\lib\bootstrap-sweetalert\css\sweetalert.css" />
     <Content Include="Content\touchpoint\lib\ckeditor\plugins\specialLink\dialogs\specialLink.js" />
@@ -1928,8 +1926,9 @@
     <Content Include="Areas\Giving\Views\Web.config">
       <SubType>Designer</SubType>
     </Content>
-    <Content Include="Areas\Giving\Views\GivingPage\Index.cshtml" />
+    <Content Include="Areas\Giving\Views\GivingManagement\Index.cshtml" />
     <Content Include="package-lock.json" />
+    <Content Include="Areas\Giving\Views\GivingPage\Index.cshtml" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
@@ -2837,14 +2836,13 @@
     <Content Include="Views\Shared\AdminAlerts.cshtml" />
     <Content Include="Views\Shared\_diagnostics.cshtml" />
     <Content Include="Views\Shared\Redirect.cshtml" />
-    <Content Include="src\App.vue" />
-    <Content Include="src\components\GenericComponents\Modal.vue" />
-    <Content Include="src\components\GenericComponents\Slider.vue" />
-    <Content Include="src\components\Giving\GivingPageIndex\AddGivingPage.vue" />
-    <Content Include="src\components\Giving\GivingPageIndex\GivingPageIndex.vue" />
-    <Content Include="src\components\Giving\GivingPageEdit\GivingPageEdit.vue" />
-    <Content Include="src\components\GenericComponents\ShowModalBtn.vue" />
+    <Content Include="src\components\Common\Toggle.vue" />
+    <Content Include="src\components\Giving\GivingManagement\AddGivingPage.vue" />
+    <Content Include="src\components\Giving\GivingManagement\GivingPageIndex.vue" />
+    <Content Include="src\components\Giving\GivingManagement\GivingPageEdit.vue" />
     <Content Include="Views\Home\Dashboard.cshtml" />
+    <Content Include="src\components\Setup\Gateway\Manage.vue" />
+    <Content Include="src\components\CheckIn\CheckinSetup.vue" />
     <None Include="Web.staging.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

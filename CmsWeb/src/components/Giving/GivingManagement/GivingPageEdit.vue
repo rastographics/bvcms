@@ -36,11 +36,7 @@
                       <label class="control-label">Enabled</label>
                     </div>
                     <div>
-                      <generic-slider
-                        v-model="currentPageEnabled"
-                        v-bind:sliderValue="currentPageEnabled"
-                        v-on:toggleSlider="currentPageEnabled = !currentPageEnabled"
-                      ></generic-slider>
+                      <tp-toggle v-model="currentPageEnabled"></tp-toggle>
                     </div>
                   </div>
                 </div>
@@ -345,8 +341,6 @@ export default {
             if (response.status === 200) {
               this.tester = response.data;
               this.$emit('updatePage', response.data);
-              // this.$emit('updateIndex');
-              // this.$emit('updatePage', [this.currentPageId, this.currentPageName, this.currentPageTitle, this.currentPageEnabled]);
             } else {
               warning_swal("Warning!", "Something went wrong, try again later");
             }

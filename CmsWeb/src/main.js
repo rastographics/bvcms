@@ -1,13 +1,20 @@
 import Vue from 'vue';
+import axios from 'axios';
+Vue.prototype.$http = axios;
+Vue.config.productionTip = false;
 
-Vue.config.productionTip = false
+// CheckIn
+Vue.component('checkin-setup', require('./components/CheckIn/CheckinSetup.vue').default);
 
-// Giving Pages Components
-Vue.component('giving-page-index', require('./components/Giving/GivingPageIndex/GivingPageIndex.vue').default);
-Vue.component('add-giving-page', require('./components/Giving/GivingPageIndex/AddGivingPage.vue').default);
-Vue.component('edit-giving-page', require('./components/Giving/GivingPageEdit/GivingPageEdit.vue').default);
+// Multiple Gateways
+Vue.component('gateway-management', require('./components/Setup/Gateway/Manage.vue').default);
 
-// Generic Components
-Vue.component('generic-slider', require('./components/GenericComponents/Slider.vue').default);
+// Giving Management
+Vue.component('giving-page-index', require('./components/Giving/GivingManagement/GivingPageIndex.vue').default);
+Vue.component('add-giving-page', require('./components/Giving/GivingManagement/AddGivingPage.vue').default);
+Vue.component('edit-giving-page', require('./components/Giving/GivingManagement/GivingPageEdit.vue').default);
+
+// Touchpoint Common Components
+Vue.component('tp-toggle', require('./components/Common/Toggle.vue').default);
 
 window.Vue = Vue;

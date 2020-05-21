@@ -46,10 +46,10 @@
                   <label class="control-label">Enabled</label>
                 </div>
                 <div>
-                  <generic-slider
+                  <tp-toggle
                     v-model="newGivingEnabled"
-                    v-on:toggleSlider="toggleNewGivingEnabled()"
-                  ></generic-slider>
+                    v-on:changed="toggleNewGivingEnabled()"
+                  ></tp-toggle>
                 </div>
               </div>
             </div>
