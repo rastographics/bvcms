@@ -2828,6 +2828,7 @@
     <Content Include="Views\Shared\_diagnostics.cshtml" />
     <Content Include="Views\Shared\Redirect.cshtml" />
     <Content Include="Views\Home\Dashboard.cshtml" />
+    <Content Include="Views\Shared\Menu\Involvement.cshtml" />
     <None Include="Web.staging.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

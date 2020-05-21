@@ -5,6 +5,7 @@
     var access = User.IsInRole("Access");
     var customHeaderImage = CustomHeader.HeaderImage("~/Content/touchpoint/img/logo.png");
     var customSmallHeaderImage = CustomHeader.SmallHeaderImage("~/Content/touchpoint/img/logo_sm.png");
+    CMSDataContext Db = ViewExtensions2.CurrentDatabase;
 }
 <style>
     #thumbnail-picture {
@@ -83,7 +84,15 @@
                     <ul class="nav navbar-nav">
                         <li class="visible-xs-block"><a href="#" data-toggle="modal" data-target="#search-box-search-person" id="search-button"><i class="fa fa-search"></i><span class="visible-lg-inline visible-xs-inline">&nbsp;&nbsp;Search</span></a></li>
                         @Html.Partial("Menu/People")
-                        @Html.Partial("Menu/Organization")
+
+                        @if (Db.Setting("UseNewInvolvementCreation"))
+                        {
+                            @Html.Partial("Menu/Involvement");
+                        }
+                        else
+                        {
+                            @Html.Partial("Menu/Organization");
+                        }
                         @Html.Partial("Menu/Reports")
                         @Html.Partial("Menu/Admin")
                     </ul>
