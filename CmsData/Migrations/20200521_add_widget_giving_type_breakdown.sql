@@ -190,7 +190,8 @@ INSERT INTO [dbo].[Content]
            ([Name],[Title],[Body],[DateCreated],[TypeID],[ThumbID],[RoleID],[OwnerID],[CreatedBy])
      VALUES
            ('WidgetGivingTypeBreakdownSQL','Edit Sql Script',
-           'with weeks as (
+           'set datefirst 1;
+with weeks as (
 select DATEPART(week, getdate()) w UNION ALL
 select DATEPART(week, getdate() - 7) w UNION ALL
 select DATEPART(week, getdate() - 14) w UNION ALL
