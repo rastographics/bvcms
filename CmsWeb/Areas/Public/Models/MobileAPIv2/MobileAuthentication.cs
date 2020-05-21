@@ -7,6 +7,7 @@ using System.Linq;
 using System.Net;
 using System.Security.Cryptography;
 using System.Text;
+using System.Web;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Public.Models.MobileAPIv2
@@ -21,14 +22,16 @@ namespace CmsWeb.Areas.Public.Models.MobileAPIv2
         private Error error = Error.UNKNOWN;
         private Type type = Type.NONE;
 
+        private string build = "";
         private string instance = "";
 
         private string username = "";
         private string password = "";
 
-        public MobileAuthentication(CMSDataContext db)
+        public MobileAuthentication(CMSDataContext db, string build)
         {
             this.db = db;
+            this.build = build;
         }
 
         public void authenticate(string instanceID, string previousID = "", bool allowQuick = false, int userID = 0)
@@ -63,7 +66,7 @@ namespace CmsWeb.Areas.Public.Models.MobileAPIv2
                 case "pin":
                     {
                         type = Type.PIN;
-                        error = validatePIN(headerParts[1], instanceID, previousID);
+                        error = validatePIN(headerParts[1], instanceID, previousID, build);
 
                         break;
                     }
@@ -73,7 +76,7 @@ namespace CmsWeb.Areas.Public.Models.MobileAPIv2
                         if (allowQuick)
                         {
                             type = Type.QUICK;
-                            error = validateQuickLogin(headerParts[1], instanceID, userID);
+                            error = validateQuickLogin(headerParts[1], instanceID, userID, build);
                         }
                         else
                         {
@@ -158,7 +161,7 @@ namespace CmsWeb.Areas.Public.Models.MobileAPIv2
             return checkUser(userFound, impersonating);
         }
 
-        private Error validatePIN(string value, string instanceID, string previousID)
+        private Error validatePIN(string value, string instanceID, string previousID, string version)
         {
             string credentials;
 
@@ -212,6 +215,7 @@ namespace CmsWeb.Areas.Public.Models.MobileAPIv2
             }
 
             device.LastSeen = DateTime.Now;
+            device.AppVersion = version;
             db.SubmitChanges();
 
             user = device.User;
@@ -228,7 +232,7 @@ namespace CmsWeb.Areas.Public.Models.MobileAPIv2
             return checkUser(true, false);
         }
 
-        private Error validateQuickLogin(string code, string instanceID, int userID)
+        private Error validateQuickLogin(string code, string instanceID, int userID, string version)
         {
             if (string.IsNullOrEmpty(code) || string.IsNullOrEmpty(instanceID))
             {
@@ -244,6 +248,7 @@ namespace CmsWeb.Areas.Public.Models.MobileAPIv2
             }
 
             device.LastSeen = DateTime.Now;
+            device.AppVersion = version;
             db.SubmitChanges();
 
             if (userID > 0)
@@ -278,7 +283,7 @@ namespace CmsWeb.Areas.Public.Models.MobileAPIv2
             return Error.AUTHENTICATED;
         }
 
-        public bool setPIN(int deviceTypeID, string instanceID, string key, string pin)
+        public bool setPIN(int deviceTypeID, string instanceID, string key, string pin, string version)
         {
             if (string.IsNullOrEmpty(username))
             {
@@ -309,18 +314,19 @@ namespace CmsWeb.Areas.Public.Models.MobileAPIv2
                     Authentication = hashString,
                     Code = "",
                     CodeExpires = SqlDateTime.MinValue.Value,
-                    CodeEmail = ""
+                    CodeEmail = "",
                 };
 
                 db.MobileAppDevices.InsertOnSubmit(appDevice);
             }
+            appDevice.AppVersion = version;
 
             db.SubmitChanges();
 
             return true;
         }
 
-        public void setDeviceUser()
+        public void setDeviceUser(string build)
         {
             if (device == null || user == null)
             {
@@ -332,6 +338,7 @@ namespace CmsWeb.Areas.Public.Models.MobileAPIv2
             device.Code = "";
             device.CodeExpires = new DateTime(1970, 01, 01);
             device.CodeEmail = "";
+            device.AppVersion = build;
 
             db.SubmitChanges();
         }
@@ -477,5 +484,21 @@ namespace CmsWeb.Areas.Public.Models.MobileAPIv2
 			"Cannot impersonate finance user", // -13
 			"Cannot access with API only user" // -14
 		};
+
+        public static string GetAuthenticatedLink(User user, CMSDataContext db, string url)
+        {
+            OneTimeLink ot = new OneTimeLink
+            {
+                Id = Guid.NewGuid(),
+                Querystring = user.Username,
+                Expires = DateTime.Now.AddMinutes(15)
+            };
+
+            db.OneTimeLinks.InsertOnSubmit(ot);
+            db.SubmitChanges();
+
+            var returnUrl = HttpUtility.UrlEncode(url);
+            return $"{db.ServerLink($"Logon?otltoken={ot.Id.ToCode()}&ReturnUrl={returnUrl}")}";
+        }
     }
 }
