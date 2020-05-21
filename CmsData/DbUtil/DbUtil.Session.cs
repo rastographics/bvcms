@@ -17,7 +17,6 @@ namespace CmsData
         public const string STR_DefaultTag = "UnNamed";
         public const string STR_FromMobile = "source";
         public const string STR_MostRecentOrgs = "MostRecentOrgs";
-        public const string STR_MostRecentInvolvements = "MostRecentInvolvements";
         public const string STR_MostRecentPeople = "MostRecentPeople";
         public const string STR_OrgLeadersOnly = "OrgLeadersOnly";
         public const string STR_OrgLeadersOnlyChecked = "OrgLeadersOnlyChecked";
@@ -149,26 +148,6 @@ namespace CmsData
                            where i.Type == "org"
                            select new MostRecentItem() { Id = i.Id.Value, Name = i.Name }).ToList();
                     Util.SetValueInSession(STR_MostRecentOrgs, mru);
-                }
-                return mru;
-            }
-            set
-            {
-                Util.SetValueInSession(STR_MostRecentOrgs, value);
-            }
-        }
-
-        public static List<MostRecentItem> MostRecentInvolvements
-        {
-            get
-            {
-                var mru = Util.GetFromSession<List<MostRecentItem>>(STR_MostRecentInvolvements, null);
-                if (mru == null)
-                {
-                    mru = (from i in Db.MostRecentItems(Db.UserId)
-                           where i.Type == "inv"
-                           select new MostRecentItem() { Id = i.Id.Value, Name = i.Name }).ToList();
-                    Util.SetValueInSession(STR_MostRecentInvolvements, mru);
                 }
                 return mru;
             }
