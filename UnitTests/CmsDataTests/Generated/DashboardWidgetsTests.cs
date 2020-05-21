@@ -33,5 +33,16 @@ namespace CmsDataTests.Generated
 
             MockContent.DeleteHTMLContent(db, htmlContent);
         }
+        [Theory]
+        [InlineData(4)]
+        public void CreateWidgetSqlContent(int sqlTypeId)
+        {
+            var sqlContent = MockContent.CreateSqlContent(db);
+            var expectedSqlTypeId = sqlTypeId;
+
+            Assert.Equal(sqlContent.TypeID, expectedSqlTypeId);
+
+            MockContent.DeleteHTMLContent(db, sqlContent);
+        }
     }
 }
