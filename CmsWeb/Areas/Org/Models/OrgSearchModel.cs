@@ -675,7 +675,7 @@ namespace CmsWeb.Areas.Search.Models
             };
             list.AddRange(spec.Select(dd => new SelectListItem {Value = dd.Key.ToString(), Text = dd.Value}));
 
-            var codes = RegistrationTypeCode.GetCodePairs();
+            var codes = RegistrationTypeCode.GetCodePairs(DbUtil.Db);
             list.AddRange(codes.Select(dd => new SelectListItem {Value = dd.Key.ToString(), Text = dd.Value}));
 
             list.Add(new SelectListItem {Value = RegClass.MissionTrip.ToString(), Text = "Mission Trip"});

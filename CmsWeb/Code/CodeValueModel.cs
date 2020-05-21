@@ -876,7 +876,7 @@ namespace CmsWeb.Code
 
         public static IEnumerable<SelectListItem> RegistrationTypeIds()
         {
-            var q = from o in RegistrationTypeCode.GetCodePairs()
+            var q = from o in RegistrationTypeCode.GetCodePairs(DbUtil.Db)
                     select new SelectListItem
                     {
                         Value = o.Key.ToString(),
@@ -923,7 +923,7 @@ namespace CmsWeb.Code
 
         public IEnumerable<CodeValueItem> RegistrationTypes()
         {
-            var q = RegistrationTypeCode.GetCodePairs();
+            var q = RegistrationTypeCode.GetCodePairs(DbUtil.Db);
             if (!HttpContextFactory.Current.User.IsInRole("Developer"))
                 q = q.Where(pp => pp.Key != RegistrationTypeCode.RegisterLinkMaster);
             return from i in q

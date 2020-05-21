@@ -228,7 +228,7 @@ namespace CmsData.Codes
         public const int RegisterLinkMaster = 20;
         public const int TicketedEvent = 22;
 
-        public static IEnumerable<KeyValuePair<int, string>> GetCodePairs(CMSDataContext db = null)
+        public static IEnumerable<KeyValuePair<int, string>> GetCodePairs(CMSDataContext db)
         {
             yield return new KeyValuePair<int, string>(None, "No Online Registration");
 
@@ -257,7 +257,7 @@ namespace CmsData.Codes
 
         public static string Lookup(int? id)
         {
-            var s = GetCodePairs().SingleOrDefault(ii => ii.Key == id);
+            var s = GetCodePairs(DbUtil.Db).SingleOrDefault(ii => ii.Key == id);
             return s.Value;
         }
     }
