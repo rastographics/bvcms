@@ -112,6 +112,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Areas\CheckIn\Views\CheckinTimeViewsTests.cs" />
+    <Compile Include="Areas\CheckIn\Views\CheckinViewsTests.cs" />
     <Compile Include="Areas\Finance\Views\Fund\IndexTests.cs" />
     <Compile Include="Areas\Finance\Views\PostBundle\PostBundleViewsTests.cs" />
     <Compile Include="Areas\General\ScriptControllerTests.cs" />
