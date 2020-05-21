@@ -1,31 +1,17 @@
-﻿@using UtilityExtensions
-@model IEnumerable<CmsData.GivingPage>
-@{
-    Layout = ViewExtensions2.TouchPointLayout();
-    ViewBag.Title = "Online Giving Setup";
-    ViewBag.PageHeader = "Online Giving Setup";
-    var message = Util.TempSuccessMessage;
+﻿@{
+    Layout = null;
 }
-@section head{
-    @ViewExtensions2.BootstrapToggleCss()
-    @ViewExtensions2.VueCss()
-    <link href="~/Content/dist/css/app.css" rel="stylesheet" />
-}
-<div id="GlobalVueApp">
-    @if (message != null)
-    {
-    <div class="alert alert-success alert-dismissible" style="width:60vw;">
-        <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-        <strong>Success!</strong>&nbsp;&nbsp;@message
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title></title>
+</head>
+<body>
+    <div>
+    
     </div>
-    }
-    <giving-page-index></giving-page-index>
-</div>
-@section scripts
-{
-    <script src="~/Content/dist/js/app.js"></script>
-    <script>
-        new Vue({
-        }).$mount('#GlobalVueApp')
-    </script>
-}
+</body>
+</html>

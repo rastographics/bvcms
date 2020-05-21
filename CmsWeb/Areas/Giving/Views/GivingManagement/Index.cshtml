@@ -1,0 +1,21 @@
+﻿@using UtilityExtensions
+@model IEnumerable<CmsData.GivingPage>
+@{
+    Layout = ViewExtensions2.TouchPointLayout();
+    ViewBag.Title = "Online Giving Setup";
+    ViewBag.PageHeader = "Online Giving Setup";
+    var message = Util.TempSuccessMessage;
+}
+@section head{
+    @ViewExtensions2.BootstrapToggleCss()
+}
+<div class="giving">
+    @if (message != null)
+    {
+        <div class="alert alert-success alert-dismissible" style="width:60vw;">
+            <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            <strong>Success!</strong>&nbsp;&nbsp;@message
+        </div>
+    }
+    <giving-page-index></giving-page-index>
+</div>
