@@ -194,18 +194,18 @@ namespace CmsDataTests
 
                 var ThirdContribution = MockContributions.CreateSaveContribution(db, bundleHeader, fromDate, 20, peopleId: person2.PeopleId, contributionType: ContributionTypeCode.NonTaxDed);
 
-                var FundIds = $"{FirstContribution.FundId},{SecondContribution.FundId}";
+                var FundIds = $"{FirstContribution.FundId},{SecondContribution.FundId},{ThirdContribution.FundId}";
 
                 Condition c = new Condition();
 
                 CompareType op = CompareType.Greater;
 
                 //Both Joint
-                var bothjoint = c.GetContributionList(db, op, fromDate,toDate,1,null,true);
+                var bothjoint = c.GetContributionList(db, op, fromDate,toDate,null,null,true);
                 bothjoint.ToList().Count().ShouldBe(3);
 
                 //Donor Only
-                var donoronly = c.GetContributionList(db, op, fromDate, toDate, 1, null, true,false);
+                var donoronly = c.GetContributionList(db, op, fromDate, toDate, null, null, true,false);
                 donoronly.ToList().Count().ShouldBe(2);
 
                 MockContributions.DeleteAllFromBundle(db, bundleHeader);

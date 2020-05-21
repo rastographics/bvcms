@@ -28,7 +28,7 @@ namespace CmsWeb.Areas.Public.Models.MobileAPIv2Tests
             CMSMembershipProvider.SetCurrentProvider(membershipProvider);
             CMSRoleProvider.SetCurrentProvider(roleProvider);
 
-            var mobileAuth = new MobileAuthentication(db);
+            var mobileAuth = new MobileAuthentication(db, "");
             mobileAuth.authenticate("");
 
             mobileAuth.getErrorMessage().ShouldBe("Authenticated");
