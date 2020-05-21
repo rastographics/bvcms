@@ -1931,7 +1931,6 @@
     <Content Include="Areas\Involvement\Views\Involvement\People\GroupButtons.cshtml" />
     <Content Include="Areas\Involvement\Views\Involvement\People\Table.cshtml" />
     <Content Include="Areas\Involvement\Views\Involvement\People.cshtml" />
-    <Content Include="Areas\Involvement\Views\Involvement\FilterPeople.cshtml" />
     <Content Include="Areas\Involvement\Views\web.config" />
     <Content Include="Areas\Dialog\Views\AddInvolvement\index.cshtml" />
     <Content Include="Areas\Involvement\Views\InvolvementSearch\Index.cshtml" />
