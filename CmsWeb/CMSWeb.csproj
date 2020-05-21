@@ -1211,7 +1211,7 @@
       <SubType>Designer</SubType>
     </Content>
     <Content Include="Areas\Search\Views\PictureDirectory\PictureDirectory.sql" />
-    <Content Include="babel.config.js" />
+    <None Include="babel.config.js" />
     <Content Include="Content\css\bootstrap-datetimepicker.css" />
     <Content Include="Content\css\bootstrap-datetimepicker.min.css">
       <DependentUpon>bootstrap-datetimepicker.css</DependentUpon>
@@ -1797,15 +1797,14 @@
     <Content Include="Errors\SessionTimeout.htm" />
     <Content Include="gulpfile.js" />
     <Content Include="Content\touchpoint\js\onlinereg\bootstrap-datepicker.js" />
-    <Content Include="chart.py" />
-    <Content Include="Properties\Files\ContributionStatementTemplate.html" />
-    <Content Include="Properties\Files\ContributionStatementTemplateBody.html" />
-    <Content Include="src\main.js" />
+    <None Include="Properties\Files\ContributionStatementTemplate.html" />
+    <None Include="Properties\Files\ContributionStatementTemplateBody.html" />
+    <None Include="src\main.js" />
     <Content Include="Views\Shared\Account\_Layout.cshtml" />
     <Content Include="Areas\Reports\Views\Reports\EditCustomReport.cshtml" />
     <Content Include="Areas\Manage\Views\Account\SetPasswordConfirm.cshtml" />
     <Content Include="Lib\constants.py" />
-    <Content Include="package.json" />
+    <None Include="package.json" />
     <Content Include="Content\touchpoint\fonts\glyphicons-halflings-regular.eot" />
     <Content Include="Content\touchpoint\fonts\glyphicons-halflings-regular.ttf" />
     <Content Include="Content\touchpoint\fonts\glyphicons-halflings-regular.woff" />
@@ -1914,7 +1913,7 @@
     <Content Include="Areas\Setup\Views\Roles\Priorities.cshtml" />
     <Content Include="Content\touchpoint\src\less\snackbar.less" />
     <Content Include="Areas\People\Views\Shared\PledgesSummary.cshtml" />
-    <Content Include="libman.json" />
+    <None Include="libman.json" />
     <Content Include="Areas\Setup\Views\Setting\_Settings.cshtml" />
     <Content Include="Areas\Manage\Views\Account\AuthSetup.cshtml" />
     <Content Include="Areas\Manage\Views\Account\AuthSetupComplete.cshtml" />
@@ -1971,13 +1970,15 @@
     <Content Include="Areas\Giving\Views\GivingManagement\Index.cshtml" />
     <Content Include="package-lock.json" />
     <Content Include="Areas\Giving\Views\GivingPage\Index.cshtml" />
+    <Content Include="Areas\Giving\Views\GivingPage\Index.cshtml" />
+    <None Include="package-lock.json" />
+    <Content Include="Content\dist\js\app.js.map" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
     <Content Include="Content\touchpoint\src\less\modals.less" />
     <Content Include="Areas\People\Views\Person\Resources\Index.cshtml" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
-    <Content Include="Scripts\ReadMe.txt" />
     <Content Include="Views\Shared\EditorTemplates\DateAndTime.cshtml" />
     <Content Include="Areas\Reports\Views\Reports\SqlReport.cshtml" />
     <Content Include="Areas\Org\Views\OrgSearch\Modals\Rollsheet.cshtml" />
@@ -2892,6 +2893,13 @@
     <Content Include="src\components\Giving\GivingManagement\AddGivingPage.vue" />
     <Content Include="src\components\Giving\GivingManagement\GivingPageIndex.vue" />
     <Content Include="src\components\Giving\GivingManagement\GivingPageEdit.vue" />
+    <None Include="src\App.vue" />
+    <None Include="src\components\GenericComponents\Modal.vue" />
+    <None Include="src\components\GenericComponents\Slider.vue" />
+    <None Include="src\components\Giving\GivingPageIndex\AddGivingPage.vue" />
+    <None Include="src\components\Giving\GivingPageIndex\GivingPageIndex.vue" />
+    <None Include="src\components\Giving\GivingPageEdit\GivingPageEdit.vue" />
+    <None Include="src\components\GenericComponents\ShowModalBtn.vue" />
     <Content Include="Views\Home\Dashboard.cshtml" />
     <Content Include="src\components\Setup\Gateway\Manage.vue" />
     <Content Include="src\components\CheckIn\CheckinSetup.vue" />
@@ -3365,7 +3373,6 @@
     <Content Include="Areas\Manage\Views\Batch\ExtraValuesFromPeopleIds.cshtml">
     </Content>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <None Include="Properties\DataSources\System.Data.DataSet.datasource" />
     <None Include="Properties\PublishProfiles\production.pubxml" />
     <None Include="Properties\PublishProfiles\release.pubxml" />
     <None Include="Properties\PublishProfiles\staging.pubxml" />
@@ -3389,7 +3396,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
-    <Content Include="vue.config.js" />
+    <None Include="vue.config.js" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
