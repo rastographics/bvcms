@@ -40,7 +40,7 @@
                         this.oops();
                     }
                 },
-                err => {
+                () => {
                     this.fail();
                 }
             );
@@ -71,7 +71,7 @@
                         this.oops();
                     }
                 },
-                err => {
+                () => {
                     this.fail();
                 }
             );
@@ -87,7 +87,7 @@
                         this.oops();
                     }
                 },
-                err => {
+                () => {
                     this.fail();
                 }
             );
@@ -102,7 +102,7 @@
                         this.oops();
                     }
                 },
-                err => {
+                () => {
                     this.fail();
                 }
             );
@@ -158,7 +158,7 @@
                         this.oops();
                     }
                 },
-                err => {
+                () => {
                     this.fail();
                 }
             );
@@ -182,7 +182,7 @@
                         this.oops();
                     }
                 },
-                err => {
+                () => {
                     this.fail();
                 }
             );
@@ -227,7 +227,7 @@
                             this.oops();
                         }
                     },
-                    err => {
+                    () => {
                         this.fail();
                     }
                 );
@@ -250,7 +250,7 @@
                             this.oops();
                         }
                     },
-                    err => {
+                    () => {
                         this.fail();
                     }
                 );
@@ -269,7 +269,7 @@
                         this.oops();
                     }
                 },
-                err => {
+                () => {
                     this.fail();
                 }
             );
