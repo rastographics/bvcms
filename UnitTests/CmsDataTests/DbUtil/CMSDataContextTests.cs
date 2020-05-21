@@ -3,6 +3,7 @@ using CmsData.Codes;
 using SharedTestFixtures;
 using Shouldly;
 using System;
+using System.Configuration;
 using System.Linq;
 using UtilityExtensions;
 using Xunit;
@@ -245,29 +246,33 @@ namespace CmsData.Tests
             ids.ShouldNotContain(personNotInOrg.PeopleId);
         }
 
-        [Fact]
-        public void UseTicketedDbSetting_Enabled_Should_Return_TicketedEvent()
+        [Theory]
+        [InlineData("true", 1)]
+        [InlineData("false", 0)]
+        public void UseTicketedDbSetting_Enabled_Should_Return_TicketedEvent(string useTicketed, int count)
         {
             var db = CMSDataContext.Create(DatabaseFixture.Host);
-            db.ExecuteCommand("DELETE FROM Setting where id = 'UseTicketed'");
-            db.ExecuteCommand("INSERT INTO Setting VALUES('UseTicketed', 'true', NULL)");
+            db.SetSetting("UseTicketed", useTicketed);
+            db.SubmitChanges();
             var codes = RegistrationTypeCode.GetCodePairs(db);
 
             var ticketEventCode = codes.Where(x => x.Key.Equals(RegistrationTypeCode.TicketedEvent)).ToList();
-            ticketEventCode.Count.ShouldBeEquivalentTo(1);
+            ticketEventCode.Count.ShouldBeEquivalentTo(count);
+        }
+        
+        [Fact]
+        public void NextSecurityCodeTest()
+        {
+            db.NextSecurityCode().Count().ShouldBe(1);
         }
 
         [Fact]
-        public void UseTicketedDbSetting_Disabled_Should_Not_Return_TicketedEvent()
+        public void NextSecurityCode_Uniqueness_Test()
         {
-            var db = CMSDataContext.Create(DatabaseFixture.Host);
-            db.ExecuteCommand("DELETE FROM Setting where id = 'UseTicketed'");
-            db.ExecuteCommand("INSERT INTO Setting VALUES('UseTicketed', 'false', NULL)");
+            var code1 = db.NextSecurityCode().Single();
+            var code2 = db.NextSecurityCode().Single();
 
-            var codes = RegistrationTypeCode.GetCodePairs(db);
-
-            var ticketEventCode = codes.Where(x => x.Key.Equals(RegistrationTypeCode.TicketedEvent)).ToList();
-            ticketEventCode.Count.ShouldBeEquivalentTo(0);
+            code1.Code.ShouldNotBe(code2.Code);
         }
     }
 }

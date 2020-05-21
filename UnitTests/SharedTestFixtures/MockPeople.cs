@@ -7,7 +7,7 @@ namespace SharedTestFixtures
 {
     public class MockPeople
     {
-        public static Person CreateSavePerson(CMSDataContext db, Family family = null)
+        public static Person CreateSavePerson(CMSDataContext db, Family family = null, string lastName = null)
         {
             if (family == null)
             {
@@ -22,7 +22,7 @@ namespace SharedTestFixtures
             {
                 Family = family,
                 FirstName = DatabaseTestBase.RandomString(),
-                LastName = DatabaseTestBase.RandomString(),
+                LastName = lastName ?? DatabaseTestBase.RandomString(),
                 EmailAddress = DatabaseTestBase.RandomString() + "@example.com",
                 MemberStatusId = MemberStatusCode.Member,
                 PositionInFamilyId = PositionInFamily.PrimaryAdult,
@@ -56,7 +56,7 @@ namespace SharedTestFixtures
 
         public static void DeleteMockPerson(CMSDataContext db, Person person)
         {
-            var family = db.Families.FirstOrDefault(f => f.FamilyId == person.FamilyId);
+            var family = db.Families.FirstOrDefault(f => f.FamilyId == person.FamilyId);            
             db.Families.DeleteOnSubmit(family);
             db.People.DeleteOnSubmit(person);
             db.SubmitChanges();

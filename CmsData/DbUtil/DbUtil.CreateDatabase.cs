@@ -156,6 +156,8 @@ GO
                         var script = File.ReadAllText(Path.Combine(sqlScriptsPath, "BuildDb", currentFile));
                         RunScripts(cn, script);
                     }
+                    cn.Execute(Properties.Resources.SetupNumbers);
+
                     currentFile = hostName == "testdb"
                         ? "datascriptTest.sql"
                         : "datascriptStarter.sql";
