@@ -3,6 +3,7 @@
     Layout = ViewExtensions2.TouchPointLayout();
     ViewBag.Title = "Edit Fund";
     ViewBag.PageHeader = "Edit Fund";
+    var showRecurringEndDate = ViewExtensions2.CurrentDatabase.Setting("UseRecurringEndDates");
 }
 @using (Html.BeginForm("Update", "Fund"))
 {
@@ -33,12 +34,30 @@
                                 @Html.TextBoxFor(m => m.FundDescription, new { @class = "form-control" })
                             </div>
                         </div>
-                        <div class="col-sm-6 col-lg-6">
-                            <div class="form-group">
-                                <label for="ShowList" class="control-label">Show in List</label>
-                                @Html.DropDownList("ShowList", CmsWeb.Areas.Finance.Controllers.FundController.GetFundShowList(), new { @class = "form-control" })
+                        @if (showRecurringEndDate)
+                        {
+                            <div class="col-sm-3 col-lg-3">
+                                <div class="form-group">
+                                    <label for="ShowList" class="control-label">Show in List</label>
+                                    @Html.DropDownList("ShowList", CmsWeb.Areas.Finance.Controllers.FundController.GetFundShowList(), new { @class = "form-control" })
+                                </div>
                             </div>
-                        </div>
+                            <div class="col-sm-3 col-lg-3">
+                                <div class="form-group">
+                                    <label for="ShowRecurringEndDate" class="control-label">Allow Recurring Gift End Date</label>
+                                    @Html.DropDownList("ShowRecurringEndDate", ViewExtensions2.YesNoSelectList(Model.ShowRecurringEndDate), new { @class = "form-control" })
+                                </div>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="col-sm-6 col-lg-6">
+                                <div class="form-group">
+                                    <label for="ShowList" class="control-label">Show in List</label>
+                                    @Html.DropDownList("ShowList", CmsWeb.Areas.Finance.Controllers.FundController.GetFundShowList(), new { @class = "form-control" })
+                                </div>
+                            </div>
+                        }
                     </div>
                     <div class="row">
                         <div class="col-sm-4 col-lg-4">
@@ -93,24 +112,29 @@
                             @Html.DropDownList("FundManagerRoleId", CmsWeb.Areas.Finance.Controllers.FundController.GetRolesList(), new { @class = "form-control" })
                         </div>
                         <div class="col-md-2 col-lg-2">
+                            <label></label>
                             <div class="checkbox">
                                 <label class="control-label">
                                     @Html.CheckBox("NonTaxDeductible")
-                                    Non tax deductible?
+                                    Non tax deductible
                                 </label>
                             </div>
                         </div>
                         <div class="col-md-2 col-lg-2">
+                            <label></label>
                             <div class="checkbox">
                                 <label class="control-label">
                                     @Html.CheckBox("FundPledgeFlag")
-                                    Pledge fund?
+                                    Pledge fund
                                 </label>
                             </div>
                         </div>
                     </div>
-                    <br />
-                    <a href="/Funds" class="btn btn-default">Cancel</a> <button type="submit" class="btn btn-primary">Save Fund</button>
+                    <div class="row">
+                        <div class="col-md-12 text-right">
+                            <a href="/Funds" class="btn btn-default">Cancel</a> <button type="submit" class="btn btn-primary">Save Fund</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
