@@ -44,7 +44,8 @@ CREATE TABLE [dbo].[ScheduledGift](
 	[ScheduledGiftTypeId] int NOT NULL,
 	[PaymentMethodId] uniqueidentifier NOT NULL,
 	[StartDate] datetime NOT NULL,
-	[EndDate] datetime NULL
+	[EndDate] datetime NULL,
+	[LastProcessed] datetime NULL
 CONSTRAINT [PK_ScheduledGift_ScheduledGiftId] PRIMARY KEY NONCLUSTERED ([ScheduledGiftId])
 WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON)
 )
