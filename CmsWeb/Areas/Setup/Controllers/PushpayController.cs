@@ -274,10 +274,11 @@ namespace CmsWeb.Areas.Setup.Controllers
         }
 
         [Route("~/Pushpay/PayAmtDue/{transactionId:int}/{amtdue:decimal}/{OrgId:int}")]
-        public ActionResult PayAmtDue(int transactionId, decimal amtdue, int OrgId)
+        public async Task<ActionResult> PayAmtDue(int transactionId, decimal amtdue, int OrgId)
         {
+            var fundName = await _resolver.GetOrgFund(CurrentDatabase.CreateRegistrationSettings(OrgId).PushpayFundName);
             var merchantHandle = GetMerchantHandle(OrgId);
-            return Redirect($"{_givingLink}{merchantHandle}?ru={_ru}&sr=pd_{_state}_{transactionId}&rcv=false&r=no&a={amtdue}&fndv=lock");
+            return Redirect($"{_givingLink}{merchantHandle}?ru={_ru}&sr=pd_{_state}_{transactionId}&rcv=false&r=no&a={amtdue}&fnd={fundName}&al=true&fndv=lock");
         }
 
         [Route("~/Pushpay/ProcessPayment")]
@@ -383,7 +384,7 @@ namespace CmsWeb.Areas.Setup.Controllers
                 return View("~/Views/Shared/PageError.cshtml");
             }
 
-            m.transactionId = CreateTransaction(payment, pf, amtDue);
+            m.transactionId = CreateTransaction(payment, pf, amtDue, m.Transaction);
             m.UpdateDatum();
 
             return Redirect($"/OnlineReg/ProcessExternalPayment/dat_{datumId}");
@@ -393,7 +394,6 @@ namespace CmsWeb.Areas.Setup.Controllers
         {
             var rf1 = rf.Split('-');
             var transactionId = Int32.Parse(rf1[0]);
-            var amtDue = Decimal.Parse(rf1[1]);
 
             Transaction ti = CurrentDatabase.Transactions.Where(p => p.Id == transactionId).FirstOrDefault();
             if (ti == null)
@@ -408,11 +408,11 @@ namespace CmsWeb.Areas.Setup.Controllers
             }
 
             PaymentForm pf = PaymentForm.CreatePaymentFormForBalanceDue(CurrentDatabase, ti, payment.Amount.Amount, payment.Payer.emailAddress);
-            int tranId = CreateTransaction(payment, pf, amtDue);
+            int tranId = CreateTransaction(payment, pf, ti.Amtdue ?? 0, ti);
             return Redirect($"/OnlineReg/ProcessExternalPayment/tra_{tranId}");
         }
 
-        private int CreateTransaction(Payment payment, PaymentForm pf, decimal Amtdue)
+        private int CreateTransaction(Payment payment, PaymentForm pf, decimal Amtdue, Transaction t)
         {
             int? PersonId = _resolver.ResolvePersonId(payment.Payer);
             Person person = CurrentDatabase.LoadPersonById(PersonId.Value);
@@ -437,18 +437,18 @@ namespace CmsWeb.Areas.Setup.Controllers
             ti.Amt = amount;
             ti.Emails = person.EmailAddress;
             ti.Testing = false;
-            ti.Description = pf.Description;
-            ti.OrgId = pf.OrgId;
-            ti.Url = pf.URL;
+            ti.Description = t != null ? t.Description : pf.Description;
+            ti.OrgId = t != null ? t.OrgId : pf.OrgId;
+            ti.Url = t != null ? t.Url : pf.URL;
             ti.Address = person.AddressLineOne;
             ti.TransactionGateway = "pushpay";
             ti.City = person.CityName;
             ti.State = person.StateCode;
             ti.Zip = person.ZipCode;
-            ti.DatumId = pf.DatumId;
+            ti.DatumId = t != null ? t.DatumId : pf.DatumId;
             ti.Phone = person.HomePhone;
-            ti.OriginalId = pf.OriginalId;
-            ti.Financeonly = pf.FinanceOnly;
+            ti.OriginalId = t != null ? t.OriginalId : pf.OriginalId;
+            ti.Financeonly = t != null ? t.Financeonly : pf.FinanceOnly;
             ti.TransactionDate = Util.Now;
             ti.PaymentType = payment.PaymentMethodType == "CreditCard" ? PaymentType.CreditCard : PaymentType.Ach;
             ti.LastFourCC =
