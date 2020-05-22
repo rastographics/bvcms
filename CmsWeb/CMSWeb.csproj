@@ -54,6 +54,7 @@
     <FilesToIncludeForPublish>OnlyFilesToRunTheApp</FilesToIncludeForPublish>
     <UseVSHostingProcess>true</UseVSHostingProcess>
     <Prefer32Bit>false</Prefer32Bit>
+    <LangVersion>default</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -1191,6 +1192,7 @@
       <SubType>Designer</SubType>
     </Content>
     <Content Include="Areas\Search\Views\PictureDirectory\PictureDirectory.sql" />
+    <Content Include="Areas\Giving\Views\GivingManagement\Manage.cshtml" />
     <None Include="babel.config.js" />
     <Content Include="Content\css\bootstrap-datetimepicker.css" />
     <Content Include="Content\css\bootstrap-datetimepicker.min.css">

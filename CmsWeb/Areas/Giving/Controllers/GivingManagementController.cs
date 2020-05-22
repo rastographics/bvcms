@@ -23,11 +23,27 @@ namespace CmsWeb.Areas.Giving.Controllers
             return View();
         }
 
+        [Route("~/Giving/{id}")]
+        public ActionResult Manage(int id)
+        {
+            var model = new GivingPageModel(CurrentDatabase);
+            var page = model.GetGivingPages(id).SingleOrDefault();
+            if (page == null)
+            {
+                Util.TempError = "Invalid page";
+                return Content("/Error/");
+            }
+            else
+            {
+                return View(page);
+            }
+        }
+
         [HttpGet]
         public JsonResult List()
         {
             var model = new GivingPageModel(CurrentDatabase);
-            var givingPageList = model.GetGivingPageList();
+            var givingPageList = model.GetGivingPages();
             return Json(givingPageList, JsonRequestBehavior.AllowGet);
         }
 
@@ -63,14 +79,14 @@ namespace CmsWeb.Areas.Giving.Controllers
         [HttpGet]
         public JsonResult GetAvailableFunds()
         {
-            var availableFundsList = (from f in CurrentDatabase.ContributionFunds where f.FundStatusId == 1 orderby f.FundName select new { f.FundId, f.FundName }).ToList();
+            var availableFundsList = (from f in CurrentDatabase.ContributionFunds where f.FundStatusId == 1 orderby f.FundName select new { Id = f.FundId, Name = f.FundName }).ToList();
             return Json(availableFundsList, JsonRequestBehavior.AllowGet);
         }
 
         [HttpGet]
         public JsonResult GetEntryPoints()
         {
-            var entryPointsList = (from ep in CurrentDatabase.EntryPoints orderby ep.Description select new { ep.Id, ep.Description }).ToList();
+            var entryPointsList = (from ep in CurrentDatabase.EntryPoints orderby ep.Description select new { ep.Id, Name = ep.Description }).ToList();
             return Json(entryPointsList, JsonRequestBehavior.AllowGet);
         }
 
@@ -82,7 +98,7 @@ namespace CmsWeb.Areas.Giving.Controllers
                                           join ur in CurrentDatabase.UserRoles on u.UserId equals ur.UserId
                                           where ur.RoleId == 3
                                           orderby p.Name
-                                          select new { p.PeopleId, p.Name }).Distinct().ToList();
+                                          select new { Id = p.PeopleId, p.Name }).Distinct().ToList();
             return Json(onlineNotifyPersonList, JsonRequestBehavior.AllowGet);
         }
 
@@ -92,7 +108,7 @@ namespace CmsWeb.Areas.Giving.Controllers
             var confirmationEmailList = (from c in CurrentDatabase.Contents
                                          where ContentTypeCode.EmailTemplates.Contains(c.TypeID)
                                          orderby c.Name
-                                         select new { c.Id, c.Title }).ToList();
+                                         select new { c.Id, Name = c.Title }).ToList();
             return Json(confirmationEmailList, JsonRequestBehavior.AllowGet);
         }
 
@@ -103,17 +119,18 @@ namespace CmsWeb.Areas.Giving.Controllers
                              where c.TypeID == ContentTypeCode.TypeHtml
                              where c.ContentKeyWords.Any(vv => vv.Word == "Shell")
                              orderby c.Name
-                             select new { c.Id, c.Title }).ToList();
+                             select new { c.Id, Name = c.Title }).ToList();
             return Json(shellList, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
-        public void SaveGivingPageEnabled(bool value, int currentGivingPageId)
+        public JsonResult SaveGivingPageEnabled(bool value, int currentGivingPageId)
         {
             var givingPage = CurrentDatabase.GivingPages.Where(g => g.GivingPageId == currentGivingPageId).FirstOrDefault();
             givingPage.Enabled = value;
             UpdateModel(givingPage);
             CurrentDatabase.SubmitChanges();
+            return Json(new { givingPage.GivingPageId, givingPage.PageName, givingPage.Enabled });
         }
     }
 }

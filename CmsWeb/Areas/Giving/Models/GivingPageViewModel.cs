@@ -6,7 +6,7 @@ namespace CmsWeb.Areas.Giving.Models
     {
         public int pageId { get; set; }
         public string pageName { get; set; }
-        public string pageTitle { get; set; }
+        public string pageUrl { get; set; }
         public int pageType { get; set; }
         public bool enabled { get; set; }
         public FundsClass defaultFund { get; set; }
