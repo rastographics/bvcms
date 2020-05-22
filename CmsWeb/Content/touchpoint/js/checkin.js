@@ -74,7 +74,9 @@ new Vue({
     filters: {
         formatDate: function (dt) {
             if (!dt) return '';
-            var date = new Date(dt);
+            //split for Safari compatibility
+            var a = dt.split(/[^0-9]/);
+            var date = new Date(a[0], a[1] - 1, a[2], a[3], a[4], a[5]);
             var time = date.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true });
             return time + ' - ' + $.datepicker.formatDate("m/d/y", date);
         },
@@ -162,9 +164,11 @@ new Vue({
             document.cookie = encodeURIComponent(name) + "=" + value + expires + "; path=/";
         },
         timestamp(dt) {
-            var d = new Date(dt);
-            if (isNaN(d.getTime())) {
-                d = new Date();
+            var d = new Date();
+            if (dt != null) {
+                //using split to make this work in Safari
+                var a = dt.split(/[^0-9]/);
+                d = new Date(a[0], a[1] - 1, a[2], a[3], a[4], a[5]);
             }
             if (this.profile.Testing) {
                 return d.getHours() * 60 + d.getMinutes();
