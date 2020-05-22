@@ -46,6 +46,7 @@ namespace CmsWeb.Areas.Involvement.Controllers
                 if (sgleader.HasValue())
                     m.SgFilter = sgleader;
             }
+
             if (m.Org.LimitToRole.HasValue())
                 if (!User.IsInRole(m.Org.LimitToRole))
                     return NotAllowed("no privilege to view ", m.Org.OrganizationName);
@@ -96,6 +97,7 @@ namespace CmsWeb.Areas.Involvement.Controllers
             ViewBag.AddContact = "/Org/AddContact/" + m.QueryId;
             ViewBag.AddTasks = "/Org/AddTasks/" + m.QueryId;
             ViewBag.OrganizationContext = true;
+
             if (!CurrentDatabase.Organizations.Any(oo => oo.ParentOrgId == m.Id))
                 return;
 
@@ -130,24 +132,6 @@ namespace CmsWeb.Areas.Involvement.Controllers
 
             return PartialView("Contacts", m);
         }
-
-        /*[HttpPost]
-        public ActionResult Resources(int id)
-        {
-            var resources = new List<CmsData.Resource.Resource>();
-            resources.Add(new CmsData.Resource.Resource
-            {
-                Name = "South America Mission Goals",
-                UpdatedTime = DateTime.Now.AddDays(-22)
-            });
-            resources.Add(new CmsData.Resource.Resource
-            {
-                Name = "Trip Budget",
-                UpdatedTime = DateTime.Now.AddDays(-12)
-            });
-            
-            return PartialView(resources);
-        }*/
 
         [HttpPost]
         public ActionResult CommunityGroup(int id)
