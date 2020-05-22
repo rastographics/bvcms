@@ -4,23 +4,23 @@ namespace CmsData.Classes.Giving
 {
     public class GivingPageTypes
     {
-        public static List<PageTypesClass> GetGivingPageTypes()
+        public static List<PageType> GetGivingPageTypes()
         {
-            var pageTypesList = new List<PageTypesClass>();
-            PageTypesClass pledge = new PageTypesClass
+            var pageTypesList = new List<PageType>();
+            PageType pledge = new PageType
             {
-                id = 1,
-                pageTypeName = "Pledge"
+                Id = 1,
+                Name = "Pledge"
             };
-            PageTypesClass oneTime = new PageTypesClass
+            PageType oneTime = new PageType
             {
-                id = 2,
-                pageTypeName = "One Time"
+                Id = 2,
+                Name = "One Time"
             };
-            PageTypesClass recurring = new PageTypesClass
+            PageType recurring = new PageType
             {
-                id = 4,
-                pageTypeName = "Recurring"
+                Id = 4,
+                Name = "Recurring"
             };
             pageTypesList.Add(pledge);
             pageTypesList.Add(oneTime);
@@ -28,9 +28,9 @@ namespace CmsData.Classes.Giving
             return pageTypesList;
         }
     }
-    public class PageTypesClass
+    public class PageType
     {
-        public int id { get; set; }
-        public string pageTypeName { get; set; }
+        public int Id { get; set; }
+        public string Name { get; set; }
     }
 }

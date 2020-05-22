@@ -21,7 +21,7 @@ namespace CmsWeb.Areas.Giving.Models
 
         public CMSDataContext CurrentDatabase { get; set; }
 
-        public List<GivingPageItem> GetGivingPageList()
+        public List<GivingPageItem> GetGivingPages(int id = 0)
         {
             var db = CurrentDatabase;
             var outputList = new List<GivingPageItem>();
@@ -31,7 +31,8 @@ namespace CmsWeb.Areas.Giving.Models
                             {
                                 GivingPageId = gp.GivingPageId,
                                 PageName = gp.PageName,
-                                PageTitle = gp.PageUrl,
+                                PageUrl = gp.PageUrl,
+                                EditUrl = "/Giving/" + gp.GivingPageId,
                                 Enabled = gp.Enabled,
                                 SkinFile = new ContentFile
                                 {
@@ -66,8 +67,12 @@ namespace CmsWeb.Areas.Giving.Models
                                     Id = gp.ConfirmationEmailRecurring.Id,
                                     Title = gp.ConfirmationEmailRecurring.Title,
                                 }
-                            }).ToList();
-            return response;
+                            });
+            if (id != 0)
+            {
+                response = response.Where(p => p.GivingPageId == id);
+            }
+            return response.ToList();
         }
 
         public NotifyPerson[] GetSelectedOnlineNotifyPerson(string onlineNotifyPerson)
@@ -124,7 +129,7 @@ namespace CmsWeb.Areas.Giving.Models
             var newGivingPage = new GivingPage()
             {
                 PageName = viewModel.pageName,
-                PageUrl = viewModel.pageTitle,
+                PageUrl = viewModel.pageUrl,
                 Enabled = viewModel.enabled,
                 DisabledRedirect = viewModel.disRedirect
             };
@@ -153,8 +158,8 @@ namespace CmsWeb.Areas.Giving.Models
             var givingPageItem = new GivingPageItem()
             {
                 GivingPageId = newGivingPage.GivingPageId,
+                PageUrl = newGivingPage.PageUrl,
                 PageName = newGivingPage.PageName,
-                PageTitle = newGivingPage.PageUrl,
                 Enabled = newGivingPage.Enabled,
                 SkinFile = viewModel.skinFile,
                 DefaultFundId = viewModel.defaultFund?.FundId,
@@ -166,11 +171,11 @@ namespace CmsWeb.Areas.Giving.Models
 
             return newGivingPageList;
         }
-
+        
         public List<GivingPageItem> UpdateGivingPage(GivingPageViewModel viewModel, GivingPage givingPage)
         {
             givingPage.PageName = viewModel.pageName;
-            givingPage.PageUrl = viewModel.pageTitle;
+            givingPage.PageUrl = viewModel.pageUrl;
             givingPage.PageType = viewModel.pageType;
             givingPage.Enabled = viewModel.enabled;
             givingPage.FundId = viewModel.defaultFund?.FundId;
@@ -253,7 +258,7 @@ namespace CmsWeb.Areas.Giving.Models
             {
                 GivingPageId = viewModel.pageId,
                 PageName = viewModel.pageName,
-                PageTitle = viewModel.pageTitle,
+                PageUrl = viewModel.pageUrl,
                 Enabled = viewModel.enabled,
                 SkinFile = viewModel.skinFile,
                 PageType = viewModel.pageType,
@@ -277,7 +282,8 @@ namespace CmsWeb.Areas.Giving.Models
     {
         public int GivingPageId { get; set; }
         public string PageName { get; set; }
-        public string PageTitle { get; set; }
+        public string PageUrl { get; set; }
+        public string EditUrl { get; set; }
         public bool Enabled { get; set; }
         public ContentFile SkinFile { get; set; }
         public int PageType { get; set; }
@@ -307,7 +313,7 @@ namespace CmsWeb.Areas.Giving.Models
 
     public class ContentFile
     {
-        public int Id { get; set; }
+        public int? Id { get; set; }
         public string Title { get; set; }
     }
 }

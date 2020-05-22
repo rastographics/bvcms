@@ -57,8 +57,10 @@
     @Html.Partial("AdminAlerts")
     @Html.Partial("_diagnostics")
     <script>
-        new Vue({
-        }).$mount('#main')
+        if (!$("#main").find("script").length) {
+            new Vue({
+            }).$mount('#main');
+        }
     </script>
     @RenderSection("modals", false)
     @RenderSection("scripts", false)
