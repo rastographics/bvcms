@@ -27,6 +27,8 @@ namespace CmsData
 
         private DateTime? _LastProcessed;
 
+        private DateTime? _NextOccurrence;
+
         private EntityRef<Person> _Person;
 
         private EntitySet<ScheduledGiftAmount> _ScheduledGiftAmounts;
@@ -56,6 +58,9 @@ namespace CmsData
 
         partial void OnLastProcessedChanging(DateTime? value);
         partial void OnLastProcessedChanged();
+
+        partial void OnNextOccurrenceChanging(DateTime? value);
+        partial void OnNextOccurrenceChanged();
 
         partial void OnPaymentMethodIdChanging(Guid value);
         partial void OnPaymentMethodIdChanged();
@@ -177,6 +182,23 @@ namespace CmsData
                     _LastProcessed = value;
                     SendPropertyChanged("LastProcessed");
                     OnLastProcessedChanged();
+                }
+            }
+        }
+
+        [Column(Name = "NextOccurrence", UpdateCheck = UpdateCheck.Never, Storage = "_NextOccurrence", DbType = "datetime")]
+        public DateTime? NextOccurrence
+        {
+            get => _NextOccurrence;
+            set
+            {
+                if (_NextOccurrence != value)
+                {
+                    OnNextOccurrenceChanging(value);
+                    SendPropertyChanging();
+                    _NextOccurrence = value;
+                    SendPropertyChanged("NextOccurrence");
+                    OnNextOccurrenceChanged();
                 }
             }
         }
