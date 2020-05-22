@@ -1,18 +1,15 @@
 using CmsData;
-using CmsWeb.Areas.People.Models;
 using CmsWeb.Common.Status;
 using CmsWeb.Lifecycle;
 using CmsWeb.Models;
 using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
-using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Web;
 using System.Web.Caching;
 using System.Web.Mvc;
 using System.Web.UI;
+using System.Web.WebPages;
 using UtilityExtensions;
 
 namespace CmsWeb.Controllers
@@ -201,6 +198,24 @@ namespace CmsWeb.Controllers
         public ActionResult Support2()
         {
             return View();
+        }
+
+        [HttpGet, Route("~/apple-app-site-association")]
+        public ActionResult AppleAppSiteAssociation()
+        {
+            var appID = CurrentDatabase.Setting("AssociatedAppIDs", "");
+            if (appID.IsEmpty())
+            {
+                return HttpNotFound();
+            }
+            var apps = appID.Split(',');
+            var association = new
+            {
+                activitycontinuation = new { apps },
+                applinks = new { apps },
+                details = new object[] { } //TODO: is this necessary?
+            };
+            return Json(association, JsonRequestBehavior.AllowGet);
         }
     }
 }
