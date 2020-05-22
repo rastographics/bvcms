@@ -139,10 +139,10 @@ namespace CmsData.Classes.Twilio
             }
             return success;
         }
-        public static string SendSMS(CMSDataContext db, Person p, string toNumber, SMSNumber fromNumber, string title, string message)
+        public static string SendSms(CMSDataContext db,
+            Person p, string toNumber, SMSNumber fromNumber, string title, string message)
         {
-            bool success = false;
-            string sSID = GetSid(db);
+            string sSid = GetSid(db);
             string sToken = GetToken(db);
 
             var list = new SMSList
@@ -152,18 +152,26 @@ namespace CmsData.Classes.Twilio
                 SenderID = db.UserPeopleId ?? 1,
                 SendGroupID = fromNumber.GroupID,
                 Title = title,
-                Message = message
+                Message = message,
             };
-            list.SMSItems.Add(new SMSItem
+            var item = new SMSItem
             {
                 ListID = list.Id,
                 PeopleID = p.PeopleId,
-                Number = toNumber
-            });
+                Number = toNumber,
+            };
+            list.SMSItems.Add(item);
+
+            var response = SendSmsInternal(sSid, sToken, fromNumber.Number, toNumber, message);
+
+            if (!IsSmsFailed(response))
+            {
+                list.SentSMS = 1;
+                item.Sent = true;
+            }
             db.SMSLists.InsertOnSubmit(list);
             db.SubmitChanges();
 
-            var response = SendSmsInternal(sSID, sToken, fromNumber.Number, toNumber, message);
             return ResultMessage(response, toNumber);
         }
 

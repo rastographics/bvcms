@@ -8,7 +8,7 @@
 <div class="box">
     <ul class="nav nav-tabs">
         <li class="active"><a href="#sent" data-toggle="tab">Sent</a></li>
-        <li><a href="#received" data-toggle="tab">Received</a></li>
+        <li><a id="showReceivedTab" href="#received" data-toggle="tab">Received</a></li>
         <li><a href="#replywords" data-toggle="tab">Reply Words</a></li>
     </ul>
     <div class="tab-content">
@@ -33,7 +33,7 @@
                 </div>
                 <div class="modal-body">
                     <div class="alert alert-info">
-                        You are about to tag <span id="countpeople"></span> 
+                        You are about to tag <span id="countpeople"></span>
                     </div>
                     <div class="row">
                         <div class="col-sm-12">
@@ -64,4 +64,20 @@
     @Fingerprint.Script("/Content/touchpoint/js/sms/sent.js")
     @Fingerprint.Script("/Content/touchpoint/js/sms/received.js")
     @Fingerprint.Script("/Content/touchpoint/js/sms/replywords.js")
+    <script type="text/javascript">
+    $(document).ready(function(){
+        if (window.location.hash) {
+            let hash = window.location.hash;
+            window.location.hash = "";
+            $('#RecdFilterStart').val(null);
+            $('#RecdFilterEnd').val(null);
+            $('#RecdFilterGroupId').val(0);
+            $('#RecdFilterSender').val(null);
+            $('#RecdFilterMessage').val(hash);
+            $('#showReceivedTab').click();
+            $('#searchreceived').click();
+            }
+    });
+    </script>
+
 }

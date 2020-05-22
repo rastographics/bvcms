@@ -25,7 +25,7 @@ namespace CmsWeb.Areas.Manage.Models.SmsMessages
         public DateTime? RecdFilterEnd { get; set; }
         [Display(Name = "Message")]
         public string RecdFilterMessage { get; set; }
-        [Display(Name = "Recipient Group")]
+        [Display(Name = "Group")]
         public string RecdFilterGroupId { get; set; }
         [Display(Name = "Sender")]
         public string RecdFilterSender { get; set; }
@@ -45,8 +45,14 @@ namespace CmsWeb.Areas.Manage.Models.SmsMessages
                     ? q.Where(e => e.FromPeopleId == RecdFilterSender.ToInt())
                     : q.Where(e => e.Person.Name.Contains(RecdFilterSender));
             }
+
             if (RecdFilterMessage.HasValue())
-                q = q.Where(e => e.Body.Contains(RecdFilterMessage));
+            {
+                var msgid = RecdFilterMessage.Substring(1);
+                q = msgid.AllDigits()
+                    ? q.Where(e => e.Id == msgid.ToInt())
+                    : q.Where(e => e.Body.Contains(RecdFilterMessage));
+            }
             return q;
         }
         public override IQueryable<SmsReceived> DefineModelList()

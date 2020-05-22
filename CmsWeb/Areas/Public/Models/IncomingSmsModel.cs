@@ -44,16 +44,11 @@ namespace CmsWeb.Areas.Public.Models
 
         public Person FindPerson()
         {
-            var person = (from p in CurrentDatabase.People
+            var per = (from p in CurrentDatabase.People
                           where p.CellPhone == From || p.HomePhone == From
                           select p).FirstOrDefault();
-            if (person == null)
-            {
-                throw new Exception($"could not find person with the number {From}");
-            }
-
-            row.FromPeopleId = person.PeopleId;
-            return person;
+            row.FromPeopleId = per?.PeopleId;
+            return per;
         }
 
         SmsReplyWordsModel model;
@@ -61,7 +56,7 @@ namespace CmsWeb.Areas.Public.Models
         {
             var m = new SmsReplyWordsModel(CurrentDatabase);
             var group = (from grp in CurrentDatabase.SMSGroups
-                join num in CurrentDatabase.SMSNumbers on grp.Id equals num.Id
+                join num in CurrentDatabase.SMSNumbers on grp.Id equals num.GroupID
                 where num.Number == To
                 select grp).FirstOrDefault();
             if(group == null)
@@ -123,22 +118,22 @@ namespace CmsWeb.Areas.Public.Models
                         break;
                 }
             }
-            SendNotices();
             if(rval.HasValue())
                 return rval;
             //Reply word never found in loop, must be a regular text message
             return ReceivedTextNoAction();
         }
 
-        private void SendNotices()
+        public void SendNotices()
         {
             var q = from gm in CurrentDatabase.SMSGroupMembers
                 where gm.GroupID == model.GroupId
                 where gm.ReceiveNotifications == true
                 select gm.User.Person;
             var subject = $"Received Text from {From}";
-            var body = $@"From {person.Name} to {groupName} at {row.DateReceived}<br>
-with message: {Body}<br><br>
+            var body = $@"From {person?.Name ?? "name unknown"} to {groupName} at {row.DateReceived}<br>
+with message: <br/>{Body}<br>
+<a href='{CurrentDatabase.CmsHost}/SmsMessages#{row.Id}'>Click this to goto message.</a><br><br>
 They received: {row.ActionResponse}";
             foreach (var p in q)
             {
@@ -151,6 +146,7 @@ They received: {row.ActionResponse}";
             row.ActionResponse = DoReplacments(Util.PickFirst(action.ReplyMessage, action.DefaultMessage));
             CurrentDatabase.SmsReceiveds.InsertOnSubmit(row);
             CurrentDatabase.SubmitChanges();
+            SendNotices();
             if (action.ReplyMessage.Equal("NONE"))
                 return string.Empty;
             return row.ActionResponse;
@@ -161,8 +157,11 @@ They received: {row.ActionResponse}";
             row.ActionResponse = message;
             CurrentDatabase.SmsReceiveds.InsertOnSubmit(row);
             CurrentDatabase.SubmitChanges();
+            SendNotices();
             return message;
         }
+
+        private const string GetNoPersonMessage = "We don't recognize this number. Please contact the church office";
 
         private const string MatchCodeRe = "({[^}]*})";
         private string DoReplacments(string message)
@@ -201,17 +200,20 @@ They received: {row.ActionResponse}";
 
         private string GroupOptOut()
         {
+            if (person == null)
+                return GetNoPersonMessage;
             var o = new SmsGroupOptOut
             {
                 FromGroup = model.GroupId,
                 ToPeopleId = person.PeopleId
             };
             CurrentDatabase.SmsGroupOptOuts.InsertOnSubmit(o);
-            CurrentDatabase.SubmitChanges();
             return GetActionReplyMessage();
         }
         private string GroupOptIn()
         {
+            if (person == null)
+                return GetNoPersonMessage;
             CurrentDatabase.Connection.Execute(
                 "delete dbo.SmsGroupOptOut where FromGroup = @gid and ToPeopleId = @pid",
                 new {gid = model.GroupId, pid = person.PeopleId});
@@ -221,6 +223,8 @@ They received: {row.ActionResponse}";
         private string markedas;
         private string MarkAttendingIntention(int code)
         {
+            if (person == null)
+                return GetNoPersonMessage;
             try
             {
                 row.Args = $"{{ \"MeetingId\": \"{action.MeetingId}\"}}";
@@ -243,6 +247,8 @@ They received: {row.ActionResponse}";
         private Organization organization;
         private string AddToOrg()
         {
+            if (person == null)
+                return GetNoPersonMessage;
             try
             {
                 row.Args = $"{{ \"OrgId\": \"{action.OrgId}\"}}";
@@ -263,6 +269,8 @@ They received: {row.ActionResponse}";
 
         private string AddToSmallGroup()
         {
+            if (person == null)
+                return GetNoPersonMessage;
             try
             {
                 row.Args = $"{{ \"OrgId\": \"{action.OrgId}\", \"SmallGroup\": \"{action.SmallGroup}\"}}";
@@ -285,6 +293,8 @@ They received: {row.ActionResponse}";
 
         private string SendAnEmail()
         {
+            if (person == null)
+                return GetNoPersonMessage;
             row.Args = $"{{ \"EmailId\": \"{action.EmailId}\"}}";
             if (action.EmailId == null)
                 return GetError($"Email Draft not found for id {action.EmailId}");
@@ -296,10 +306,13 @@ They received: {row.ActionResponse}";
         {
             CurrentDatabase.SmsReceiveds.InsertOnSubmit(row);
             CurrentDatabase.SubmitChanges();
+            SendNotices();
             return string.Empty;
         }
         private string RunScript()
         {
+            if (person == null)
+                return GetNoPersonMessage;
             var m = new PythonModel(CurrentDatabase);
             var script = CurrentDatabase.ContentOfTypePythonScript(action.ScriptName);
             if (!script.HasValue())
@@ -319,6 +332,7 @@ They received: {row.ActionResponse}";
             row.ActionResponse = DoReplacments(msg);
             CurrentDatabase.SmsReceiveds.InsertOnSubmit(row);
             CurrentDatabase.SubmitChanges();
+            SendNotices();
             if(msg.Equal("NONE"))
                 return String.Empty;
             return row.ActionResponse;

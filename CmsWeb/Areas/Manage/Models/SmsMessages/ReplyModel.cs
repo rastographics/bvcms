@@ -15,6 +15,7 @@ namespace CmsWeb.Areas.Manage.Models.SmsMessages
                      where r.Id == ReceivedId
                      select new
                      {
+                         received = r,
                          person = r.Person,
                          tonumber = r.FromNumber,
                          fromnumber = (from n in db.SMSNumbers
@@ -22,8 +23,9 @@ namespace CmsWeb.Areas.Manage.Models.SmsMessages
                                    where n.Number == r.ToNumber
                                    select n).Single()
                      }).Single();
-            var ret = TwilioHelper.SendSMS(db, m.person, m.tonumber, m.fromnumber, "Reply To Incoming Message", Message);
-            db.ExecuteCommand("update dbo.SmsReceived set RepliedTo = 1 where Id = {0}", ReceivedId);
+            var ret = TwilioHelper.SendSms(db, m.person, m.tonumber, m.fromnumber, "Reply To Incoming Message", Message);
+            m.received.RepliedTo = true;
+            db.SubmitChanges();
             return ret;
         }
     }

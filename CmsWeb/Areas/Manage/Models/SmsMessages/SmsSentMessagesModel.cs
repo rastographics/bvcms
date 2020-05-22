@@ -25,7 +25,7 @@ namespace CmsWeb.Areas.Manage.Models.SmsMessages
         public DateTime? SentFilterEnd { get; set; }
         [Display(Name = "Message Title")]
         public string SentFilterTitle { get; set; }
-        [Display(Name = "Sms Group")]
+        [Display(Name = "Group")]
         public string SentFilterGroupId { get; set; }
         [Display(Name = "Group Member")]
         public string SentFilterPeopleId { get; set; }
