@@ -94,3 +94,39 @@ GO
 
 ALTER TABLE [dbo].[ScheduledGiftAmount] CHECK CONSTRAINT [FK_ScheduledGiftAmounts_Fund]
 GO
+
+IF OBJECT_ID(N'lookup.ScheduledGiftType', N'U') IS NULL
+BEGIN
+	CREATE TABLE [lookup].[ScheduledGiftType]
+	(
+	[Id] [int] IDENTITY (1,1) NOT NULL,
+	[Description] [nvarchar] (50) NULL,
+	[Hardwired] [bit] NULL
+	CONSTRAINT [PK_ScheduledGiftType_Id] PRIMARY KEY ([Id])
+	)
+END
+GO
+
+IF NOT EXISTS(select 1 FROM lookup.ScheduledGiftType)
+BEGIN
+	SET IDENTITY_INSERT lookup.ScheduledGiftType ON;
+
+	INSERT INTO lookup.ScheduledGiftType ([Id], [Description], [Hardwired]) VALUES
+	(1, 'Weekly', 1),
+	(2, 'Biweekly', 1),
+	(3, 'Semi-monthly', 1),
+	(4, 'Monthly', 1),
+	(5, 'Quarterly', 1),
+	(6, 'Annually', 1);
+
+	SET IDENTITY_INSERT lookup.ScheduledGiftType OFF
+END
+GO
+
+IF OBJECT_ID(N'FK_ScheduledGift_ScheduledGiftType') IS NULL
+ALTER TABLE [dbo].[ScheduledGift]  WITH CHECK ADD  CONSTRAINT [FK_ScheduledGift_ScheduledGiftType] FOREIGN KEY([ScheduledGiftTypeId])
+REFERENCES [lookup].[ScheduledGiftType] ([Id])
+GO
+
+ALTER TABLE [dbo].[ScheduledGift] CHECK CONSTRAINT [FK_ScheduledGift_ScheduledGiftType]
+GO
