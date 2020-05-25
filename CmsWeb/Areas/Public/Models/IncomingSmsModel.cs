@@ -101,6 +101,9 @@ namespace CmsWeb.Areas.Public.Models
                     case "Regrets":
                         rval = MarkAttendingIntention(AttendCommitmentCode.Regrets);
                         break;
+                    case "RecordAttend":
+                        rval = RecordAttendance();
+                        break;
                     case "AddToOrg":
                         rval = AddToOrg();
                         break;
@@ -246,6 +249,27 @@ They received: {row.ActionResponse}";
                 organization = CurrentDatabase.LoadOrganizationById(meeting.OrganizationId);
                 Attend.MarkRegistered(CurrentDatabase, person.PeopleId, meeting.MeetingId, code);
                 markedas = code == AttendCommitmentCode.Attending ? "Attending" : "Regrets";
+            }
+            catch (Exception e)
+            {
+                return GetError($"No Meeting on action {action.Action}, {e.Message}");
+            }
+            return GetActionReplyMessage();
+        }
+        private string RecordAttendance()
+        {
+            if (person == null)
+                return GetNoPersonMessage;
+            try
+            {
+                row.Args = $"{{ \"MeetingId\": \"{action.MeetingId}\"}}";
+                if (action.MeetingId == null)
+                    throw new Exception("meetingid null");
+                meeting = CurrentDatabase.Meetings.FirstOrDefault(mm => mm.MeetingId == action.MeetingId);
+                if (meeting == null)
+                    throw new Exception($"meetingid {action.MeetingId} not found");
+                organization = CurrentDatabase.LoadOrganizationById(meeting.OrganizationId);
+                Attend.RecordAttendance(CurrentDatabase, person.PeopleId, meeting.MeetingId, attended: true);
             }
             catch (Exception e)
             {
