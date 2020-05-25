@@ -25,7 +25,7 @@ namespace CmsWeb.Areas.Giving.Models
         {
             var db = CurrentDatabase;
             var outputList = new List<GivingPageItem>();
-            var response = (from gp in db.GivingPages
+            var pages = (from gp in db.GivingPages
                             let onp = db.SplitInts(gp.OnlineNotifyPerson).Select(i => i.ValueX)
                             select new GivingPageItem
                             {
@@ -70,9 +70,9 @@ namespace CmsWeb.Areas.Giving.Models
                             });
             if (id != 0)
             {
-                response = response.Where(p => p.GivingPageId == id);
+                pages = pages.Where(p => p.GivingPageId == id);
             }
-            return response.ToList();
+            return pages.ToList();
         }
 
         public NotifyPerson[] GetSelectedOnlineNotifyPerson(string onlineNotifyPerson)
@@ -131,23 +131,23 @@ namespace CmsWeb.Areas.Giving.Models
                 PageName = viewModel.pageName,
                 PageUrl = viewModel.pageUrl,
                 Enabled = viewModel.enabled,
-                DisabledRedirect = viewModel.disRedirect
+                DisabledRedirect = viewModel.disabledRedirect
             };
             newGivingPage.PageType = viewModel.pageType;
-            newGivingPage.FundId = viewModel.defaultFund?.FundId;
+            newGivingPage.FundId = viewModel.defaultFund?.Id;
             newGivingPage.EntryPointId = viewModel.entryPointId;
             newGivingPage.SkinFileId = viewModel.skinFile?.Id;
             CurrentDatabase.GivingPages.InsertOnSubmit(newGivingPage);
             CurrentDatabase.SubmitChanges();
 
-            if (viewModel.availFundsArray != null)
+            if (viewModel.availableFunds != null)
             {
-                foreach (var item in viewModel.availFundsArray)
+                foreach (var item in viewModel.availableFunds)
                 {
                     var newGivingPageFund = new GivingPageFund()
                     {
                         GivingPageId = newGivingPage.GivingPageId,
-                        FundId = item.FundId
+                        FundId = item.Id
                     };
                     CurrentDatabase.GivingPageFunds.InsertOnSubmit(newGivingPageFund);
                 }
@@ -162,7 +162,7 @@ namespace CmsWeb.Areas.Giving.Models
                 PageName = newGivingPage.PageName,
                 Enabled = newGivingPage.Enabled,
                 SkinFile = viewModel.skinFile,
-                DefaultFundId = viewModel.defaultFund?.FundId,
+                DefaultFundId = viewModel.defaultFund?.Id,
                 PageType = viewModel.pageType,
                 EntryPointId = viewModel.entryPointId
             };
@@ -178,8 +178,8 @@ namespace CmsWeb.Areas.Giving.Models
             givingPage.PageUrl = viewModel.pageUrl;
             givingPage.PageType = viewModel.pageType;
             givingPage.Enabled = viewModel.enabled;
-            givingPage.FundId = viewModel.defaultFund?.FundId;
-            givingPage.DisabledRedirect = viewModel.disRedirect;
+            givingPage.FundId = viewModel.defaultFund?.Id;
+            givingPage.DisabledRedirect = viewModel.disabledRedirect;
             givingPage.SkinFileId = viewModel.skinFile?.Id;
             givingPage.TopText = viewModel.topText;
             givingPage.ThankYouText = viewModel.thankYouText;
@@ -204,37 +204,37 @@ namespace CmsWeb.Areas.Giving.Models
                 {
                     var t = new FundsClass()
                     {
-                        FundId = item.FundId,
-                        FundName = item.FundName
+                        Id = item.FundId,
+                        Name = item.FundName
                     };
                     tempAvailFundsList.Add(t);
                 }
                 tempAvailFundsArray = tempAvailFundsList.ToArray();
-                if (viewModel.availFundsArray != tempAvailFundsArray)
+                if (viewModel.availableFunds != tempAvailFundsArray)
                 {
                     foreach (var item in tempGivingPagesList)
                     {
                         CurrentDatabase.GivingPageFunds.DeleteOnSubmit(item);
                     }
                 }
-                foreach (var item in viewModel.availFundsArray)
+                foreach (var item in viewModel.availableFunds)
                 {
                     var newGivingPageFund = new GivingPageFund()
                     {
                         GivingPageId = viewModel.pageId,
-                        FundId = item.FundId
+                        FundId = item.Id
                     };
                     CurrentDatabase.GivingPageFunds.InsertOnSubmit(newGivingPageFund);
                 }
             }
             else
             {
-                foreach (var item in viewModel.availFundsArray)
+                foreach (var item in viewModel.availableFunds)
                 {
                     var newGivingPageFund = new GivingPageFund()
                     {
                         GivingPageId = viewModel.pageId,
-                        FundId = item.FundId
+                        FundId = item.Id
                     };
                     CurrentDatabase.GivingPageFunds.InsertOnSubmit(newGivingPageFund);
                 }
@@ -262,8 +262,8 @@ namespace CmsWeb.Areas.Giving.Models
                 Enabled = viewModel.enabled,
                 SkinFile = viewModel.skinFile,
                 PageType = viewModel.pageType,
-                DefaultFundId = viewModel.defaultFund?.FundId,
-                DisabledRedirect = viewModel.disRedirect,
+                DefaultFundId = viewModel.defaultFund?.Id,
+                DisabledRedirect = viewModel.disabledRedirect,
                 EntryPointId = viewModel.entryPointId,
                 TopText = viewModel.topText,
                 ThankYouText = viewModel.thankYouText,
@@ -272,7 +272,6 @@ namespace CmsWeb.Areas.Giving.Models
                 ConfirmEmailOneTime = viewModel.confirmEmailOneTime,
                 ConfirmEmailRecurring = viewModel.confirmEmailRecurring
             };
-            givingPageItem.CurrentIndex = viewModel.currentIndex;
             returningGivingPageList.Add(givingPageItem);
             return returningGivingPageList;
         }
@@ -301,8 +300,8 @@ namespace CmsWeb.Areas.Giving.Models
 
     public class FundsClass
     {
-        public int FundId { get; set; }
-        public string FundName { get; set; }
+        public int Id { get; set; }
+        public string Name { get; set; }
     }
 
     public class NotifyPerson

@@ -10,8 +10,8 @@ namespace CmsWeb.Areas.Giving.Models
         public int pageType { get; set; }
         public bool enabled { get; set; }
         public FundsClass defaultFund { get; set; }
-        public FundsClass[] availFundsArray { get; set; }
-        public string disRedirect { get; set; }
+        public FundsClass[] availableFunds { get; set; }
+        public string disabledRedirect { get; set; }
         public ContentFile skinFile { get; set; }
         public string topText { get; set; }
         public string thankYouText { get; set; }
@@ -21,6 +21,5 @@ namespace CmsWeb.Areas.Giving.Models
         public ContentFile confirmEmailRecurring { get; set; }
         public int? campusId { get; set; }
         public int? entryPointId { get; set; }
-        public int? currentIndex { get; set; }
     }
 }

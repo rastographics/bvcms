@@ -201,7 +201,9 @@
                 this.page.PageUrl = this.slugify(name);
             },
             "page.PageUrl": function (url) {
+                this.validUrl = false;
                 this.page.PageUrl = this.slugify(url);
+                this.verifyUrl();
             }
         },
         data: function () {
@@ -209,6 +211,7 @@
                 page: {
                     PageName: ""
                 },
+                validUrl: true,
                 selectedAvailableFunds: [],
                 fundsList: [],
                 shellList: [],
@@ -295,8 +298,9 @@
                         response => {
                             if (response.status === 200) {
                                 this.pageTypeList = response.data;
+                                console.log(this.pageTypeList);
                                 this.pageTypeList.forEach(function (type) {
-                                    if (this.page.PageType & type.Id) {
+                                    if (this.selectedPageTypes & type.Id) {
                                         this.pageTypes.push(type);
                                     }
                                 });
@@ -311,6 +315,31 @@
                     )
                     .catch(function (error) {
                         console.log(error);
+                    });
+            },
+            verifyUrl: function () {
+                var url = this.page.PageUrl;
+                axios
+                    .get("/Giving/CheckUrlAvailability?url=" + url)
+                    .then(
+                        response => {
+                            if (response.status === 200) {
+                                if (this.page.PageUrl == url && response.data.result == true) {
+                                    this.validUrl = true;
+                                } else {
+                                    this.validUrl = false;
+                                }
+                            } else {
+                                warning_swal("Warning!", "There was a problem checking for the URL availability. Please try again.");
+                            }
+                        },
+                        err => {
+                            console.log(err);
+                            error_swal("Error", "There was a problem checking for the URL availability. Please try again.");
+                        }
+                    )
+                    .catch(function (error) {
+                        error_swal("Error", "There was a problem checking for the URL availability. Please try again.");
                     });
             },
             getAvailableFunds: function () {
@@ -416,7 +445,6 @@
         },
         mounted() {
             this.page = JSON.parse(this.pageProp);
-            this.page.PageType = null;
             this.page.SkinFileId = this.page.SkinFile.Id;
             this.getPageTypes();
             this.getAvailableFunds();
