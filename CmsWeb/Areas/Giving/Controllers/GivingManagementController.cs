@@ -5,6 +5,8 @@ using UtilityExtensions;
 using CmsWeb.Areas.Giving.Models;
 using CmsData.Codes;
 using CmsData.Classes.Giving;
+using System.Text.RegularExpressions;
+using System;
 
 namespace CmsWeb.Areas.Giving.Controllers
 {
@@ -67,6 +69,16 @@ namespace CmsWeb.Areas.Giving.Controllers
                 var returnList = model.UpdateGivingPage(viewModel, givingPage);
                 return Json(returnList, JsonRequestBehavior.AllowGet);
             }
+        }
+
+        [HttpGet]
+        public JsonResult CheckUrlAvailability(string url)
+        {
+            bool result = false;
+            if (url.All(Char.IsLetterOrDigit) && CurrentDatabase.GivingPages.Where(p => p.PageUrl == url).Count() == 0) {
+                result = true;
+            }
+            return Json(result);
         }
 
         [HttpGet]

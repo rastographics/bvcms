@@ -1,17 +1,13 @@
-﻿@{
-    Layout = null;
+﻿@using UtilityExtensions
+@{
+    Layout = ViewExtensions2.TouchPointLayout();
+    ViewBag.Title = "Online Giving Setup";
+    ViewBag.PageHeader = "Online Giving Setup";
 }
-
-<!DOCTYPE html>
-
-<html>
-<head>
-    <meta name="viewport" content="width=device-width" />
-    <title></title>
-</head>
-<body>
-    <div>
-    
-    </div>
-</body>
-</html>
+@section head
+{
+    @ViewExtensions2.BootstrapToggleCss()
+}
+<div class="giving">
+    @id
+</div>

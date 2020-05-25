@@ -16,8 +16,8 @@ namespace CmsWeb.Areas.Giving.Controllers
         }
 
         [HttpGet]
-        [Route("~/Give")]
-        public ActionResult Index()
+        [Route("~/Give/{id}")]
+        public ActionResult Index(string id, string type = null, int fund = 0, string amount = null)
         {
             return View();
         }

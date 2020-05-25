@@ -1193,6 +1193,7 @@
     </Content>
     <Content Include="Areas\Search\Views\PictureDirectory\PictureDirectory.sql" />
     <Content Include="Areas\Giving\Views\GivingManagement\Manage.cshtml" />
+    <Content Include="Areas\Giving\Views\GivingPage\Index.cshtml" />
     <None Include="babel.config.js" />
     <Content Include="Content\css\bootstrap-datetimepicker.css" />
     <Content Include="Content\css\bootstrap-datetimepicker.min.css">
@@ -1778,8 +1779,10 @@
     <Content Include="Properties\Files\ContributionStatementTemplate.html" />
     <Content Include="Properties\Files\ContributionStatementTemplateBody.html" />
     <Content Include="src\main.js" />
+    <Content Include="Content\touchpoint\src\less\vue-component-overrides.less" />
     <None Include="Properties\Files\ContributionStatementTemplate.html" />
     <None Include="Properties\Files\ContributionStatementTemplateBody.html" />
+    <Content Include="src\components\Giving\GivingPage\GivingContainer.vue" />
     <None Include="src\main.js" />
     <Content Include="Views\Shared\Account\_Layout.cshtml" />
     <Content Include="Areas\Reports\Views\Reports\EditCustomReport.cshtml" />
@@ -1933,8 +1936,6 @@
     </Content>
     <Content Include="Areas\Giving\Views\GivingManagement\Index.cshtml" />
     <Content Include="package-lock.json" />
-    <Content Include="Areas\Giving\Views\GivingPage\Index.cshtml" />
-    <Content Include="Areas\Giving\Views\GivingPage\Index.cshtml" />
     <None Include="package-lock.json" />
     <Content Include="Content\dist\js\app.js.map" />
     <None Include="packages.config">
@@ -2850,9 +2851,6 @@
     <None Include="src\App.vue" />
     <None Include="src\components\GenericComponents\Modal.vue" />
     <None Include="src\components\GenericComponents\Slider.vue" />
-    <None Include="src\components\Giving\GivingPageIndex\AddGivingPage.vue" />
-    <None Include="src\components\Giving\GivingPageIndex\GivingPageIndex.vue" />
-    <None Include="src\components\Giving\GivingPageEdit\GivingPageEdit.vue" />
     <None Include="src\components\GenericComponents\ShowModalBtn.vue" />
     <Content Include="Views\Home\Dashboard.cshtml" />
     <Content Include="src\components\Setup\Gateway\Manage.vue" />
