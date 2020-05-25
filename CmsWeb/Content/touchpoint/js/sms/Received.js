@@ -1,4 +1,4 @@
-﻿$(document).ready(function () {
+﻿$(function () {
     $('#receivedform')
         .on('click', '#clearreceived',
         function (ev) {
@@ -21,19 +21,18 @@
         }).on('keypress', 'input[type=text]',
         function (e) {
             var key = e.which;
-            if (key == 13)  // the enter key code
+            if (key === 13)  // the enter key code
             {
                 $('#searchreceived').click();
                 return false;
             }
-        });
-
-$('#receivedresults').on('click', 'a.showdetails',
+            return true;
+        }).on('click', 'a.showdetails',
         function (ev) {
             ev.preventDefault();
             $.post(this.href,
                 function (ret) {
-                    $('#receivedresults').html(ret);
+                    $('#receivedresults').replaceWith(ret);
                 });
         }).on('click', 'button.backtoreceived',
         function (ev) {
@@ -43,7 +42,7 @@ $('#receivedresults').on('click', 'a.showdetails',
             $.post("/SmsMessages/ReceivedResults",
                 q,
                 function (ret) {
-                    $('#receivedresults').html(ret);
+                    $('#receivedresults').replaceWith(ret);
                 });
         }).on('click', 'a.replyto',
         function (ev) {
@@ -59,7 +58,13 @@ $('#receivedresults').on('click', 'a.showdetails',
                     $("#Response").html(o.Response);
                     $('#replyto-modal').modal();
                 });
+        }).on("click", "#gotoReply",
+        function (ev) {
+            ev.preventDefault();
+            var sentid = $(this).data("sentid");
+            FilterReplySent('#' + sentid);
         });
+
     $('#SendReplyForm').on('click', '#sendmessage',
         function (ev) {
             ev.preventDefault();
@@ -89,3 +94,13 @@ $('#receivedresults').on('click', 'a.showdetails',
                 });
         });
 });
+function FilterRepliedTo(msgval) {
+    $('#RecdFilterStart').val(null);
+    $('#RecdFilterEnd').val(null);
+    $('#RecdFilterGroupId').val(0);
+    $('#RecdFilterSender').val(null);
+    $('#RecdFilterMessage').val(msgval);
+    $('#showReceivedTab').click();
+    $('#searchreceived').click();
+}
+

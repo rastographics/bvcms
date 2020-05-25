@@ -61,10 +61,10 @@ namespace CmsWeb.Areas.Public.Models
                 select grp).FirstOrDefault();
             if(group == null)
                 throw new Exception($"could not find group from number {To}");
-            m.GroupId = group.Id;
+            m.GroupId = group.Id.ToString();
             groupName = group.Name;
             m.PopulateActions();
-            row.ToGroupId = m.GroupId;
+            row.ToGroupId = m.GroupIdInt;
             return m;
         }
 
@@ -110,6 +110,9 @@ namespace CmsWeb.Areas.Public.Models
                     case "SendAnEmail":
                         rval = SendAnEmail();
                         break;
+                    case "SendReplyOnly":
+                        rval = GetActionReplyMessage();
+                        break;
                     case "RunScript":
                         rval = RunScript();
                         break;
@@ -120,6 +123,13 @@ namespace CmsWeb.Areas.Public.Models
             }
             if(rval.HasValue())
                 return rval;
+
+            var sendReplyOnlyActionWithNoWord = model.Actions.SingleOrDefault(vv =>
+                vv.Action == "SendReplyOnly" && string.IsNullOrEmpty(vv.Word));
+            if (sendReplyOnlyActionWithNoWord != null)
+            {
+                return GetActionReplyMessage();
+            }
             //Reply word never found in loop, must be a regular text message
             return ReceivedTextNoAction();
         }
@@ -127,7 +137,7 @@ namespace CmsWeb.Areas.Public.Models
         public void SendNotices()
         {
             var q = from gm in CurrentDatabase.SMSGroupMembers
-                where gm.GroupID == model.GroupId
+                where gm.GroupID == model.GroupIdInt
                 where gm.ReceiveNotifications == true
                 select gm.User.Person;
             var subject = $"Received Text from {From}";
@@ -204,7 +214,7 @@ They received: {row.ActionResponse}";
                 return GetNoPersonMessage;
             var o = new SmsGroupOptOut
             {
-                FromGroup = model.GroupId,
+                FromGroup = model.GroupIdInt,
                 ToPeopleId = person.PeopleId
             };
             CurrentDatabase.SmsGroupOptOuts.InsertOnSubmit(o);

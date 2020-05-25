@@ -1,4 +1,13 @@
 ﻿$(function () {
+    // begin initialize ReplyWords tab when document loaded
+    if (window.location.hash) {
+        var hash = window.location.hash;
+        window.location.hash = "";
+        FilterRepliedTo(hash);
+    }
+    $("#replywords #GroupId").click();
+    // end initialize ReplyWords
+
     $("#replywords").on("change",
         "#GroupId",
         (function (ev) {
@@ -8,7 +17,7 @@
             $.post("/SmsMessages/ReplyWordsGroupChanged",
                 q,
                 function (ret) {
-                    $("#ReplyWordsList").html(ret);
+                    $("#replywordslist").replaceWith(ret);
                 });
         }));
     $("#replywords").on("change",
@@ -20,7 +29,7 @@
             $.post("/SmsMessages/ReplyWordActionChanged",
                 q,
                 function (ret) {
-                    $("#ReplyWordsList").html(ret);
+                    $("#replywordslist").replaceWith(ret);
                 });
         });
     $('#replywords').on("click",
@@ -32,7 +41,7 @@
             $.post("/SmsMessages/AddReplyWord",
                 q,
                 function (ret) {
-                    $("#ReplyWordsList").html(ret);
+                    $("#replywordslist").replaceWith(ret);
                 });
         });
     $('#replywords').on("click",

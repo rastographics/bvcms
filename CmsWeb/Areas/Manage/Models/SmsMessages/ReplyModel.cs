@@ -1,6 +1,8 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using CmsData;
 using CmsData.Classes.Twilio;
+using Community.CsharpSqlite;
 
 namespace CmsWeb.Areas.Manage.Models.SmsMessages
 {
@@ -11,21 +13,19 @@ namespace CmsWeb.Areas.Manage.Models.SmsMessages
 
         public string Send(CMSDataContext db)
         {
-            var m = (from r in db.SmsReceiveds
-                     where r.Id == ReceivedId
-                     select new
-                     {
-                         received = r,
-                         person = r.Person,
-                         tonumber = r.FromNumber,
-                         fromnumber = (from n in db.SMSNumbers
-                                   where n.GroupID == r.ToGroupId
-                                   where n.Number == r.ToNumber
-                                   select n).Single()
-                     }).Single();
-            var ret = TwilioHelper.SendSms(db, m.person, m.tonumber, m.fromnumber, "Reply To Incoming Message", Message);
-            m.received.RepliedTo = true;
-            db.SubmitChanges();
+            var received = (from r in db.SmsReceiveds
+                where r.Id == ReceivedId select r).Single();
+
+            var tonumber = received.FromNumber;
+            var person = received.Person;
+            var fromnumber = (from n in db.SMSNumbers
+                where n.GroupID == received.ToGroupId
+                where n.Number == received.ToNumber
+                select n).Single();
+
+            var ret = TwilioHelper.SendSmsReplyIncoming(db,
+                ReceivedId, person, tonumber, fromnumber,
+                $"Reply To {person?.Name ?? "Unknown"}", Message);
             return ret;
         }
     }

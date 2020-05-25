@@ -1,4 +1,5 @@
 ﻿@model CmsWeb.Areas.Manage.Models.SmsMessages.ReceivedDetailViewModel
+<div id="receivedresults">
     <div class="row">
         <div class="col-sm-9">
             <div class="box box-responsive">
@@ -13,6 +14,11 @@
                 <div class="box-content">
                     <h4>Message Text</h4>
                     <blockquote>@Model.R.Body</blockquote>
+                    @if (Model.R.RepliedTo == true)
+                    {
+                        <a id="gotoReply" href="#" data-sentid="@Model.R.Id">There was a reply from @(Model.ReplyFrom)</a>
+                    }
+
                     <table class="table notwide">
                         @Html.DisplayFor(m => m.R.Action)
                         @Html.DisplayFor(m => m.R.ActionResponse)
@@ -20,16 +26,17 @@
                         @Html.DisplayFor(m => m.R.DateReceived)
                         @Html.DisplayFor(m => m.R.FromNumber)
                         @Html.DisplayFor(m => m.R.FromPeopleId)
-                        @Html.DisplayFor(m => m.PersonName)
+                        @Html.DisplayFor(m => m.DisplayName)
                         @Html.DisplayFor(m => m.R.ToNumber)
                         @Html.DisplayFor(m => m.R.ToGroupId)
                         @Html.DisplayFor(m => m.GroupName)
                     </table>
                     <button class="backtoreceived btn btn-default">
-                        <i class="fa fa-arrow-circle-left"></i>
-                        Back to Message List
+                            <i class="fa fa-arrow-circle-left"></i>
+                            Back to Message List
                     </button>
                 </div>
             </div>
         </div>
     </div>
+</div>

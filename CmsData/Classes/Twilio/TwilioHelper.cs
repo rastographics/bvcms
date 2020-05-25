@@ -6,6 +6,7 @@ using System.Data.SqlClient;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using Dapper;
 using Twilio;
 using Twilio.Exceptions;
 using Twilio.Rest.Api.V2010.Account;
@@ -48,14 +49,14 @@ namespace CmsData.Classes.Twilio
             // Load all people but tell why they can or can't be sent to
 
             var personOptouts = from person in q
-                select new
-                {
-                    person,
-                    optOutGroup = person.SmsGroupOptOuts.Any(vv => vv.FromGroup == iSendGroupID)
-                };
+                                select new
+                                {
+                                    person,
+                                    optOutGroup = person.SmsGroupOptOuts.Any(vv => vv.FromGroup == iSendGroupID)
+                                };
             foreach (var personOptout in personOptouts)
             {
-                var item = new SMSItem {ListID = list.Id, PeopleID = personOptout.person.PeopleId};
+                var item = new SMSItem { ListID = list.Id, PeopleID = personOptout.person.PeopleId };
 
                 if (!string.IsNullOrEmpty(personOptout.person.CellPhone))
                 {
@@ -82,7 +83,7 @@ namespace CmsData.Classes.Twilio
                        where !personOptout.optOutGroup
                        select personOptout.person;
 
-                var countSMS = qSMS.Count();
+            var countSMS = qSMS.Count();
 
             // Add counts for SMS, e-Mail and none
             list.SentSMS = countSMS;
@@ -139,7 +140,7 @@ namespace CmsData.Classes.Twilio
             }
             return success;
         }
-        public static string SendSms(CMSDataContext db,
+        public static string SendSmsReplyIncoming(CMSDataContext db, int receivedId,
             Person p, string toNumber, SMSNumber fromNumber, string title, string message)
         {
             string sSid = GetSid(db);
@@ -153,25 +154,32 @@ namespace CmsData.Classes.Twilio
                 SendGroupID = fromNumber.GroupID,
                 Title = title,
                 Message = message,
+                ReplyToId = receivedId
             };
             var item = new SMSItem
             {
                 ListID = list.Id,
-                PeopleID = p.PeopleId,
+                PeopleID = p?.PeopleId,
                 Number = toNumber,
             };
             list.SMSItems.Add(item);
 
             var response = SendSmsInternal(sSid, sToken, fromNumber.Number, toNumber, message);
 
-            if (!IsSmsFailed(response))
+            var succeeded = !IsSmsFailed(response);
+            if (succeeded)
             {
                 list.SentSMS = 1;
                 item.Sent = true;
             }
             db.SMSLists.InsertOnSubmit(list);
             db.SubmitChanges();
-
+            if (succeeded)
+            {
+                db.Connection.Execute(
+                    "update dbo.SmsReceived set RepliedTo = @replied where id = @id",
+                    new { replied = true, id = receivedId });
+            }
             return ResultMessage(response, toNumber);
         }
 

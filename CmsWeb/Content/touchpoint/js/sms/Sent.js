@@ -1,4 +1,4 @@
-﻿$(document).ready(function () {
+﻿$(function () {
     $('#sentform').on('click', '#clearsent',
         function (ev) {
             ev.preventDefault();
@@ -35,16 +35,14 @@
                 $('#searchsent').click();
                 return false;
             }
-        });
-
-    $('#sentresults').on('click', 'a.showdetails',
+        }).on('click', 'a.showdetails',
         function (ev) {
             ev.preventDefault();
             $.post(this.href,
                 function (ret) {
-                    $('#sentresults').html(ret);
+                    $('#sentresults').replaceWith(ret);
                 });
-        }).on('click', 'button.backtosent',
+        }).on('click', 'a.backtosent',
         function (ev) {
             ev.preventDefault();
             var f = $(this).closest('form');
@@ -52,8 +50,13 @@
             $.post("/SmsMessages/SentResults",
                 q,
                 function (ret) {
-                    $('#sentresults').html(ret);
+                    $('#sentresults').replaceWith(ret);
                 });
+        }).on("click", "#gotoReplyTo",
+        function (ev) {
+            ev.preventDefault();
+            var receivedid = $(this).data("receivedid");
+            FilterRepliedTo('#' + receivedid);
         });
 
     $('#tagmessages-modal').on('click',
@@ -70,3 +73,12 @@
                 });
         });
 });
+function FilterReplySent(val) {
+    $('#SentFilterStart').val(null);
+    $('#SentFilterEnd').val(null);
+    $('#SentFilterGroupId').val(0);
+    $('#SentFilterSender').val(null);
+    $('#SentFilterTitle').val(val);
+    $('#showSentTab').click();
+    $('#searchsent').click();
+}

@@ -42,12 +42,13 @@ namespace CmsData
 
 		private bool? _RepliedTo;
 
-		private EntityRef<Person> _Person;
+        private EntitySet<SMSList> _SmsReplies;
+        
+        private EntityRef<Person> _Person;
 
 		private EntityRef<SMSGroup> _SMSGroup;
 
 	#endregion
-
     #region Extensibility Method Definitions
     partial void OnLoaded();
     partial void OnValidate(System.Data.Linq.ChangeAction action);
@@ -92,6 +93,9 @@ namespace CmsData
 			this._Person = default(EntityRef<Person>);
 
 			this._SMSGroup = default(EntityRef<SMSGroup>);
+
+            this._SmsReplies = new EntitySet<SMSList>(new Action<SMSList>(this.attach_SMSLists),
+                new Action<SMSList>(this.detach_SMSLists));
 
 			OnCreated();
 		}
@@ -324,11 +328,17 @@ namespace CmsData
 			}
 		}
 
-
     #endregion
 
     #region Foreign Key Tables
 
+        [Association(Name = "FK_SMSList_SmsReceived", Storage = "_SmsReplies", OtherKey = "ReplyToId")]
+        public EntitySet<SMSList> SmsReplies
+        {
+            get { return this._SmsReplies; }
+
+            set { this._SmsReplies.Assign(value); }
+        }
 	#endregion
 
 	#region Foreign Keys
@@ -401,6 +411,18 @@ namespace CmsData
 				}
 			}
 		}
+
+        private void attach_SMSLists(SMSList entity)
+        {
+            this.SendPropertyChanging();
+            entity.SmsReceived = this;
+        }
+
+        private void detach_SMSLists(SMSList entity)
+        {
+            this.SendPropertyChanging();
+            entity.SmsReceived = null;
+        }
 
 	#endregion
 
