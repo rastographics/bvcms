@@ -93,7 +93,7 @@ def GetData(divisions, begindate):
     divids = [row[1] for row in divisions]
     sql = sql.replace(''@begindate'', begindate)
     sql = sql.replace(''@divs'', str(divids)[1:-1])
-    rowcountsql = ''isnull((select sum(HeadCount) from data d where d.DivisionId = {0} and d.ss = dd.ss group by d.ss), 0) d{0}''
+    rowcountsql = ''isnull((select sum(MaxCount) from data d where d.DivisionId = {0} and d.ss = dd.ss group by d.ss), 0) d{0}''
     rlist = [rowcountsql.format(d) for d in divids]
     s = '',\n''.join(rlist)
     sql = sql.replace(''@rowcounts'', s)
@@ -123,28 +123,23 @@ INSERT INTO [dbo].[Content]
            ([Name],[Title],[Body],[DateCreated],[TypeID],[ThumbID],[RoleID],[OwnerID],[CreatedBy])
      VALUES
            ('WidgetRecentAttendanceTrendsSQL','Edit Sql Script',
-           'select HeadCount, 
-    o.DivisionId, 
-    dbo.SundayForDate(m.MeetingDate) ss, 
+           'select MaxCount, dd.DivId DivisionId, dbo.SundayForDate(m.MeetingDate) ss, 
     datediff(hour, dbo.SundayForDate(m.MeetingDate), m.MeetingDate) hh
     into #meetingdata
 from dbo.Meetings m
 join dbo.Organizations o on o.OrganizationId = m.OrganizationId
-join dbo.Division d on d.Id = o.DivisionId
-where o.DivisionId in (@divs)
-and HeadCount > 0
-
-;with data as (
-	select HeadCount, DivisionId, ss, hh 
+join dbo.DivOrg dd on dd.orgid = o.OrganizationId
+join dbo.Division d on d.Id = dd.DivId
+where dd.DivId in (@divs)
+and MaxCount > 0;
+with data as (
+	select MaxCount, DivisionId, ss, hh 
 	from #meetingdata
 	where ss >= ''@begindate''
 )
-select
-	CONVERT(varchar, ss, 111) [Sunday],
-	@rowcounts
+select CONVERT(varchar, ss, 111) [Sunday], @rowcounts
 from data dd
 group by dd.ss
-
 drop table #meetingdata',
            GETDATE(),4,0,0,0,'admin')
            
