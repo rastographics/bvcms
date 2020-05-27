@@ -204,7 +204,7 @@ select DATEPART(week, getdate() - 49) w
 tags as (
 select weeks.w, SUM(coalesce(c.ContributionAmount,0)) as amount, TagName from weeks
 cross join ContributionTag ct 
-left join Contribution c on datepart(week, c.ContributionDate) = weeks.w and c.ContributionId = ct.ContributionId
+left join Contribution c on datepart(week, c.ContributionDate) = weeks.w and c.ContributionId = ct.ContributionId and c.ContributionTypeId NOT IN (6,7,8)
 where TagName = @Tag
 group by weeks.w, TagName
 )
