@@ -8,174 +8,176 @@
                 <a href="#Email-tab" aria-controls="Email-tab" data-toggle="tab" aria-expanded="false">Email</a>
             </li>
         </ul>
-        <div class="tab-content">
-            <div id="Details-tab" class="tab-pane fade active in">
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label class="control-label">Page Name</label>
-                            <input type="text" v-model="page.PageName" class="form-control" />
+        <form @submit.prevent="saveGivingPage">
+            <div class="tab-content">
+                <div id="Details-tab" class="tab-pane fade active in">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label">Page Name</label>
+                                <input type="text" v-model="page.PageName" class="form-control" />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div :class="{'form-group': true, 'has-success': validUrl && !page.GivingPageId, 'has-error': !validUrl && page.PageUrl.length && !page.GivingPageId}">
+                                <label for="pageUrl" class="control-label">Page URL <a href="#" data-toggle="popover" data-placement="right" data-trigger="focus" data-title="Page URL" data-content="The publically accessible URL for this giving page. This can't be changed later, and must be unique."><i class="fa fa-info-circle"></i></a></label>
+                                <div class="input-group">
+                                    <span :class="{'input-group-addon': true, 'disabled': page.GivingPageId != 0}" id="pageUrl" @click="$refs.pageUrl.focus()">{{givePrefix}}</span>
+                                    <input type="text" class="form-control" ref="pageUrl" v-model="page.PageUrl" aria-describedby="pageUrl" :disabled="page.GivingPageId != 0" style="border-left-width:0;" >
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label class="control-label">Page URL <a href="#" data-toggle="popover" data-placement="right" data-trigger="focus" data-title="Page URL" data-content="The publically accessible URL for this giving page. This can't be changed later, and must be unique."><i class="fa fa-info-circle"></i></a></label>
-                            <div class="input-group">
-                                <span class="input-group-addon" id="pageUrl" style="font-size:13px;">{{givePrefix}}</span>
-                                <input type="text" class="form-control" v-model="page.PageUrl" aria-describedby="pageUrl" :disabled="page.GivingPageId">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label">Giving Types <a href="#" data-toggle="popover" data-placement="right" data-trigger="focus" data-title="Giving Type" data-content="The types of giving allowed on this page. You can allow more than one. Be sure to set the cooresponding emails for each type in the 'Email' tab."><i class="fa fa-info-circle"></i></a></label>
+                                <MultiSelect v-model="pageTypes"
+                                             :options="pageTypeList"
+                                             :searchable="true"
+                                             :close-on-select="true"
+                                             :multiple="true"
+                                             :allowEmpty="false"
+                                             trackBy="Id"
+                                             label="Name"></MultiSelect>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label">Page Shell <a href="#" data-toggle="popover" data-placement="right" data-trigger="focus" data-title="Page Shell" data-content="You can theme this giving page by creating an HTML content file with the keyword 'shell' and applying it here."><i class="fa fa-info-circle"></i></a></label>
+                                <MultiSelect v-model="page.SkinFileId"
+                                             :options="shellList"
+                                             :searchable="true"
+                                             :close-on-select="true"
+                                             :allowEmpty="true"
+                                             trackBy="Id"
+                                             label="Name"></MultiSelect>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label">Default Fund <a href="#" data-toggle="popover" data-placement="right" data-trigger="focus" data-title="Default Fund" data-content="This is the primary fund that gifts from this page will go to by default."><i class="fa fa-info-circle"></i></a></label>
+                                <MultiSelect v-model="page.DefaultFund"
+                                             :options="fundsList"
+                                             :searchable="true"
+                                             :close-on-select="true"
+                                             :allowEmpty="false"
+                                             trackBy="Id"
+                                             label="Name"></MultiSelect>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label">Fund Options <a href="#" data-toggle="popover" data-placement="right" data-trigger="focus" data-title="Fund Options" data-content="Any funds listed here will be presented as optional alternatives to the default fund for donors to choose to give to."><i class="fa fa-info-circle"></i></a></label>
+                                <MultiSelect v-model="selectedAvailableFunds"
+                                             :options="fundsList"
+                                             :searchable="true"
+                                             :close-on-select="true"
+                                             :multiple="true"
+                                             trackBy="Id"
+                                             label="Name"></MultiSelect>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label">Entry Point</label>
+                                <MultiSelect v-model="page.EntryPointId"
+                                             :options="entryPointList"
+                                             :searchable="true"
+                                             :close-on-select="true"
+                                             trackBy="Id"
+                                             label="Name"></MultiSelect>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label">URL Redirect <a href="#" data-toggle="popover" data-placement="right" data-trigger="focus" data-title="URL Redirect" data-content="If you choose to disable this giving page, you can enter a fully qualified URL here for donors to be redirected to if they try to visit this page."><i class="fa fa-info-circle"></i></a></label>
+                                <input type="text" v-model="page.DisabledRedirect" class="form-control" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12" style="margin-bottom: 15px;">
+                            <div class="pull-right">
+                                <a href="/Giving" class="btn btn-default" style="margin-right: 10px;">Cancel</a>
+                                <a class="btn btn-primary" @click="saveGivingPage">Save</a>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label class="control-label">Giving Types <a href="#" data-toggle="popover" data-placement="right" data-trigger="focus" data-title="Giving Type" data-content="The types of giving allowed on this page. You can allow more than one. Be sure to set the cooresponding emails for each type in the 'Email' tab."><i class="fa fa-info-circle"></i></a></label>
-                            <MultiSelect v-model="pageTypes"
-                                         :options="pageTypeList"
-                                         :searchable="true"
-                                         :close-on-select="true"
-                                         :multiple="true"
-                                         :allowEmpty="false"
-                                         trackBy="Id"
-                                         label="Name"></MultiSelect>
+                <div id="Email-tab" class="tab-pane fade">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label">Top Text</label>
+                                <input type="text" v-model="page.TopText" class="form-control" />
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label class="control-label">Page Shell <a href="#" data-toggle="popover" data-placement="right" data-trigger="focus" data-title="Page Shell" data-content="You can theme this giving page by creating an HTML content file with the keyword 'shell' and applying it here."><i class="fa fa-info-circle"></i></a></label>
-                            <MultiSelect v-model="page.SkinFileId"
-                                         :options="shellList"
-                                         :searchable="true"
-                                         :close-on-select="true"
-                                         :allowEmpty="true"
-                                         trackBy="Id"
-                                         label="Name"></MultiSelect>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label">Thank You Message</label>
+                                <input type="text" v-model="page.ThankYouText" class="form-control" />
+                            </div>
                         </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label class="control-label">Default Fund</label>
-                            <MultiSelect v-model="page.DefaultFundId"
-                                         :options="fundsList"
-                                         :searchable="true"
-                                         :close-on-select="true"
-                                         :allowEmpty="true"
-                                         trackBy="Id"
-                                         label="Name"></MultiSelect>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label">Email From</label>
+                                <MultiSelect v-model="page.OnlineNotifyPerson"
+                                             :options="onlineNotifyPersonList"
+                                             :searchable="true"
+                                             :close-on-select="true"
+                                             trackBy="Id"
+                                             label="Name"
+                                             :multiple="true"></MultiSelect>
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label class="control-label">Available Funds</label>
-                            <MultiSelect v-model="selectedAvailableFunds"
-                                         :options="fundsList"
-                                         :searchable="true"
-                                         :close-on-select="true"
-                                         :multiple="true"
-                                         trackBy="Id"
-                                         label="Name"></MultiSelect>
+                        <div class="col-md-6">
+                            <div class="form-group" v-if="selectedPageTypes & TYPE_PLEDGE">
+                                <label class="control-label">Pledge Confirmation Email</label>
+                                <MultiSelect v-model="page.ConfirmationEmailPledgeId"
+                                             :options="confirmationEmailList"
+                                             :searchable="true"
+                                             :close-on-select="true"
+                                             trackBy="Id"
+                                             label="Name"></MultiSelect>
+                            </div>
                         </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label class="control-label">Entry Point</label>
-                            <MultiSelect v-model="page.EntryPointId"
-                                         :options="entryPointList"
-                                         :searchable="true"
-                                         :close-on-select="true"
-                                         trackBy="Id"
-                                         label="Name"></MultiSelect>
+                        <div class="col-md-6" v-if="selectedPageTypes & TYPE_ONE_TIME">
+                            <div class="form-group">
+                                <label class="control-label">One Time Confirmation Email</label>
+                                <MultiSelect v-model="page.ConfirmationEmailOneTimeId"
+                                             :options="confirmationEmailList"
+                                             :searchable="true"
+                                             :close-on-select="true"
+                                             trackBy="Id"
+                                             label="Name"></MultiSelect>
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label class="control-label">Disabled Redirect</label>
-                            <input type="text" v-model="page.DisabledRedirect" class="form-control" />
+                        <div class="col-md-6" v-if="selectedPageTypes & TYPE_RECURRING">
+                            <div class="form-group">
+                                <label class="control-label">Recurring Confirmation Email</label>
+                                <MultiSelect v-model="page.ConfirmationEmailRecurringId"
+                                             :options="confirmationEmailList"
+                                             :searchable="true"
+                                             :close-on-select="true"
+                                             trackBy="Id"
+                                             label="Name"></MultiSelect>
+                            </div>
                         </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-sm-12" style="margin-bottom: 15px;">
-                        <div class="pull-right">
-                            <a href="/Giving" class="btn btn-default" style="margin-right: 10px;">Cancel</a>
-                            <a class="btn btn-primary" @click="saveGivingPage">Save</a>
+                        <div class="col-sm-12" style="margin-bottom: 15px;">
+                            <div class="pull-right">
+                                <a href="/Giving" class="btn btn-default" style="margin-right: 10px;">Cancel</a>
+                                <a class="btn btn-primary" @click="saveGivingPage">Save</a>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div id="Email-tab" class="tab-pane fade">
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label class="control-label">Top Text</label>
-                            <input type="text" v-model="page.TopText" class="form-control" />
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label class="control-label">Thank you message</label>
-                            <input type="text" v-model="page.ThankYouText" class="form-control" />
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label class="control-label">Online Notify Person</label>
-                            <MultiSelect v-model="page.OnlineNotifyPerson"
-                                         :options="onlineNotifyPersonList"
-                                         :searchable="true"
-                                         :close-on-select="true"
-                                         trackBy="Id"
-                                         label="Name"
-                                         :multiple="true"></MultiSelect>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group" v-if="selectedPageTypes & TYPE_PLEDGE">
-                            <label class="control-label">Pledge Confirmation Email</label>
-                            <MultiSelect v-model="page.ConfirmationEmailPledgeId"
-                                         :options="confirmationEmailList"
-                                         :searchable="true"
-                                         :close-on-select="true"
-                                         trackBy="Id"
-                                         label="Name"></MultiSelect>
-                        </div>
-                    </div>
-                    <div class="col-md-6" v-if="selectedPageTypes & TYPE_ONE_TIME">
-                        <div class="form-group">
-                            <label class="control-label">One Time Confirmation Email</label>
-                            <MultiSelect v-model="page.ConfirmationEmailOneTimeId"
-                                         :options="confirmationEmailList"
-                                         :searchable="true"
-                                         :close-on-select="true"
-                                         trackBy="Id"
-                                         label="Name"></MultiSelect>
-                        </div>
-                    </div>
-                    <div class="col-md-6" v-if="selectedPageTypes & TYPE_RECURRING">
-                        <div class="form-group">
-                            <label class="control-label">Recurring Confirmation Email</label>
-                            <MultiSelect v-model="page.ConfirmationEmailRecurringId"
-                                         :options="confirmationEmailList"
-                                         :searchable="true"
-                                         :close-on-select="true"
-                                         trackBy="Id"
-                                         label="Name"></MultiSelect>
-                        </div>
-                    </div>
-                    <div class="col-sm-12" style="margin-bottom: 15px;">
-                        <div class="pull-right">
-                            <a href="/Giving" class="btn btn-default" style="margin-right: 10px;">Cancel</a>
-                            <a class="btn btn-primary" @click="saveGivingPage">Save</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+        </form>
     </div>
 </template>
 
@@ -201,9 +203,11 @@
                 this.page.PageUrl = this.slugify(name);
             },
             "page.PageUrl": function (url) {
-                this.validUrl = false;
-                this.page.PageUrl = this.slugify(url);
-                this.verifyUrl();
+                if (!this.page.GivingPageId) {
+                    this.validUrl = false;
+                    this.page.PageUrl = this.slugify(url);
+                    this.verifyUrl();
+                }
             }
         },
         data: function () {
@@ -227,6 +231,7 @@
         },
         methods: {
             slugify(str) {
+                if (!str) return '';
                 return str.toLowerCase()
                     .replace(/^\s+|\s+$/g, '') // trim
                     .replace(/[^a-z0-9 -]/g, '') // remove invalid chars
@@ -246,9 +251,12 @@
                     error_swal("Error", "Page URL is required");
                     return false;
                 }
-                if (!this.page.DefaultFundId) {
+                if (!this.page.DefaultFund) {
                     error_swal("Error", "Default fund is required");
                     return false;
+                }
+                if (!this.validUrl) {
+                    error_swal("Error", "That page URL is already in use.")
                 }
                 return true;
             },
@@ -260,19 +268,17 @@
                         pageUrl: this.page.PageUrl,
                         pageType: this.selectedPageTypes,
                         enabled: this.page.Enabled,
-                        defaultFund: this.page.DefaultFundId,
-                        disRedirect: this.page.DisabledRedirect,
-                        //skinFile: this.page.currentPageSkin,
+                        defaultFund: this.page.DefaultFund,
+                        disabledRedirect: this.page.DisabledRedirect,
+                        skinFile: this.page.currentPageSkin,
                         topText: this.page.TopText,
                         thankYouText: this.page.ThankYouText,
-                        //onlineNotifyPerson: this.page.currentOnlineNotifyPerson,
+                        onlineNotifyPerson: this.page.currentOnlineNotifyPerson,
                         confirmEmailPledge: this.page.ConfirmEmailPledge,
                         confirmEmailOneTime: this.page.ConfirmEmailOneTime,
                         confirmEmailRecurring: this.page.ConfirmEmailRecurring,
-                        //campusId: this.page.currentCampusId,
                         entryPoint: this.page.EntryPointId,
-                        // currentIndex: this.page.currentIndex
-                        availFundsArray: this.page.currentAvailableFunds,
+                        availableFunds: this.page.AvailableFunds,
                     })
                     .then(
                         response => {
@@ -292,16 +298,16 @@
                 }
             },
             getPageTypes: function () {
+                let vm = this;
                 axios
                     .get("/Giving/GetPageTypes")
                     .then(
                         response => {
                             if (response.status === 200) {
-                                this.pageTypeList = response.data;
-                                console.log(this.pageTypeList);
-                                this.pageTypeList.forEach(function (type) {
-                                    if (this.selectedPageTypes & type.Id) {
-                                        this.pageTypes.push(type);
+                                vm.pageTypeList = response.data;
+                                vm.pageTypeList.forEach(function (type) {
+                                    if (vm.page.PageType & type.Id) {
+                                        vm.pageTypes.push(type);
                                     }
                                 });
                             } else {
@@ -319,68 +325,72 @@
             },
             verifyUrl: function () {
                 var url = this.page.PageUrl;
-                axios
-                    .get("/Giving/CheckUrlAvailability?url=" + url)
-                    .then(
-                        response => {
-                            if (response.status === 200) {
-                                if (this.page.PageUrl == url && response.data.result == true) {
-                                    this.validUrl = true;
-                                } else {
-                                    this.validUrl = false;
-                                }
+                axios.get("/Giving/CheckUrlAvailability?url=" + url)
+                .then(
+                    response => {
+                        if (response.status === 200) {
+                            if (this.page.PageUrl == url && response.data.result == true) {
+                                this.validUrl = true;
                             } else {
-                                warning_swal("Warning!", "There was a problem checking for the URL availability. Please try again.");
+                                this.validUrl = false;
                             }
-                        },
-                        err => {
-                            console.log(err);
-                            error_swal("Error", "There was a problem checking for the URL availability. Please try again.");
+                        } else {
+                            warning_swal("Warning!", "There was a problem checking for the URL availability. Please try again.");
                         }
-                    )
-                    .catch(function (error) {
+                    },
+                    err => {
+                        console.log(err);
                         error_swal("Error", "There was a problem checking for the URL availability. Please try again.");
-                    });
+                    }
+                )
+                .catch(function (error) {
+                    error_swal("Error", "There was a problem checking for the URL availability. Please try again.");
+                });
             },
             getAvailableFunds: function () {
-                axios
-                    .get("/Giving/GetAvailableFunds")
-                    .then(
-                        response => {
-                            if (response.status === 200) {
-                                this.fundsList = response.data;
-                            } else {
-                                warning_swal("Warning!", "Something went wrong, try again later");
-                            }
-                        },
-                        err => {
-                            console.log(err);
-                            error_swal("Fatal Error!", "We are working to fix it");
+                let vm = this;
+                axios.get("/Giving/GetAvailableFunds")
+                .then(
+                    response => {
+                        if (response.status === 200) {
+                            vm.fundsList = response.data;
+                            // vm.page.DefaultFund = vm.fundsList.find(fund => fund.Id === vm.page.DefaultFundId);
+                            //for (var i = 0; i < vm.fundsList.length; i++) {
+                            //    if (vm.page.DefaultFundId == vm.fundsList[i].Id) {
+                            //        vm.page.DefaultFund = vm.fundsList[i];
+                            //    }
+                            //}
+                        } else {
+                            warning_swal("Warning!", "Something went wrong, try again later");
                         }
-                    )
-                    .catch(function (error) {
-                        console.log(error);
-                    });
+                    },
+                    err => {
+                        console.log(err);
+                        error_swal("Fatal Error!", "We are working to fix it");
+                    }
+                )
+                .catch(function (error) {
+                    console.log(error);
+                });
             },
             getEntryPoints: function () {
-                axios
-                    .get("/Giving/GetEntryPoints")
-                    .then(
-                        response => {
-                            if (response.status === 200) {
-                                this.entryPointList = response.data;
-                            } else {
-                                warning_swal("Warning!", "Something went wrong, try again later");
-                            }
-                        },
-                        err => {
-                            console.log(err);
-                            error_swal("Fatal Error!", "We are working to fix it");
+                axios.get("/Giving/GetEntryPoints")
+                .then(
+                    response => {
+                        if (response.status === 200) {
+                            this.entryPointList = response.data;
+                        } else {
+                            warning_swal("Warning!", "Something went wrong, try again later");
                         }
-                    )
-                    .catch(function (error) {
-                        console.log(error);
-                    });
+                    },
+                    err => {
+                        console.log(err);
+                        error_swal("Fatal Error!", "We are working to fix it");
+                    }
+                )
+                .catch(function (error) {
+                    console.log(error);
+                });
             },
             getOnlineNotifyPersonList: function () {
                 axios
@@ -445,7 +455,6 @@
         },
         mounted() {
             this.page = JSON.parse(this.pageProp);
-            this.page.SkinFileId = this.page.SkinFile.Id;
             this.getPageTypes();
             this.getAvailableFunds();
             this.getEntryPoints();
@@ -460,3 +469,17 @@
     };
 </script>
 <style src="vue-multiselect/dist/vue-multiselect.min.css"></style>
+<style scoped>
+    .has-success .input-group-addon,
+    .has-error .input-group-addon {
+        color: #555;
+    }
+    .input-group-addon {
+        font-size: 13px;
+        background-color: transparent;
+    }
+    .input-group-addon.disabled {
+        cursor: not-allowed;
+        background-color: #eee;
+    }
+</style>

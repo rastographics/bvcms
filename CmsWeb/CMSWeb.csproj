@@ -1800,7 +1800,6 @@
     <Content Include="Errors\SessionTimeout.htm" />
     <Content Include="gulpfile.js" />
     <Content Include="Content\touchpoint\js\onlinereg\bootstrap-datepicker.js" />
-    <Content Include="chart.py" />
     <Content Include="Properties\Files\ContributionStatementTemplate.html" />
     <Content Include="Properties\Files\ContributionStatementTemplateBody.html" />
     <Content Include="src\main.js" />
@@ -2897,13 +2896,8 @@
     <Content Include="src\components\UsersGrid\UserCard.vue" />
     <Content Include="src\components\UsersGrid\UserCardGrid.vue" />
     <Content Include="src\components\Common\Toggle.vue" />
-    <Content Include="src\components\Giving\GivingManagement\AddGivingPage.vue" />
     <Content Include="src\components\Giving\GivingManagement\GivingPageIndex.vue" />
     <Content Include="src\components\Giving\GivingManagement\GivingPageEdit.vue" />
-    <None Include="src\App.vue" />
-    <None Include="src\components\GenericComponents\Modal.vue" />
-    <None Include="src\components\GenericComponents\Slider.vue" />
-    <None Include="src\components\GenericComponents\ShowModalBtn.vue" />
     <Content Include="Views\Home\Dashboard.cshtml" />
     <Content Include="src\components\Setup\Gateway\Manage.vue" />
     <Content Include="src\components\CheckIn\CheckinSetup.vue" />
