@@ -27,12 +27,17 @@
                             <div class="col-sm-4">
                                 @Html.EditorFor(m => m.GroupId, "Dropdown", new { items = smsGroups })
                             </div>
-                            <div class="btn-group pull-right" role="group">
-                                <button type='button' class="btn btn-success SaveReplyWord" style="margin-right:5px;">Save Actions</button>
-                                <button type="button" class="btn btn-default AddReplyWord"><i class="fa fa-plus-circle"></i> ReplyWord</button>
+                            <div class="col-sm-4">
+
+                            </div>
+                            <div class="col-sm-4" style="height:74px">
+                                <div class="btn-group pull-right" role="group" style="margin-top:25px">
+                                    <button type="button" class="btn btn-default AddReplyWord"><i class="fa fa-plus-circle"></i> ReplyWord</button>
+                                    <button type='button' class="btn btn-success SaveReplyWord" style="margin-right:5px;">Save Actions</button>
+                                </div>
                             </div>
                         </div>
-                    </div>
+                        </div>
                     <div id="ReplyWordsList" class="legend">
                         @Html.Partial("ReplyWords", Model)
                     </div>
@@ -40,10 +45,10 @@
                         <div class="box-tools">
                             @if (Model.Actions.Count > 2)
                             {
-                                <div class="btn-group pull-right" role="group">
-                                    <button type='button' class="btn btn-success SaveReplyWord" style="margin-right:5px;">Save Actions</button>
-                                    <button type="button" class="btn btn-default AddReplyWord"><i class="fa fa-plus-circle"></i> ReplyWord</button>
-                                </div>
+                            <div class="btn-group pull-right" role="group" style="margin-right:5px">
+                                <button type="button" class="btn btn-default AddReplyWord"><i class="fa fa-plus-circle"></i> ReplyWord</button>
+                                <button type='button' class="btn btn-success SaveReplyWord" style="margin-right:5px;">Save Actions</button>
+                            </div>
                             }
                         </div>
                     </div>

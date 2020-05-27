@@ -144,10 +144,12 @@ namespace CmsWeb.Areas.Public.Models
                 where gm.ReceiveNotifications == true
                 select gm.User.Person;
             var subject = $"Received Text from {From}";
-            var body = $@"From {person?.Name ?? "name unknown"} to {groupName} at {row.DateReceived}<br>
-with message: <br/>{Body}<br>
-<a href='{CurrentDatabase.CmsHost}/SmsMessages#{row.Id}'>Click this to goto message.</a><br><br>
-They received: {row.ActionResponse}";
+            var body = $@"
+SMS Group: {groupName}<br>
+Received: {row.DateReceived}<br>
+From: {person?.Name ?? "name unknown"}<br>
+Message: {Body}<br>
+Auto Reply: Download our app here: <a href='{CurrentDatabase.CmsHost}/SmsMessages#{row.Id}'>{CurrentDatabase.CmsHost}</a><br><br>";
             foreach (var p in q)
             {
                 CurrentDatabase.Email(Util.AdminMail, p, null, subject, body, false);

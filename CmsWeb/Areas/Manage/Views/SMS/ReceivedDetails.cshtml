@@ -20,21 +20,21 @@
                     }
 
                     <div class="container-fluid">
-                        <div class="row" style="margin-bottom:5px">
-                            <div class="col-md-4" style="text-align: right"><b>Auto Response</b></div>
-                            <div class="col-md-8">@Html.DisplayTextFor(m => m.R.ActionResponse)</div>
+                        <div class="row" style="margin-bottom:10px">
+                            <div class="col-md-2"><b>Auto Response:</b></div>
+                            <div class="col-md-10">@Html.DisplayTextFor(m => m.R.ActionResponse)</div>
                         </div>
-                        <div class="row" style="margin-bottom:5px">
-                            <div class="col-md-4" style="text-align: right"><b>Received</b></div>
-                            <div class="col-md-8">@Html.DisplayTextFor(m => m.R.DateReceived)</div>
+                        <div class="row" style="margin-bottom:10px">
+                            <div class="col-md-2"><b>Received:</b></div>
+                            <div class="col-md-10">@Html.DisplayTextFor(m => m.R.DateReceived)</div>
                         </div>
-                        <div class="row" style="margin-bottom:5px">
-                            <div class="col-md-4" style="text-align: right"><b>From:</b></div>
-                            <div class="col-md-8">@Html.DisplayTextFor(m => m.PersonName) (@Html.DisplayTextFor(m => m.R.FromNumber))</div>
+                        <div class="row" style="margin-bottom:10px">
+                            <div class="col-md-2"><b>From:</b></div>
+                            <div class="col-md-10">@Html.DisplayTextFor(m => m.PersonName) (@Html.DisplayTextFor(m => m.R.FromNumber))</div>
                         </div>
-                        <div class="row" style="margin-bottom:5px">
-                            <div class="col-md-4" style="text-align: right"><b>To:</b></div>
-                            <div class="col-md-8">@Html.DisplayTextFor(m => m.GroupName) (@Html.DisplayTextFor(m => m.R.ToNumber))</div>
+                        <div class="row" style="margin-bottom:10px">
+                            <div class="col-md-2"><b>To:</b></div>
+                            <div class="col-md-10">@Html.DisplayTextFor(m => m.GroupName) (@Html.DisplayTextFor(m => m.R.ToNumber))</div>
                         </div>
                     </div>
                 </div>
