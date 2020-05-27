@@ -28,7 +28,7 @@
         </div>
         <div class="col-sm-6">
             <div class="well">
-                <label class="control-label">OptOut of Texting Group</label>
+                <label class="control-label">OptOut of SMS Group</label>
                 <div class="form-inline">
                     <div class="input-group">
                         <select name="groupid" class="form-control">
@@ -60,7 +60,7 @@
                     @foreach (var oo in optouts)
                     {
                         <tr>
-                            <td><b>@(oo.IsText?"Text":"Email")</b>:&nbsp;@oo.OptedOutOf</td>
+                            <td><b>@(oo.IsText?"SMS":"Email")</b>:&nbsp;@oo.OptedOutOf</td>
                             <td>@oo.CreatedDt.FormatDate()</td>
                             <td>
                                 <a class="ajax btn btn-danger btn-sm"

@@ -60,7 +60,7 @@ namespace CmsWeb.Areas.People.Models.Communications
                 select new OptOutViewModel
                 {
                     CreatedDt = ot.DateX,
-                    OptedOutOf = g.Name + " (" + g.Id + ")",
+                    OptedOutOf = g.Name,// + " (" + g.Id + ")",
                     PeopleId = ot.ToPeopleId,
                     IsText = true
                 };
