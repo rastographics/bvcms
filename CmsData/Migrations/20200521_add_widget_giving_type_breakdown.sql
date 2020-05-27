@@ -208,7 +208,8 @@ left join Contribution c on datepart(week, c.ContributionDate) = weeks.w and c.C
 where TagName = @Tag
 group by weeks.w, TagName
 )
-select * from tags',
+select * from tags
+order by w',
            GETDATE(),4,0,0,0,'admin')
 
 INSERT INTO [dbo].[ContentKeyWords]
