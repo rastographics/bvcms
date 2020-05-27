@@ -32,6 +32,17 @@
                     $("#replywordslist").replaceWith(ret);
                 });
         });
+    $("#replywords").on("change",
+        "input.replyword",
+        function (ev) {
+            ev.preventDefault();
+            var word = $(this).val();
+            var filterwords = "stop|stopall|unsubscribe|cancel|end|quit|start|yes|unstop|help|info";
+            var regex = new RegExp( filterwords, "i");
+            var isfound = regex.test( word );
+            if (isfound)
+                error_swal("Reply Word", word + " replyword not allowed");
+        });
     $('#replywords').on("click",
         ".AddReplyWord",
         function (ev) {

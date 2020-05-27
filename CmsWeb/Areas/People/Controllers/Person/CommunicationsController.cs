@@ -22,16 +22,14 @@ namespace CmsWeb.Areas.People.Controllers
             return View("Communications/Optouts", m);
         }
 
-        [HttpPost]
-        public ActionResult DeleteOptout(int id, string from, bool istext)
+        [HttpPost, Route("DeleteOptout/{id:int}/{from}/{group:int}/{istext:bool}")]
+        public ActionResult DeleteOptout(int id, string from, int group, bool istext)
         {
             var m = new OptOutsModel(CurrentDatabase, id);
             var p = CurrentDatabase.LoadPersonById(id);
             if (istext)
             {
-                var regexObj = new Regex(@".*\((?<group>\d*)\)", RegexOptions.IgnoreCase | RegexOptions.Singleline);
-                var groupid = regexObj.Match(from).Groups["group"].Value.ToInt();
-                var oo = CurrentDatabase.SmsGroupOptOuts.SingleOrDefault(o => o.FromGroup == groupid && o.ToPeopleId == id);
+                var oo = CurrentDatabase.SmsGroupOptOuts.SingleOrDefault(o => o.FromGroup == group && o.ToPeopleId == id);
                 if (oo == null)
                 {
                     ViewBag.Error = $"Group not found ({from})";

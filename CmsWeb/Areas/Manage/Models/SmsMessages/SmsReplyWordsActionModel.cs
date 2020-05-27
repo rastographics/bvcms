@@ -81,7 +81,7 @@ namespace CmsWeb.Areas.Manage.Models.SmsMessages
                 New("RecordAttend", "Record Attendance", "MeetingId", "Meeting Id", reply: RecordAttendanceMessage),
                 New("AddToOrg", "Add To Organization", "OrgId", "Organization Id", reply: AddToOrgMessage),
                 New("AddToOrgSg", "Add To Smallgroup", "OrgId", "Organization Id", "SmallGroup", "Small Group Name", reply: AddToOrgSgMessage),
-                New("SendAnEmail", "Send an Email", "EmailId", "Email Id", reply: SendAnEmailMessage),
+                //New("SendAnEmail", "Send an Email", "EmailId", "Email Id", reply: SendAnEmailMessage),
                 New("SendReplyOnly", "Send a Reply", reply: SendReplyOnlyMessage),
                 New("RunScript", "Run Python Script", "ScriptName", "Script Name", reply: RunScriptMessage),
             };
