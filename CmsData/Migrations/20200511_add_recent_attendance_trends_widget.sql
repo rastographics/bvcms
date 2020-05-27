@@ -1,4 +1,4 @@
-﻿-- add giving sources widget
+﻿-- add Recent Attendance Trends widget
 IF (select count(*) from DashboardWidgets where [Name] like 'Recent Attendance Trends' and [System] = 1) = 0
 BEGIN
   INSERT INTO [dbo].[Content]
