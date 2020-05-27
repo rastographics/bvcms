@@ -267,7 +267,7 @@ BEGIN
             hAxis: {
             title: ''Dates''
             },
-            colors: [''blue'', ''red'', ''green'', ''yellow'', ''pink'', ''cyan''],
+            colors: [''#CC0300'', ''#5CA12B'', ''#345CAD'', ''#F9B710'', ''#9E4EBC'', ''#74746D''],
             hAxis: {
                 slantedText: true,
                 slantedTextAngle: 30,
@@ -367,21 +367,20 @@ INSERT INTO [dbo].[Content]
            ([Name],[Title],[Body],[DateCreated],[TypeID],[ThumbID],[RoleID],[OwnerID],[CreatedBy])
      VALUES
            ('WidgetAttendanceYearOverYearSQL','Edit Sql Script',
-           'select HeadCount, o.DivisionId, m.MeetingDate into #meetingdata
+           'select MaxCount, dd.DivId DivisionId, m.MeetingDate into #meetingdata
 from dbo.Meetings m
 join dbo.Organizations o on o.OrganizationId = m.OrganizationId
-join dbo.Division d on d.Id = o.DivisionId
-where o.DivisionId in (@divs) and YEAR(MeetingDate) >= YEAR(''@startyear'')
-
-;with data as ( select HeadCount, MeetingDate from #meetingdata )
+join dbo.DivOrg dd on dd.orgid = o.OrganizationId
+join dbo.Division d on d.Id = dd.DivId
+where dd.DivId in (@divs) and YEAR(MeetingDate) >= YEAR(''@startyear'');
+with data as ( select MaxCount, MeetingDate from #meetingdata )
 select 
-SUM(HeadCOUNT) as HeadCount, 
+SUM(MaxCount) as MaxCount, 
 Month(MeetingDate) as MyMonth, 
 Year(MeetingDate) as MyYear 
 from #meetingdata 
 group by Month(MeetingDate), Year(MeetingDate)
 order by Year(MeetingDate), Month(MeetingDate)
-
 drop table #meetingdata',
            GETDATE(),4,0,0,0,'admin')
            
