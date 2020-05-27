@@ -13,7 +13,7 @@ namespace CmsDataTests.Generated
     {
         [Theory]
         [InlineData(5)]
-        public void CreateWidgetContent(int pythonTypeId)
+        public void CreateWidgetPythonContent(int pythonTypeId)
         {
             var pythonContent = MockContent.CreatePythonContent(db);
             var expectedPythonTypeId = pythonTypeId;
@@ -21,6 +21,28 @@ namespace CmsDataTests.Generated
             Assert.Equal(pythonContent.TypeID, expectedPythonTypeId);
 
             MockContent.DeletePythonContent(db, pythonContent);
+        }
+        [Theory]
+        [InlineData(1)]
+        public void CreateWidgetHTMLContent(int htmlTypeId)
+        {
+            var htmlContent = MockContent.CreateHTMLContent(db);
+            var expectedHtmlTypeId = htmlTypeId;
+
+            Assert.Equal(htmlContent.TypeID, expectedHtmlTypeId);
+
+            MockContent.DeleteHTMLContent(db, htmlContent);
+        }
+        [Theory]
+        [InlineData(4)]
+        public void CreateWidgetSqlContent(int sqlTypeId)
+        {
+            var sqlContent = MockContent.CreateSqlContent(db);
+            var expectedSqlTypeId = sqlTypeId;
+
+            Assert.Equal(sqlContent.TypeID, expectedSqlTypeId);
+
+            MockContent.DeleteHTMLContent(db, sqlContent);
         }
     }
 }

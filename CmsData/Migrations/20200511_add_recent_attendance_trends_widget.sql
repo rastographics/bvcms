@@ -6,6 +6,9 @@ BEGIN
      VALUES
            ('WidgetRecentAttendanceTrendsHTML','Edit Text Content',
            '<div class="box">
+    <div class="box-title hidden-xs">
+        <h5>{{WidgetName}}</h5>
+    </div>
     <a class="visible-xs-block" id="giving-fc-collapse" data-toggle="collapse" href="#{{WidgetId}}-section" aria-expanded="true" aria-controls="{{WidgetId}}-section">
         <div class="box-title">
             <h5>
