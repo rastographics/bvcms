@@ -61,10 +61,10 @@ namespace CmsWeb.Areas.Public.Models
                 select grp).FirstOrDefault();
             if(group == null)
                 throw new Exception($"could not find group from number {To}");
-            m.GroupId = group.Id;
+            m.GroupId = group.Id.ToString();
             groupName = group.Name;
             m.PopulateActions();
-            row.ToGroupId = m.GroupId;
+            row.ToGroupId = m.GroupIdInt;
             return m;
         }
 
@@ -101,6 +101,9 @@ namespace CmsWeb.Areas.Public.Models
                     case "Regrets":
                         rval = MarkAttendingIntention(AttendCommitmentCode.Regrets);
                         break;
+                    case "RecordAttend":
+                        rval = RecordAttendance();
+                        break;
                     case "AddToOrg":
                         rval = AddToOrg();
                         break;
@@ -109,6 +112,9 @@ namespace CmsWeb.Areas.Public.Models
                         break;
                     case "SendAnEmail":
                         rval = SendAnEmail();
+                        break;
+                    case "SendReplyOnly":
+                        rval = GetActionReplyMessage();
                         break;
                     case "RunScript":
                         rval = RunScript();
@@ -120,6 +126,13 @@ namespace CmsWeb.Areas.Public.Models
             }
             if(rval.HasValue())
                 return rval;
+
+            var sendReplyOnlyActionWithNoWord = model.Actions.SingleOrDefault(vv =>
+                vv.Action == "SendReplyOnly" && string.IsNullOrEmpty(vv.Word));
+            if (sendReplyOnlyActionWithNoWord != null)
+            {
+                return GetActionReplyMessage();
+            }
             //Reply word never found in loop, must be a regular text message
             return ReceivedTextNoAction();
         }
@@ -127,7 +140,7 @@ namespace CmsWeb.Areas.Public.Models
         public void SendNotices()
         {
             var q = from gm in CurrentDatabase.SMSGroupMembers
-                where gm.GroupID == model.GroupId
+                where gm.GroupID == model.GroupIdInt
                 where gm.ReceiveNotifications == true
                 select gm.User.Person;
             var subject = $"Received Text from {From}";
@@ -204,7 +217,7 @@ They received: {row.ActionResponse}";
                 return GetNoPersonMessage;
             var o = new SmsGroupOptOut
             {
-                FromGroup = model.GroupId,
+                FromGroup = model.GroupIdInt,
                 ToPeopleId = person.PeopleId
             };
             CurrentDatabase.SmsGroupOptOuts.InsertOnSubmit(o);
@@ -236,6 +249,27 @@ They received: {row.ActionResponse}";
                 organization = CurrentDatabase.LoadOrganizationById(meeting.OrganizationId);
                 Attend.MarkRegistered(CurrentDatabase, person.PeopleId, meeting.MeetingId, code);
                 markedas = code == AttendCommitmentCode.Attending ? "Attending" : "Regrets";
+            }
+            catch (Exception e)
+            {
+                return GetError($"No Meeting on action {action.Action}, {e.Message}");
+            }
+            return GetActionReplyMessage();
+        }
+        private string RecordAttendance()
+        {
+            if (person == null)
+                return GetNoPersonMessage;
+            try
+            {
+                row.Args = $"{{ \"MeetingId\": \"{action.MeetingId}\"}}";
+                if (action.MeetingId == null)
+                    throw new Exception("meetingid null");
+                meeting = CurrentDatabase.Meetings.FirstOrDefault(mm => mm.MeetingId == action.MeetingId);
+                if (meeting == null)
+                    throw new Exception($"meetingid {action.MeetingId} not found");
+                organization = CurrentDatabase.LoadOrganizationById(meeting.OrganizationId);
+                Attend.RecordAttendance(CurrentDatabase, person.PeopleId, meeting.MeetingId, attended: true);
             }
             catch (Exception e)
             {

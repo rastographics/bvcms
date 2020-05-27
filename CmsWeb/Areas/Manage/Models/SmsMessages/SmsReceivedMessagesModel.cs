@@ -32,7 +32,12 @@ namespace CmsWeb.Areas.Manage.Models.SmsMessages
 
         private IQueryable<SmsReceived> FetchReceivedMessages()
         {
-            var q = from message in CurrentDatabase.SmsReceiveds select message;
+            var ingroups = UserInGroups();
+            var q = from message in CurrentDatabase.SmsReceiveds
+                where ingroups.Contains(message.ToGroupId ?? 0)
+                select message;
+
+            //var q = from message in CurrentDatabase.SmsReceiveds select message;
             if (RecdFilterStart != null)
                 q = q.Where(e => e.DateReceived >= RecdFilterStart);
             if (RecdFilterEnd != null)
@@ -55,6 +60,15 @@ namespace CmsWeb.Areas.Manage.Models.SmsMessages
             }
             return q;
         }
+
+        private List<int> UserInGroups()
+        {
+            var manageSmsUser = CurrentDatabase.CurrentUser.InRole("ManageSms");
+            return (from gm in CurrentDatabase.SMSGroupMembers
+                where manageSmsUser || gm.User.PeopleId == CurrentDatabase.UserPeopleId
+                select gm.GroupID).ToList();
+        }
+
         public override IQueryable<SmsReceived> DefineModelList()
         {
             var q = FetchReceivedMessages();
@@ -70,7 +84,9 @@ namespace CmsWeb.Areas.Manage.Models.SmsMessages
 
         public IEnumerable<SelectListItem> Groups()
         {
+            var ingroups = UserInGroups();
             var q = from c in CurrentDatabase.SMSGroups
+                where ingroups.Contains(c.Id)
                 where !c.IsDeleted
                 select new SelectListItem
                 {
@@ -161,7 +177,9 @@ namespace CmsWeb.Areas.Manage.Models.SmsMessages
                      {
                          R = r,
                          PersonName = r.Person.Name,
-                         GroupName = r.SMSGroup.Name
+                         GroupName = r.SMSGroup.Name,
+                         ReplyFrom = r.RepliedTo == true
+                             ? r.SmsReplies.FirstOrDefault().Person.Name : null
                      }).Single();
         }
 

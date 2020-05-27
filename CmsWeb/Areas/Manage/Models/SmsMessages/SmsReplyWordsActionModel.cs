@@ -65,9 +65,11 @@ namespace CmsWeb.Areas.Manage.Models.SmsMessages
         public static string OptOutMesssage = "{name} has been opted out of {groupname}";
         public static string OptInMesssage = "{name} has been opted in to {groupname}";
         public static string MarkAttendMessage = "{name} has been marked as {markedas} to {orgname} for {meetingdate}";
+        public static string RecordAttendanceMessage = "Recorded Attendance to {orgname} on {meetingdate} for {name}";
         public static string AddToOrgMessage = "{name} has been added to {orgname}";
         public static string AddToOrgSgMessage = "{name} has been added to {smallgroup} group for {orgname}";
         public static string SendAnEmailMessage = "email sent to {name}";
+        public static string SendReplyOnlyMessage = "No default message exists for this action";
         public static string RunScriptMessage = "script run";
 
         public static List<SmsReplyWordsActionModel> StandardActions = new List<SmsReplyWordsActionModel>
@@ -76,9 +78,11 @@ namespace CmsWeb.Areas.Manage.Models.SmsMessages
                 New("OptIn", "Opt In", reply: OptInMesssage),
                 New("Attending", "Attending", "MeetingId", "Meeting Id", reply: MarkAttendMessage),
                 New("Regrets", "Regrets", "MeetingId", "Meeting Id", reply: MarkAttendMessage),
+                New("RecordAttend", "Record Attendance", "MeetingId", "Meeting Id", reply: RecordAttendanceMessage),
                 New("AddToOrg", "Add To Organization", "OrgId", "Organization Id", reply: AddToOrgMessage),
                 New("AddToOrgSg", "Add To Smallgroup", "OrgId", "Organization Id", "SmallGroup", "Small Group Name", reply: AddToOrgSgMessage),
                 New("SendAnEmail", "Send an Email", "EmailId", "Email Id", reply: SendAnEmailMessage),
+                New("SendReplyOnly", "Send a Reply", reply: SendReplyOnlyMessage),
                 New("RunScript", "Run Python Script", "ScriptName", "Script Name", reply: RunScriptMessage),
             };
 

@@ -19,7 +19,7 @@ namespace CmsWeb.Areas.Manage.Models.SmsMessages
         public IEnumerable<SMSItem> SmsItems()
         {
             return from i in SmsList.SMSItems
-                   orderby i.Person.Name, i.Sent descending
+                   orderby i.Person?.Name, i.Sent descending
                    select i;
         }
     }
