@@ -24,7 +24,7 @@
                 });
         });
     $('#replywords').on("click",
-        "#AddReplyWord",
+        ".AddReplyWord",
         function (ev) {
             ev.preventDefault();
             var f = $(this).closest('form');
@@ -43,7 +43,7 @@
             tr.remove();
         });
     $("#replywords").on("click",
-        "#SaveActions",
+        ".SaveReplyWord",
         function (ev) {
             ev.preventDefault();
             var f = $(this).closest('form');

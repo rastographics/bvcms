@@ -1268,6 +1268,7 @@
     <Content Include="Content\touchpoint\css\error.css" />
     <Content Include="Content\touchpoint\css\gateway.css" />
     <Content Include="Content\touchpoint\css\print.css" />
+    <Content Include="Content\touchpoint\css\SMS.css" />
     <Content Include="Content\touchpoint\fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Content\touchpoint\img\female.png" />
     <Content Include="Content\touchpoint\img\female_sm.png" />

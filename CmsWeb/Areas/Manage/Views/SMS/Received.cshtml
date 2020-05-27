@@ -4,10 +4,10 @@
     <div class="row well">
         <div class="col-lg-3">
             @Html.EditorFor(m => m.RecdFilterGroupId, "Dropdown", new { items = Model.Groups() })
-            @Html.EditorFor(m => m.RecdFilterSender)
+            @Html.EditorFor(v => v.RecdFilterStart)
         </div>
         <div class="col-lg-3">
-            @Html.EditorFor(v => v.RecdFilterStart)
+            @Html.EditorFor(m => m.RecdFilterSender)
             @Html.EditorFor(v => v.RecdFilterEnd)
         </div>
         <div class="col-lg-3 col-md-3 col-sm-4">
@@ -43,14 +43,6 @@
                             padding-left: 15px !important;
                         }
                     </style>
-                    <table class="table notwide borderless">
-                        <tr><th>Messaging Group</th><td><span id="FromGroup"></span></td></tr>
-                        <tr><th>Replying to</th><td><span id="ToPerson"></span></td></tr>
-                        <tr><th colspan="2">Replying to the following message</th></tr>
-                        <tr><td colspan="2" id="ToMessage" class="indent"></td></tr>
-                        <tr><th colspan="2">With the following response</th></tr>
-                        <tr><td colspan="2" id="Response" class="indent"></td></tr>
-                    </table>
                     <div class="form-group">
                         <label class="control-label">Message</label>
                         <textarea id="replymessage" name="Message" cols="40" rows="4" class="form-control"></textarea><br/>
@@ -66,19 +58,12 @@
 </div>
 
 <div class="row">
-    <div class="col-md-7">
-        <div class="box box-responsive">
-            <div class="box-content">
-
-                @if (!string.IsNullOrWhiteSpace(ViewBag.Error))
-                {
-                    <div class="alert alert-danger">
-                        <p>
-                            <strong>Error!</strong> @ViewBag.Error
-                        </p>
-                    </div>
-                }
-            </div>
+    @if (!string.IsNullOrWhiteSpace(ViewBag.Error))
+    {
+        <div class="alert alert-danger">
+            <p>
+                <strong>Error!</strong> @ViewBag.Error
+            </p>
         </div>
-    </div>
+    }
 </div>
