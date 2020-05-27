@@ -129,7 +129,7 @@ BEGIN
             hAxis: {
             title: ''Dates''
             },
-            colors: [''#003c30'', ''#36978f'', ''#5aae61'', ''#003c30'', ''#36978f'', ''#5aae61''],
+            colors: [''#CC0300'', ''#5CA12B'', ''#345CAD'', ''#F9B710'', ''#9E4EBC'', ''#74746D''],
             hAxis: {
                 slantedText: false,
                 textStyle: {
