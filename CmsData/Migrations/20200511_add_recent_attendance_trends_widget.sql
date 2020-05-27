@@ -35,7 +35,7 @@ BEGIN
             hAxis: {
             title: ''Dates''
             },
-            colors: [''blue'', ''red'', ''green'', ''yellow'', ''pink'', ''cyan''],
+            colors: [''#CC0300'', ''#5CA12B'', ''#345CAD'', ''#F9B710'', ''#9E4EBC'', ''#74746D''],
             hAxis: {
                 slantedText: true,
                 slantedTextAngle: 30,

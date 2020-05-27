@@ -82,7 +82,7 @@ BEGIN
         }
         
         var options = {
-            colors: [''#003c30'', ''#02675e'', ''#36978f'', ''#003c30'', ''#02675e'', ''#36978f''],
+            colors: [''#CC0300'', ''#5CA12B'', ''#345CAD'', ''#F9B710'', ''#9E4EBC'', ''#74746D''],
             seriesType: ''bars'',
             series: {5: {type: ''line''}},
             legend: {
