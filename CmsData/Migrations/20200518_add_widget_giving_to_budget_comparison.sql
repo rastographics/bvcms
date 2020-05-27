@@ -189,7 +189,7 @@ INSERT INTO [dbo].[Content]
            ([Name],[Title],[Body],[DateCreated],[TypeID],[ThumbID],[RoleID],[OwnerID],[CreatedBy])
      VALUES
            ('WidgetGivingToBudgetComparisonSQL','Edit Sql Script',
-           'select ContributionAmount, ContributionDate from Contribution where FundId = @FundId and ContributionDate >= ''@StartDate'';',
+           'select ContributionAmount, ContributionDate from Contribution where FundId = @FundId and ContributionDate >= ''@StartDate'' and ContributionTypeId NOT IN (6,7,8);',
            GETDATE(),4,0,0,0,'admin')
 
 INSERT INTO [dbo].[ContentKeyWords]
