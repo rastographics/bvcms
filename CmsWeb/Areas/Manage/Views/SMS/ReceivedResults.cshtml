@@ -11,7 +11,7 @@
                 <th>@Model.SortLink("Received")</th>
                 <th>@Model.SortLink("Recipient")</th>
                 <th>@Model.SortLink("Sender")</th>
-                <th>@Model.SortLink("Message")</th>
+                <th style="width: 50%">@Model.SortLink("Message")</th>
             </tr>
         </thead>
         <tbody>
@@ -21,7 +21,7 @@
                     <td>@i.DateReceived</td>
                     <td>@(i.SMSGroup?.Name) (@i.ToNumber)</td>
                     <td>
-                        <a href="#" class="replyto">
+                        <a href="#" class="replyto" style="text-decoration:none">
                             <i class="fa fa-reply"></i>
                         </a>
                         @(i.Person?.Name ?? "Unknown") (@i.FromNumber)
