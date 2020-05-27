@@ -28,6 +28,7 @@ namespace SharedTestFixtures.Network
 
         private static Dictionary<string, MockHttpResponse> mockResponses;
         public static NameValueCollection JsonHeaders => new NameValueCollection { { "Content-Type", "application/json; charset=utf-8" } };
+        public static NameValueCollection PlainText => new NameValueCollection { { "Content-Type", "text/plain" } };
 
         private void HttpServer_Request(object sender, HttpRequestEventArgs e)
         {

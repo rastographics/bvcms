@@ -112,6 +112,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Areas\CheckIn\Views\CheckinTimeViewsTests.cs" />
+    <Compile Include="Areas\CheckIn\Views\CheckinViewsTests.cs" />
     <Compile Include="Areas\Finance\Views\Fund\IndexTests.cs" />
     <Compile Include="Areas\Finance\Views\PostBundle\PostBundleViewsTests.cs" />
     <Compile Include="Areas\General\ScriptControllerTests.cs" />
@@ -124,6 +125,7 @@
     <Compile Include="Areas\Main\Views\Email\EmailViewsTests.cs" />
     <Compile Include="Areas\Manage\AccountTests.cs" />
     <Compile Include="Areas\Manage\Views\Batch\RetrieveBatchDataTests.cs" />
+    <Compile Include="Areas\OnlineReg\ManageGivingTests.cs" />
     <Compile Include="Areas\OnlineReg\Views\OnlineRegViewsTests.cs" />
     <Compile Include="Areas\OnlineReg\Models\OnlineRegPerson\EnrollTests.cs" />
     <Compile Include="Areas\OnlineReg\OneTimeGivingTests.cs" />

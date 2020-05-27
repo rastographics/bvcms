@@ -269,5 +269,20 @@ namespace CmsData.Tests
             var ticketEventCode = codes.Where(x => x.Key.Equals(RegistrationTypeCode.TicketedEvent)).ToList();
             ticketEventCode.Count.ShouldBeEquivalentTo(0);
         }
+        
+        [Fact]
+        public void NextSecurityCodeTest()
+        {
+            db.NextSecurityCode().Count().ShouldBe(1);
+        }
+
+        [Fact]
+        public void NextSecurityCode_Uniqueness_Test()
+        {
+            var code1 = db.NextSecurityCode().Single();
+            var code2 = db.NextSecurityCode().Single();
+
+            code1.Code.ShouldNotBe(code2.Code);
+        }
     }
 }
