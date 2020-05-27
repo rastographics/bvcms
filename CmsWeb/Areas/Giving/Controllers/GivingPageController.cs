@@ -19,7 +19,12 @@ namespace CmsWeb.Areas.Giving.Controllers
         [Route("~/Give/{id}")]
         public ActionResult Index(string id, string type = null, int fund = 0, string amount = null)
         {
-            return View();
+            var page = CurrentDatabase.GivingPages.Where(p => p.PageUrl == id).SingleOrDefault();
+            ViewBag.Id = id;
+            ViewBag.Type = type;
+            ViewBag.Fund = fund;
+            ViewBag.Amount = amount;
+            return View(page);
         }
         
     }

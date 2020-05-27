@@ -26,10 +26,18 @@ namespace CmsWeb.Areas.Giving.Controllers
         }
 
         [Route("~/Giving/{id}")]
-        public ActionResult Manage(int id)
+        public ActionResult Manage(string id)
         {
             var model = new GivingPageModel(CurrentDatabase);
-            var page = model.GetGivingPages(id).SingleOrDefault();
+            var page = new GivingPageItem();
+            if (id.ToLower() == "new")
+            {
+                page.GivingPageId = 0;
+            }
+            else
+            {
+                page = model.GetGivingPages(id.ToInt()).SingleOrDefault();
+            }
             if (page == null)
             {
                 Util.TempError = "Invalid page";
@@ -56,6 +64,7 @@ namespace CmsWeb.Areas.Giving.Controllers
             return Json(newGivingPageList, JsonRequestBehavior.AllowGet);
         }
 
+        [HttpPost]
         public ActionResult Update(GivingPageViewModel viewModel)
         {
             var givingPage = (from gp in CurrentDatabase.GivingPages where gp.GivingPageId == viewModel.pageId select gp).FirstOrDefault();
@@ -75,10 +84,14 @@ namespace CmsWeb.Areas.Giving.Controllers
         public JsonResult CheckUrlAvailability(string url)
         {
             bool result = false;
-            if (url.All(Char.IsLetterOrDigit) && CurrentDatabase.GivingPages.Where(p => p.PageUrl == url).Count() == 0) {
+            Regex regex = new Regex("^([a-z0-9-])+$");
+            if (regex.IsMatch(url) && url.Length > 1 && CurrentDatabase.GivingPages.Where(p => p.PageUrl == url).Count() == 0) {
                 result = true;
             }
-            return Json(result);
+            return Json(new
+            {
+                result = result
+            }, JsonRequestBehavior.AllowGet);
         }
 
         [HttpGet]
@@ -108,7 +121,9 @@ namespace CmsWeb.Areas.Giving.Controllers
             var onlineNotifyPersonList = (from p in CurrentDatabase.People
                                           join u in CurrentDatabase.Users on p.PeopleId equals u.PeopleId
                                           join ur in CurrentDatabase.UserRoles on u.UserId equals ur.UserId
-                                          where ur.RoleId == 3
+                                          join r in CurrentDatabase.Roles on ur.RoleId equals r.RoleId
+                                          where r.RoleName == "Access"
+                                          where u.EmailAddress != null
                                           orderby p.Name
                                           select new { Id = p.PeopleId, p.Name }).Distinct().ToList();
             return Json(onlineNotifyPersonList, JsonRequestBehavior.AllowGet);

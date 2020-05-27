@@ -11,7 +11,6 @@ Vue.component('gateway-management', require('./components/Setup/Gateway/Manage.v
 
 // Giving Management
 Vue.component('giving-page-index', require('./components/Giving/GivingManagement/GivingPageIndex.vue').default);
-Vue.component('add-giving-page', require('./components/Giving/GivingManagement/AddGivingPage.vue').default);
 Vue.component('edit-giving-page', require('./components/Giving/GivingManagement/GivingPageEdit.vue').default);
 
 // Touchpoint Common Components
