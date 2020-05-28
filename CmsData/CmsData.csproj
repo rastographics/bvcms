@@ -34,6 +34,7 @@
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -45,6 +46,7 @@
     <WarningLevel>4</WarningLevel>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>false</Prefer32Bit>
+    <LangVersion>7.1</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -55,6 +57,7 @@
     <WarningLevel>4</WarningLevel>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>false</Prefer32Bit>
+    <LangVersion>7.1</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <DebugSymbols>true</DebugSymbols>
@@ -79,6 +82,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'test|AnyCPU'">
     <OutputPath>bin\test\</OutputPath>
     <Prefer32Bit>false</Prefer32Bit>
+    <LangVersion>7.1</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'test|x86'">
     <OutputPath>bin\x86\test\</OutputPath>
@@ -92,6 +96,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <LangVersion>7.1</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'staging|x86'">
     <OutputPath>bin\x86\staging\</OutputPath>
@@ -350,6 +355,7 @@
     <Compile Include="Charts\GoogleChartsData.cs" />
     <Compile Include="Classes\ExtraValues\Code.cs" />
     <Compile Include="Classes\ExtraValues\NewStandard.cs" />
+    <Compile Include="Classes\Giving\GivingPageTypes.cs" />
     <Compile Include="Classes\GoogleCloudMessaging\GCMData.cs" />
     <Compile Include="Classes\GoogleCloudMessaging\GCMHelper.cs" />
     <Compile Include="Classes\GoogleCloudMessaging\GCMMessage.cs" />
@@ -416,7 +422,9 @@
     <Compile Include="Extensions\LongRunningOperation.cs" />
     <Compile Include="Extensions\OrgPerson.cs" />
     <Compile Include="Extensions\PaymentInfo.cs" />
+    <Compile Include="Extensions\PaymentMethod.cs" />
     <Compile Include="Extensions\RepairTransactionRun.cs" />
+    <Compile Include="Extensions\ScheduledGift.cs" />
     <Compile Include="Extensions\SettingMetadatum.cs" />
     <Compile Include="Finance\AcceptivaGateway.cs" />
     <Compile Include="Finance\Acceptiva\Core\Helpers\CanadaState.cs" />
@@ -660,6 +668,8 @@
     <Compile Include="Generated\GatewayDetails.cs" />
     <Compile Include="Generated\Gateways.cs" />
     <Compile Include="Generated\GatewayServiceType.cs" />
+    <Compile Include="Generated\GivingPage.cs" />
+    <Compile Include="Generated\GivingPageFund.cs" />
     <Compile Include="Generated\IpLog.cs" />
     <Compile Include="Generated\IpLog2.cs" />
     <Compile Include="Generated\IpWarmup.cs" />
@@ -683,6 +693,7 @@
     <Compile Include="Generated\OrgMemberDocument.cs" />
     <Compile Include="Generated\OrgMemberExtra.cs" />
     <Compile Include="Generated\OrgTemporaryDocuments.cs" />
+    <Compile Include="Generated\PaymentMethod.cs" />
     <Compile Include="Generated\PrevOrgMemberExtra.cs" />
     <Compile Include="Generated\PaymentProcess.cs" />
     <Compile Include="Generated\ProcessType.cs" />
@@ -695,6 +706,8 @@
     <Compile Include="Generated\ResourceOrganization.cs" />
     <Compile Include="Generated\ResourceOrganizationType.cs" />
     <Compile Include="Generated\ResourceType.cs" />
+    <Compile Include="Generated\ScheduledGift.cs" />
+    <Compile Include="Generated\ScheduledGiftAmount.cs" />
     <Compile Include="Generated\SessionValue.cs" />
     <Compile Include="Generated\SettingCategory.cs" />
     <Compile Include="Generated\SettingMetadatum.cs" />
@@ -1201,7 +1214,6 @@
     <Content Include="Migrations\20200326_alter-GetTotalContributionsAgeRange-func.sql" />
     <Content Include="Migrations\20200326_alter-GetContributionsRange-func.sql" />
     <Content Include="Migrations\20200331_alter_GetTotalContributionsDonor2_func.sql" />
-    <Content Include="Migrations\20200511_alter_PledgesSummary_func.sql" />
     <Content Include="QueryBuilder\CompareMap.xml">
       <SubType>Designer</SubType>
     </Content>

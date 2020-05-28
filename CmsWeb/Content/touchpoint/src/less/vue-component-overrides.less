@@ -1,0 +1,43 @@
+﻿// Vue Multiselect 3rd party
+.multiselect__tag,
+.multiselect__placeholder {
+    margin-bottom: 0 !important;
+}
+.multiselect__tag,
+.multiselect__option--highlight,
+.multiselect__option--highlight:after {
+    background-color: @global-brand-primary !important;
+}
+.multiselect__tags,
+.multiselect__content-wrapper {
+    border-radius: 0 !important;
+    border-color: #ccc !important;
+}
+.multiselect__tags {
+    min-height: 38px!important;
+    box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+}
+.multiselect--active .multiselect__tags {
+    border-color: #66afe9;
+    outline: 0;
+    box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(102,175,233,.6);
+}
+.multiselect, .multiselect__input, .multiselect__single {
+    font-size: 14px;
+}
+.multiselect__select:before { // caret
+    border-color: #ccc transparent transparent !important;
+    color: #ccc !important;
+}
+.multiselect__tag-icon:after {
+    color: white !important; // x on selected tag
+}
+.multiselect__tag-icon:focus, .multiselect__tag-icon:hover {
+    color: #fff !important;
+    background-color: #00233f !important;
+}
+.multiselect__option--selected.multiselect__option--highlight,
+.multiselect__option--selected.multiselect__option--highlight:after {
+    background-color: #eee !important;
+    color: @global-brand-primary !important;
+}

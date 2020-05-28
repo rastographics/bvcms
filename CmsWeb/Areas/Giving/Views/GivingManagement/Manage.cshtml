@@ -1,0 +1,12 @@
+﻿@model CmsWeb.Areas.Giving.Models.GivingPageItem
+@{
+    Layout = ViewExtensions2.TouchPointLayout();
+    ViewBag.Title = "Online Giving Setup";
+    ViewBag.PageHeader = "Online Giving Setup";
+}
+@section head{
+    @ViewExtensions2.BootstrapToggleCss()
+}
+<div class="giving">
+    <edit-giving-page page-prop="@Json.Encode(Model)" give-prefix="@ViewExtensions2.CurrentDatabase.ServerLink("/Give/")"></edit-giving-page>
+</div>

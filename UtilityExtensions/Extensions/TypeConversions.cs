@@ -223,6 +223,11 @@ namespace UtilityExtensions
             return (int)o.ChangeType(typeof(int));
         }
 
+        public static bool IsBetween(this int value, int lower, int upper)
+        {
+            return value >= lower && value <= upper;
+        }
+
         public static decimal? ToDecimal(this string s)
         {
             decimal? r = null;
@@ -406,6 +411,28 @@ namespace UtilityExtensions
         {
             Regex regex = new Regex(self, options);
             return regex.IsMatch(value);
+        }
+
+        public static bool IsLastDayOfMonth(this DateTime value)
+        {
+            return value.AddDays(1).Month != value.Month;
+        }
+
+        public static DateTime LastDayOfMonth(this DateTime value)
+        {
+            if (value.IsLastDayOfMonth())
+            {
+                return value;
+            }
+
+            return new DateTime(
+                value.Year,
+                value.Month,
+                DateTime.DaysInMonth(value.Year, value.Month),
+                value.Hour,
+                value.Minute,
+                value.Second,
+                value.Millisecond);
         }
     }
 }

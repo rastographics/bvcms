@@ -1042,7 +1042,7 @@ namespace CmsWeb
         {
             return new HtmlString(@"<script src=""https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js""></script>");
         }
-
+        
         public static HtmlString FontAwesome()
         {
             return new HtmlString(@"<link href=""https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"" rel=""stylesheet"">");

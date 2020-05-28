@@ -39,6 +39,7 @@
     </UpgradeBackupLocation>
     <TargetFrameworkProfile />
     <MvcBuildViews>true</MvcBuildViews>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -54,6 +55,7 @@
     <FilesToIncludeForPublish>OnlyFilesToRunTheApp</FilesToIncludeForPublish>
     <UseVSHostingProcess>true</UseVSHostingProcess>
     <Prefer32Bit>false</Prefer32Bit>
+    <LangVersion>default</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -555,6 +557,10 @@
     <Compile Include="Areas\Finance\Models\RemoteDepositCaptureError.cs" />
     <Compile Include="Areas\Finance\Models\TotalsByFundRange.cs" />
     <Compile Include="Areas\Finance\Models\TotalsByFundAgeRangeModel.cs" />
+    <Compile Include="Areas\Giving\Controllers\GivingPageController.cs" />
+    <Compile Include="Areas\Giving\Controllers\GivingManagementController.cs" />
+    <Compile Include="Areas\Giving\Models\GivingPageModel.cs" />
+    <Compile Include="Areas\Giving\Models\GivingPageViewModel.cs" />
     <Compile Include="Areas\Main\Models\Other\CouponResponseModel.cs" />
     <Compile Include="Areas\Manage\Controllers\ActivityController.cs" />
     <Compile Include="Areas\Manage\Controllers\BatchMoveAndDelete.cs" />
@@ -1187,6 +1193,9 @@
       <SubType>Designer</SubType>
     </Content>
     <Content Include="Areas\Search\Views\PictureDirectory\PictureDirectory.sql" />
+    <Content Include="Areas\Giving\Views\GivingManagement\Manage.cshtml" />
+    <Content Include="Areas\Giving\Views\GivingPage\Index.cshtml" />
+    <None Include="babel.config.js" />
     <Content Include="Content\css\bootstrap-datetimepicker.css" />
     <Content Include="Content\css\bootstrap-datetimepicker.min.css">
       <DependentUpon>bootstrap-datetimepicker.css</DependentUpon>
@@ -1241,6 +1250,7 @@
     <Content Include="Content\css\select2.png" />
     <Content Include="Content\css\select2x2.png" />
     <Content Include="Content\css\typeahead.js-bootstrap.css" />
+    <Content Include="Content\dist\js\app.js" />
     <Content Include="Content\font-awesome-4.0.3\css\font-awesome.css" />
     <Content Include="Content\font-awesome-4.0.3\css\font-awesome.min.css" />
     <Content Include="Content\font-awesome-4.0.3\fonts\fontawesome-webfont.svg" />
@@ -1279,7 +1289,6 @@
     <Content Include="Content\touchpoint\js\admin\users-email-for.js" />
     <Content Include="Content\touchpoint\js\admin\users.js" />
     <Content Include="Content\touchpoint\js\app.min.js" />
-    <Content Include="Content\touchpoint\js\checkin\checkinsetup.js" />
     <Content Include="Content\touchpoint\js\Coupons.js" />
     <Content Include="Content\touchpoint\js\dialog\search-users.js" />
     <Content Include="Content\touchpoint\js\edit-custom-report.js" />
@@ -1290,7 +1299,6 @@
     <Content Include="Content\touchpoint\js\finance\totals-by-fund.js" />
     <Content Include="Content\touchpoint\js\finance\transactions.js" />
     <Content Include="Content\touchpoint\js\form-ajax.js" />
-    <Content Include="Content\touchpoint\js\gateway.js" />
     <Content Include="Content\touchpoint\js\checkin.js" />
     <Content Include="Content\touchpoint\js\onlineregister.min.js" />
     <Content Include="Content\touchpoint\js\update-add-modal-results.js" />
@@ -1309,7 +1317,6 @@
     <Content Include="Content\touchpoint\js\tranhistory.js" />
     <Content Include="Content\touchpoint\js\volunteer\AltCalendar.js" />
     <Content Include="Content\touchpoint\js\volunteer\calendar.js" />
-    <Content Include="Content\touchpoint\js\vue-number-input.js" />
     <Content Include="Content\touchpoint\lib\bootstrap-sweetalert\js\sweetalert.min.js" />
     <Content Include="Content\touchpoint\lib\bootstrap-sweetalert\css\sweetalert.css" />
     <Content Include="Content\touchpoint\lib\ckeditor\plugins\specialLink\dialogs\specialLink.js" />
@@ -1769,14 +1776,19 @@
     <Content Include="Errors\SessionTimeout.htm" />
     <Content Include="gulpfile.js" />
     <Content Include="Content\touchpoint\js\onlinereg\bootstrap-datepicker.js" />
-    <Content Include="chart.py" />
     <Content Include="Properties\Files\ContributionStatementTemplate.html" />
     <Content Include="Properties\Files\ContributionStatementTemplateBody.html" />
+    <Content Include="src\main.js" />
+    <Content Include="Content\touchpoint\src\less\vue-component-overrides.less" />
+    <None Include="Properties\Files\ContributionStatementTemplate.html" />
+    <None Include="Properties\Files\ContributionStatementTemplateBody.html" />
+    <Content Include="src\components\Giving\GivingPage\GivingContainer.vue" />
+    <None Include="src\main.js" />
     <Content Include="Views\Shared\Account\_Layout.cshtml" />
     <Content Include="Areas\Reports\Views\Reports\EditCustomReport.cshtml" />
     <Content Include="Areas\Manage\Views\Account\SetPasswordConfirm.cshtml" />
     <Content Include="Lib\constants.py" />
-    <Content Include="package.json" />
+    <None Include="package.json" />
     <Content Include="Content\touchpoint\fonts\glyphicons-halflings-regular.eot" />
     <Content Include="Content\touchpoint\fonts\glyphicons-halflings-regular.ttf" />
     <Content Include="Content\touchpoint\fonts\glyphicons-halflings-regular.woff" />
@@ -1885,7 +1897,7 @@
     <Content Include="Areas\Setup\Views\Roles\Priorities.cshtml" />
     <Content Include="Content\touchpoint\src\less\snackbar.less" />
     <Content Include="Areas\People\Views\Shared\PledgesSummary.cshtml" />
-    <Content Include="libman.json" />
+    <None Include="libman.json" />
     <Content Include="Areas\Setup\Views\Setting\_Settings.cshtml" />
     <Content Include="Areas\Manage\Views\Account\AuthSetup.cshtml" />
     <Content Include="Areas\Manage\Views\Account\AuthSetupComplete.cshtml" />
@@ -1919,13 +1931,19 @@
     <Content Include="Content\touchpoint\src\less\unlayer-editor.less" />
     <Content Include="Areas\Dialog\Views\RemoteDeposit\Index.cshtml" />
     <Content Include="Areas\Dialog\Views\RemoteDeposit\NotConfigured.cshtml" />
+    <Content Include="Areas\Giving\Views\Web.config">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Areas\Giving\Views\GivingManagement\Index.cshtml" />
+    <Content Include="package-lock.json" />
+    <None Include="package-lock.json" />
+    <Content Include="Content\dist\js\app.js.map" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
     <Content Include="Content\touchpoint\src\less\modals.less" />
     <Content Include="Areas\People\Views\Person\Resources\Index.cshtml" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
-    <Content Include="Scripts\ReadMe.txt" />
     <Content Include="Views\Shared\EditorTemplates\DateAndTime.cshtml" />
     <Content Include="Areas\Reports\Views\Reports\SqlReport.cshtml" />
     <Content Include="Areas\Org\Views\OrgSearch\Modals\Rollsheet.cshtml" />
@@ -2826,7 +2844,12 @@
     <Content Include="Views\Shared\AdminAlerts.cshtml" />
     <Content Include="Views\Shared\_diagnostics.cshtml" />
     <Content Include="Views\Shared\Redirect.cshtml" />
+    <Content Include="src\components\Common\Toggle.vue" />
+    <Content Include="src\components\Giving\GivingManagement\GivingPageIndex.vue" />
+    <Content Include="src\components\Giving\GivingManagement\GivingPageEdit.vue" />
     <Content Include="Views\Home\Dashboard.cshtml" />
+    <Content Include="src\components\Setup\Gateway\Manage.vue" />
+    <Content Include="src\components\CheckIn\CheckinSetup.vue" />
     <None Include="Web.staging.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -3297,7 +3320,6 @@
     <Content Include="Areas\Manage\Views\Batch\ExtraValuesFromPeopleIds.cshtml">
     </Content>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <None Include="Properties\DataSources\System.Data.DataSet.datasource" />
     <None Include="Properties\PublishProfiles\production.pubxml" />
     <None Include="Properties\PublishProfiles\release.pubxml" />
     <None Include="Properties\PublishProfiles\staging.pubxml" />
@@ -3321,6 +3343,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
+    <None Include="vue.config.js" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
@@ -3476,6 +3499,7 @@
     <PreBuildEvent>pushd $(ProjectDir)
 call npm install --silent
 call gulp --no-color
+if "$(ConfigurationName)" equ "Release" call npm run build
 popd</PreBuildEvent>
   </PropertyGroup>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
@@ -3487,4 +3511,8 @@ popd</PreBuildEvent>
     <Error Condition="!Exists('..\packages\NETStandard.Library.2.0.3\build\netstandard2.0\NETStandard.Library.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\NETStandard.Library.2.0.3\build\netstandard2.0\NETStandard.Library.targets'))" />
   </Target>
   <Import Project="..\packages\NETStandard.Library.2.0.3\build\netstandard2.0\NETStandard.Library.targets" Condition="Exists('..\packages\NETStandard.Library.2.0.3\build\netstandard2.0\NETStandard.Library.targets')" />
+  <PropertyGroup>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
 </Project>

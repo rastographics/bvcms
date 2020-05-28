@@ -363,6 +363,14 @@ namespace CmsData
         partial void UpdateGeoCode(GeoCode instance);
         partial void DeleteGeoCode(GeoCode instance);
 
+        partial void InsertGivingPageFund(GivingPageFund instance);
+        partial void UpdateGivingPageFund(GivingPageFund instance);
+        partial void DeleteGivingPageFund(GivingPageFund instance);
+
+        partial void InsertGivingPage(GivingPage instance);
+        partial void UpdateGivingPage(GivingPage instance);
+        partial void DeleteGivingPage(GivingPage instance);
+
         partial void InsertGoerSenderAmount(GoerSenderAmount instance);
         partial void UpdateGoerSenderAmount(GoerSenderAmount instance);
         partial void DeleteGoerSenderAmount(GoerSenderAmount instance);
@@ -1054,6 +1062,10 @@ namespace CmsData
 
         public Table<GeoCode> GeoCodes => GetTable<GeoCode>();
 
+        public Table<GivingPageFund> GivingPageFunds => GetTable<GivingPageFund>();
+
+        public Table<GivingPage> GivingPages => GetTable<GivingPage>();
+
         public Table<GoerSenderAmount> GoerSenderAmounts => GetTable<GoerSenderAmount>();
 
         public Table<GoerSupporter> GoerSupporters => GetTable<GoerSupporter>();
@@ -1158,6 +1170,8 @@ namespace CmsData
 
         public Table<PaymentInfo> PaymentInfos => GetTable<PaymentInfo>();
 
+        public Table<PaymentMethod> PaymentMethods => GetTable<PaymentMethod>();
+
         public Table<Person> People => GetTable<Person>();
 
         public Table<PeopleCanEmailFor> PeopleCanEmailFors => GetTable<PeopleCanEmailFor>();
@@ -1217,6 +1231,10 @@ namespace CmsData
         public Table<Role> Roles => GetTable<Role>();
 
         public Table<RssFeed> RssFeeds => GetTable<RssFeed>();
+
+        public Table<ScheduledGiftAmount> ScheduledGiftAmounts => GetTable<ScheduledGiftAmount>();
+
+        public Table<ScheduledGift> ScheduledGifts => GetTable<ScheduledGift>();
 
         public Table<SecurityCode> SecurityCodes => GetTable<SecurityCode>();
 
