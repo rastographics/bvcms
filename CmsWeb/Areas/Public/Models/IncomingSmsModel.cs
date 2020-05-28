@@ -137,6 +137,7 @@ namespace CmsWeb.Areas.Public.Models
             return ReceivedTextNoAction();
         }
 
+
         public void SendNotices()
         {
             var q = from gm in CurrentDatabase.SMSGroupMembers
@@ -148,8 +149,8 @@ namespace CmsWeb.Areas.Public.Models
 SMS Group: {groupName}<br>
 Received: {row.DateReceived}<br>
 From: {person?.Name ?? "name unknown"}<br>
-Message: {Body}<br>
-Auto Reply: Download our app here: <a href='{CurrentDatabase.CmsHost}/SmsMessages#{row.Id}'>{CurrentDatabase.CmsHost}</a><br><br>";
+Message: {Body} <a href='{CurrentDatabase.CmsHost}/SmsMessages#{row.Id}'>(view)</a><br>
+Auto Reply: {action.ReplyMessage}<br><br>";
             foreach (var p in q)
             {
                 CurrentDatabase.Email(Util.AdminMail, p, null, subject, body, false);
