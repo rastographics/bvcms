@@ -2,6 +2,11 @@
 @model CmsWeb.Areas.People.Models.SmsModel
 <form class="non-modal ajax" method="post">
     <div class="row">
+        <div class="col-sm-4">
+            @Html.EditorFor(m => m.GroupId, "Dropdown", new { items = Model.PersonSmsGroups() })
+        </div>
+    </div>
+    <div class="row">
         <div class="col-sm-12">
             @Html.Partial("PagerTop", Model)
             <div class="table-responsive">
