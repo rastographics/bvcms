@@ -43,6 +43,7 @@ namespace CmsWeb.Areas.People.Models.Communications
             public int PeopleId { get; set; }
             public string OptedOutOf { get; set; }
             public bool IsText { get; set; }
+            public int? GroupId { get; set; }
         }
         public List<OptOutViewModel> OptOuts()
         {
@@ -52,6 +53,7 @@ namespace CmsWeb.Areas.People.Models.Communications
                 {
                     CreatedDt = oe.DateX,
                     OptedOutOf = oe.FromEmail,
+                    GroupId = null,
                     PeopleId = oe.ToPeopleId,
                     IsText = false
                 };
@@ -60,7 +62,8 @@ namespace CmsWeb.Areas.People.Models.Communications
                 select new OptOutViewModel
                 {
                     CreatedDt = ot.DateX,
-                    OptedOutOf = g.Name,// + " (" + g.Id + ")",
+                    OptedOutOf = g.Name,
+                    GroupId = g.Id,
                     PeopleId = ot.ToPeopleId,
                     IsText = true
                 };

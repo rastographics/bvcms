@@ -68,7 +68,7 @@
                                    data-confirm-type="warning"
                                    data-confirm-btn-class="btn-danger"
                                    data-confirm-btn-text="Yes, delete!"
-                                   href="/Person2/DeleteOptout/@oo.PeopleId?from=@Html.Encode(oo.OptedOutOf)&istext=@oo.IsText.ToString()">
+                                   href="/Person2/DeleteOptout/@oo.PeopleId/@Html.Encode(oo.OptedOutOf)/@(oo.GroupId??0)/@oo.IsText.ToString()">
                                     <i class="fa fa-trash"></i> Delete
                                 </a>
                             </td>
