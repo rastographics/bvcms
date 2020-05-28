@@ -33,7 +33,7 @@
                                 <a v-else target="_blank" :href="givePrefix + page.PageUrl">{{ givePrefix }}{{ page.PageUrl }}</a>
                             </td>
                             <td class="text-center">
-                                <tp-toggle v-model="page.Enabled" @input="toggleEnabled(page.GivingPageId, page.Enabled)"></tp-toggle>
+                                <tp-toggle v-model="page.Enabled" @input="toggleEnabled(page.PageId, page.Enabled)"></tp-toggle>
                             </td>
                         </tr>
                     </tbody>
@@ -74,7 +74,7 @@
             toggleEnabled(id, value) {
                 axios.post("/Giving/SaveGivingPageEnabled", {
                     value: value,
-                    currentGivingPageId: id
+                    PageId: id
                 })
                 .then(
                     response => {

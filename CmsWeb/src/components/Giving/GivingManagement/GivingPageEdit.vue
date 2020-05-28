@@ -19,11 +19,15 @@
                             </div>
                         </div>
                         <div class="col-md-6">
-                            <div :class="{'form-group': true, 'has-success': validUrl && !page.GivingPageId, 'has-error': !validUrl && page.PageUrl.length && !page.GivingPageId}">
+                            <div :class="{'form-group': true, 'has-success': validUrl && !page.PageId, 'has-error': !validUrl && page.PageUrl.length && !page.PageId}">
                                 <label for="pageUrl" class="control-label">Page URL <a href="#" data-toggle="popover" data-placement="right" data-trigger="focus" data-title="Page URL" data-content="The publically accessible URL for this giving page. This can't be changed later, and must be unique."><i class="fa fa-info-circle"></i></a></label>
-                                <div class="input-group">
-                                    <span :class="{'input-group-addon': true, 'disabled': page.GivingPageId != 0}" id="pageUrl" @click="$refs.pageUrl.focus()">{{givePrefix}}</span>
-                                    <input type="text" class="form-control" ref="pageUrl" v-model="page.PageUrl" aria-describedby="pageUrl" :disabled="page.GivingPageId != 0" style="border-left-width:0;" >
+                                <div class="input-group" v-if="page.PageId !== 0">
+                                    <span class="input-group-addon disabled" id="pageUrl">{{givePrefix}}{{page.PageUrl}}</span>
+                                    <input type="text" class="form-control" style="border-left-width:0;" disabled />
+                                </div>
+                                <div class="input-group" v-else>
+                                    <span class="input-group-addon" id="pageUrl" @click="$refs.pageUrl.focus()">{{givePrefix}}</span>
+                                    <input type="text" class="form-control" ref="pageUrl" v-model="page.PageUrl" aria-describedby="pageUrl" style="border-left-width:0;">
                                 </div>
                             </div>
                         </div>
@@ -45,7 +49,7 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label class="control-label">Page Shell <a href="#" data-toggle="popover" data-placement="right" data-trigger="focus" data-title="Page Shell" data-content="You can theme this giving page by creating an HTML content file with the keyword 'shell' and applying it here."><i class="fa fa-info-circle"></i></a></label>
-                                <MultiSelect v-model="page.SkinFileId"
+                                <MultiSelect v-model="page.SkinFile"
                                              :options="shellList"
                                              :searchable="true"
                                              :close-on-select="true"
@@ -71,7 +75,7 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label class="control-label">Fund Options <a href="#" data-toggle="popover" data-placement="right" data-trigger="focus" data-title="Fund Options" data-content="Any funds listed here will be presented as optional alternatives to the default fund for donors to choose to give to."><i class="fa fa-info-circle"></i></a></label>
-                                <MultiSelect v-model="selectedAvailableFunds"
+                                <MultiSelect v-model="page.AvailableFunds"
                                              :options="fundsList"
                                              :searchable="true"
                                              :close-on-select="true"
@@ -85,7 +89,7 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label class="control-label">Entry Point</label>
-                                <MultiSelect v-model="page.EntryPointId"
+                                <MultiSelect v-model="page.EntryPoint"
                                              :options="entryPointList"
                                              :searchable="true"
                                              :close-on-select="true"
@@ -103,7 +107,7 @@
                     <div class="row">
                         <div class="col-sm-12" style="margin-bottom: 15px;">
                             <div class="pull-right">
-                                <a href="/Giving" class="btn btn-default" style="margin-right: 10px;">Cancel</a>
+                                <a href="/Giving" class="btn btn-default" style="margin-right: 10px;"><i class="fa fa-arrow-circle-left"></i> Back to List</a>
                                 <a class="btn btn-primary" @click="saveGivingPage">Save</a>
                             </div>
                         </div>
@@ -138,7 +142,7 @@
                         <div class="col-md-6">
                             <div class="form-group" v-if="selectedPageTypes & TYPE_PLEDGE">
                                 <label class="control-label">Pledge Confirmation Email</label>
-                                <MultiSelect v-model="page.ConfirmationEmailPledgeId"
+                                <MultiSelect v-model="page.ConfirmEmailPledge"
                                              :options="confirmationEmailList"
                                              :searchable="true"
                                              :close-on-select="true"
@@ -149,7 +153,7 @@
                         <div class="col-md-6" v-if="selectedPageTypes & TYPE_ONE_TIME">
                             <div class="form-group">
                                 <label class="control-label">One Time Confirmation Email</label>
-                                <MultiSelect v-model="page.ConfirmationEmailOneTimeId"
+                                <MultiSelect v-model="page.ConfirmEmailOneTime"
                                              :options="confirmationEmailList"
                                              :searchable="true"
                                              :close-on-select="true"
@@ -160,7 +164,7 @@
                         <div class="col-md-6" v-if="selectedPageTypes & TYPE_RECURRING">
                             <div class="form-group">
                                 <label class="control-label">Recurring Confirmation Email</label>
-                                <MultiSelect v-model="page.ConfirmationEmailRecurringId"
+                                <MultiSelect v-model="page.ConfirmEmailRecurring"
                                              :options="confirmationEmailList"
                                              :searchable="true"
                                              :close-on-select="true"
@@ -170,7 +174,7 @@
                         </div>
                         <div class="col-sm-12" style="margin-bottom: 15px;">
                             <div class="pull-right">
-                                <a href="/Giving" class="btn btn-default" style="margin-right: 10px;">Cancel</a>
+                                <a href="/Giving" class="btn btn-default" style="margin-right: 10px;"><i class="fa fa-arrow-circle-left"></i> Back to List</a>
                                 <a class="btn btn-primary" @click="saveGivingPage">Save</a>
                             </div>
                         </div>
@@ -200,10 +204,12 @@
         watch: {
             "page.PageName": function (name) {
                 // suggest a url based on the title
-                this.page.PageUrl = this.slugify(name);
+                if (this.page.PageId == 0) {
+                    this.page.PageUrl = this.slugify(name);
+                }
             },
             "page.PageUrl": function (url) {
-                if (!this.page.GivingPageId) {
+                if (this.page.PageId == 0) {
                     this.validUrl = false;
                     this.page.PageUrl = this.slugify(url);
                     this.verifyUrl();
@@ -216,7 +222,6 @@
                     PageName: ""
                 },
                 validUrl: true,
-                selectedAvailableFunds: [],
                 fundsList: [],
                 shellList: [],
                 pageTypes: [],
@@ -255,34 +260,23 @@
                     error_swal("Error", "Default fund is required");
                     return false;
                 }
-                if (!this.validUrl) {
+                if (this.page.PageId == 0 && !this.validUrl) {
                     error_swal("Error", "That page URL is already in use.")
+                    return false;
                 }
                 return true;
             },
             saveGivingPage() {
                 if (this.validate()) {
-                    axios.post("/Giving/Update", {
-                        pageId: this.page.GivingPageId,
-                        pageName: this.page.PageName,
-                        pageUrl: this.page.PageUrl,
-                        pageType: this.selectedPageTypes,
-                        enabled: this.page.Enabled,
-                        defaultFund: this.page.DefaultFund,
-                        disabledRedirect: this.page.DisabledRedirect,
-                        skinFile: this.page.currentPageSkin,
-                        topText: this.page.TopText,
-                        thankYouText: this.page.ThankYouText,
-                        onlineNotifyPerson: this.page.currentOnlineNotifyPerson,
-                        confirmEmailPledge: this.page.ConfirmEmailPledge,
-                        confirmEmailOneTime: this.page.ConfirmEmailOneTime,
-                        confirmEmailRecurring: this.page.ConfirmEmailRecurring,
-                        entryPoint: this.page.EntryPointId,
-                        availableFunds: this.page.AvailableFunds,
-                    })
+                    let vm = this;
+                    let url = vm.page.PageId ? "/Giving/Update" : "/Giving/Create";
+                    let page = Object.assign({}, vm.page);
+                    page.PageType = vm.selectedPageTypes;
+                    axios.post(url, page)
                     .then(
                         response => {
                             if (response.status === 200) {
+                                vm.page.PageId = response.data.PageId;
                                 snackbar('Giving page saved', 'success');
                             } else {
                                 warning_swal("Warning!", "Error saving giving page. Please try again later");
@@ -354,12 +348,6 @@
                     response => {
                         if (response.status === 200) {
                             vm.fundsList = response.data;
-                            // vm.page.DefaultFund = vm.fundsList.find(fund => fund.Id === vm.page.DefaultFundId);
-                            //for (var i = 0; i < vm.fundsList.length; i++) {
-                            //    if (vm.page.DefaultFundId == vm.fundsList[i].Id) {
-                            //        vm.page.DefaultFund = vm.fundsList[i];
-                            //    }
-                            //}
                         } else {
                             warning_swal("Warning!", "Something went wrong, try again later");
                         }

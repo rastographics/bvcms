@@ -32,7 +32,7 @@ namespace CmsWeb.Areas.Giving.Controllers
             var page = new GivingPageItem();
             if (id.ToLower() == "new")
             {
-                page.GivingPageId = 0;
+                page.PageId = 0;
             }
             else
             {
@@ -57,17 +57,18 @@ namespace CmsWeb.Areas.Giving.Controllers
             return Json(givingPageList, JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult CreateNew(GivingPageViewModel viewModel)
+        [HttpPost]
+        public ActionResult Create(GivingPageViewModel viewModel)
         {
             var model = new GivingPageModel(CurrentDatabase);
-            var newGivingPageList = model.AddNewGivingPage(viewModel);
-            return Json(newGivingPageList, JsonRequestBehavior.AllowGet);
+            var result = model.Create(viewModel);
+            return Json(result, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
         public ActionResult Update(GivingPageViewModel viewModel)
         {
-            var givingPage = (from gp in CurrentDatabase.GivingPages where gp.GivingPageId == viewModel.pageId select gp).FirstOrDefault();
+            var givingPage = (from gp in CurrentDatabase.GivingPages where gp.GivingPageId == viewModel.PageId select gp).FirstOrDefault();
             if(givingPage == null)
             {
                 return new HttpNotFoundResult();
@@ -75,8 +76,8 @@ namespace CmsWeb.Areas.Giving.Controllers
             else
             {
                 var model = new GivingPageModel(CurrentDatabase);
-                var returnList = model.UpdateGivingPage(viewModel, givingPage);
-                return Json(returnList, JsonRequestBehavior.AllowGet);
+                var result = model.Fill(viewModel, givingPage);
+                return Json(result, JsonRequestBehavior.AllowGet);
             }
         }
 
@@ -90,7 +91,7 @@ namespace CmsWeb.Areas.Giving.Controllers
             }
             return Json(new
             {
-                result = result
+               result
             }, JsonRequestBehavior.AllowGet);
         }
 
@@ -151,11 +152,10 @@ namespace CmsWeb.Areas.Giving.Controllers
         }
 
         [HttpPost]
-        public JsonResult SaveGivingPageEnabled(bool value, int currentGivingPageId)
+        public JsonResult SaveGivingPageEnabled(bool value, int PageId)
         {
-            var givingPage = CurrentDatabase.GivingPages.Where(g => g.GivingPageId == currentGivingPageId).FirstOrDefault();
+            var givingPage = CurrentDatabase.GivingPages.Where(g => g.GivingPageId == PageId).FirstOrDefault();
             givingPage.Enabled = value;
-            UpdateModel(givingPage);
             CurrentDatabase.SubmitChanges();
             return Json(new { givingPage.GivingPageId, givingPage.PageName, givingPage.Enabled });
         }
