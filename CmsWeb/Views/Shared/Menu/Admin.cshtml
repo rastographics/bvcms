@@ -46,7 +46,10 @@
                         }
                         @Helper.LiAnchorLink("Fund Management", "/Funds/")
                         @Helper.LiAnchorLink("Managed Giving", "/FinanceReports/ManagedGiving/")
-                        @Helper.LiAnchorLink("Online Giving Setup", "/Giving/")
+                        @if(Db.Setting("OnlineGivingBeta"))
+                        {
+                            @Helper.LiAnchorLink("Online Giving Setup", "/Giving/")
+                        }
                         <li class="dropdown-header dropdown-sub-header">Reports</li>
                         <li>
                             <a href='/FinanceReports/DonorTotalSummary' class="dialog-options" data-target="/FinanceReports/DonorTotalSummaryOptions">Donor Total Summary Export</a>
