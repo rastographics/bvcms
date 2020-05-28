@@ -318,11 +318,6 @@ namespace CmsData
             {
                 if (_GatewayAccountId != value)
                 {
-                    if (_Person.HasLoadedOrAssignedValue)
-                    {
-                        throw new ForeignKeyReferenceAlreadyHasValueException();
-                    }
-
                     OnGatewayAccountIdChanging(value);
                     SendPropertyChanging();
                     _GatewayAccountId = value;
