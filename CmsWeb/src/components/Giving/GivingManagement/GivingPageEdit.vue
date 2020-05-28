@@ -13,7 +13,7 @@
                 <div id="Details-tab" class="tab-pane fade active in">
                     <div class="row">
                         <div class="col-md-6">
-                            <div class="form-group">
+                            <div :class="{'form-group': true, 'has-error': showValidation && !page.PageName}">
                                 <label class="control-label">Page Name</label>
                                 <input type="text" v-model="page.PageName" class="form-control" />
                             </div>
@@ -34,7 +34,7 @@
                     </div>
                     <div class="row">
                         <div class="col-md-6">
-                            <div class="form-group">
+                            <div :class="{'form-group': true, 'has-error': showValidation && !pageTypes.length}">
                                 <label class="control-label">Giving Types <a href="#" data-toggle="popover" data-placement="right" data-trigger="focus" data-title="Giving Type" data-content="The types of giving allowed on this page. You can allow more than one. Be sure to set the cooresponding emails for each type in the 'Email' tab."><i class="fa fa-info-circle"></i></a></label>
                                 <MultiSelect v-model="pageTypes"
                                              :options="pageTypeList"
@@ -61,7 +61,7 @@
                     </div>
                     <div class="row">
                         <div class="col-md-6">
-                            <div class="form-group">
+                            <div :class="{'form-group': true, 'has-error': showValidation && !page.DefaultFund}">
                                 <label class="control-label">Default Fund <a href="#" data-toggle="popover" data-placement="right" data-trigger="focus" data-title="Default Fund" data-content="This is the primary fund that gifts from this page will go to by default."><i class="fa fa-info-circle"></i></a></label>
                                 <MultiSelect v-model="page.DefaultFund"
                                              :options="fundsList"
@@ -222,6 +222,7 @@
                     PageName: ""
                 },
                 validUrl: true,
+                showValidation: false,
                 fundsList: [],
                 shellList: [],
                 pageTypes: [],
@@ -244,24 +245,26 @@
                     .replace(/-+/g, '-'); // collapse dashes
             },
             validate() {
+                var errors = [];
+                this.showValidation = false;
                 if (this.selectedPageTypes == 0) {
-                    error_swal("Error", "Choose at least one giving type");
-                    return false;
+                    errors.push("Giving type is required");
                 }
                 if (!this.page.PageName) {
-                    error_swal("Error", "Page name is required");
-                    return false;
+                    errors.push("Page name is required");
                 }
                 if (!this.page.PageUrl) {
-                    error_swal("Error", "Page URL is required");
-                    return false;
+                    errors.push("Page URL is required");
                 }
                 if (!this.page.DefaultFund) {
-                    error_swal("Error", "Default fund is required");
-                    return false;
+                    errors.push("Default fund is required");
                 }
-                if (this.page.PageId == 0 && !this.validUrl) {
-                    error_swal("Error", "That page URL is already in use.")
+                if (this.page.PageId == 0 && !this.validUrl && this.page.PageUrl) {
+                    errors.push("That page URL is already in use.");
+                }
+                if (errors.length) {
+                    this.showValidation = true;
+                    error_swal("Error", errors.join("\n"));
                     return false;
                 }
                 return true;
