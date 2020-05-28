@@ -13,6 +13,9 @@ Vue.component('gateway-management', require('./components/Setup/Gateway/Manage.v
 Vue.component('giving-page-index', require('./components/Giving/GivingManagement/GivingPageIndex.vue').default);
 Vue.component('edit-giving-page', require('./components/Giving/GivingManagement/GivingPageEdit.vue').default);
 
+// Giving Frontend
+Vue.component('giving-container', require('./components/Giving/GivingPage/GivingContainer.vue').default);
+
 // Touchpoint Common Components
 Vue.component('tp-toggle', require('./components/Common/Toggle.vue').default);
 

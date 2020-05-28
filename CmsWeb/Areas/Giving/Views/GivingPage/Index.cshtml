@@ -1,13 +1,24 @@
-﻿@using UtilityExtensions
+﻿@model CmsWeb.Areas.Giving.Models.GivingPageItem
 @{
-    Layout = ViewExtensions2.TouchPointLayout();
-    ViewBag.Title = "Online Giving Setup";
-    ViewBag.PageHeader = "Online Giving Setup";
+    ViewBag.Title = Model.PageName;
+    if ((bool?)ViewData["hasshell"] == true)
+    {
+        Layout = "~/Views/Shared/Account/_ShellLayout.cshtml";
+    }
+    else
+    {
+        Layout = "~/Views/Shared/Account/_Layout.cshtml";
+    }
 }
-@section head
-{
-    @ViewExtensions2.BootstrapToggleCss()
-}
-<div class="giving">
-    @ViewBag.Id
+<div id="main" class="giving">
+    <giving-container page-prop="@Json.Encode(Model)" type="@ViewBag.Type" fund="@ViewBag.Fund" amount="@ViewBag.Amount"></giving-container>
 </div>
+@section scripts{
+    @Fingerprint.Script("/Content/dist/js/app.js")
+    <script>
+        if (!$("#main").find("script").length) {
+            new Vue({
+            }).$mount('#main');
+        }
+    </script>
+}
