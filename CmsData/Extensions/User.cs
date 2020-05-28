@@ -157,7 +157,7 @@ namespace CmsData
 
         public static string[] BasicLevel2 =
         {
-            "Coupon", "SendSMS", "ManageEmails", "ScheduleEmails"
+            "Coupon", "SendSMS", "ManageEmails", "ScheduleEmails", "ManageSms"
         };
 
         public static string[] SpecialPurpose =

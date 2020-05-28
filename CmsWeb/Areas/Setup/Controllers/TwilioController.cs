@@ -141,5 +141,17 @@ namespace CmsWeb.Areas.Setup.Controllers
             ViewBag.ID = id;
             return View(viewName);
         }
+
+        [HttpPost]
+        public ContentResult ReceiveNotificationsChanged(bool receive, int peopleid, int groupid)
+        {
+            var u = (from gm in CurrentDatabase.SMSGroupMembers
+                     where gm.GroupID == groupid
+                     where gm.User.PeopleId == peopleid
+                     select gm).Single();
+            u.ReceiveNotifications = receive;
+            CurrentDatabase.SubmitChanges();
+            return Content("Done");
+        }
     }
 }
