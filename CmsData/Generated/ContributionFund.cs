@@ -54,6 +54,8 @@ namespace CmsData
 
         private int _ShowList;
 
+        private bool _ShowRecurringEndDate;
+
         private EntitySet<BundleHeader> _BundleHeaders;
 
         private EntitySet<Contribution> _Contributions;
@@ -95,6 +97,9 @@ namespace CmsData
 
         partial void OnFundPledgeFlagChanging(bool value);
         partial void OnFundPledgeFlagChanged();
+
+        partial void OnShowRecurringEndDateChanging(bool value);
+        partial void OnShowRecurringEndDateChanged();
 
         partial void OnFundAccountCodeChanging(int? value);
         partial void OnFundAccountCodeChanged();
@@ -158,7 +163,6 @@ namespace CmsData
         public int FundId
         {
             get => _FundId;
-
             set
             {
                 if (_FundId != value)
@@ -176,7 +180,6 @@ namespace CmsData
         public int CreatedBy
         {
             get => _CreatedBy;
-
             set
             {
                 if (_CreatedBy != value)
@@ -194,7 +197,6 @@ namespace CmsData
         public DateTime CreatedDate
         {
             get => _CreatedDate;
-
             set
             {
                 if (_CreatedDate != value)
@@ -212,7 +214,6 @@ namespace CmsData
         public string FundName
         {
             get => _FundName;
-
             set
             {
                 if (_FundName != value)
@@ -230,7 +231,6 @@ namespace CmsData
         public string FundDescription
         {
             get => _FundDescription;
-
             set
             {
                 if (_FundDescription != value)
@@ -248,7 +248,6 @@ namespace CmsData
         public int FundStatusId
         {
             get => _FundStatusId;
-
             set
             {
                 if (_FundStatusId != value)
@@ -266,7 +265,6 @@ namespace CmsData
         public int FundTypeId
         {
             get => _FundTypeId;
-
             set
             {
                 if (_FundTypeId != value)
@@ -284,7 +282,6 @@ namespace CmsData
         public bool FundPledgeFlag
         {
             get => _FundPledgeFlag;
-
             set
             {
                 if (_FundPledgeFlag != value)
@@ -298,11 +295,27 @@ namespace CmsData
             }
         }
 
+        [Column(Name = "ShowRecurringEndDate", UpdateCheck = UpdateCheck.Never, Storage = "_ShowRecurringEndDate", DbType = "bit NOT NULL")]
+        public bool ShowRecurringEndDate
+        {
+            get => _ShowRecurringEndDate;
+            set
+            {
+                if (_ShowRecurringEndDate != value)
+                {
+                    OnShowRecurringEndDateChanging(value);
+                    SendPropertyChanging();
+                    _ShowRecurringEndDate = value;
+                    SendPropertyChanged("ShowRecurringEndDate");
+                    OnShowRecurringEndDateChanged();
+                }
+            }
+        }
+
         [Column(Name = "FundAccountCode", UpdateCheck = UpdateCheck.Never, Storage = "_FundAccountCode", DbType = "int")]
         public int? FundAccountCode
         {
             get => _FundAccountCode;
-
             set
             {
                 if (_FundAccountCode != value)
@@ -320,7 +333,6 @@ namespace CmsData
         public string FundIncomeDept
         {
             get => _FundIncomeDept;
-
             set
             {
                 if (_FundIncomeDept != value)
@@ -338,7 +350,6 @@ namespace CmsData
         public string FundIncomeAccount
         {
             get => _FundIncomeAccount;
-
             set
             {
                 if (_FundIncomeAccount != value)
@@ -356,7 +367,6 @@ namespace CmsData
         public string FundIncomeFund
         {
             get => _FundIncomeFund;
-
             set
             {
                 if (_FundIncomeFund != value)
@@ -374,7 +384,6 @@ namespace CmsData
         public string FundCashDept
         {
             get => _FundCashDept;
-
             set
             {
                 if (_FundCashDept != value)
@@ -392,7 +401,6 @@ namespace CmsData
         public string FundCashAccount
         {
             get => _FundCashAccount;
-
             set
             {
                 if (_FundCashAccount != value)
@@ -410,7 +418,6 @@ namespace CmsData
         public string FundCashFund
         {
             get => _FundCashFund;
-
             set
             {
                 if (_FundCashFund != value)
@@ -428,7 +435,6 @@ namespace CmsData
         public int? OnlineSort
         {
             get => _OnlineSort;
-
             set
             {
                 if (_OnlineSort != value)
@@ -446,7 +452,6 @@ namespace CmsData
         public bool? NonTaxDeductible
         {
             get => _NonTaxDeductible;
-
             set
             {
                 if (_NonTaxDeductible != value)
@@ -464,7 +469,6 @@ namespace CmsData
         public int QBIncomeAccount
         {
             get => _QBIncomeAccount;
-
             set
             {
                 if (_QBIncomeAccount != value)
@@ -482,7 +486,6 @@ namespace CmsData
         public int QBAssetAccount
         {
             get => _QBAssetAccount;
-
             set
             {
                 if (_QBAssetAccount != value)
@@ -500,7 +503,6 @@ namespace CmsData
         public int FundManagerRoleId
         {
             get => _FundManagerRoleId;
-
             set
             {
                 if (_FundManagerRoleId != value)
@@ -518,7 +520,6 @@ namespace CmsData
         public int ShowList
         {
             get => _ShowList;
-
             set
             {
                 if (_FundManagerRoleId != value)
@@ -540,7 +541,6 @@ namespace CmsData
         public EntitySet<BundleHeader> BundleHeaders
         {
             get => _BundleHeaders;
-
             set => _BundleHeaders.Assign(value);
 
         }
@@ -549,16 +549,13 @@ namespace CmsData
         public EntitySet<Contribution> Contributions
         {
             get => _Contributions;
-
             set => _Contributions.Assign(value);
-
         }
 
         [Association(Name = "FK_GivingPages_ContributionFund", Storage = "_GivingPages", OtherKey = "FundId")]
         public EntitySet<GivingPage> GivingPages
         {
             get => _GivingPages;
-
             set => _GivingPages.Assign(value);
         }
 
@@ -566,7 +563,6 @@ namespace CmsData
         public EntitySet<GivingPageFund> GivingPageFunds
         {
             get => _GivingPageFunds;
-
             set => _GivingPageFunds.Assign(value);
         }
 
@@ -574,9 +570,7 @@ namespace CmsData
         public EntitySet<RecurringAmount> RecurringAmounts
         {
             get => _RecurringAmounts;
-
             set => _RecurringAmounts.Assign(value);
-
         }
 
         #endregion

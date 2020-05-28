@@ -3,12 +3,13 @@
     Layout = ViewExtensions2.TouchPointLayout();
     ViewBag.Title = "Edit Fund";
     ViewBag.PageHeader = "Edit Fund";
+    var showRecurringEndDate = ViewExtensions2.CurrentDatabase.Setting("UseRecurringEndDates");
 }
 @using (Html.BeginForm("Update", "Fund"))
 {
     @Html.HiddenFor(m => m.FundId)
     <div class="row">
-        <div class="col-md-12">
+        <div class="col-md-10 col-md-offset-1">
             <div class="box box-responsive">
                 <div class="box-content">
                     <div class="row">
@@ -28,17 +29,36 @@
                     <div class="row">
                         <div class="col-sm-6 col-lg-6">
                             <div class="form-group">
-                                <a tabindex="0" href="#" data-toggle="popover" data-placement="bottom" data-trigger="focus" data-title="Description" data-content="This is what is used on Statements and in drop-down menus. Can be the same as the Name."><i class="fa fa-info-circle"></i></a>&nbsp;
+                                <a tabindex="0" href="#" data-toggle="popover" data-placement="top" data-trigger="focus" data-title="Description" data-content="This is what is used on Statements and in drop-down menus. Can be the same as the Name."><i class="fa fa-info-circle"></i></a>
                                 <label for="FundDescription" class="control-label">Description</label>
                                 @Html.TextBoxFor(m => m.FundDescription, new { @class = "form-control" })
                             </div>
                         </div>
-                        <div class="col-sm-6 col-lg-6">
-                            <div class="form-group">
-                                <label for="ShowList" class="control-label">Show in List</label>
-                                @Html.DropDownList("ShowList", CmsWeb.Areas.Finance.Controllers.FundController.GetFundShowList(), new { @class = "form-control" })
+                        @if (showRecurringEndDate)
+                        {
+                            <div class="col-sm-3 col-lg-3">
+                                <div class="form-group">
+                                    <label for="ShowList" class="control-label">Show in List</label>
+                                    @Html.DropDownList("ShowList", CmsWeb.Areas.Finance.Controllers.FundController.GetFundShowList(), new { @class = "form-control" })
+                                </div>
                             </div>
-                        </div>
+                            <div class="col-sm-3 col-lg-3">
+                                <div class="form-group">
+                                    <a tabindex="0" href="#" data-toggle="popover" data-placement="top" data-trigger="focus" data-title="Allow Recurring Gift End Date" data-content="When set to Yes, an end-user has the option to select an end date for a recurring gift to this fund."><i class="fa fa-info-circle"></i></a>
+                                    <label for="ShowRecurringEndDate" class="control-label">Allow Recurring Gift End Date</label>
+                                    @Html.DropDownList("ShowRecurringEndDate", ViewExtensions2.YesNoSelectList(Model.ShowRecurringEndDate), new { @class = "form-control" })
+                                </div>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="col-sm-6 col-lg-6">
+                                <div class="form-group">
+                                    <label for="ShowList" class="control-label">Show in List</label>
+                                    @Html.DropDownList("ShowList", CmsWeb.Areas.Finance.Controllers.FundController.GetFundShowList(), new { @class = "form-control" })
+                                </div>
+                            </div>
+                        }
                     </div>
                     <div class="row">
                         <div class="col-sm-4 col-lg-4">
@@ -88,29 +108,34 @@
                             </div>
                         </div>
                         <div class="col-sm-4 col-lg-4">
-                            <a tabindex="0" href="#" data-toggle="popover" data-placement="bottom" data-trigger="focus" data-title="Fund Management Role" data-content="You may use this to assign a custom role to this fund. Members of the chosen role will be able to view contribution reports for data associated with this fund. If unspecified, the finance role is required."><i class="fa fa-info-circle"></i></a>&nbsp;
+                            <a tabindex="0" href="#" data-toggle="popover" data-placement="bottom" data-trigger="focus" data-title="Fund Management Role" data-content="You may use this to assign a custom role to this fund. Members of the chosen role will be able to view contribution reports for data associated with this fund. If unspecified, the finance role is required."><i class="fa fa-info-circle"></i></a>
                             <label for="@Html.IdFor(m => m.FundManagerRoleId)" class="control-label">Fund Management Role</label>
                             @Html.DropDownList("FundManagerRoleId", CmsWeb.Areas.Finance.Controllers.FundController.GetRolesList(), new { @class = "form-control" })
                         </div>
                         <div class="col-md-2 col-lg-2">
+                            <label></label>
                             <div class="checkbox">
                                 <label class="control-label">
                                     @Html.CheckBox("NonTaxDeductible")
-                                    Non tax deductible?
+                                    Non tax deductible
                                 </label>
                             </div>
                         </div>
                         <div class="col-md-2 col-lg-2">
+                            <label></label>
                             <div class="checkbox">
                                 <label class="control-label">
                                     @Html.CheckBox("FundPledgeFlag")
-                                    Pledge fund?
+                                    Pledge fund
                                 </label>
                             </div>
                         </div>
                     </div>
-                    <br />
-                    <a href="/Funds" class="btn btn-default">Cancel</a> <button type="submit" class="btn btn-primary">Save Fund</button>
+                    <div class="row">
+                        <div class="col-md-12 text-right">
+                            <a href="/Funds" class="btn btn-default">Cancel</a> <button type="submit" class="btn btn-primary">Save Fund</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

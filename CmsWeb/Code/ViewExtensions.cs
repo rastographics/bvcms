@@ -813,6 +813,12 @@ namespace CmsWeb
             return textBox;
         }
 
+        public static IEnumerable<SelectListItem> YesNoSelectList(bool value)
+        {
+            yield return new SelectListItem { Selected = value, Text = "Yes", Value = "true" };
+            yield return new SelectListItem { Selected = !value, Text = "No", Value = "false" };
+        }
+
         public static IHtmlString CheckBoxFor2<TModel>(this HtmlHelper<TModel> htmlHelper,
             Expression<Func<TModel, bool>> expression,
             bool useNativeUnobtrusiveAttributes,

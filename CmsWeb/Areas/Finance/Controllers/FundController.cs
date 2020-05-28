@@ -206,9 +206,8 @@ namespace CmsWeb.Areas.Finance.Controllers
 
         public static List<SelectListItem> GetRolesList()
         {
-            //todo: static?
             var roles = DbUtil.Db.Roles.OrderBy(r => r.RoleName).Select(r => new SelectListItem { Value = r.RoleId.ToString(), Text = r.RoleName }).ToList();
-            roles.Insert(0, new SelectListItem { Value = "-1", Text = "(not assigned)" });
+            //roles.Insert(0, new SelectListItem { Value = "-1", Text = "(not assigned)" });
             roles.Insert(0, new SelectListItem { Value = "0", Text = "(not specified)", Selected = true });
 
             return roles;
