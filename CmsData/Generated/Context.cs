@@ -1170,6 +1170,8 @@ namespace CmsData
 
         public Table<PaymentInfo> PaymentInfos => GetTable<PaymentInfo>();
 
+        public Table<PaymentMethod> PaymentMethods => GetTable<PaymentMethod>();
+
         public Table<Person> People => GetTable<Person>();
 
         public Table<PeopleCanEmailFor> PeopleCanEmailFors => GetTable<PeopleCanEmailFor>();

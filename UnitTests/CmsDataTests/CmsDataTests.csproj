@@ -136,6 +136,7 @@
     <Compile Include="Email\ReplacementCodes\Links\UnlayerLinkTests.cs" />
     <Compile Include="Email\SendEmailTests.cs" />
     <Compile Include="Extensions\ContributionTests.cs" />
+    <Compile Include="Extensions\PaymentMethodTests.cs" />
     <Compile Include="Finance\AcceptivaGatewayTests.cs" />
     <Compile Include="Finance\Acceptiva\Core\Helpers\ISO3166Tests.cs" />
     <Compile Include="Finance\MultipleGatewayUtilsTests.cs" />
