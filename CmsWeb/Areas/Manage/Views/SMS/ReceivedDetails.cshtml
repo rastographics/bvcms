@@ -1,0 +1,44 @@
+﻿@model CmsWeb.Areas.Manage.Models.SmsMessages.ReceivedDetailViewModel
+<div id="receivedresults">
+    <div class="row">
+        <div class="col-sm-9">
+            <div class="box box-responsive">
+                <div class="box-title-btn">
+                    <div class="box-tools">
+                        <button class="backtoreceived btn btn-default">
+                            <i class="fa fa-arrow-circle-left"></i>
+                            Back to Message List
+                        </button>
+                    </div>
+                </div>
+                <div class="box-content">
+                    <h4>Message Text</h4>
+                    <blockquote>@Model.R.Body</blockquote>
+                    @if (Model.R.RepliedTo == true)
+                    {
+                        <a id="gotoReply" href="#" data-sentid="@Model.R.Id">There was a reply from @(Model.ReplyFrom)</a>
+                    }
+
+                    <div class="container-fluid">
+                        <div class="row" style="margin-bottom:10px">
+                            <div class="col-md-2"><b>Auto Response:</b></div>
+                            <div class="col-md-10">@Html.DisplayTextFor(m => m.R.ActionResponse)</div>
+                        </div>
+                        <div class="row" style="margin-bottom:10px">
+                            <div class="col-md-2"><b>Received:</b></div>
+                            <div class="col-md-10">@Html.DisplayTextFor(m => m.R.DateReceived)</div>
+                        </div>
+                        <div class="row" style="margin-bottom:10px">
+                            <div class="col-md-2"><b>From:</b></div>
+                            <div class="col-md-10">@Html.DisplayTextFor(m => m.PersonName) (@Html.DisplayTextFor(m => m.R.FromNumber))</div>
+                        </div>
+                        <div class="row" style="margin-bottom:10px">
+                            <div class="col-md-2"><b>To:</b></div>
+                            <div class="col-md-10">@Html.DisplayTextFor(m => m.GroupName) (@Html.DisplayTextFor(m => m.R.ToNumber))</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -368,6 +368,12 @@
     <Reference Include="Twilio, Version=5.37.4.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Twilio.5.37.4\lib\net451\Twilio.dll</HintPath>
     </Reference>
+    <Reference Include="Twilio.AspNet.Common, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Twilio.AspNet.Common.5.33.1\lib\net45\Twilio.AspNet.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="Twilio.AspNet.Mvc, Version=5.33.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Twilio.AspNet.Mvc.5.33.1\lib\net451\Twilio.AspNet.Mvc.dll</HintPath>
+    </Reference>
     <Reference Include="WindowsBase" />
     <Reference Include="Xceed.Words.NET, Version=1.2.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
       <HintPath>..\packages\DocX.1.2.1\lib\Xceed.Words.NET.dll</HintPath>
@@ -559,6 +565,8 @@
     <Compile Include="Areas\Manage\Controllers\ActivityController.cs" />
     <Compile Include="Areas\Manage\Controllers\BatchMoveAndDelete.cs" />
     <Compile Include="Areas\Manage\Controllers\InvolvementController.cs" />
+    <Compile Include="Areas\Manage\Models\SmsMessages\ReceivedDetailViewModel.cs" />
+    <Compile Include="Areas\Manage\Models\SmsMessages\ReplyModel.cs" />
     <Compile Include="Areas\Manage\Controllers\UploadAddressesController.cs" />
     <Compile Include="Areas\Manage\Controllers\ResourceController.cs" />
     <Compile Include="Areas\Manage\Controllers\UploadExcelIpsController.cs" />
@@ -576,6 +584,11 @@
     <Compile Include="Areas\Manage\Models\Involvement\InvolvementType.cs" />
     <Compile Include="Areas\Manage\Models\ResourceModel.cs" />
     <Compile Include="Areas\Manage\Models\ResourceTypeModel.cs" />
+    <Compile Include="Areas\Manage\Models\SmsMessages\SmsReceivedMessagesModel.cs" />
+    <Compile Include="Areas\Manage\Models\SmsMessages\SmsSentMessagesModel.cs" />
+    <Compile Include="Areas\Manage\Models\SmsMessages\SmsReplyWordsActionModel.cs" />
+    <Compile Include="Areas\Manage\Models\SmsMessages\SmsSentDetailsModel.cs" />
+    <Compile Include="Areas\Manage\Models\SmsMessages\SmsReplyWordsModel.cs" />
     <Compile Include="Areas\Manage\Models\UpdateFieldsLookups.cs" />
     <Compile Include="Areas\Manage\Models\UploadAddressesModel.cs" />
     <Compile Include="Areas\Manage\Models\UploadExcelIpsModel.cs" />
@@ -641,6 +654,7 @@
     <Compile Include="Areas\Org\Models\MemberDirectoryModel.cs" />
     <Compile Include="Areas\Org\Models\MissionTripEmailer.cs" />
     <Compile Include="Areas\People\Controllers\AttributesController.cs" />
+    <Compile Include="Areas\People\Models\Person\Communication\SmsViewModel.cs" />
     <Compile Include="Areas\People\Controllers\TaskController.cs" />
     <Compile Include="Areas\People\Controllers\DownlineLevelsController.cs" />
     <Compile Include="Areas\People\Controllers\DownlineSummaryController.cs" />
@@ -649,13 +663,16 @@
     <Compile Include="Areas\People\Models\Contact\ContactExtraLocationConfig.cs" />
     <Compile Include="Areas\People\Models\Downline\DownlineLevelsModel.cs" />
     <Compile Include="Areas\People\Models\Downline\DownlineSummaryModel.cs" />
+    <Compile Include="Areas\People\Models\Person\Communication\OptOutsModel.cs" />
     <Compile Include="Areas\People\Models\Person\Giving\GivingSummary.cs" />
     <Compile Include="Areas\People\Models\PersonDocumentsModel.cs" />
     <Compile Include="Areas\People\Models\Person\Giving\PledgesSummary.cs" />
+    <Compile Include="Areas\People\Models\Person\Communication\SmsModel.cs" />
     <Compile Include="Areas\People\Models\Task\TaskModel.cs" />
     <Compile Include="Areas\Public\Controllers\CheckInAPIv2Controller.cs" />
     <Compile Include="Areas\Public\Controllers\CheckScanAPIController.cs" />
     <Compile Include="Areas\Public\Controllers\MobileAPIv2Controller.cs" />
+    <Compile Include="Areas\Public\Controllers\IncomingSmsController.cs" />
     <Compile Include="Areas\Public\Models\CheckInAPIv2\Attendance.cs" />
     <Compile Include="Areas\Public\Models\CheckInAPIv2\AttendanceBundle.cs" />
     <Compile Include="Areas\Public\Models\CheckInAPIv2\AttendanceGroup.cs" />
@@ -688,6 +705,7 @@
     <Compile Include="Areas\Public\Models\CheckScanAPI\CheckScanAuthentication.cs" />
     <Compile Include="Areas\Public\Models\CheckScanAPI\CheckScanEntry.cs" />
     <Compile Include="Areas\Public\Models\CheckScanAPI\CheckScanMessage.cs" />
+    <Compile Include="Areas\Public\Models\IncomingSmsModel.cs" />
     <Compile Include="Areas\Public\Models\MobileAPIv2\MobileAccount.cs" />
     <Compile Include="Areas\Public\Models\MobileAPIv2\MobileGivingContribution.cs" />
     <Compile Include="Areas\Public\Models\MobileAPIv2\MobileGivingStatement.cs" />
@@ -842,14 +860,14 @@
     <Compile Include="Areas\Reports\Models\Attendance\VisitsAbsentsResult2.cs" />
     <Compile Include="Areas\Reports\Models\Attendance\RallyRollsheetResult.cs" />
     <Compile Include="Areas\CheckIn\Controllers\CheckinTimeController.cs" />
-    <Compile Include="Areas\Manage\Controllers\SMSController.cs" />
+    <Compile Include="Areas\Manage\Controllers\SmsController.cs" />
     <Compile Include="Areas\Manage\Controllers\UploadPeopleController.cs" />
     <Compile Include="Areas\Finance\Controllers\StatementsController.cs" />
     <Compile Include="Areas\Reports\Models\Export\ExtraExcelResult.cs" />
     <Compile Include="Areas\Org\Models\OrgChildrenModel.cs" />
     <Compile Include="Areas\Manage\Controllers\UsersController.cs" />
     <Compile Include="Areas\Manage\Models\ContentModel.cs" />
-    <Compile Include="Areas\Manage\Models\SMSModel.cs" />
+    <Compile Include="Areas\Manage\Models\SmsMessages\SmsMessagesModel.cs" />
     <Compile Include="Areas\Manage\Models\UsersModel.cs" />
     <Compile Include="Areas\Manage\Models\UploadPeopleModel.cs" />
     <Compile Include="Areas\Manage\Models\AccountModel.cs" />
@@ -864,7 +882,7 @@
     <Compile Include="Areas\OnlineReg\Models\OnlineReg\VolSubModel.cs" />
     <Compile Include="Areas\People\Controllers\AddressController.cs" />
     <Compile Include="Areas\People\Controllers\ContactController.cs" />
-    <Compile Include="Areas\People\Models\Person\Emails\EmailScheduled.cs" />
+    <Compile Include="Areas\People\Models\Person\Communication\EmailScheduled.cs" />
     <Compile Include="Areas\Public\Controllers\MobileAPIListController.cs" />
     <Compile Include="Areas\Reports\Models\Attendance\RecentAbsentsViewModel.cs" />
     <Compile Include="Areas\Search\Controllers\RegistrationSearchController.cs" />
@@ -964,16 +982,16 @@
     <Compile Include="Models\ExtraValue\ExtraValueModel.cs" />
     <Compile Include="Areas\People\Models\Person\Giving\StatementInfo.cs" />
     <Compile Include="Areas\People\Models\Person\Enrollments\RegistrationsModel.cs" />
-    <Compile Include="Areas\People\Models\Person\Emails\EmailTransactionalModel.cs" />
-    <Compile Include="Areas\People\Models\Person\Emails\EmailRow.cs" />
-    <Compile Include="Areas\People\Models\Person\Emails\EmailReceivedModel.cs" />
-    <Compile Include="Areas\People\Models\Person\Emails\EmailSentModel.cs" />
-    <Compile Include="Areas\People\Models\Person\Emails\EmailModel.cs" />
+    <Compile Include="Areas\People\Models\Person\Communication\EmailTransactionalModel.cs" />
+    <Compile Include="Areas\People\Models\Person\Communication\EmailRow.cs" />
+    <Compile Include="Areas\People\Models\Person\Communication\EmailReceivedModel.cs" />
+    <Compile Include="Areas\People\Models\Person\Communication\EmailSentModel.cs" />
+    <Compile Include="Areas\People\Models\Person\Communication\EmailModel.cs" />
     <Compile Include="Areas\People\Models\Person\Profile\CommentsModel.cs" />
     <Compile Include="Areas\People\Models\Person\Profile\MemberDocs.cs" />
     <Compile Include="Areas\Reports\Controllers\ReportsController.cs" />
     <Compile Include="Areas\Search\Controllers\ContactSearchController.cs" />
-    <Compile Include="Areas\People\Controllers\Person\EmailsController.cs" />
+    <Compile Include="Areas\People\Controllers\Person\CommunicationsController.cs" />
     <Compile Include="Areas\People\Controllers\Person\PersonController.cs" />
     <Compile Include="Areas\People\Controllers\Person\AdminController.cs" />
     <Compile Include="Areas\People\Controllers\Person\PersonalController.cs" />
@@ -1001,8 +1019,8 @@
     <Compile Include="Areas\People\Models\Person\Contacts\ContactsReceivedModel.cs" />
     <Compile Include="Areas\People\Models\Person\Contacts\ContactsModel.cs" />
     <Compile Include="Areas\People\Models\Person\Changes\ChangesModel.cs" />
-    <Compile Include="Areas\People\Models\Person\Emails\FailedMailModel.cs" />
-    <Compile Include="Areas\People\Models\Person\Emails\FailedMailInfo.cs" />
+    <Compile Include="Areas\People\Models\Person\Communication\FailedMailModel.cs" />
+    <Compile Include="Areas\People\Models\Person\Communication\FailedMailInfo.cs" />
     <Compile Include="Areas\People\Models\Person\Giving\ContributionInfo.cs" />
     <Compile Include="Areas\People\Models\Person\Giving\ContributionsModel.cs" />
     <Compile Include="Areas\Search\Models\ContactSearch\ContactSummaryInfo.cs" />
@@ -1253,6 +1271,7 @@
     <Content Include="Content\touchpoint\css\error.css" />
     <Content Include="Content\touchpoint\css\gateway.css" />
     <Content Include="Content\touchpoint\css\print.css" />
+    <Content Include="Content\touchpoint\css\SMS.css" />
     <Content Include="Content\touchpoint\fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Content\touchpoint\img\female.png" />
     <Content Include="Content\touchpoint\img\female_sm.png" />
@@ -1293,6 +1312,9 @@
     <Content Include="Content\touchpoint\js\gateway.js" />
     <Content Include="Content\touchpoint\js\checkin.js" />
     <Content Include="Content\touchpoint\js\onlineregister.min.js" />
+    <Content Include="Content\touchpoint\js\sms\ReplyWords.js" />
+    <Content Include="Content\touchpoint\js\sms\Received.js" />
+    <Content Include="Content\touchpoint\js\sms\Sent.js" />
     <Content Include="Content\touchpoint\js\update-add-modal-results.js" />
     <Content Include="Content\touchpoint\js\update-modal-results.js" />
     <Content Include="Content\touchpoint\js\vue-search-add.js" />
@@ -1919,6 +1941,22 @@
     <Content Include="Content\touchpoint\src\less\unlayer-editor.less" />
     <Content Include="Areas\Dialog\Views\RemoteDeposit\Index.cshtml" />
     <Content Include="Areas\Dialog\Views\RemoteDeposit\NotConfigured.cshtml" />
+    <Content Include="Areas\Manage\Views\Sms\Sent.cshtml" />
+    <Content Include="Areas\Manage\Views\Sms\ReplyWordsTab.cshtml" />
+    <Content Include="Areas\Manage\Views\Sms\ReplyWords.cshtml" />
+    <Content Include="Areas\Manage\Views\Sms\SentResults.cshtml" />
+    <Content Include="Areas\Manage\Views\Sms\SentFilterMembersDropdown.cshtml" />
+    <Content Include="Areas\Manage\Views\Sms\Received.cshtml" />
+    <Content Include="Areas\Manage\Views\Sms\ReceivedResults.cshtml" />
+    <Content Include="Areas\Manage\Views\Sms\ReceivedDetails.cshtml" />
+    <Content Include="Areas\Manage\Views\Sms\Toolbar\Email.cshtml" />
+    <Content Include="Areas\Manage\Views\Sms\Toolbar\Gear.cshtml" />
+    <Content Include="Areas\Manage\Views\Sms\Toolbar\Reports.cshtml" />
+    <Content Include="Areas\Manage\Views\Sms\Toolbar\Toolbar.cshtml" />
+    <Content Include="Areas\Manage\Views\Sms\DisplayTemplates\String.cshtml" />
+    <Content Include="Areas\Manage\Views\Sms\DisplayTemplates\DateTime.cshtml" />
+    <Content Include="Areas\Manage\Views\Sms\DisplayTemplates\Int32.cshtml" />
+    <Content Include="Areas\People\Views\Person\Communications\Sms.cshtml" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
@@ -2156,13 +2194,13 @@
     <Content Include="Areas\People\Views\Person\Ministry\Tab.cshtml" />
     <Content Include="Areas\People\Views\Person\Ministry\Contacts.cshtml" />
     <Content Include="Areas\People\Views\Person\Ministry\Tasks.cshtml" />
-    <Content Include="Areas\People\Views\Person\Emails\Optouts.cshtml" />
-    <Content Include="Areas\People\Views\Person\Emails\Failed.cshtml" />
+    <Content Include="Areas\People\Views\Person\Communications\Optouts.cshtml" />
+    <Content Include="Areas\People\Views\Person\Communications\Failed.cshtml" />
     <Content Include="Areas\People\Views\Person\Giving\Tab.cshtml" />
     <Content Include="Areas\People\Views\Person\Giving\Contributions.cshtml" />
     <Content Include="Areas\People\Views\Person\Ministry\Volunteer.cshtml" />
-    <Content Include="Areas\People\Views\Person\Emails\Tab.cshtml" />
-    <Content Include="Areas\People\Views\Person\Emails\Emails.cshtml" />
+    <Content Include="Areas\People\Views\Person\Communications\Tab.cshtml" />
+    <Content Include="Areas\People\Views\Person\Communications\Emails.cshtml" />
     <Content Include="Areas\Search\Views\ContactSearch\ContactTypeTotals.cshtml" />
     <Content Include="Areas\Search\Views\ContactSearch\Index.cshtml" />
     <Content Include="Areas\Search\Views\ContactSearch\Results.cshtml" />
@@ -2961,8 +2999,8 @@
     <Content Include="Areas\People\Views\Volunteering\DialogEdit.cshtml" />
     <Content Include="Areas\Main\Views\SMS\Options.cshtml" />
     <Content Include="Areas\Main\Views\SMS\Send.cshtml" />
-    <Content Include="Areas\Manage\Views\SMS\Details.cshtml" />
-    <Content Include="Areas\Manage\Views\SMS\Index.cshtml" />
+    <Content Include="Areas\Manage\Views\Sms\SentDetails.cshtml" />
+    <Content Include="Areas\Manage\Views\Sms\Index.cshtml" />
     <Content Include="Areas\Setup\Views\Twilio\GroupDialog.cshtml" />
     <Content Include="Areas\Setup\Views\Twilio\NumberDialog.cshtml" />
     <Content Include="Areas\Setup\Views\Twilio\UserDialog.cshtml" />
@@ -3031,7 +3069,7 @@
     </Content>
     <Content Include="Areas\Reports\Views\Reports\AttendanceDetail.cshtml">
     </Content>
-    <Content Include="Areas\People\Views\Person\Emails\View.cshtml">
+    <Content Include="Areas\People\Views\Person\Communications\View.cshtml">
     </Content>
     <Content Include="Views\Home\Index.cshtml">
     </Content>
@@ -3444,6 +3482,7 @@
     <Folder Include="Areas\OnlineReg\Views\Shared\" />
     <Folder Include="Areas\Public\Views\Shared\" />
     <Folder Include="Areas\Public\Views\TestMobile\" />
+    <Folder Include="Areas\Public\Views\TwilioIncoming\" />
     <Folder Include="Areas\Search\Views\Shared\" />
     <Folder Include="Pushpay\Enums\" />
     <Folder Include="Pushpay\Exceptions\" />

@@ -446,7 +446,7 @@
                     }
                 }
                 break;
-            case '#tab-emails':
+            case '#tab-communications':
                 if (subLink) {
                     if (subLink.attr("href") !== '#') {
                         $.cookie('lasttab', tlink.attr("href"));

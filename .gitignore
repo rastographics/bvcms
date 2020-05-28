@@ -86,6 +86,7 @@ HTMLPage1.html
 /CmsWeb/package-lock.json
 test_coverage.xml
 /*env.cmd
+.idea
 
 #gulp output
 CmsWeb/Content/touchpoint/css/account.css
