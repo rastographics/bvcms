@@ -3539,6 +3539,7 @@
 call npm install --silent
 call gulp --no-color
 if "$(ConfigurationName)" equ "Release" call npm run build
+if "$(ConfigurationName)" equ "test" call npm run build
 popd</PreBuildEvent>
   </PropertyGroup>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
