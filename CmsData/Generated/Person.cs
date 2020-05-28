@@ -9,7 +9,7 @@ namespace CmsData
     [Table(Name = "dbo.People")]
     public partial class Person : INotifyPropertyChanging, INotifyPropertyChanged
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(string.Empty);
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
 
         #region Private Fields
 
@@ -253,7 +253,6 @@ namespace CmsData
 
         private DateTime? _BarcodeExpires;
 
-
         private EntitySet<Contactee> _contactsHad;
 
         private EntitySet<Contactor> _contactsMade;
@@ -314,9 +313,13 @@ namespace CmsData
 
         private EntitySet<ScheduledGift> _ScheduledGifts;
 
+        private EntitySet<SmsGroupOptOut> _SmsGroupOptOuts;
+
         private EntitySet<SMSItem> _SMSItems;
 
         private EntitySet<SMSList> _SMSLists;
+
+        private EntitySet<SmsReceived> _SmsReceiveds;
 
         private EntitySet<GoerSupporter> _FK_Supporters;
 
@@ -368,7 +371,6 @@ namespace CmsData
 
         private EntitySet<VolRequest> _VolResponses;
 
-
         private EntityRef<Organization> _BFClass;
 
         private EntityRef<EnvelopeOption> _EnvelopeOption;
@@ -414,6 +416,7 @@ namespace CmsData
         #endregion
 
         #region Extensibility Method Definitions
+
         partial void OnLoaded();
         partial void OnValidate(ChangeAction action);
         partial void OnCreated();
@@ -779,6 +782,7 @@ namespace CmsData
         partial void OnBarcodeExpiresChanged();
 
         #endregion
+
         public Person()
         {
 
@@ -830,7 +834,7 @@ namespace CmsData
 
             _PaymentInfos = new EntitySet<PaymentInfo>(new Action<PaymentInfo>(attach_PaymentInfos), new Action<PaymentInfo>(detach_PaymentInfos));
 
-            _PaymentMethods = new EntitySet<PaymentMethod>(new Action<PaymentMethod>(this.attach_PaymentMethods), new Action<PaymentMethod>(detach_PaymentMethods));
+            _PaymentMethods = new EntitySet<PaymentMethod>(new Action<PaymentMethod>(attach_PaymentMethods), new Action<PaymentMethod>(detach_PaymentMethods));
 
             _PeopleExtras = new EntitySet<PeopleExtra>(new Action<PeopleExtra>(attach_PeopleExtras), new Action<PeopleExtra>(detach_PeopleExtras));
 
@@ -842,9 +846,13 @@ namespace CmsData
 
             _ScheduledGifts = new EntitySet<ScheduledGift>(new Action<ScheduledGift>(attach_ScheduledGifts), new Action<ScheduledGift>(detach_ScheduledGifts));
 
+            _SmsGroupOptOuts = new EntitySet<SmsGroupOptOut>(new Action<SmsGroupOptOut>(attach_SmsGroupOptOuts), new Action<SmsGroupOptOut>(detach_SmsGroupOptOuts));
+
             _SMSItems = new EntitySet<SMSItem>(new Action<SMSItem>(attach_SMSItems), new Action<SMSItem>(detach_SMSItems));
 
             _SMSLists = new EntitySet<SMSList>(new Action<SMSList>(attach_SMSLists), new Action<SMSList>(detach_SMSLists));
+
+            _SmsReceiveds = new EntitySet<SmsReceived>(new Action<SmsReceived>(attach_SmsReceiveds), new Action<SmsReceived>(detach_SmsReceiveds));
 
             _FK_Supporters = new EntitySet<GoerSupporter>(new Action<GoerSupporter>(attach_FK_Supporters), new Action<GoerSupporter>(detach_FK_Supporters));
 
@@ -948,6 +956,7 @@ namespace CmsData
         public int PeopleId
         {
             get => _PeopleId;
+
             set
             {
                 if (_PeopleId != value)
@@ -965,6 +974,7 @@ namespace CmsData
         public int CreatedBy
         {
             get => _CreatedBy;
+
             set
             {
                 if (_CreatedBy != value)
@@ -1028,7 +1038,7 @@ namespace CmsData
                 if (_GenderId != value)
                 {
                     if (_Gender.HasLoadedOrAssignedValue)
-                    {
+                {
                         throw new ForeignKeyReferenceAlreadyHasValueException();
                     }
 
@@ -1136,7 +1146,7 @@ namespace CmsData
                 if (_MaritalStatusId != value)
                 {
                     if (_MaritalStatus.HasLoadedOrAssignedValue)
-                    {
+                {
                         throw new ForeignKeyReferenceAlreadyHasValueException();
                     }
 
@@ -1205,7 +1215,7 @@ namespace CmsData
                 if (_FamilyId != value)
                 {
                     if (_Family.HasLoadedOrAssignedValue)
-                    {
+                {
                         throw new ForeignKeyReferenceAlreadyHasValueException();
                     }
 
@@ -1279,7 +1289,7 @@ namespace CmsData
                 if (_OriginId != value)
                 {
                     if (_Origin.HasLoadedOrAssignedValue)
-                    {
+                {
                         throw new ForeignKeyReferenceAlreadyHasValueException();
                     }
 
@@ -1302,7 +1312,7 @@ namespace CmsData
                 if (_EntryPointId != value)
                 {
                     if (_EntryPoint.HasLoadedOrAssignedValue)
-                    {
+                {
                         throw new ForeignKeyReferenceAlreadyHasValueException();
                     }
 
@@ -1325,7 +1335,7 @@ namespace CmsData
                 if (_InterestPointId != value)
                 {
                     if (_InterestPoint.HasLoadedOrAssignedValue)
-                    {
+                {
                         throw new ForeignKeyReferenceAlreadyHasValueException();
                     }
 
@@ -1371,7 +1381,7 @@ namespace CmsData
                 if (_BaptismStatusId != value)
                 {
                     if (_BaptismStatus.HasLoadedOrAssignedValue)
-                    {
+                {
                         throw new ForeignKeyReferenceAlreadyHasValueException();
                     }
 
@@ -1440,7 +1450,7 @@ namespace CmsData
                 if (_LetterStatusId != value)
                 {
                     if (_MemberLetterStatus.HasLoadedOrAssignedValue)
-                    {
+                {
                         throw new ForeignKeyReferenceAlreadyHasValueException();
                     }
 
@@ -1463,7 +1473,7 @@ namespace CmsData
                 if (_JoinCodeId != value)
                 {
                     if (_JoinType.HasLoadedOrAssignedValue)
-                    {
+                {
                         throw new ForeignKeyReferenceAlreadyHasValueException();
                     }
 
@@ -1526,7 +1536,7 @@ namespace CmsData
                 if (_ResCodeId != value)
                 {
                     if (_ResidentCode.HasLoadedOrAssignedValue)
-                    {
+                {
                         throw new ForeignKeyReferenceAlreadyHasValueException();
                     }
 
@@ -2371,7 +2381,7 @@ namespace CmsData
                 if (_ContributionOptionsId != value)
                 {
                     if (_ContributionStatementOption.HasLoadedOrAssignedValue)
-                    {
+                {
                         throw new ForeignKeyReferenceAlreadyHasValueException();
                     }
 
@@ -3238,6 +3248,7 @@ namespace CmsData
         {
             get => _FK_Goers;
             set => _FK_Goers.Assign(value);
+
         }
 
         [Association(Name = "FK_ManagedGiving_People", Storage = "_ManagedGivings", OtherKey = "PeopleId")]
@@ -3324,6 +3335,13 @@ namespace CmsData
             set => _ScheduledGifts.Assign(value);
         }
 
+        [Association(Name = "FK_SmsGroupOptOut_People", Storage = "_SmsGroupOptOuts", OtherKey = "ToPeopleId")]
+        public EntitySet<SmsGroupOptOut> SmsGroupOptOuts
+        {
+            get => _SmsGroupOptOuts;
+            set => _SmsGroupOptOuts.Assign(value);
+        }
+
         [Association(Name = "FK_SMSItems_People", Storage = "_SMSItems", OtherKey = "PeopleID")]
         public EntitySet<SMSItem> SMSItems
         {
@@ -3336,6 +3354,13 @@ namespace CmsData
         {
             get => _SMSLists;
             set => _SMSLists.Assign(value);
+        }
+
+        [Association(Name = "FK_SmsReceived_People", Storage = "_SmsReceiveds", OtherKey = "FromPeopleId")]
+        public EntitySet<SmsReceived> SmsReceiveds
+        {
+            get => _SmsReceiveds;
+            set => _SmsReceiveds.Assign(value);
         }
 
         [Association(Name = "FK_Supporters__Goer", Storage = "_FK_Supporters", OtherKey = "GoerId")]
@@ -3524,8 +3549,7 @@ namespace CmsData
             set
             {
                 Organization previousValue = _BFClass.Entity;
-                if (((previousValue != value)
-                            || (_BFClass.HasLoadedOrAssignedValue == false)))
+                if (previousValue != value || _BFClass.HasLoadedOrAssignedValue == false)
                 {
                     SendPropertyChanging();
                     if (previousValue != null)
@@ -4612,6 +4636,18 @@ namespace CmsData
             entity.Person = null;
         }
 
+        private void attach_SmsGroupOptOuts(SmsGroupOptOut entity)
+        {
+            SendPropertyChanging();
+            entity.Person = this;
+        }
+
+        private void detach_SmsGroupOptOuts(SmsGroupOptOut entity)
+        {
+            SendPropertyChanging();
+            entity.Person = null;
+        }
+
         private void attach_SMSItems(SMSItem entity)
         {
             SendPropertyChanging();
@@ -4631,6 +4667,18 @@ namespace CmsData
         }
 
         private void detach_SMSLists(SMSList entity)
+        {
+            SendPropertyChanging();
+            entity.Person = null;
+        }
+
+        private void attach_SmsReceiveds(SmsReceived entity)
+        {
+            SendPropertyChanging();
+            entity.Person = this;
+        }
+
+        private void detach_SmsReceiveds(SmsReceived entity)
         {
             SendPropertyChanging();
             entity.Person = null;

@@ -14,11 +14,20 @@ namespace CmsWeb
 {
     internal class SmartBinder : DefaultModelBinder
     {
-        
         protected override object CreateModel(ControllerContext controllerContext, ModelBindingContext bindingContext, Type modelType)
         {
+            if (!(controllerContext.Controller is CMSBaseController))
+            {
+                // This is required for IncomingSmsController
+                // because it has to inherit from TwilioController
+                // instead of inheriting from CMSBaseController
+                // and as a result, the controller never gets instantiated otherwise.
+                // This used to work correctly but some recent changes to this smart binder have broken it.
+                return base.CreateModel(controllerContext, bindingContext, modelType);
+            }
+
             var db = ((CMSBaseController)controllerContext?.Controller)?.CurrentDatabase;
-            string type = null;            
+            string type = null;
             if (modelType == typeof(Ask))
             {
                 var requestname = bindingContext.ModelName + ".Type";
@@ -83,7 +92,7 @@ namespace CmsWeb
                 b.CurrentDatabase = c.CurrentDatabase;
             return m;
         }
-        
+
         protected override ICustomTypeDescriptor GetTypeDescriptor(ControllerContext controllerContext, ModelBindingContext bindingContext)
         {
             if (bindingContext.ModelType == typeof (Ask) && bindingContext.Model != null)

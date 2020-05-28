@@ -1,55 +1,56 @@
 ﻿@model CmsWeb.Models.PagerModel2
 @{
-  var pglist = Model.PageList().ToList();
+    var pglist = Model.PageList().ToList();
 }
 @if (pglist.Count > 1)
 {
-        <div class="pull-right">
-            <ul class="pagination">
-                @if (Model.Page > 1)
+    <div style="display: inline-block; vertical-align: middle">
+        <ul class="pagination">
+            <li><a style="border: none; margin-left: 1.5em;">Page:</a></li>
+            @if (Model.Page > 1)
+            {
+                if (Model.AjaxPager)
+                {
+                    <li>@Model.PageLink("Previous", Model.Page - 1)</li>
+                }
+                else
+                {
+                    <li><a href='#' title='goto page @(Model.Page - 1)' onclick='return $.gotoPage(this, (@Model.Page - 1))'>Previous</a></li>
+                }
+            }
+            @foreach (var p in pglist)
+            {
+                if (p == 0)
+                {
+                    <li><span class="separator">...</span></li>
+                }
+                if (p > 0 && Model.Page != p)
                 {
                     if (Model.AjaxPager)
                     {
-                        <li>@Model.PageLink("Previous", Model.Page - 1)</li>
+                        <li>@Model.PageLink(p.ToString(), p)</li>
                     }
                     else
                     {
-                        <li><a href='#' title='goto page @(Model.Page - 1)' onclick='return $.gotoPage(this,(@Model.Page -1))'>Previous</a></li>
+                        <li><a href='#' title='goto page @p' onclick='return $.gotoPage(this, @p)'>@p.ToString("N0")</a></li>
                     }
                 }
-                @foreach (var p in pglist)
+                if (Model.Page == p)
                 {
-                    if (p == 0)
-                    {
-                        <li><span class="separator">...</span></li>
-                    }
-                    if (p > 0 && Model.Page != p)
-                    {
-                        if (Model.AjaxPager)
-                        {
-                            <li>@Model.PageLink(p.ToString(), p)</li>
-                        }
-                        else
-                        {
-                            <li><a href='#' title='goto page @p' onclick='return $.gotoPage(this,@p)'>@p.ToString("N0")</a></li>
-                        }
-                    }
-                    if (Model.Page == p)
-                    {
-                        <li class="active"><span>@p.ToString("N0")</span></li>
-                    }
+                    <li class="active"><span>@p.ToString("N0")</span></li>
                 }
-                @if (Model.Page < Model.LastPage())
+            }
+            @if (Model.Page < Model.LastPage())
+            {
+                if (Model.AjaxPager)
                 {
-                    if (Model.AjaxPager)
-                    {
-                        <li>@Model.PageLink("Next", Model.Page + 1)</li>
-                    }
-                    else
-                    {
-                        <li><a href='#' title='goto page @(Model.Page + 1)' onclick='return $.gotoPage(this,@(Model.Page + 1))'>Next</a></li>
-                    }
+                    <li>@Model.PageLink("Next", Model.Page + 1)</li>
                 }
-            </ul>
-        </div>
+                else
+                {
+                    <li><a href='#' title='goto page @(Model.Page + 1)' onclick='return $.gotoPage(this, @(Model.Page + 1))'>Next</a></li>
+                }
+            }
+        </ul>
+    </div>
 }

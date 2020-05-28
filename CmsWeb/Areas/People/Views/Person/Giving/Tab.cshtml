@@ -18,22 +18,26 @@ else
     <li><a href="#financedocs" data-toggle="tab" class="ajax">Documents</a></li>
 }
 <li><a href="#statements" data-toggle="tab" class="ajax">Statements</a></li>
+@if (isFinance && Model.basic.DeceasedDate.HasValue && Model.FamilyModel.Family.HeadOfHouseholdId != Model.PeopleId && Model.Person.Contributions.Count() > 0)
+{
+    <li class="pull-right"><a href="#" id="transfer-giving-to-spouse">Transfer giving to surviving spouse</a></li>
+}
 </ul>
 <select class="form-control visible-sm-block visible-xs-block nav-select-pills">
-    <optgroup>
-        @if (Model.ShowCombinedGiving)
-        {
-            <option value="#combinedGiving">Contributions</option>
-        }
-        else
-        {
-            <option value="#contributions">Contributions</option>
-            <option value="#pledges">Pledges</option>
-        }
-    </optgroup>
-    <optgroup label="_________________________">
-        <option value="#statements">Statements</option>
-    </optgroup>
+    @if (Model.ShowCombinedGiving)
+    {
+        <option value="#combinedGiving">Contributions</option>
+    }
+    else
+    {
+        <option value="#contributions">Contributions</option>
+        <option value="#pledges">Pledges</option>
+    }
+    @if (isFinance)
+    {
+        <option value="#financedocs">Documents</option>
+    }
+    <option value="#statements">Statements</option>
 </select>
 <div class="tab-content" style="border: none;">
 @if (Model.ShowCombinedGiving)

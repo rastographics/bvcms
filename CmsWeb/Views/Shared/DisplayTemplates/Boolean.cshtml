@@ -1,11 +1,11 @@
-﻿@model bool
+﻿@model bool?
 @{
-    var t = Model ? ViewBag.TrueValue ?? "True" : ViewBag.FalseValue ?? "False";
+    var t = (Model ?? false) ? ViewBag.TrueValue ?? "True" : ViewBag.FalseValue ?? "False";
 }
 <dl>
     <dt>@(ViewBag.label ?? Html.DisplayNameFor(m => m))</dt>
     <dd>@t</dd>
-    
+
 </dl>
 @if (ViewBag.ShowHelp != false && ViewData.ModelMetadata.Description.HasValue())
 {

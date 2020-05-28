@@ -712,6 +712,8 @@
     <Compile Include="Generated\SettingCategory.cs" />
     <Compile Include="Generated\SettingMetadatum.cs" />
     <Compile Include="Generated\SettingType.cs" />
+    <Compile Include="Generated\SmsGroupOptOut.cs" />
+    <Compile Include="Generated\SmsReceived.cs" />
     <Compile Include="Generated\Views\AccessUserInfo.cs" />
     <Compile Include="Generated\Views\ActiveRegistration.cs" />
     <Compile Include="Generated\Views\AllLookup.cs" />
