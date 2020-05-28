@@ -572,12 +572,8 @@ This search uses multiple steps which cannot be duplicated in a single query.
 
         public void TagAll(IEnumerable<int> list, Tag tag)
         {
-            foreach (var id in list)
-            {
-                tag.PersonTags.Add(new TagPerson { PeopleId = id });
-            }
-
-            SubmitChanges();
+            var ft = PopulateTempTag(list);
+            AddTag1ToTag2(ft.Id, tag.Id);
         }
 
         public void UnTagAll(IQueryable<Person> list)
@@ -1891,8 +1887,8 @@ This search uses multiple steps which cannot be duplicated in a single query.
                 .OrderByDescending(x => x.TransactionDate)
                 .FirstOrDefault();
 
-            if (posDuplicatedTran != null)            
-                timeDifference = DateTime.Now - posDuplicatedTran.TransactionDate;                            
+            if (posDuplicatedTran != null)
+                timeDifference = DateTime.Now - posDuplicatedTran.TransactionDate;
 
             if (timeDifference.HasValue && timeDifference.Value.TotalMinutes < 19)
                 isDuplicateTransaction = true;
@@ -2149,8 +2145,8 @@ This search uses multiple steps which cannot be duplicated in a single query.
                 Gateway(testing, null, PaymentProcessTypes.RecurringGiving, false)
             };
 
-            DateTime? dateFrom = (startdt != null) ? (DateTime?)DateTime.Parse(startdt) : null;
-            DateTime? dateTo = (enddt != null) ? (DateTime?)DateTime.Parse(enddt) : null;
+            DateTime? dateFrom = startdt.HasValue() ? (DateTime?)DateTime.Parse(startdt) : null;
+            DateTime? dateTo = enddt.HasValue() ? (DateTime?)DateTime.Parse(enddt) : null;
 
             var rangeTo = dateTo ?? DateTime.Now;
             var rangeFrom = dateFrom ?? rangeTo.AddDays(0 - Math.Max(1, Setting("AutoSyncBatchDatesWindow", "1").ToInt()));

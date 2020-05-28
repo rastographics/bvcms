@@ -2,10 +2,12 @@
 @model CmsWeb.Models.PostBundleModel.ContributionInfo
 @{
     var showCheckImages = ViewData["showCheckImages"].ToBool();
+    var fuzzyInSearch = Model.ImageId != 0 ? "false" : "true";
+    var searchAddDialogUrl = $"/SearchAdd2/Dialog/contributor/{Model.ContributionId}?fuzzy={fuzzyInSearch}";
 }
 <tr cid="@Model.ContributionId">
     <td>
-        <a href="/SearchAdd2/Dialog/contributor/@Model.ContributionId" class="searchadd pid">
+        <a href="@searchAddDialogUrl" class="searchadd pid">
             @(Model.PeopleId == null ? "Select" : Model.PeopleId.ToString())
         </a>
         <input type="hidden" class="date" value="@Model.Date.FormatDate()" />

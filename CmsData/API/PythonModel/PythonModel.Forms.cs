@@ -14,7 +14,7 @@ namespace CmsData
         public string Title { get; set; }  // set this in the python code to set the output page title
         public string Output { get; set; } // this is set automatically from the print statements for the output page
         public string Form { get; set; }
-        public string HttpMethod { get; set; }
+        public string HttpMethod => HttpContextFactory.Current?.Request?.HttpMethod?.ToLower() ?? "get";
 
         public string BuildForm(string name, DynamicData dd, string buttons = "", DynamicData metadata = null)
         {

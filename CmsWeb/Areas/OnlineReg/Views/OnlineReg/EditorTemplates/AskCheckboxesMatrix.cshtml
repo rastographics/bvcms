@@ -19,21 +19,30 @@
                         {
                             var check = ask.list[checks];
                             var filled = check.IsSmallGroupFilled(Model.GroupTags);
-                            <td>
-                                <div class="checkbox">
-                                    <label>
-                                        <input id="@check.SmallGroup.ToSuitableId()" type="checkbox" value="@check.SmallGroup" name="@name" @(filled ? "disabled='disabled'" : "")
-                                               @(Model.CheckboxChecked(check.SmallGroup) ? "checked='checked'" : "") />
-                                        <span @(filled ? " class=strike" : "")>
-                                            @Html.Raw(check.Description)
-                                        </span>
-                                        @if (check.Fee > 0)
-                                        {
-                                            @:&nbsp;($@check.Fee.ToString2("N2"))
-                                        }
-                                    </label>
-                                </div>
-                            </td>
+                            if (check.SmallGroup == "nocheckbox")
+                            {
+                                <td style="font-size:smaller">
+                                    <b>@Html.Raw(check.Description)</b>
+                                </td>
+                            }
+                            else
+                            {
+                                <td style="font-size:smaller">
+                                    <div class="checkbox">
+                                        <label>
+                                            <input id="@check.SmallGroup.ToSuitableId()" type="checkbox" value="@check.SmallGroup" name="@name" @(filled ? "disabled='disabled'" : "")
+                                                   @(Model.CheckboxChecked(check.SmallGroup) ? "checked='checked'" : "") />
+                                            <span @(filled ? " class=strike" : "")>
+                                                @Html.Raw(check.Description)
+                                            </span>
+                                            @if (check.Fee > 0)
+                                            {
+                                                @:&nbsp;($@check.Fee.ToString2("N2"))
+                                            }
+                                        </label>
+                                    </div>
+                                </td>
+                            }
                             checks++;
                             if (checks >= totalChecks)
                             {

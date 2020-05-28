@@ -41,6 +41,7 @@ namespace IntegrationTests.Areas.Org.Views.Org.EditorTemplates
             password = RandomString();
             var user = CreateUser(username, password, roles: new string[] { "Edit", "Access" });
             Login();
+            Wait(3);
 
             Open($"{rootUrl}Org/{OrgId}#tab-Registrations-tab");
             WaitForElementToDisappear(loadingUI);
@@ -60,11 +61,11 @@ namespace IntegrationTests.Areas.Org.Views.Org.EditorTemplates
             Find(css: ".confirm").Click();
             Wait(2);
 
-            Find(xpath: "//div[4]/div/div/input").SendKeys("4");
+            Find(xpath: "//div[4]/div/div/input").SendKeys("5");
             Find(text: "Save").Click();
             Wait(2);
 
-            PageSource.ShouldContain("The field Columns must be between 0 and 3.");
+            PageSource.ShouldContain("The field Columns must be between 0 and 4.");
         }
 
         public override void Dispose()
