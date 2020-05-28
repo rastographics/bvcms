@@ -90,7 +90,8 @@ BEGIN
                 textStyle: {fontSize: 8},
                 alignment: ''center''
             },
-            isStacked: true
+            isStacked: true,
+            vAxis: {format: ''currency''}
         };
         var chart = new google.visualization.ComboChart(document.querySelector(''#{{WidgetId}}-section .chart''));
         chart.draw(data, options);
