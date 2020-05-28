@@ -19,6 +19,8 @@ namespace CmsData
 
         private int _ScheduledGiftTypeId;
 
+        private bool _IsEnabled;
+
         private Guid _PaymentMethodId;
 
         private DateTime _StartDate;
@@ -46,6 +48,9 @@ namespace CmsData
 
         partial void OnScheduledGiftTypeIdChanging(int value);
         partial void OnScheduledGiftTypeIdChanged();
+
+        partial void OnIsEnabledChanging(bool value);
+        partial void OnIsEnabledChanged();
 
         partial void OnScheduledGiftIdChanging(Guid value);
         partial void OnScheduledGiftIdChanged();
@@ -131,6 +136,23 @@ namespace CmsData
                     _ScheduledGiftTypeId = value;
                     SendPropertyChanged("ScheduledGiftTypeId");
                     OnScheduledGiftTypeIdChanged();
+                }
+            }
+        }
+
+        [Column(Name = "IsEnabled", UpdateCheck = UpdateCheck.Never, Storage = "_IsEnabled", DbType = "bit")]
+        public bool IsEnabled
+        {
+            get => _IsEnabled;
+            set
+            {
+                if (_IsEnabled != value)
+                {
+                    OnIsEnabledChanging(value);
+                    SendPropertyChanging();
+                    _IsEnabled = value;
+                    SendPropertyChanged("IsEnabled");
+                    OnIsEnabledChanged();
                 }
             }
         }

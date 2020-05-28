@@ -43,6 +43,7 @@ CREATE TABLE [dbo].[ScheduledGift](
 	[PeopleId] int NOT NULL,
 	[ScheduledGiftTypeId] int NOT NULL,
 	[PaymentMethodId] uniqueidentifier NOT NULL,
+	[IsEnabled] bit NOT NULL,
 	[StartDate] datetime NOT NULL,
 	[EndDate] datetime NULL,
 	[LastProcessed] datetime NULL,
