@@ -24,10 +24,9 @@ BEGIN
     </div>
 </div>
 <script type="text/javascript">
-    var myData = [];
     var {{WidgetId}} = function() {
+        document.querySelector(''#{{WidgetId}}-section .chartSummary'').innerHTML = "";
         var data = {{{results}}};
-        myData = data;
         var budget = {{{annualbudget}}};
         var weekOfYear = Math.round({{{dayofyear}}} / 7);
         var givingTotalYTD = 0;
