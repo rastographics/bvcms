@@ -14,6 +14,7 @@
     {
         <li><a href="#scheduledemails" data-toggle="tab" class="ajax"><span>Scheduled</span></a></li>
     }
+    <li><a href="#sms" data-toggle="tab" class="ajax">SMS</a></li>
     <li><a href="#optouts" data-toggle="tab" class="ajax"><span>Optouts</span></a></li>
     <li><a href="#failedemails" data-toggle="tab" class="ajax"><span>Failed</span></a></li>
 </ul>
@@ -28,6 +29,7 @@
     {
         <option value="#scheduledemails">Scheduled</option>
     }
+    <option value="#sms">SMS</option>
     <option value="#optouts">Optouts</option>
     <option value="#failedemails">Failed</option>
 </select>
@@ -50,7 +52,12 @@
       @Helper.HiddenId("PeopleId", Model.PeopleId)
     </div>
   }
-  <div class="tab-pane" id="optouts" data-link="/Person2/Optouts/@Model.PeopleId"></div>
+  <div class="tab-pane" id="sms" data-link="/Person2/Sms">
+      @Helper.HiddenId("PeopleId", Model.PeopleId)
+  </div>
+  <div class="tab-pane" id="optouts" data-link="/Person2/Optouts">
+      @Helper.HiddenId("PeopleId", Model.PeopleId)
+  </div>
   <div class="tab-pane" id="failedemails" data-link="/Person2/FailedEmails">
     @Helper.HiddenId("PeopleId", Model.PeopleId)
   </div>
