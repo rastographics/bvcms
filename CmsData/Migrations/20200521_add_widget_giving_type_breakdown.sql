@@ -25,6 +25,7 @@ BEGIN
 <script type="text/javascript">
     var myData = [];
     var weekCount = [];
+    var weeksDate = [];
     var myResultsArrayofArrays = [];
     var {{WidgetId}} = function() {
         myData = {{{results}}};
@@ -45,6 +46,24 @@ BEGIN
             i++;
         });
         
+        var thisSunday = new Date();
+        for(let i =0; i < 7; i++){
+            if(thisSunday.getDay() != 0){
+                thisSunday.setDate(thisSunday.getDate() + 1);
+            } else{
+                break;
+            }
+        }
+        
+        thisSunday.setDate(thisSunday.getDate() + 7);
+        for(let i = 7; i >= 0; i--){
+            thisSunday.setDate(thisSunday.getDate() - 7);
+            let day = thisSunday.getDate().toString();
+            let month = thisSunday.getMonth() + 1;
+            month = month.toString();
+            weekCount[i] = month + ''/'' + day;
+        }
+        
         switch(myResultsArrayofArrays.length)
         {
             case 1:
@@ -59,7 +78,7 @@ BEGIN
                 break;
             case 3:
                 for(let x = 0; x < 8; x++){
-                    data.addRow([weekCount[x], myResultsArrayofArrays[0][x], myResultsArrayofArrays[1][x], myResultsArrayofArrays[2][x]]);
+                    data.addRow([weekCount[x], myResultsArrayofArrays[0][x], myResultsArrayofArrays[1][x], myResultsArrayofArrays[2][x] ]);
                 }
                 break;
             case 4:
@@ -81,6 +100,12 @@ BEGIN
                 break;
         }
         
+        var formatter = new google.visualization.NumberFormat(
+            {negativeColor: ''red'', negativeParens: true, pattern: ''$###,###''});
+        formatter.format(data, 1);
+        formatter.format(data, 2);
+        formatter.format(data, 3);
+        
         var options = {
             colors: [''#CC0300'', ''#5CA12B'', ''#345CAD'', ''#F9B710'', ''#9E4EBC'', ''#74746D''],
             seriesType: ''bars'',
@@ -91,7 +116,12 @@ BEGIN
                 alignment: ''center''
             },
             isStacked: true,
-            vAxis: {format: ''currency''}
+            vAxis: {format: ''currency''},
+            hAxis: {
+                textStyle: {
+                    fontSize: 10
+                }
+            },
         };
         var chart = new google.visualization.ComboChart(document.querySelector(''#{{WidgetId}}-section .chart''));
         chart.draw(data, options);
