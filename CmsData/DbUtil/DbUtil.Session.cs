@@ -162,6 +162,20 @@ namespace CmsData
         {
             get
             {
+                // TEMP CODE to return some recent involvements
+                List<MostRecentItem> recentItems = new List<MostRecentItem>();
+
+                MostRecentItem item = new MostRecentItem { Id = 34, Name = "Online Giving" };
+                recentItems.Add(item);
+
+                MostRecentItem item2 = new MostRecentItem { Id = 40, Name = "JrrInvTest01" };
+                recentItems.Add(item2);
+
+                return recentItems;
+                
+
+                /*
+                 * TODO: implement this
                 var mru = Util.GetFromSession<List<MostRecentItem>>(STR_MostRecentInvolvements, null);
                 if (mru == null)
                 {
@@ -171,6 +185,7 @@ namespace CmsData
                     Util.SetValueInSession(STR_MostRecentInvolvements, mru);
                 }
                 return mru;
+                */
             }
             set
             {

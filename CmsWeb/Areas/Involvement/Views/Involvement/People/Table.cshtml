@@ -18,6 +18,9 @@
                 <th>@Model.SortLink("Tab")</th>
             }
             <th>
+
+            </th>
+            <th>
                 @Model.SortLink("Name")
             </th>
             <th>
@@ -51,6 +54,11 @@
                 {
                     <td>@p.Tab</td>
                 }
+                <td>
+                    <a href="#" class="templateItem" template="0">
+                        <img src="/PreviewImage/0" class="img-responsive img-circle" width="30" height="30"/>
+                    </a>
+                </td>
                 <td>
                     @if (Model.DisablePeopleLink)
                     {
@@ -119,7 +127,8 @@
 
                     &nbsp;
                     <a href="Inv/Tag"><i class="fa fa-tag"></i></a>&nbsp;
-                    <a href="Inv/Edit"><i class="fa fa-edit"></i></a>
+                    <a href="Inv/Edit"><i class="fa fa-edit"></i></a>&nbsp;
+                    <a href="Inv/Edit"><i class="fa fa-trash">
                 </td>
             </tr>
         }

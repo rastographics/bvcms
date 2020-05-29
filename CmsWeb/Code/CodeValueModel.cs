@@ -923,7 +923,7 @@ namespace CmsWeb.Code
 
         public IEnumerable<CodeValueItem> RegistrationTypes()
         {
-            var q = RegistrationTypeCode.GetCodePairs();
+            var q = RegistrationTypeCode.GetCodePairs(Db);
             if (!HttpContextFactory.Current.User.IsInRole("Developer"))
                 q = q.Where(pp => pp.Key != RegistrationTypeCode.RegisterLinkMaster);
             return from i in q
