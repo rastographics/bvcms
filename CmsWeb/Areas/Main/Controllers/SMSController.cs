@@ -18,6 +18,7 @@ namespace CmsWeb.Areas.Main.Controllers
             return View("Options", id);
         }
 
+        [ValidateInput(false)]
         [Route("~/Sms/Send/{id:Guid}")]
         public ActionResult Send(Guid id, int iSendGroup, string sTitle, string sMessage)
         {
