@@ -570,6 +570,7 @@
     <Compile Include="Areas\Involvement\Models\InvolvementMain.cs" />
     <Compile Include="Areas\Involvement\Models\InvolvementModel.cs" />
     <Compile Include="Areas\Involvement\Models\InvolvementPeopleModel.cs" />
+    <Compile Include="Areas\Involvement\Models\InvolvementVenuesModel.cs" />
     <Compile Include="Areas\Main\Models\Other\CouponResponseModel.cs" />
     <Compile Include="Areas\Manage\Controllers\ActivityController.cs" />
     <Compile Include="Areas\Manage\Controllers\BatchMoveAndDelete.cs" />
@@ -1985,6 +1986,8 @@
     <Content Include="Areas\Involvement\Views\Involvement\People.cshtml" />
     <Content Include="Areas\Involvement\Views\Involvement\Index.cshtml" />
     <Content Include="Areas\Involvement\Views\Involvement\People\Hidden.cshtml" />
+    <Content Include="Areas\Involvement\Views\Involvement\Venues\Venues.cshtml" />
+    <Content Include="Areas\Involvement\Views\Involvement\Venues\CreateVenue.cshtml" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
