@@ -31,6 +31,7 @@ namespace CmsWeb.Areas.Main.Controllers
 
             return View(m);
         }
+
         [HttpPost]
         public ActionResult Results(PeopleSearchModel m)
         {
@@ -38,6 +39,7 @@ namespace CmsWeb.Areas.Main.Controllers
             RequestManager.SessionProvider.Add("FindPeopleInfo", m.m);
             return View(m);
         }
+
         [HttpPost]
         public ActionResult ConvertToQuery(PeopleSearchModel m)
         {

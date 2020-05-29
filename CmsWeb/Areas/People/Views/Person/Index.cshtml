@@ -19,7 +19,6 @@
     }
 
     var showMinistryTab = Util.IsMyDataUser ? false : !RoleChecker.HasSetting(SettingName.HideMinistryTab, false);
-
 }
 @section head
 {
@@ -166,12 +165,15 @@
 
         .icon-arrow-right:before { content: "\f054"; }
 
-  table.evnotes th, table.evnotes td {
-       border-top: none !important;
-   }
-  table.evnotes tr:nth-child(4n-1), table.evnotes tr:nth-child(4n)  {
-      background: #eee;
-}
+        table.evnotes th, table.evnotes td {
+            border-top: none !important;
+        }
+        table.evnotes tr:nth-child(4n-1), table.evnotes tr:nth-child(4n)  {
+            background: #eee;
+        }
+        #smstable tr.gray{ background-color: #dddddd; }
+        #smstable td.maxwidth{ max-width: 300px;}
+        #smstable td.indent{ padding-left: 2em;}
     </style>
 }
 <br />
@@ -245,7 +247,7 @@
             @if (Model.Person.CanUserSeeEmails)
             {
                 <li>
-                    <a href="#emails" aria-controls="emails" data-toggle="tab">Emails</a>
+                    <a href="#communications" aria-controls="communications" data-toggle="tab">Communications</a>
                 </li>
             }
             @if (showResourcesTab)
@@ -288,8 +290,8 @@
             }
             @if (Model.Person.CanUserSeeEmails)
             {
-                <div class="tab-pane fade" id="emails">
-                    @Html.Partial("Emails/Tab", Model)
+                <div class="tab-pane fade" id="communications">
+                    @Html.Partial("Communications/Tab", Model)
                 </div>
             }
             @if (resourcesEnabled)
