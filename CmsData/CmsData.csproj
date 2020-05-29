@@ -822,7 +822,6 @@
     <Compile Include="Generated\Views\TransactionList.cs" />
     <Compile Include="Generated\Views\TransactionSummary.cs" />
     <Compile Include="Classes\ITableWithExtraValues.cs" />
-    <Compile Include="SmsReplacments\DoReplaceCode.cs" />
     <Compile Include="SmsReplacments\UnlayerLink.cs" />
     <Compile Include="SmsReplacments\TextReplacements.cs" />
     <Content Include="App_Readme\Elmah.txt" />

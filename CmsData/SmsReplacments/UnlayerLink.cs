@@ -11,28 +11,27 @@ namespace CmsData
         // match all links generated in the unlayer special links prompt, and handle from there
         private const string MatchUnlayerLinkRe = @"https{0,1}://(?:rsvplink|regretslink|registerlink|registerlink2|sendlink|sendlink2|votelink)/\?[^\s,.;]*";
         private static readonly Regex UnlayerLinkRe = new Regex(MatchUnlayerLinkRe, RegexOptions.IgnoreCase | RegexOptions.Singleline);
+        private readonly Dictionary<string, OneTimeLink> oneTimeLinkList = new Dictionary<string, OneTimeLink>();
 
         private string UnlayerLinkReplacement(string code, SMSItem item)
         {
-            var list = new Dictionary<string, OneTimeLink>();
-
             // remove the non url parts and reformat
             code = code.Replace("\"", string.Empty);
             code = code.Replace("&amp;", "&");
             code = HttpUtility.UrlDecode(code);
 
             // parse the special link url to get the component parts
-            Uri SpecialLink = new Uri(code);
-            string type = SpecialLink.Host;
-            string orgId = HttpUtility.ParseQueryString(SpecialLink.Query).Get("org");
-            string meetingId = HttpUtility.ParseQueryString(SpecialLink.Query).Get("meeting");
-            string groupId = HttpUtility.ParseQueryString(SpecialLink.Query).Get("group");
-            string confirm = HttpUtility.ParseQueryString(SpecialLink.Query).Get("confirm");
-            string message = HttpUtility.ParseQueryString(SpecialLink.Query).Get("msg");
+            Uri specialLink = new Uri(code);
+            string type = specialLink.Host;
+            var querystring = HttpUtility.ParseQueryString(specialLink.Query);
+            string orgId = querystring.Get("org");
+            string meetingId = querystring.Get("meeting");
+            string groupId = querystring.Get("group");
+            string confirm = querystring.Get("confirm");
+            string message = querystring.Get("msg");
 
             // result variables
             string qs;      // the unique link combination for the db
-            string url = "";
 
             // set some defaults for any missing properties
             bool showfamily = false;
@@ -46,7 +45,7 @@ namespace CmsData
             }
 
             // generate the one time link code and update any vars based on the link type
-            switch(type)
+            switch (type)
             {
                 case "rsvplink":
                 case "regretslink":
@@ -77,6 +76,14 @@ namespace CmsData
                     return code;
             }
 
+            var ot = CreateOrFetchOneTimeLink(qs, oneTimeLinkList);
+            var url = CreateUrlForLink(type, ot, confirm, message, showfamily);
+
+            return PythonModel.CreateTinyUrl(url);
+        }
+
+        private OneTimeLink CreateOrFetchOneTimeLink(string qs, Dictionary<string, OneTimeLink> list)
+        {
             OneTimeLink ot;
             if (list.ContainsKey(qs))
                 ot = list[qs];
@@ -87,17 +94,22 @@ namespace CmsData
                     Id = Guid.NewGuid(),
                     Querystring = qs
                 };
-                db.OneTimeLinks.InsertOnSubmit(ot);
-                db.SubmitChanges();
+                CurrentDatabase.OneTimeLinks.InsertOnSubmit(ot);
+                CurrentDatabase.SubmitChanges();
                 list.Add(qs, ot);
             }
+            return ot;
+        }
 
-            // generate the one time link url based on the one time link id
+        private string CreateUrlForLink(string type, OneTimeLink ot, string confirm, string message, bool showfamily)
+        {
+            string url = "";
             switch (type)
             {
                 case "rsvplink":
                 case "regretslink":
-                    url = db.ServerLink($"/OnlineReg/RsvpLinkSg/{ot.Id.ToCode()}?confirm={confirm}&message={HttpUtility.UrlEncode(message)}");
+                    url = CurrentDatabase.ServerLink(
+                        $"/OnlineReg/RsvpLinkSg/{ot.Id.ToCode()}?confirm={confirm}&message={HttpUtility.UrlEncode(message)}");
                     if (type == "regretslink")
                     {
                         url += "&regrets=true";
@@ -106,7 +118,7 @@ namespace CmsData
 
                 case "registerlink":
                 case "registerlink2":
-                    url = db.ServerLink($"/OnlineReg/RegisterLink/{ot.Id.ToCode()}");
+                    url = CurrentDatabase.ServerLink($"/OnlineReg/RegisterLink/{ot.Id.ToCode()}");
                     if (showfamily)
                     {
                         url += "?showfamily=true";
@@ -115,15 +127,15 @@ namespace CmsData
 
                 case "sendlink":
                 case "sendlink2":
-                    url = db.ServerLink($"/OnlineReg/SendLink/{ot.Id.ToCode()}");
+                    url = CurrentDatabase.ServerLink($"/OnlineReg/SendLink/{ot.Id.ToCode()}");
                     break;
 
                 case "votelink":
-                    url = db.ServerLink($"/OnlineReg/VoteLinkSg/{ot.Id.ToCode()}?confirm={confirm}&message={HttpUtility.UrlEncode(message)}");
+                    url = CurrentDatabase.ServerLink(
+                        $"/OnlineReg/VoteLinkSg/{ot.Id.ToCode()}?confirm={confirm}&message={HttpUtility.UrlEncode(message)}");
                     break;
             }
-            return PythonModel.CreateTinyUrl(url);
+            return url;
         }
-
     }
 }
