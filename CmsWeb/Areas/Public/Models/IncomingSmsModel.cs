@@ -151,7 +151,7 @@ SMS Group: {groupName}<br>
 Received: {row.DateReceived}<br>
 From: {person?.Name ?? "name unknown"}<br>
 Message: {Body} <a href='{CurrentDatabase.CmsHost}/SmsMessages#{row.Id}'>(view)</a><br>
-Auto Reply: {action.ReplyMessage}<br><br>";
+Auto Reply: {row.ActionResponse}<br><br>";
             foreach (var p in q)
             {
                 CurrentDatabase.Email(Util.AdminMail, p, null, subject, body, false);
