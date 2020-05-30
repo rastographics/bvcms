@@ -45,8 +45,9 @@ namespace CmsWeb.Areas.Public.Models
         public Person FindPerson()
         {
             var per = (from p in CurrentDatabase.People
-                          where p.CellPhone == From || p.HomePhone == From
-                          select p).FirstOrDefault();
+                where p.CellPhone == From || p.HomePhone == From
+                orderby p.PositionInFamilyId, p.Age descending, p.GenderId
+                select p).FirstOrDefault();
             row.FromPeopleId = per?.PeopleId;
             return per;
         }
