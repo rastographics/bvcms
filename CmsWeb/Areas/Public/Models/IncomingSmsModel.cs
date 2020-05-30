@@ -45,7 +45,12 @@ namespace CmsWeb.Areas.Public.Models
         public Person FindPerson()
         {
             var per = (from p in CurrentDatabase.People
-                          where p.CellPhone == From || p.HomePhone == From
+                          where p.CellPhone == From 
+                          orderby p.PositionInFamilyId, p.Age descending, p.GenderId
+                          select p).FirstOrDefault() ??
+                      (from p in CurrentDatabase.People
+                          where p.HomePhone == From 
+                          orderby p.PositionInFamilyId, p.Age descending, p.GenderId
                           select p).FirstOrDefault();
             row.FromPeopleId = per?.PeopleId;
             return per;
@@ -150,7 +155,7 @@ SMS Group: {groupName}<br>
 Received: {row.DateReceived}<br>
 From: {person?.Name ?? "name unknown"}<br>
 Message: {Body} <a href='{CurrentDatabase.CmsHost}/SmsMessages#{row.Id}'>(view)</a><br>
-Auto Reply: {action.ReplyMessage}<br><br>";
+Auto Reply: {row.ActionResponse}<br><br>";
             foreach (var p in q)
             {
                 CurrentDatabase.Email(Util.AdminMail, p, null, subject, body, false);
