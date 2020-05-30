@@ -177,7 +177,10 @@ Auto Reply: {action.ReplyMessage}<br><br>";
             return message;
         }
 
-        private const string GetNoPersonMessage = "We don't recognize this number. Please contact the church office";
+        private const string NoPersonMessage = "We don't recognize this number. Please contact the church office";
+
+        private string GetNoPersonMessage =>
+            Util.PickFirst(CurrentDatabase.Setting("DefaultReplyUnknownNumbers", null), NoPersonMessage);
 
         private const string MatchCodeRe = "({[^}]*})";
         private string DoReplacments(string message)
