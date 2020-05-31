@@ -38,7 +38,7 @@ namespace CmsWeb.Areas.Public.Models.MobileAPIv2
             this.roles = roles.Split(',');
         }
 
-        public void authenticate(string instanceID, string previousID = "", bool allowQuick = false, int userID = 0, string roles = null)
+        public void authenticate(string instanceID, string previousID = "", bool allowQuick = false, int userID = 0)
         {
             if (string.IsNullOrEmpty(HttpContextFactory.Current.Request.Headers["Authorization"]))
             {
