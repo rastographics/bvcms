@@ -244,6 +244,11 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         public bool RecordFamilyAttendance()
         {
+            //Allow user selects registration type to also add people
+            if (UserSelectsOrganization() && masterorg?.GetExtraValue("UserSelectsAndFamilyAttend")?.BitValue == true)
+            {
+                return true;
+            }
             return org != null && org.RegistrationTypeId == RegistrationTypeCode.RecordFamilyAttendance;
         }
 
