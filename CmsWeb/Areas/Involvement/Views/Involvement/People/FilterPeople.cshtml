@@ -1,31 +1,33 @@
 ﻿@model CmsWeb.Areas.Involvement.Models.InvolvementPeopleModel
 <div class="filter well hidden-print" style="margin-top: 15px;">
     <div class="row">
-        <div class="col-xs-6">
+        <div class="col-xs-4">
             <a href="Inv/Delete"><i class="fa fa-trash"></i></a>&nbsp;
             <a href="Inv/Tag"><i class="fa fa-tag"></i></a>&nbsp;
             <a href="Inv/Edit"><i class="fa fa-edit"></i></a>&nbsp;
             <a href="Inv/Print"><i class="fa fa-print"></i></a> &nbsp; &nbsp;
             <i class="fa fa-search"></i>
             <input id="searchperson" name="name" type="text" title="Starting letters of First&lt;space>Last or just Last" class="input-normal">
-            &nbsp; &nbsp; Add Person
+        </div>
+        <div class="col-xs-4">
+            Add Person
             <button class="btn btn-info dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
             <ul class="dropdown-menu">
                 <li><a href="#" class="longrunop" title="Add Person From Tag"><i class="fa fa-tag"></i>&nbsp;&nbsp;Add from Tag</a></li>
             </ul>
         </div>
-        <div class="col-xs-6">
+        <div class="col-xs-4">
             Show
             <button class="btn btn-info dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
             <ul class="dropdown-menu">
-                <li> &nbsp; <input type="checkbox" id="chk1">&nbsp;&nbsp;Member Type  &nbsp; </li>
-                <li> &nbsp; <input type="checkbox" id="chk1">&nbsp;&nbsp;Address  &nbsp; </li>
-                <li> &nbsp; <input type="checkbox" id="chk1">&nbsp;&nbsp;Ministry Leader  &nbsp; </li>
-                <li> &nbsp; <input type="checkbox" id="chk1">&nbsp;&nbsp;Church Member Status  &nbsp; </li>
-                <li> &nbsp; <input type="checkbox" id="chk1">&nbsp;&nbsp;Birthday  &nbsp; </li>
+                <li> &nbsp; <input type="checkbox" id="chkMemberType">&nbsp;&nbsp;Member Type  &nbsp; </li>
+                <li> &nbsp; <input type="checkbox" id="chkAddress">&nbsp;&nbsp;Address  &nbsp; </li>
+                <li> &nbsp; <input type="checkbox" id="chkMinistryLeader">&nbsp;&nbsp;Ministry Leader  &nbsp; </li>
+                <li> &nbsp; <input type="checkbox" id="chkChurchMemberStatus">&nbsp;&nbsp;Church Member Status  &nbsp; </li>
+                <li> &nbsp; <input type="checkbox" id="chkBirthday">&nbsp;&nbsp;Birthday  &nbsp; </li>
             </ul>
         </div>
-        <div class="form-group">
+        <div class="form-group" style="display:none">
             <div class="btn-group">
                 <a class="btn btn-default setfilter">
                 </a>

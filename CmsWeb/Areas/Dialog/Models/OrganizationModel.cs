@@ -76,7 +76,33 @@ namespace CmsWeb.Areas.Dialog.Models
         }
         public IEnumerable<SelectListItem> RegistrationTypeList()
         {
-            return CodeValueModel.ConvertToSelect(cv.RegistrationTypes(), "Id");
+            // return CodeValueModel.ConvertToSelect(cv.RegistrationTypes(), "Id");
+            var regTypes = CodeValueModel.ConvertToSelect(cv.RegistrationTypes(), "Id");
+
+
+            if (regTypes.Any(x => x.Text == "Ticketed Event"))
+            {
+                List<SelectListItem> ticketedTypes = new List<SelectListItem>();
+
+                string indent = "";
+
+                foreach (var item in regTypes)
+                {
+                    if (item.Text == "Ticketed Event")
+                    {
+                        indent = "....";
+                        ticketedTypes.Add(new SelectListItem { Text = "Ticketed Event", Value = item.Value });
+                        ticketedTypes.Add(new SelectListItem { Text = "-----LEGACY-----", Value = "", Disabled = true });
+                        continue;
+                    }
+
+                    ticketedTypes.Add(new SelectListItem { Text = indent + item.Text, Value = item.Value });
+                }
+
+                return ticketedTypes;
+            }
+
+            return regTypes;
         }
     }
 }

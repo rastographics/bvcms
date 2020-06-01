@@ -1,0 +1,97 @@
+﻿@using CmsWeb
+@using UtilityExtensions
+@model CmsWeb.Areas.Involvement.Models.MeetingsModel
+@helper Checked(bool value)
+{
+    if (value) { WriteLiteral("checked"); }
+}
+
+<form class="ajax">
+    @*<div class="row">
+        <div class="col-sm-12 text-right">
+            <div class="checkbox pull-left">
+                <label class="control-label">
+                    <input id="Future" name="Future" type="checkbox" value="true" @Checked(Model.Future)> Show future meetings
+                </label>
+            </div>
+            @FormAction()
+        </div>
+    </div>*@
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="table-responsive">
+                <table id="MemberGrid" class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>@Model.SortLink("Date")</th>
+                            <th>@Model.SortLink("Time")</th>
+                            <th>@Model.SortLink("Venue")</th>
+                            <th>@Model.SortLink("Description")</th>
+                            <th>@Model.SortLink("HeadCount")</th>
+                            <th>@Model.SortLink("Present")</th>
+                            <th>@Model.SortLink("Guests")</th>
+                            <th style="width: 50px;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var m in Model.ViewList())
+                        {
+                            <tr>
+                                <td class="@(m.Conflict ? "alert-danger" : "")"><a href="/Meeting/@m.MeetingId">@m.MeetingDate.FormatDate()</a></td>
+                                <td class="@(m.Conflict ? "alert-danger" : "")">@m.MeetingDate.ToString2("t")</td>
+                                <td>@m.Venue</td>
+                                <td>@m.Description</td>
+                                <td>@m.HeadCount.ToStringNoZero()</td>
+                                <td>@m.NumPresent</td>
+                                <td>@m.NumVisitors</td>
+                                <td style="width: 50px;">
+                                    @if (User.IsInRole("Attendance") && Model.ShowEditMeeting)
+                                    {
+                                        <a href="/EditMeeting/@m.MeetingId" class="longrunop"><i class="fa fa-edit"></i></a>
+                                    } &nbsp;
+                                    @if (User.IsInRole("Attendance") && Model.ShowDeleteMeeting)
+                                    {
+                                        <a href="/DeleteMeeting/@m.MeetingId" class="longrunop"><i class="fa fa-trash"></i></a>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            @Html.Partial("PagerTop", Model)
+
+            @Html.Partial("PagerBottom", Model)
+            @Html.Partial("PagerHidden", Model)
+            @Html.HiddenFor2(m => m.Id)
+            @FormAction(true)
+        </div>
+    </div>
+    <br />
+</form>
+@helper FormAction(bool xs = false)
+{
+    if (User.IsInRole("Attendance") && Model.ShowCreateNewMeeting)
+    {
+        if (xs)
+        {
+            if (Model.ShowESpaceSyncMeetings)
+            {
+                <div class="h5 visible-xs-block">
+                    <a class="btn btn-primary btn-block ajax" href="/Org/ImportMeetings/@Model.Id"><i class="fa fa-cloud-download"></i> Import From eSpace</a>
+                </div>
+            }
+            <div class="h5 visible-xs-block">
+                <a class="btn btn-success btn-block dialog-options" href="/Dialog/ForNewMeeting/@Model.Id"><i class="fa fa-plus-circle"></i> Create New Meeting</a>
+            </div>
+        }
+        else
+        {
+            if (Model.ShowESpaceSyncMeetings)
+            {
+                <a class="btn btn-primary ajax hidden-xs" href="/Org/ImportMeetings/@Model.Id"><i class="fa fa-cloud-download"></i> Import From eSpace</a>
+            }
+            <a class="btn btn-success hidden-xs dialog-options" href="/Dialog/ForNewMeeting/@Model.Id"><i class="fa fa-plus-circle"></i> Create New Meeting</a>
+        }
+    }
+}

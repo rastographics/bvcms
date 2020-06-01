@@ -138,6 +138,7 @@ namespace CmsData.Classes.RoleChecker
         Organization_ShowAddress,
         Organization_ShowCreateNewMeeting,
         Organization_ShowDeleteMeeting,
+        Organization_ShowEditMeeting,
         Organization_ShowTagButtons,
         Meeting_HyperlinkNames,
         Meeting_ShowAddGuest,
