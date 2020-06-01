@@ -362,6 +362,12 @@ namespace CmsData.Codes
         public const string TicketBuyer = "70";
     }
 
+    public class InvolvementMeetingTabCode
+    {
+        public const string Upcoming = "10";
+        public const string Past = "20";
+    }
+
     public class VolApplicationStatusCode
     {
         public const int Approved = 10;
