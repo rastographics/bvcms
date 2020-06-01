@@ -1,0 +1,105 @@
+﻿@using System.Web.Mvc.Html
+@using CmsData
+@using CmsWeb.Areas.Org.Models.Org
+@using CmsWeb.Areas.Search.Models
+@model OrgSearchModel
+@{
+    Layout = ViewExtensions2.TouchPointLayout();
+    ViewBag.Title = "Involvement Search / Manage";
+    ViewBag.PageHeader = "Organization Search / Manage";
+}
+@section head{
+    @Fingerprint.Css("/Content/touchpoint/lib/bootstrap-editable/css/bootstrap-editable.css")
+    @Fingerprint.Css("/Content/touchpoint/lib/bootstrap-tabdrop/css/tabdrop.css")
+    @Fingerprint.Css("/Content/touchpoint/css/OrgSearch.css")
+}
+<div class="box box-responsive">
+    <div class="box-content">
+        <form id="orgsearchform" method="post">
+            @Html.Partial("Toolbar/Toolbar")
+            <div class="well">
+                <div class="row">
+                    @Html.HiddenFor(model => model.ExtraValues)
+                    @foreach (var field in OrgSearchFieldsModel.GetFields(Model))
+                    {
+                        if (field.Dropdown)
+                        {
+                            <div class="col-lg-3 col-md-3 col-sm-6 @field.DivClass" @Html.Raw(field.Display ? "" : " style=\"display:none\"")>
+                                <div class="form-group">
+                                    @if (field.Field == "TypeId")
+                                    {
+                                        <a tabindex="0" href="#" data-toggle="popover" data-placement="bottom" data-trigger="focus" data-title="Organization Type" data-content="At the top of the list are pseudo org types. The are actually attributes of an organization. These are followed by specific Org Types you have created and assigned to organizations."><i class="fa fa-info-circle"></i></a><text>&nbsp;</text>
+                                    }
+                                    <label for="@field.Field" class="control-label">@field.Label</label>
+                                    @Html.DropDownList(field.Field, @field.SelectList, new { @class = field.FieldClass })
+                                </div>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="col-lg-3 col-md-3 col-sm-6 @field.DivClass" @Html.Raw(field.Display ? "" : " style=\"display:none\"")>
+                                <div class="form-group">
+                                    @if (field.Field == "Name")
+                                    {
+                                        <a tabindex="0" href="#" data-toggle="popover" data-placement="bottom" data-trigger="focus" data-title="Name" data-content="@Model.NameHelp"><i class="fa fa-info-circle"></i></a><text>&nbsp</text>;
+                                    }
+                                    <label for="@field.Field" class="control-label">@field.Field</label>
+                                    @Html.TextBox(field.Field, field.Value, new { @class = field.FieldClass })
+                                </div>
+                            </div>
+                        }
+                    }
+                </div>
+                <div class="row">
+                    <div class="col-lg-3 col-md-3 col-sm-4">
+                        <strong>Total Count</strong> <span id="totalcount" class="badge">@Model.FilteredCount()</span>
+                    </div>
+                    <div class="col-lg-3 col-lg-offset-6 col-md-3 col-md-offset-6 col-sm-4 col-sm-offset-4">
+                        <div class="pull-right">
+                            <a href="/OrgSearch/Results" id="clear" class="btn btn-default">Clear</a>
+                            <div class="btn-group">
+                                <a href="/OrgSearch/Results" id="search" class="btn btn-primary default formlink">Search</a>
+                                <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+                                    <span class="caret"></span>
+                                    <span class="sr-only">Toggle Dropdown</span>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-right">
+                                    <li><a class="ViewReport" href="/OrgSearch/ConvertToSearch">Convert to Search Builder</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            @Html.Partial("Tabs")
+        </form>
+    </div>
+</div>
+@Html.Partial("Modals/NewDiv", Model)
+@Html.Partial("Modals/RenameDiv")
+@Html.Partial("Modals/Editor")
+@Html.Partial("Modals/Checkin")
+@Html.Partial("Modals/Rollsheet")
+@Html.Partial("Modals/NewMeetings")
+@Html.Partial("Modals/MeetingsDateRange")
+@Html.Partial("Modals/ReportDate")
+@Html.Partial("Modals/MeetingsMonth")
+@Html.Partial("Modals/Enrollment")
+@Html.Partial("Modals/ExportMessages")
+@section scripts
+{
+    @ViewExtensions2.CkEditor()
+    @Fingerprint.Script("/Content/touchpoint/lib/bootstrap-editable/js/bootstrap-editable.min.js")
+    @Fingerprint.Script("/Content/touchpoint/lib/bootstrap-tabdrop/js/bootstrap-tabdrop.js")
+    @Fingerprint.Script("/Content/touchpoint/lib/bootstrap-tabdrop/js/extensions_bootstrap-tabdrop.js")
+    @Fingerprint.Script("/Content/touchpoint/js/search/OrgSearch.js")
+
+    @if (User.IsInRole("Edit"))
+    {
+        <script type="text/javascript">
+      $(function () {
+        $("#results").addClass("edit2");
+      });
+        </script>
+    }
+}

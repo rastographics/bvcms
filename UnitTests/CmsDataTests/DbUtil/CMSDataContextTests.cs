@@ -246,18 +246,28 @@ namespace CmsData.Tests
         }
 
         [Fact]
-        public void NextSecurityCodeTest()
+        public void UseTicketedDbSetting_Enabled_Should_Return_TicketedEvent()
         {
-            db.NextSecurityCode().Count().ShouldBe(1);
+            var db = CMSDataContext.Create(DatabaseFixture.Host);
+            db.ExecuteCommand("DELETE FROM Setting where id = 'UseTicketed'");
+            db.ExecuteCommand("INSERT INTO Setting VALUES('UseTicketed', 'true', NULL)");
+            var codes = RegistrationTypeCode.GetCodePairs(db);
+
+            var ticketEventCode = codes.Where(x => x.Key.Equals(RegistrationTypeCode.TicketedEvent)).ToList();
+            ticketEventCode.Count.ShouldBeEquivalentTo(1);
         }
 
         [Fact]
-        public void NextSecurityCode_Uniqueness_Test()
+        public void UseTicketedDbSetting_Disabled_Should_Not_Return_TicketedEvent()
         {
-            var code1 = db.NextSecurityCode().Single();
-            var code2 = db.NextSecurityCode().Single();
+            var db = CMSDataContext.Create(DatabaseFixture.Host);
+            db.ExecuteCommand("DELETE FROM Setting where id = 'UseTicketed'");
+            db.ExecuteCommand("INSERT INTO Setting VALUES('UseTicketed', 'false', NULL)");
 
-            code1.Code.ShouldNotBe(code2.Code);
+            var codes = RegistrationTypeCode.GetCodePairs(db);
+
+            var ticketEventCode = codes.Where(x => x.Key.Equals(RegistrationTypeCode.TicketedEvent)).ToList();
+            ticketEventCode.Count.ShouldBeEquivalentTo(0);
         }
     }
 }
