@@ -7,16 +7,13 @@
 }
 
 <form class="ajax">
-    @*<div class="row">
-        <div class="col-sm-12 text-right">
-            <div class="checkbox pull-left">
-                <label class="control-label">
-                    <input id="Future" name="Future" type="checkbox" value="true" @Checked(Model.Future)> Show future meetings
-                </label>
+    <div class="row">
+        <div class="col-sm-12">
+            <div id="involvementTabSelector" class="btn-group">
+                @Html.Partial("MeetingTabs", Model)
             </div>
-            @FormAction()
         </div>
-    </div>*@
+    </div>
     <div class="row">
         <div class="col-sm-12">
             <div class="table-responsive">

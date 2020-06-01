@@ -6,6 +6,7 @@ using UtilityExtensions;
 using CmsData.Classes.RoleChecker;
 using System;
 using CmsWeb.Constants;
+using System.Web;
 
 namespace CmsWeb.Areas.Involvement.Models
 {
@@ -121,6 +122,10 @@ namespace CmsWeb.Areas.Involvement.Models
             return q2;
         }
 
-        private bool OrgHasEspaceEventId() => CurrentDatabase.Organizations.Any(o => o.OrganizationId == Id && o.ESpaceEventId.HasValue);
+        public HtmlString GroupHelp => ViewExtensions2.Markdown(@"
+* Click one of the buttons to see upcoming or past meetings.
+");
+
+    private bool OrgHasEspaceEventId() => CurrentDatabase.Organizations.Any(o => o.OrganizationId == Id && o.ESpaceEventId.HasValue);
     }
 }
