@@ -307,5 +307,20 @@ namespace CmsData.Tests
             db.OrgTemporaryDocuments.DeleteOnSubmit(doc);
             db.SubmitChanges();
         }
+
+        [Fact]
+        public void NextSecurityCodeTest()
+        {
+            db.NextSecurityCode().Count().ShouldBe(1);
+        }
+
+        [Fact]
+        public void NextSecurityCode_Uniqueness_Test()
+        {
+            var code1 = db.NextSecurityCode().Single();
+            var code2 = db.NextSecurityCode().Single();
+
+            code1.Code.ShouldNotBe(code2.Code);
+        }
     }
 }
