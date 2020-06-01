@@ -5,6 +5,7 @@ using CmsWeb.Areas.Involvement.Models;
 using CmsWeb.Areas.Org.Models;
 using CmsWeb.Lifecycle;
 using UtilityExtensions;
+using MeetingsModel = CmsWeb.Areas.Involvement.Models.MeetingsModel;
 
 namespace CmsWeb.Areas.Involvement.Controllers
 {
@@ -104,6 +105,13 @@ namespace CmsWeb.Areas.Involvement.Controllers
             ViewBag.ParentOrgContext = true;
             ViewBag.leadersqid = CurrentDatabase.QueryLeadersUnderCurrentOrg().QueryId;
             ViewBag.membersqid = CurrentDatabase.QueryMembersUnderCurrentOrg().QueryId;
+        }
+
+        [HttpPost]
+        public ActionResult Meetings(MeetingsModel m)
+        {
+            DbUtil.LogActivity($"Viewing Meetings for orgId={m.Id}", orgid: m.Id);
+            return PartialView(m);
         }
 
         [HttpPost]

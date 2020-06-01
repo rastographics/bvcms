@@ -558,12 +558,15 @@
     <Compile Include="Areas\Finance\Models\TotalsByFundAgeRangeModel.cs" />
     <Compile Include="Areas\Involvement\Controllers\InvolvementSearchController.cs" />
     <Compile Include="Areas\Involvement\Controllers\Involvement\InvolvementPeople.cs" />
+    <Compile Include="Areas\Involvement\Controllers\MeetingController.cs" />
     <Compile Include="Areas\Involvement\InvolvementAreaRegistration.cs" />
     <Compile Include="Areas\Involvement\Controllers\Involvement\InvolvementController.cs" />
     <Compile Include="Areas\Involvement\Models\InvolvementMain.cs" />
     <Compile Include="Areas\Involvement\Models\InvolvementModel.cs" />
     <Compile Include="Areas\Involvement\Models\InvolvementPeopleModel.cs" />
     <Compile Include="Areas\Involvement\Models\InvolvementVenuesModel.cs" />
+    <Compile Include="Areas\Involvement\Models\MeetingInfo.cs" />
+    <Compile Include="Areas\Involvement\Models\MeetingsModel.cs" />
     <Compile Include="Areas\Main\Models\Other\CouponResponseModel.cs" />
     <Compile Include="Areas\Manage\Controllers\ActivityController.cs" />
     <Compile Include="Areas\Manage\Controllers\BatchMoveAndDelete.cs" />
@@ -1939,6 +1942,7 @@
     <Content Include="Areas\Involvement\Views\Involvement\People\Hidden.cshtml" />
     <Content Include="Areas\Involvement\Views\Involvement\Venues\Venues.cshtml" />
     <Content Include="Areas\Involvement\Views\Involvement\Venues\CreateVenue.cshtml" />
+    <Content Include="Areas\Involvement\Views\Involvement\Meetings.cshtml" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
