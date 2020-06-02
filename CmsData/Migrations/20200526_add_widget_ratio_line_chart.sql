@@ -131,7 +131,7 @@ BEGIN
             title: ''Dates''
             },
             colors: [''#CC0300'', ''#5CA12B'', ''#345CAD'', ''#F9B710'', ''#9E4EBC'', ''#74746D''],
-            vAxis: { format: '#\'%\'' },
+            vAxis: { format: ''#\''%\'''' },
             hAxis: {
                 slantedText: false,
                 textStyle: {
