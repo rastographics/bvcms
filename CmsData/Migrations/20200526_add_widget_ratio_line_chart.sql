@@ -1,5 +1,5 @@
 -- add ratio line chart widget
-IF (select count(*) from DashboardWidgets where [Name] like 'Current Ratio by Week' and [System] = 1) = 0
+IF (select count(*) from DashboardWidgets where [Name] like 'Division Comparison' and [System] = 1) = 0
 BEGIN
   INSERT INTO [dbo].[Content]
            ([Name],[Title],[Body],[DateCreated],[TypeID],[ThumbID],[RoleID],[OwnerID],[CreatedBy])
@@ -300,7 +300,7 @@ INSERT INTO [dbo].[ContentKeyWords]
 END
 GO
 
-IF (select count(*) from DashboardWidgets where [Name] like 'Current Ratio by Week' and [System] = 1) = 0
+IF (select count(*) from DashboardWidgets where [Name] like 'Division Comparison' and [System] = 1) = 0
 BEGIN
 INSERT INTO [dbo].[DashboardWidgets]
            ([Name]
@@ -314,7 +314,7 @@ INSERT INTO [dbo].[DashboardWidgets]
            ,[CachePolicy]
            ,[CacheHours])
      VALUES
-           ('Current Ratio by Week'
+           ('Division Comparison'
            ,'Shows a line chart comparison of attendance vs attendance by division, over the past three years.'
            ,(select max(Id) from Content where [Name] like 'WidgetCurrentRatioByWeekHTML')
            ,(select max(Id) from Content where [Name] like 'WidgetCurrentRatioByWeekPython')
