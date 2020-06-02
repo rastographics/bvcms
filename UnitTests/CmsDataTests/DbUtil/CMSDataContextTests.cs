@@ -245,17 +245,17 @@ namespace CmsData.Tests
             ids.ShouldNotContain(personNotInOrg.PeopleId);
         }
 
-        [Fact]
-        public void UseTicketedDbSetting_Enabled_Should_Return_TicketedEvent()
-        {
-            var db = CMSDataContext.Create(DatabaseFixture.Host);
-            db.ExecuteCommand("DELETE FROM Setting where id = 'UseTicketed'");
-            db.ExecuteCommand("INSERT INTO Setting VALUES('UseTicketed', 'true', NULL)");
-            var codes = RegistrationTypeCode.GetCodePairs(db);
+        //[Fact]
+        //public void UseTicketedDbSetting_Enabled_Should_Return_TicketedEvent()
+        //{
+        //    var db = CMSDataContext.Create(DatabaseFixture.Host);
+        //    db.ExecuteCommand("DELETE FROM Setting where id = 'UseTicketed'");
+        //    db.ExecuteCommand("INSERT INTO Setting VALUES('UseTicketed', 'true', NULL)");
+        //    var codes = RegistrationTypeCode.GetCodePairs(db);
 
-            var ticketEventCode = codes.Where(x => x.Key.Equals(RegistrationTypeCode.TicketedEvent)).ToList();
-            ticketEventCode.Count.ShouldBeEquivalentTo(1);
-        }
+        //    var ticketEventCode = codes.Where(x => x.Key.Equals(RegistrationTypeCode.TicketedEvent)).ToList();
+        //    ticketEventCode.Count.ShouldBeEquivalentTo(1);
+        //}
 
         [Fact]
         public void UseTicketedDbSetting_Disabled_Should_Not_Return_TicketedEvent()
