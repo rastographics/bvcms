@@ -232,7 +232,10 @@ namespace CmsData.Classes.Twilio
                     var callbackUrl = hostUrl.HasValue() ? $"{hostUrl}/WebHook/Twilio/{item.Id}" : null;
                     var response = SendSmsInternal(sSID, sToken, smsGroup[iCount].Number, item.Number, smsList.Message, callbackUrl);
 
-                    UpdateSMSItemStatus(db, item, response);
+                    if (!callbackUrl.HasValue())
+                    {
+                        UpdateSMSItemStatus(db, item, response);
+                    }
 
                     iCount++;
                     if (iCount >= smsGroup.Count()) iCount = 0;
