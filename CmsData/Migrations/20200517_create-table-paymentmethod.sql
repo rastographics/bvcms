@@ -6,7 +6,6 @@ CREATE TABLE [dbo].[PaymentMethod](
 	[PaymentMethodTypeId] int NOT NULL,
 	[IsDefault] bit NULL,
 	[Name] nvarchar(max) NOT NULL,
-	[BankName] nvarchar(max) NOT NULL,
 	[VaultId] nvarchar(max) NOT NULL,
 	[GatewayAccountId] int NOT NULL,
 	[NameOnAccount] nvarchar(max) NULL,

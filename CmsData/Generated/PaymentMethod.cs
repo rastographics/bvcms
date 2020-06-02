@@ -21,8 +21,6 @@ namespace CmsData
 
         private string _Name;
 
-        private string _BankName;
-
         private int? _ExpiresMonth;
 
         private int? _ExpiresYear;
@@ -63,9 +61,6 @@ namespace CmsData
 
         partial void OnMaskedDisplayChanging(string value);
         partial void OnMaskedDisplayChanged();
-
-        partial void OnBankNameChanging(string value);
-        partial void OnBankNameChanged();
 
         partial void OnIsDefaultChanging(bool? value);
         partial void OnIsDefaultChanged();
@@ -186,23 +181,6 @@ namespace CmsData
                     _MaskedDisplay = value;
                     SendPropertyChanged("MaskedDisplay");
                     OnMaskedDisplayChanged();
-                }
-            }
-        }
-
-        [Column(Name = "BankName", UpdateCheck = UpdateCheck.Never, Storage = "_BankName", DbType = "nvarchar(max)")]
-        public string BankName
-        {
-            get => _BankName;
-            set
-            {
-                if (_BankName != value)
-                {
-                    OnBankNameChanging(value);
-                    SendPropertyChanging();
-                    _BankName = value;
-                    SendPropertyChanged("BankName");
-                    OnBankNameChanged();
                 }
             }
         }

@@ -36,14 +36,16 @@ namespace CmsWeb.Areas.Giving.Controllers
 
         [HttpPost]
         [Route("~/Create")]
-        public ActionResult PaymentMethodsCreate(string bankName = "", int? paymentTypeId = null, bool isDefault = true, string name = "",
-            string nameOnAccount = "", string last4 = "", int? expiresMonth = null, int? expiresYear = null, int? processTypeId = null)
+        public ActionResult PaymentMethodsCreate(int? paymentTypeId = null, bool isDefault = true, string name = "", string nameOnAccount = "", string bankAccount = "",
+            string bankRouting = "", string expiresMonth = null, string expiresYear = null, int? processTypeId = null)
         {
+
             //transactionResponse = gateway.AuthCreditCard(pid, dollarAmt, CreditCard, Expires,
             //               "Recurring Giving Auth", 0, CVV, string.Empty,
             //               FirstName, LastName, Address, Address2, City, State, Country, Zip, Phone);
             // if we got this far that means the auth worked so now let's do a void for that auth.
             //var voidResponse = gateway.VoidCreditCardTransaction(transactionResponse.TransactionId);
+            
             var paymentMethod = new PaymentMethod();
             switch (paymentTypeId)
             {
@@ -51,24 +53,23 @@ namespace CmsWeb.Areas.Giving.Controllers
                     paymentMethod = new PaymentMethod
                     {
                         PeopleId = (int)CurrentDatabase.UserPeopleId,
-                        BankName = "Test Bank",
                         PaymentMethodTypeId = (int)paymentTypeId,
                         IsDefault = isDefault,
                         Name = name,
                         VaultId = $"A{RandomNumber(1000000, 99999999)}",
                         NameOnAccount = nameOnAccount,
-                        MaskedDisplay = "•••• •••• •••• 1234".PadLeft(1, '•'),
-                        Last4 = last4,
+                        //MaskedDisplay = "•••• •••• •••• 1234".PadLeft(1, '•'),
+                        MaskedDisplay = "•••• •••• •••• 1234",
+                        Last4 = bankAccount.Substring(bankAccount.Length - 4, 4),
 
-                        ExpiresMonth = expiresMonth,
-                        ExpiresYear = expiresYear,
+                        ExpiresMonth = Convert.ToInt32(expiresMonth),
+                        ExpiresYear = Convert.ToInt32(expiresYear),
                         GatewayAccountId = 1, // find class multiple gateway utils, use to determine GatewayAccountId, may be different based on pledge type
                     };
                     break;
                 case 2: // Visa
                     paymentMethod = new PaymentMethod
                     {
-                        BankName = "Test Bank",
                         PeopleId = (int)CurrentDatabase.UserPeopleId,
                         ExpiresMonth = 10,
                         ExpiresYear = DateTime.Now.Year + 1,
