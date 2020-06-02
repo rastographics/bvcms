@@ -528,7 +528,7 @@ namespace CmsWeb.Areas.Public.Controllers
         {
             MobileMessage message = MobileMessage.createFromString(data);
 
-            MobileAuthentication authentication = new MobileAuthentication(CurrentDatabase, message.build);
+            MobileAuthentication authentication = new MobileAuthentication(CurrentDatabase, message.build, roles: "Access");
             authentication.authenticate(message.instance);
 
             if (authentication.hasError())

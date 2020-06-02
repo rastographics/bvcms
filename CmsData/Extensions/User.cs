@@ -10,7 +10,7 @@ namespace CmsData
     {
         public bool InRole(string role) => Roles.Any(ro => ro == role);
 
-        public bool InAnyRole(params string[] roles) => roles.Any(r => InRole(r));
+        public bool InAnyRole(params string[] roles) => roles.Any(r => r == "" || InRole(r));
 
         public bool IsOnLine
         {
