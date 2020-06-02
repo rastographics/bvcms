@@ -1,4 +1,4 @@
-﻿-- add ratio line chart widget
+-- add ratio line chart widget
 IF (select count(*) from DashboardWidgets where [Name] like 'Current Ratio by Week' and [System] = 1) = 0
 BEGIN
   INSERT INTO [dbo].[Content]
@@ -36,11 +36,14 @@ BEGIN
     const DisplayAttendanceVsAttendance = {{{displayattendancevsattendance}}};
     const numYears = {{{numyears}}};
     const numWeeks = {{{numweeks}}};
+    var weeklySundays = [];
     
     var {{WidgetId}} = function() {
         var data = new google.visualization.DataTable();
         data.addColumn(''string'', ''Name'');
         {{{addcolumns}}}
+        
+        weeklySundays = GetThisSunday();
         
         if(DisplayAttendanceVsAttendance == true){
             for(let i = 0; i < 3; i++){
@@ -55,7 +58,7 @@ BEGIN
                         }
                     }
                     tempHeadCount = tempHeadCount / fixedNumber;
-                    var tempObject = [tempWeekCount, tempHeadCount, tempYearCount];
+                    var tempObject = [weeklySundays[j], tempHeadCount, tempYearCount];
                     adjustedDivOneData.push(tempObject);
                 }
                 for(let j = 0; j < 12; j++){
@@ -69,7 +72,7 @@ BEGIN
                         }
                     }
                     tempHeadCount = tempHeadCount / fixedNumber;
-                    var tempObject = [tempWeekCount, tempHeadCount, tempYearCount];
+                    var tempObject = [weeklySundays[j], tempHeadCount, tempYearCount];
                     adjustedDivTwoData.push(tempObject);
                 }
                 for(let i = 0; i < adjustedDivOneData.length; i++){
@@ -93,7 +96,7 @@ BEGIN
                         }
                     }
                     tempHeadCount = tempHeadCount / fixedNumber;
-                    var tempObject = [tempWeekCount, tempHeadCount, tempYearCount];
+                    var tempObject = [weeklySundays[j], tempHeadCount, tempYearCount];
                     adjustedDivOneData.push(tempObject);
                 }
             }
@@ -137,7 +140,7 @@ BEGIN
                 }
             },
             legend: {
-                position: "bottom",
+                position: "top",
                 textStyle: {fontSize: 10},
                 alignment: ''center''
             },
@@ -145,6 +148,27 @@ BEGIN
         
         var chart = new google.visualization.LineChart(document.querySelector(''#{{WidgetId}}-section .chart''));
         chart.draw(data, options);
+    }
+    
+    function GetThisSunday(){
+        var thisSunday = new Date();
+        for(let i = 0; i < 7; i++){
+            if(thisSunday.getDay() != 0){
+                thisSunday.setDate(thisSunday.getDate() + 1);
+            } else{
+                break;
+            }
+        }
+        var sundays = [];
+        thisSunday.setDate(thisSunday.getDate() + 7);
+        for(let i = 11; i >= 0; i--){
+            thisSunday.setDate(thisSunday.getDate() - 7);
+            let day = thisSunday.getDate().toString();
+            let month = thisSunday.getMonth() + 1;
+            month = month.toString();
+            sundays[i] = month + ''/'' + day;
+        }
+        return sundays;
     }
     // load and register the chart
     google.charts.load("current", {packages:["corechart"]});
