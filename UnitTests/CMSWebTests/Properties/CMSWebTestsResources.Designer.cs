@@ -19,7 +19,7 @@ namespace CMSWebTests.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class CMSWebTestsResources {
@@ -106,6 +106,16 @@ namespace CMSWebTests.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        public static byte[] SmsReplyWords {
+            get {
+                object obj = ResourceManager.GetObject("SmsReplyWords", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to &lt;CustomStatements&gt;
         ///    &lt;Statement description=&quot;CustomStatement1&quot;&gt;
         ///        &lt;Funds&gt;&lt;/Funds&gt;
@@ -136,20 +146,17 @@ namespace CMSWebTests.Properties {
         ///   Looks up a localized string similar to &lt;CustomStatements&gt;
         ///    &lt;Statement description=&quot;CustomStatement3&quot;&gt;
         ///        &lt;Funds&gt;&lt;/Funds&gt;
-        ///        &lt;Header content=&quot;StatementHeader&quot; /&gt;
-        ///        &lt;Notice content=&quot;StatementNotice&quot; /&gt;
-        ///        &lt;Template&gt;&lt;template/&gt;&lt;/Template&gt;
-        ///        &lt;TemplateBody&gt;
-        ///            &lt;templatebody/&gt;
-        ///        &lt;/TemplateBody&gt;
-        ///        &lt;Footer&gt;
-        ///            &lt;footer/&gt;
-        ///        &lt;/Footer&gt;
+        ///        &lt;Header content=&quot;CustomHeader&quot; /&gt;
+        ///        &lt;Notice content=&quot;CustomNotice&quot; /&gt;
+        ///        &lt;Template content=&quot;CustomTemplate&quot; /&gt;
+        ///        &lt;TemplateBody content=&quot;CustomTemplateBody&quot; /&gt;
+        ///        &lt;Footer content=&quot;CustomTemplateFooter&quot; /&gt;
         ///    &lt;/Statement&gt;
         ///    &lt;Statement description=&quot;CustomStatement4&quot;&gt;
         ///        &lt;Funds&gt;1-3&lt;/Funds&gt;
         ///        &lt;Header&gt;&lt;header4 /&gt;&lt;/Header&gt;
-        ///        &lt;Notice [rest of string was truncated]&quot;;.
+        ///        &lt;Notice&gt;&lt;notice4 /&gt;&lt;/Notice&gt;
+        ///        &lt;T [rest of string was truncated]&quot;;.
         /// </summary>
         public static string StatementSpecification2 {
             get {

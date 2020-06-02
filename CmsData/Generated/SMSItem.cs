@@ -17,7 +17,7 @@ namespace CmsData
 
         private int _ListID;
 
-        private int _PeopleID;
+        private int? _PeopleID;
 
         private bool _Sent;
 
@@ -125,9 +125,9 @@ namespace CmsData
             }
         }
 
-        [Column(Name = "PeopleID", UpdateCheck = UpdateCheck.Never, Storage = "_PeopleID", DbType = "int NOT NULL")]
+        [Column(Name = "PeopleID", UpdateCheck = UpdateCheck.Never, Storage = "_PeopleID", DbType = "int NULL")]
         [IsForeignKey]
-        public int PeopleID
+        public int? PeopleID
         {
             get => _PeopleID;
 
@@ -140,7 +140,6 @@ namespace CmsData
                         throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
                     }
 
-                    OnPeopleIDChanging(value);
                     SendPropertyChanging();
                     _PeopleID = value;
                     SendPropertyChanged("PeopleID");
@@ -327,13 +326,11 @@ namespace CmsData
                         value.SMSItems.Add(this);
 
                         _ListID = value.Id;
-
                     }
 
                     else
                     {
                         _ListID = default(int);
-
                     }
 
                     SendPropertyChanged("SMSList");
