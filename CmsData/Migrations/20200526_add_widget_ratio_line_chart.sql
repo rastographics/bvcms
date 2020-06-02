@@ -57,7 +57,6 @@ BEGIN
                             break;
                         }
                     }
-                    tempHeadCount = tempHeadCount / fixedNumber;
                     var tempObject = [weeklySundays[j], tempHeadCount, tempYearCount];
                     adjustedDivOneData.push(tempObject);
                 }
@@ -71,13 +70,12 @@ BEGIN
                             break;
                         }
                     }
-                    tempHeadCount = tempHeadCount / fixedNumber;
                     var tempObject = [weeklySundays[j], tempHeadCount, tempYearCount];
                     adjustedDivTwoData.push(tempObject);
                 }
                 for(let i = 0; i < adjustedDivOneData.length; i++){
                     if(adjustedDivTwoData[i][1] != 0){
-                        adjustedDivOneData[i][1] = adjustedDivOneData[i][1] / adjustedDivTwoData[i][1];
+                        adjustedDivOneData[i][1] = (adjustedDivOneData[i][1] / adjustedDivTwoData[i][1])*100;
                     } else{
                         adjustedDivOneData[i][1] = 0;
                     }
@@ -95,7 +93,7 @@ BEGIN
                             break;
                         }
                     }
-                    tempHeadCount = tempHeadCount / fixedNumber;
+                    tempHeadCount = (tempHeadCount / fixedNumber)*100;
                     var tempObject = [weeklySundays[j], tempHeadCount, tempYearCount];
                     adjustedDivOneData.push(tempObject);
                 }
@@ -133,6 +131,7 @@ BEGIN
             title: ''Dates''
             },
             colors: [''#CC0300'', ''#5CA12B'', ''#345CAD'', ''#F9B710'', ''#9E4EBC'', ''#74746D''],
+            vAxis: { format: '#\'%\'' },
             hAxis: {
                 slantedText: false,
                 textStyle: {
