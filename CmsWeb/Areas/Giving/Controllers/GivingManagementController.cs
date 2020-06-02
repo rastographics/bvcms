@@ -22,7 +22,6 @@ namespace CmsWeb.Areas.Giving.Controllers
         [Route("~/Giving")]
         public ActionResult Index()
         {
-            PaymentSchedulesList();
             return View();
         }
 

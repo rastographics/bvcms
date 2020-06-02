@@ -24,7 +24,6 @@ namespace CmsData.Tests
             var person = CreatePerson();
             var pm1 = new PaymentMethod
             {
-                BankName = "Test Bank",
                 ExpiresMonth = 10,
                 ExpiresYear = DateTime.Now.Year + 1,
                 GatewayAccountId = 1,
@@ -43,14 +42,12 @@ namespace CmsData.Tests
 
             var pm2 = db.PaymentMethods.Where(p => p.PeopleId == person.PeopleId).First();
             pm2.Decrypt();
-            pm1.BankName.ShouldNotBe(pm2.BankName);
             pm1.Last4.ShouldNotBe(pm2.Last4);
             pm1.MaskedDisplay.ShouldNotBe(pm2.MaskedDisplay);
             pm1.NameOnAccount.ShouldNotBe(pm2.NameOnAccount);
             pm1.VaultId.ShouldNotBe(pm2.VaultId);
 
             pm1.Decrypt();
-            pm1.BankName.ShouldBe(pm2.BankName);
             pm1.ExpiresMonth.ShouldBe(pm2.ExpiresMonth);
             pm1.ExpiresYear.ShouldBe(pm2.ExpiresYear);
             pm1.IsDefault.ShouldBe(pm2.IsDefault);
