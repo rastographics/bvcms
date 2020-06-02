@@ -12,7 +12,7 @@ namespace CmsWeb.Areas.Giving.Controllers
 {
     [Authorize(Roles = "Admin,Finance,FinanceViewOnly")]
     [RouteArea("Giving", AreaPrefix = "Giving"), Route("{action}/{id?}")]
-    public class GivingManagementController : CmsStaffController
+    public class GivingManagementController : GivingPaymentController
     {
         public GivingManagementController(IRequestManager requestManager) : base(requestManager)
         {
@@ -22,6 +22,7 @@ namespace CmsWeb.Areas.Giving.Controllers
         [Route("~/Giving")]
         public ActionResult Index()
         {
+            PaymentSchedulesList();
             return View();
         }
 
@@ -79,6 +80,15 @@ namespace CmsWeb.Areas.Giving.Controllers
                 var result = model.Fill(viewModel, givingPage);
                 return Json(result, JsonRequestBehavior.AllowGet);
             }
+        }
+
+        [HttpPost]
+        public JsonResult SaveGivingPageEnabled(bool value, int PageId)
+        {
+            var givingPage = CurrentDatabase.GivingPages.Where(g => g.GivingPageId == PageId).FirstOrDefault();
+            givingPage.Enabled = value;
+            CurrentDatabase.SubmitChanges();
+            return Json(new { givingPage.GivingPageId, givingPage.PageName, givingPage.Enabled });
         }
 
         [HttpGet]
@@ -149,15 +159,6 @@ namespace CmsWeb.Areas.Giving.Controllers
                              orderby c.Name
                              select new { c.Id, Name = c.Title }).ToList();
             return Json(shellList, JsonRequestBehavior.AllowGet);
-        }
-
-        [HttpPost]
-        public JsonResult SaveGivingPageEnabled(bool value, int PageId)
-        {
-            var givingPage = CurrentDatabase.GivingPages.Where(g => g.GivingPageId == PageId).FirstOrDefault();
-            givingPage.Enabled = value;
-            CurrentDatabase.SubmitChanges();
-            return Json(new { givingPage.GivingPageId, givingPage.PageName, givingPage.Enabled });
         }
     }
 }
