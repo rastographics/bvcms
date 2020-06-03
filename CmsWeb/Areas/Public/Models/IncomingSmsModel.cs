@@ -85,13 +85,13 @@ namespace CmsWeb.Areas.Public.Models
                 return GetError(e.Message);
             }
 
-            var rval = "";
             foreach(var r in model.Actions)
             {
                 action = r;
                 if (!Body.Equal(action.Word))
                     continue;
                 row.Action = action.Action;
+                string rval = null;
                 switch (action.Action)
                 {
                     case "OptOut":
@@ -128,9 +128,9 @@ namespace CmsWeb.Areas.Public.Models
                         rval = GetError($"{action.Action} action not recognized for {action.Word} on number {To}");
                         break;
                 }
+                if(rval != null)
+                    return rval;
             }
-            if(rval.HasValue())
-                return rval;
 
             var sendReplyOnlyActionWithNoWord = model.Actions.SingleOrDefault(vv =>
                 vv.Action == "SendReplyOnly" && string.IsNullOrEmpty(vv.Word));
@@ -168,7 +168,7 @@ Auto Reply: {row.ActionResponse}<br><br>";
             CurrentDatabase.SmsReceiveds.InsertOnSubmit(row);
             CurrentDatabase.SubmitChanges();
             SendNotices();
-            if (action.ReplyMessage.Equal("NONE"))
+            if (action.ReplyMessage.Trim().Equal("NONE"))
                 return string.Empty;
             return row.ActionResponse;
         }
