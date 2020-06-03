@@ -1202,6 +1202,7 @@
     <Content Include="Migrations\20200326_alter-GetContributionsRange-func.sql" />
     <Content Include="Migrations\20200331_alter_GetTotalContributionsDonor2_func.sql" />
     <Content Include="Migrations\20200511_alter_PledgesSummary_func.sql" />
+    <Content Include="Migrations\20200603_alter_IsValidEmail_function.sql" />
     <Content Include="QueryBuilder\CompareMap.xml">
       <SubType>Designer</SubType>
     </Content>
