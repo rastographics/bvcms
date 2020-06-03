@@ -1,24 +1,12 @@
 ﻿@model CmsWeb.Areas.Giving.Models.GivingPageItem
 @{
     ViewBag.Title = Model.PageName;
-    if ((bool?)ViewData["hasshell"] == true)
-    {
-        Layout = "~/Views/Shared/Account/_ShellLayout.cshtml";
-    }
-    else
-    {
-        Layout = "~/Views/Shared/Account/_Layout.cshtml";
-    }
+    Layout = "~/Views/Shared/Giving.cshtml";
+}
+@section head {
+<style type="text/css">
+</style>
 }
 <div id="main" class="giving">
     <giving-container page-prop="@Json.Encode(Model)" type="@ViewBag.Type" fund="@ViewBag.Fund" amount="@ViewBag.Amount"></giving-container>
 </div>
-@section scripts{
-    @Fingerprint.Script("/Content/dist/js/app.js")
-    <script>
-        if (!$("#main").find("script").length) {
-            new Vue({
-            }).$mount('#main');
-        }
-    </script>
-}

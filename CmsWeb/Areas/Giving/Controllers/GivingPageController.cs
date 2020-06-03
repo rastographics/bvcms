@@ -45,7 +45,7 @@ namespace CmsWeb.Areas.Giving.Controllers
             }
             var model = new GivingPageModel(CurrentDatabase);
             var page = model.GetGivingPages(givingPage.GivingPageId).SingleOrDefault();
-            var shell = givingPage.SkinFile.Body;
+            var shell = givingPage.SkinFile?.Body;
             if (shell.HasValue())
             {
                 var re = new Regex(@"(.*<!--FORM START-->\s*).*(<!--FORM END-->.*)", RegexOptions.Singleline);
