@@ -54,6 +54,7 @@ namespace CmsWeb.Areas.People.Models
                      join i in CurrentDatabase.SMSItems on o.Id equals i.ListID
                      where o.SendGroupID == GroupIdInt || GroupIdInt == 0
                      where i.PeopleID == PeopleId
+                     where i.Sent
                      select new SmsViewModel()
                      {
                          Id = o.Id,

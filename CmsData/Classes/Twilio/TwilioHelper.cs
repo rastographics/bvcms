@@ -243,7 +243,10 @@ namespace CmsData.Classes.Twilio
                         message = r.DoReplacements(item);
                     var response = SendSmsInternal(sSID, sToken, smsGroup[iCount].Number, item.Number, message, callbackUrl);
 
-                    UpdateSMSItemStatus(db, item, response);
+                    if (!callbackUrl.HasValue())
+                    {
+                        UpdateSMSItemStatus(db, item, response);
+                    }
 
                     iCount++;
                     if (iCount >= smsGroup.Count()) iCount = 0;
