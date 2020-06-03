@@ -1,24 +1,27 @@
 ﻿<template>
     <div class="panel panel-default">
         <div class="panel-body">
-            <nav aria-label="Page navigation">
+            <money-input v-model="gift.amount"></money-input>
+            <nav aria-label="Page navigation" class="text-center">
                 <ul class="pagination">
-                    <li v-for="type in pageTypes" :class="{active: giveType == type.Name}"><a @click="updateType(type.Name)">{{ type.Name }}</a></li>
+                    <li v-for="type in pageTypes" :key="type.Name" :class="{active: gift.type == type.Name}"><a @click="updateType(type.Name)">{{ type.Name }}</a></li>
                 </ul>
             </nav>
-            <input class="form-control" v-model="giveAmount" />
             {{ page }}
         </div>
     </div>
 </template>
 <script>
     import axios from "axios";
+
     export default {
         props: ["pageProp", "fund", "type", "amount" ],
         data: function () {
             return {
-                giveType: "",
-                giveAmount: 0.00,
+                gift: {
+                    type: "",
+                    amount: 0.00
+                },
                 pageTypes: [],
                 page: {
                 },
@@ -26,7 +29,7 @@
         },
         methods: {
             updateType(type) {
-                this.giveType = type;
+                this.gift.type = type;
             },
             getPageTypes: function () {
                 let vm = this;
@@ -41,7 +44,7 @@
                                         vm.pageTypes.push(type);
                                     }
                                 });
-                                vm.giveType = vm.type || vm.pageTypes[0].Name;
+                                vm.gift.type = vm.type || vm.pageTypes[0].Name;
                             } else {
                                 warning_swal("Warning!", "Something went wrong, try again later");
                             }
@@ -61,7 +64,7 @@
             this.getPageTypes();
 
             // initialize based on params (or defaults)
-            this.giveAmount = this.amount || 0;
+            this.gift.amount = parseFloat(this.amount) || 0;
 
         }
     };

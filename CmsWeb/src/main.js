@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import axios from 'axios';
+
 Vue.prototype.$http = axios;
 Vue.config.productionTip = false;
 
@@ -15,6 +16,7 @@ Vue.component('edit-giving-page', require('./components/Giving/GivingManagement/
 
 // Giving Frontend
 Vue.component('giving-container', require('./components/Giving/GivingPage/GivingContainer.vue').default);
+Vue.component('money-input', require('./components/Giving/GivingPage/MoneyInput.vue').default);
 
 // Touchpoint Common Components
 Vue.component('tp-toggle', require('./components/Common/Toggle.vue').default);

@@ -1,0 +1,29 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="shortcut icon" href="@Url.Content("~/favicon.ico?v=4")">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, maximum-scale=1.0">
+    <title>@ViewBag.Title</title>
+    @RenderSection("head", false)
+</head>
+<body style="@ViewBag.BodyStyle">
+    @Html.Action("Index", "MobileAppMenu", new { area = "" })
+    @Html.Raw((string)ViewBag.top)
+    @RenderBody()
+    @Html.Raw((string)ViewBag.bottom)
+    @ViewExtensions2.jQuery()
+    @Fingerprint.Script("/Content/dist/js/app.js")
+    @RenderSection("scripts", false)
+    <script type="text/javascript">
+        if (!$("#main").find("script").length) {
+            new Vue({
+            }).$mount('#main');
+        }
+    </script>
+</body>
+</html>
+
+
+

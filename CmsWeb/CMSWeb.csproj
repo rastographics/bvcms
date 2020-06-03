@@ -1812,6 +1812,7 @@
     <None Include="Properties\Files\ContributionStatementTemplate.html" />
     <None Include="Properties\Files\ContributionStatementTemplateBody.html" />
     <Content Include="src\components\Giving\GivingPage\GivingContainer.vue" />
+    <Content Include="src\components\Giving\GivingPage\MoneyInput.vue" />
     <None Include="src\main.js" />
     <Content Include="Views\Shared\Account\_Layout.cshtml" />
     <Content Include="Areas\Reports\Views\Reports\EditCustomReport.cshtml" />
@@ -2906,6 +2907,7 @@
     <Content Include="Views\Home\Dashboard.cshtml" />
     <Content Include="src\components\Setup\Gateway\Manage.vue" />
     <Content Include="src\components\CheckIn\CheckinSetup.vue" />
+    <Content Include="Views\Shared\Giving.cshtml" />
     <None Include="Web.staging.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
