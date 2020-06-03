@@ -1,0 +1,59 @@
+﻿@model CmsWeb.Areas.Manage.Models.SmsMessages.SmsReplyWordsModel
+@{
+    // fetch dropdown list first so that GroupId can be set if there is only one Group
+    // This results in ReplyWords being displayed automatically if user is a member of only one group
+    var smsGroups = Model.SmsGroups();
+}
+<style>
+    .legend div.row {
+        padding: 20px 0
+    }
+
+        .legend div.row:nth-of-type(odd) {
+            background-color: #f8f8f8;
+        }
+
+        .legend div.row:nth-of-type(even) {
+            background: #FFFFFF;
+        }
+</style>
+<div class="row">
+    <div class="col-md-10">
+        <div class="box box-responsive">
+            <div class="box-content">
+                <form>
+                    <div class="well">
+                        <div class="row">
+                            <div class="col-sm-4">
+                                @Html.EditorFor(m => m.GroupId, "Dropdown", new { items = smsGroups })
+                            </div>
+                            <div class="col-sm-4">
+
+                            </div>
+                            <div class="col-sm-4" style="height:74px">
+                                <div class="btn-group pull-right" role="group" style="margin-top:25px">
+                                    <button type="button" class="btn btn-default AddReplyWord" style="margin-right:5px;"><i class="fa fa-plus-circle"></i> Reply Word</button>
+                                    <button type='button' class="btn btn-success SaveReplyWord">Save Actions</button>
+                                </div>
+                            </div>
+                        </div>
+                        </div>
+                    <div id="ReplyWordsList" class="legend">
+                        @Html.Partial("ReplyWords", Model)
+                    </div>
+                    <div class="box-title-btn">
+                        <div class="box-tools">
+                            @if (Model.Actions.Count > 2)
+                            {
+                            <div class="btn-group pull-right" role="group" style="margin-right:5px">
+                                <button type="button" class="btn btn-default AddReplyWord" style="margin-right:5px;"><i class="fa fa-plus-circle"></i> Reply Word</button>
+                                <button type='button' class="btn btn-success SaveReplyWord">Save Actions</button>
+                            </div>
+                            }
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

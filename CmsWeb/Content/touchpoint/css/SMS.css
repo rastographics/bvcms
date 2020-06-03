@@ -1,0 +1,28 @@
+﻿.SMS-left-btn {
+    border-bottom-left-radius: 10px !important;
+    border-top-left-radius: 10px !important
+}
+
+.SMS-right-btn {
+    border-bottom-right-radius: 10px !important;
+    border-top-right-radius: 10px !important
+}
+
+.add-margin-right {
+    margin-right: 20px !important
+}
+
+.SMS-toolbar {
+    margin-top: -10px
+}
+
+.SMS-div-btn {
+    margin-top: 10px
+}
+
+@media (max-width: 1200px) {
+    .add-margin-right {
+        margin-right: 20px !important;
+        margin-bottom: 5px !important
+    }
+}

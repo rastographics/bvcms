@@ -22,7 +22,7 @@ namespace IntegrationTests.Areas.Finance.Views.PostBundle
             Open($"{rootUrl}Bundles/");
             Find(text: "Create New Bundle").Click();
             Find(id: "Bundle_TotalCash").SendKeys("1000");
-            Find(text: "Save").Click();
+            Find(xpath: "//button[@type='submit']").Click();
 
             var bundleHeaderId = db.BundleHeaders.OrderByDescending(b => b.CreatedDate).FirstOrDefault().BundleHeaderId;
 
@@ -61,7 +61,7 @@ namespace IntegrationTests.Areas.Finance.Views.PostBundle
             Open($"{rootUrl}Bundles/");
             Find(text: "Create New Bundle").Click();
             Find(id: "Bundle_TotalCash").SendKeys("1000");
-            Find(text: "Save").Click();
+            Find(xpath: "//button[@type='submit']").Click();
 
             var bundleHeaderId = db.BundleHeaders.OrderByDescending(b => b.CreatedDate).FirstOrDefault().BundleHeaderId;
 
@@ -87,6 +87,33 @@ namespace IntegrationTests.Areas.Finance.Views.PostBundle
             r5.GetAttribute("val").ShouldBe("2.00");
             var r6 = Find(css: "tr:nth-child(6) > .amt");
             r6.GetAttribute("val").ShouldBe("1.00");
+        }
+
+        [Fact]
+        public void Should_Show_Basic_People_Search()
+        {
+            username = RandomString();
+            password = RandomString();
+            var user = CreateUser(username, password, roles: new string[] { "Access", "Edit", "Admin", "Finance" });
+            Login();
+            Wait(3);
+            Open($"{rootUrl}Bundles/");
+            Find(text: "Create New Bundle").Click();
+            Find(id: "Bundle_TotalCash").SendKeys("1000");
+            Find(xpath: "//button[@type='submit']").Click();
+
+            var bundleHeaderId = db.BundleHeaders.OrderByDescending(b => b.CreatedDate).FirstOrDefault().BundleHeaderId;
+
+            Open($"{rootUrl}PostBundle/{bundleHeaderId}");
+            Find(xpath: "//input[@id='pid']").SendKeys("1");
+            Find(xpath: "//input[@id='amt']").SendKeys("100");
+            Find(xpath: "(//a[contains(text(),'Update')])[4]").Click();
+
+            Wait(3);
+
+            Find(xpath: "//table[@id='bundle']/tbody/tr/td/a").Click();
+            Wait(3);
+            PageSource.ShouldContain("People to add...");
         }
     }
 }
