@@ -478,9 +478,9 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 
             if (ret.Route == RouteType.Payment && (int)GatewayTypes.Pushpay == GatewayId)
             {
+                ret.PaymentForm.isExternalPayment = true;
                 m.UpdateDatum();
                 RequestManager.SessionProvider.Add("PaymentProcessType", PaymentProcessTypes.OnlineRegistration.ToInt().ToString());
-                return Redirect($"/Pushpay/Registration/{m.DatumId}");
             }
 
             switch (ret.Route)
