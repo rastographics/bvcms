@@ -1,13 +1,14 @@
 ﻿<template>
     <div class="panel panel-default">
         <div class="panel-body">
-            <money-input v-model="gift.amount"></money-input>
             <nav aria-label="Page navigation" class="text-center">
                 <ul class="pagination">
-                    <li v-for="type in pageTypes" :key="type.Name" :class="{active: gift.type == type.Name}"><a @click="updateType(type.Name)">{{ type.Name }}</a></li>
+                    <li v-for="type in pageTypes" :key="type.Name" :class="{active: givingType == type.Name}"><a @click="updateType(type.Name)">{{ type.Name }}</a></li>
                 </ul>
             </nav>
-            {{ page }}
+            <one-time-gift v-for="(gift, index) in gifts" v-model="gifts[index]" :index="index" :key="index" :funds="unusedFunds.concat(gift.fund)" @remove="removeGift(index)"></one-time-gift>
+            <a v-if="unusedFunds.length" @click="addGift" class="btn btn-sm btn-default">Add Gift</a>
+            {{ gifts }}
         </div>
     </div>
 </template>
@@ -18,18 +19,33 @@
         props: ["pageProp", "fund", "type", "amount" ],
         data: function () {
             return {
-                gift: {
-                    type: "",
-                    amount: 0.00
-                },
+                givingType: "",
+                gifts: [],
                 pageTypes: [],
                 page: {
                 },
             };
         },
+        computed: {
+            unusedFunds: function () {
+                if (!this.page.AvailableFunds) return [];
+                return this.page.AvailableFunds.filter(fund => {
+                    return !this.gifts.some(gift => gift.fund.Id === fund.Id);
+                });
+            }
+        },
         methods: {
             updateType(type) {
-                this.gift.type = type;
+                this.givingType = type;
+            },
+            addGift() {
+                this.gifts.push({
+                    amount: 0.00,
+                    fund: this.unusedFunds[0]
+                });
+            },
+            removeGift(index) {
+                this.gifts.splice(index, 1);
             },
             getPageTypes: function () {
                 let vm = this;
@@ -44,7 +60,7 @@
                                         vm.pageTypes.push(type);
                                     }
                                 });
-                                vm.gift.type = vm.type || vm.pageTypes[0].Name;
+                                vm.givingType = vm.type || vm.pageTypes[0].Name;
                             } else {
                                 warning_swal("Warning!", "Something went wrong, try again later");
                             }
@@ -63,9 +79,22 @@
             this.page = JSON.parse(this.pageProp);
             this.getPageTypes();
 
+            let gift = {
+                amount: 0.00,
+                fund: {}
+            };
             // initialize based on params (or defaults)
-            this.gift.amount = parseFloat(this.amount) || 0;
-
+            gift.amount = parseFloat(this.amount) || 0;
+            gift.fund = this.page.DefaultFund;
+            this.page.AvailableFunds.push(this.page.DefaultFund);
+            if (this.fund) {
+                this.page.AvailableFunds.forEach((fund) => {
+                    if (this.fund == fund.Id) {
+                        gift.fund = fund;
+                    }
+                });
+            }
+            this.gifts.push(gift);
         }
     };
 </script>

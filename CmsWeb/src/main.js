@@ -16,6 +16,7 @@ Vue.component('edit-giving-page', require('./components/Giving/GivingManagement/
 
 // Giving Frontend
 Vue.component('giving-container', require('./components/Giving/GivingPage/GivingContainer.vue').default);
+Vue.component('one-time-gift', require('./components/Giving/GivingPage/OneTimeGift.vue').default);
 Vue.component('money-input', require('./components/Giving/GivingPage/MoneyInput.vue').default);
 
 // Touchpoint Common Components

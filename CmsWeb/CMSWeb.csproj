@@ -1783,7 +1783,7 @@
     <None Include="Properties\Files\ContributionStatementTemplateBody.html" />
     <Content Include="src\components\Giving\GivingPage\GivingContainer.vue" />
     <Content Include="src\components\Giving\GivingPage\MoneyInput.vue" />
-    <None Include="src\main.js" />
+    <Content Include="src\components\Giving\GivingPage\OneTimeGift.vue" />
     <Content Include="Views\Shared\Account\_Layout.cshtml" />
     <Content Include="Areas\Reports\Views\Reports\EditCustomReport.cshtml" />
     <Content Include="Areas\Manage\Views\Account\SetPasswordConfirm.cshtml" />
