@@ -114,7 +114,7 @@ namespace CmsData
             }
         }
 
-        [Column(Name = "Amount", UpdateCheck = UpdateCheck.Never, Storage = "_Amount", DbType = "money")]
+        [Column(Name = "Amount", UpdateCheck = UpdateCheck.Never, Storage = "_Amount", DbType = "Decimal(10,2)")]
         public decimal Amount
         {
             get => _Amount;
