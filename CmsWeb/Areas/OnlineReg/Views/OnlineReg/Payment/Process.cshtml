@@ -100,7 +100,7 @@
         </div>
         <div class="well" style="@hidePaymentEl">
             @if (Model.AcceptCredit) {
-                Html.Hidden("allowcc", "true")
+                @Html.Hidden("allowcc", "true")
             }
             @if (!Model.AcceptCredit || !Model.AcceptACH)
             {
