@@ -2,38 +2,43 @@
 @model CmsWeb.Models.PagerModel2
 @{
     CMSDataContext Db = ViewExtensions2.CurrentDatabase;
-    var showOrgTypeFilter = Model.GetType() == typeof (CurrentEnrollments) || Model.GetType() == typeof (PreviousEnrollments) || Model.GetType() == typeof (PendingEnrollments);
-    var colClasses = showOrgTypeFilter ? "col-lg-12 col-md-12 col-sm-12" : "col-lg-4 col-md-8 col-sm-12";
+    var showOrgTypeFilter = Model.GetType() == typeof(CurrentEnrollments) || Model.GetType() == typeof(PreviousEnrollments) || Model.GetType() == typeof(PendingEnrollments);
+    var colClasses = showOrgTypeFilter ? "col-lg-12 col-md-12 col-sm-12" : "col-lg-8 col-md-8 col-sm-12";
 }
 <div class="row hidden-print">
     <div class="@colClasses form-inline">
         @if (Model.ShowPageSize)
         {
-            if (Model.AjaxPager)
-            {
-                <span>Show </span>@Html.DropDownList("Size", Model.PageSizeList(), new {@class = "form-control"})<span> rows</span>
-            }
-            else
-            {
-                <span>Show </span>@Html.DropDownList("PageSize", Model.PageSizeList(), new {onchange = "$.setPageSize(this)", @class = "form-control"})<span> rows</span>
-            }
-            @Html.Partial("Pagination", Model)
-        }
-        @if (showOrgTypeFilter && Db.Setting("UX-ShowInvolvementOrgTypeFilter", true))
-        {
-            <span> of types </span><input name="OrgTypesFilter" value="@(string.Join(" ,", ((dynamic)Model).OrgTypesFilter ?? new List<string>()))" class="form-control org-types-filter" id="org-types-filter-@Model.GetType().Name" style="display: inline-block; min-width:180px" />
-            <script>
-                $(function() {
-                    $("#org-types-filter-@Model.GetType().Name").select2({
-                        tags: [
-                            @foreach (var type in ((dynamic)Model).OrgTypes)
-                            {
-                                <text>"@Html.Raw(type)",</text>
-                            }
-                        ]
-                    });
-                });
-            </script>
+            <div class="form-inline">
+                @if (Model.AjaxPager)
+                {
+                    <span>Show&nbsp;</span>
+                    @Html.DropDownList("Size", Model.PageSizeList(), new { @class = "form-control" })<span>&nbsp;rows</span>
+                }
+                else
+                {
+                    <span>Show </span>
+                    @Html.DropDownList("PageSize", Model.PageSizeList(), new { onchange = "$.setPageSize(this)", @class = "form-control" })<span> rows</span>
+                }
+                @Html.Partial("Pagination", Model)
+                @if (showOrgTypeFilter && Db.Setting("UX-ShowInvolvementOrgTypeFilter", true))
+                {
+                    <span> of types </span>
+                    <input name="OrgTypesFilter" value="@(string.Join(" ,", ((dynamic) Model).OrgTypesFilter ?? new List<string>()))" class="form-control org-types-filter" id="org-types-filter-@Model.GetType().Name" style="display: inline-block; min-width: 180px" />
+                    <script>
+                        $(function() {
+                            $("#org-types-filter-@Model.GetType().Name").select2({
+                                tags: [
+                                    @foreach (var type in ((dynamic) Model).OrgTypes)
+                                    {
+                                        <text>"@Html.Raw(type)",</text>
+                                    }
+                                ]
+                            });
+                        });
+                    </script>
+                }
+            </div>
         }
     </div>
 </div>

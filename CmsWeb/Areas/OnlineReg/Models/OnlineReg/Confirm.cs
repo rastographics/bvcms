@@ -29,12 +29,14 @@ namespace CmsWeb.Areas.OnlineReg.Models
             CurrentDatabase.Email(notifyids[0].FromEmail, p, $"Continue your registration for {Header}", msg);
         }
 
-        public string CheckDuplicateGift(decimal? amt)
+        public string CheckDuplicateGift(decimal? amt, int? GatewayId)
         {
-            if (!amt.HasValue)
-            {
+            if (GatewayId.HasValue && GatewayId == (int)GatewayTypes.Pushpay)            
                 return null;
-            }
+            
+            if (!amt.HasValue)            
+                return null;
+            
             Transaction previousTransaction = null;
             if (OnlineGiving())
             {

@@ -53,6 +53,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
         public int DatumId { get; set; }
         public Guid FormId { get; set; }
         public string URL { get; set; }
+        public bool isExternalPayment { get; set; }
 
         [Obsolete(Errors.ModelBindingConstructorError, error: true)]
         public PaymentForm()

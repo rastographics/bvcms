@@ -26,6 +26,7 @@ namespace CmsWeb.Areas.People.Controllers
             NoCheckRole = true;
             base.Initialize(requestContext);
         }
+
         [HttpGet]
         public ActionResult Current()
         {
@@ -150,6 +151,28 @@ namespace CmsWeb.Areas.People.Controllers
                 return new HttpUnauthorizedResult();
             }
             return Redirect($"/Person2/{id}#tab-statements");
+        }
+
+        [HttpPost, Route("~/Person2/{id:int}/TransferGiving")]
+        [Route("~/Person/Index/{id:int}/TransferGiving")]
+        [Route("~/Person/{id:int}/TransferGiving")]
+        public ActionResult TransferGiving(int id)
+        {
+            if (!User.InAnyRole("Admin", "Finance"))
+            {
+                return new HttpUnauthorizedResult();
+            }
+
+            var person = CurrentDatabase.People.SingleOrDefault(p => p.PeopleId == id && p.DeceasedDate != null);
+
+            if (person == null)
+            {
+                return new HttpNotFoundResult();
+            }
+
+            var count = CurrentDatabase.ExecuteCommand("UPDATE dbo.Contribution SET PeopleId={1} WHERE PeopleId={0}", person.PeopleId, person.Family.HeadOfHouseholdId);
+            var message = count == 1 ? $"1 giving record was transferred successfully." : $"{count} giving records were transferred successfully.";
+            return Json(new { status = "OK", message });
         }
 
         private void InitExportToolbar(int? id)

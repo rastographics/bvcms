@@ -196,7 +196,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 PopulateExtraValueDefaults();
             else
                 PopulateReasonableDefaults();
-            
+
             var pi = PopulatePaymentInfo();
             PopulateBillingName(pi);
             PopulateBillingAddress(pi);
@@ -213,7 +213,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 // use campus default fund mapping if present.
                 defaultFundIds = fundIdsForCampus;
             }
-            
+
             if (!string.IsNullOrWhiteSpace(defaultFundIds))
             {
                 var list = defaultFundIds.Split(',');
@@ -469,17 +469,23 @@ namespace CmsWeb.Areas.OnlineReg.Models
             {
                 var account = MultipleGatewayUtils.GetAccount(db, PaymentProcessTypes.RecurringGiving);
                 var accountId = account?.GatewayAccountId ?? 0;
+                bool updateVault = false;
+
                 var pi = person.PaymentInfo(accountId);
                 if (pi == null)
                 {
                     pi = new PaymentInfo() { GatewayAccountId = accountId };
                     person.PaymentInfos.Add(pi);
                 }
-                pi.SetBillingAddress(FirstName, Middle, LastName, Suffix, Address, Address2, City, State, Country, Zip, Phone);
+
+                if (!IsSameBillingAddress(accountId))
+                {
+                    updateVault = true;
+                    pi.SetBillingAddress(FirstName, Middle, LastName, Suffix, Address, Address2, City, State, Country, Zip, Phone);
+                }                
 
                 // first need to do a $1 auth if it's a credit card and throw any errors we get back
                 // from the gateway.
-                var vaultSaved = false;
                 var gateway = db.Gateway(testing, account, PaymentProcessTypes.RecurringGiving);
                 if (Type == PaymentType.CreditCard)
                 {
@@ -493,7 +499,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                     if (CreditCard.StartsWith("X"))
                     {
                         // if PreferredGivingType is Credi Card should not be updated
-                        vaultSaved = person.PaymentInfo(accountId).PreferredGivingType == "C";
+                        updateVault = updateVault == true ? true : person.PaymentInfo(accountId).PreferredGivingType != "C";
                         transactionResponse = gateway.AuthCreditCardVault(pid, dollarAmt, "Recurring Giving Auth", 0);
                     }
                     else
@@ -504,7 +510,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                             First = FirstName,
                             Last = LastName
                         };
-                        if(IsCardTester(pf, "ManagedGiving"))
+                        if (IsCardTester(pf, "ManagedGiving"))
                             throw new Exception("Found Card Tester");
                         transactionResponse = gateway.AuthCreditCard(pid, dollarAmt, CreditCard, Expires,
                             "Recurring Giving Auth", 0, CVV, string.Empty,
@@ -519,8 +525,11 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 }
 
                 // store payment method in the gateway vault if not already saved.
-                if (!vaultSaved)
+                if (updateVault)
+                {
                     gateway.StoreInVault(pid, Type, CreditCard, Expires, CVV, Routing, Account, giving: true);
+                    Log("Gateway Vault Updated");
+                }
 
                 // save all the managed giving data.
                 var mg = person.ManagedGiving();
@@ -546,6 +555,27 @@ namespace CmsWeb.Areas.OnlineReg.Models
             db.SubmitChanges();
         }
 
+        private bool IsSameBillingAddress(int accountId)
+        {
+            var db = CurrentDatabase;
+            var isSameAddress = db.PaymentInfos.Any(p =>
+                p.GatewayAccountId == accountId &&
+                p.PeopleId == person.PeopleId &&
+                p.FirstName == FirstName.Truncate(50) &&
+                p.MiddleInitial == Middle.Truncate(10) &&
+                p.LastName == LastName.Truncate(50) &&
+                p.Suffix == Suffix.Truncate(10) &&
+                p.Address == Address.Truncate(50) &&
+                p.Address2 == Address2.Truncate(50) &&
+                p.City == City.Truncate(50) &&
+                p.State == State.Truncate(10) &&
+                p.Country == Country.Truncate(50) &&
+                p.Zip == Zip.Truncate(15) &&
+                p.Phone == Phone.Truncate(25));
+
+            return isSameAddress;
+        }
+
         private bool IsCardTester(PaymentForm pf, string from)
         {
             if (!Util.IsHosted || !pf.CreditCard.HasValue())
@@ -561,8 +591,8 @@ namespace CmsWeb.Areas.OnlineReg.Models
             {
                 return false;
             }
-            var result = db.Connection.ExecuteScalar<string>(iscardtester, new {ip = HttpContextFactory.Current.Request.UserHostAddress});
-            if(result.Equal("OK"))
+            var result = db.Connection.ExecuteScalar<string>(iscardtester, new { ip = HttpContextFactory.Current.Request.UserHostAddress });
+            if (result.Equal("OK"))
                 return false;
             return OnlineRegController.LogRogueUser(result, from);
         }
@@ -719,13 +749,13 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         public IEnumerable<RecurringForPerson> RecurringAmounts()
         {
-        string sql = $@"
+            string sql = $@"
 SELECT ra.FundId, ra.Amt, f.FundName, f.FundStatusId , f.OnlineSort 
 FROM dbo.RecurringAmounts ra
 JOIN dbo.ContributionFund f ON f.FundId = ra.FundId
 WHERE ra.PeopleId = @pid
         ";
-            return CurrentDatabase.Connection.Query<RecurringForPerson>(sql, new { pid});
+            return CurrentDatabase.Connection.Query<RecurringForPerson>(sql, new { pid });
         }
     }
 }

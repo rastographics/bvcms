@@ -1,0 +1,3 @@
+﻿@model CmsWeb.Areas.Manage.Models.SmsMessages.SmsSentMessagesModel
+@Html.EditorFor(m => m.SentFilterPeopleId, "Dropdown", new {items = Model.GroupMembers()})
+

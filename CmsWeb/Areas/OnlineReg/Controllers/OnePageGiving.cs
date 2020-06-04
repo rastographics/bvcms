@@ -62,7 +62,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                     if (string.IsNullOrEmpty(MultipleGatewayUtils.Setting(CurrentDatabase, "PushpayMerchant", "", (int)m.ProcessType)))
                         return View("OnePageGiving/NotConfigured");
 
-                    return Redirect($"/Pushpay/OnePage");
+                    return Redirect($"/Pushpay/OnePage/{id}");
                 }
 
                 var pf = PaymentForm.CreatePaymentForm(m);

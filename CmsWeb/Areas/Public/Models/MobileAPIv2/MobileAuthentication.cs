@@ -8,6 +8,7 @@ using System.Net;
 using System.Security.Cryptography;
 using System.Text;
 using System.Web;
+using System.Web.Security;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Public.Models.MobileAPIv2
@@ -28,10 +29,13 @@ namespace CmsWeb.Areas.Public.Models.MobileAPIv2
         private string username = "";
         private string password = "";
 
-        public MobileAuthentication(CMSDataContext db, string build)
+        private string[] roles;
+
+        public MobileAuthentication(CMSDataContext db, string build, string roles = "")
         {
             this.db = db;
             this.build = build;
+            this.roles = roles.Split(',');
         }
 
         public void authenticate(string instanceID, string previousID = "", bool allowQuick = false, int userID = 0)
@@ -400,6 +404,11 @@ namespace CmsWeb.Areas.Public.Models.MobileAPIv2
             if (user.Roles.Contains("APIOnly"))
             {
                 return Error.CANNOT_USE_API_ONLY;
+            }
+
+            if (roles.Length > 0 && !user.InAnyRole(roles))
+            {
+                return Error.USER_NOT_APPROVED;
             }
 
             return Error.AUTHENTICATED;

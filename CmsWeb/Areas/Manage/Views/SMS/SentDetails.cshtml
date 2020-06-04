@@ -1,0 +1,60 @@
+﻿@model CmsWeb.Areas.Manage.Models.SmsMessages.SmsSentDetailsModel
+<div id="sentresults">
+    <div class="row">
+        <div class="col-sm-9">
+            <div class="box box-responsive">
+                <div class="box-title-btn">
+                    <div class="box-tools">
+                        <a href="#" class="backtosent btn btn-default"><i class="fa fa-arrow-circle-left"></i> Back to Message List</a>
+                    </div>
+                </div>
+                <div class="box-content">
+                    <h4>Message Text</h4>
+                    <blockquote>@Model.SmsList.Message</blockquote>
+                    @if (Model.SmsList.ReplyToId != null)
+                    {
+                        var r = Model.SmsList.SmsReceived;
+                        <a id="gotoReplyTo" href="#" data-receivedid="@r.Id">In Reply To @(r.Person?.Name ?? "Unknown") (@Model.SmsList.SmsReceived.FromNumber)</a>
+                    }
+                    <h4>Recipients</h4>
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Person</th>
+                                    <th>Number</th>
+                                    <th class="text-center">Sent</th>
+                                    <th class="text-center">Number</th>
+                                    <th class="text-center">Opt-In</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var i in Model.SmsItems())
+                                {
+                                    <tr>
+                                        <td>
+                                            @(i.Person?.Name ?? "Unknown")
+                                        </td>
+                                        <td>
+                                            @i.Number
+                                        </td>
+                                        <td class="text-center">
+                                            <span class="label  @( i.Sent ? "label-success" : "label-danger")">@( i.Sent ? "Yes" : "No")</span>
+                                        </td>
+                                        <td class="text-center">
+                                            <span class="label  @( i.NoNumber ? "label-danger" : "label-success")">@( i.NoNumber ? "No" : "Yes")</span>
+                                        </td>
+                                        <td class="text-center">
+                                            <span class="label  @( i.NoOptIn ? "label-danger" : "label-success")">@( i.NoOptIn ? "No" : "Yes")</span>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                    <a href="#" class="backtosent btn btn-default"><i class="fa fa-arrow-circle-left"></i> Back to Message List</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
