@@ -99,6 +99,7 @@
             @Html.EditorFor(m => m.Email)
         </div>
         <div class="well" style="@hidePaymentEl">
+            @Html.Hidden("allowcc", Model.AcceptCredit)
             @if (!Model.AcceptCredit || !Model.AcceptACH)
             {
                 @Html.Hidden("Type", Model.Type)
@@ -109,7 +110,6 @@
                     <div class="btn-group" data-toggle="buttons">
                         @TypeRadio(PaymentType.CreditCard, debitcredit, "left", Model.Type == PaymentType.CreditCard || string.IsNullOrWhiteSpace(Model.Type))
                         @TypeRadio(PaymentType.Ach, "Bank Account", "right", Model.Type == PaymentType.Ach)
-                        @Html.Hidden("allowcc", "true")
                     </div>
                 </div>
             }
