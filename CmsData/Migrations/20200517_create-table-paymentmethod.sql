@@ -75,7 +75,7 @@ CREATE TABLE [dbo].[ScheduledGiftAmount](
 	[ScheduledGiftAmountId] int IDENTITY(1,1) NOT NULL,
 	[ScheduledGiftId] uniqueidentifier NOT NULL,
 	[FundId] int NOT NULL,
-	[Amount] decimal NOT NULL
+	[Amount] decimal(10, 2) NOT NULL
 CONSTRAINT [PK_ScheduledGiftAmount_ScheduledGiftAmountId] PRIMARY KEY CLUSTERED ([ScheduledGiftAmountId])
 WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON)
 )

@@ -1,8 +1,8 @@
 ﻿using CmsData;
 using CmsData.Codes;
+using CmsWeb.Areas.Giving.Models;
 using CmsWeb.Lifecycle;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -24,28 +24,28 @@ namespace CmsWeb.Areas.Giving.Controllers
         }
 
         [HttpGet]
-        public ActionResult PaymentMethodsList()
+        public ActionResult MethodsList()
         {
             var paymentMethods = new PaymentMethodTypeCode();
             var list = paymentMethods.GetType().GetFields().Select(p => new { id = p.GetValue(paymentMethods), p.Name }).ToList();
             return Json(list, JsonRequestBehavior.AllowGet);
         }
 
-
-
-
         [HttpPost]
-        [Route("~/Create")]
-        public ActionResult PaymentMethodsCreate(int? paymentTypeId = null, bool isDefault = true, string name = "", string nameOnAccount = "", string bankAccount = "",
-            string bankRouting = "", string expiresMonth = null, string expiresYear = null, int? processTypeId = null)
+        public ActionResult MethodsCreate(int? paymentTypeId = null, bool isDefault = true, string name = "", string nameOnAccount = "", string bankAccount = "",
+            string bankRouting = "", string cardNumber = "", string ccv = "", string expiresMonth = null, string expiresYear = null, int? processTypeId = null)
         {
+            if (!paymentTypeId.HasValue)
+            {
+                throw new HttpException(404, "No payment method type ID found.");
+            }
 
             //transactionResponse = gateway.AuthCreditCard(pid, dollarAmt, CreditCard, Expires,
             //               "Recurring Giving Auth", 0, CVV, string.Empty,
             //               FirstName, LastName, Address, Address2, City, State, Country, Zip, Phone);
             // if we got this far that means the auth worked so now let's do a void for that auth.
             //var voidResponse = gateway.VoidCreditCardTransaction(transactionResponse.TransactionId);
-            
+
             var paymentMethod = new PaymentMethod();
             switch (paymentTypeId)
             {
@@ -61,27 +61,29 @@ namespace CmsWeb.Areas.Giving.Controllers
                         //MaskedDisplay = "•••• •••• •••• 1234".PadLeft(1, '•'),
                         MaskedDisplay = "•••• •••• •••• 1234",
                         Last4 = bankAccount.Substring(bankAccount.Length - 4, 4),
-
                         ExpiresMonth = Convert.ToInt32(expiresMonth),
                         ExpiresYear = Convert.ToInt32(expiresYear),
                         GatewayAccountId = 1, // find class multiple gateway utils, use to determine GatewayAccountId, may be different based on pledge type
                     };
+                    //person.PaymentMethods.Add(paymentMethod);
+                    paymentMethod.Encrypt();
                     break;
                 case 2: // Visa
                     paymentMethod = new PaymentMethod
                     {
                         PeopleId = (int)CurrentDatabase.UserPeopleId,
-                        ExpiresMonth = 10,
-                        ExpiresYear = DateTime.Now.Year + 1,
-                        GatewayAccountId = 1,
-                        IsDefault = true,
-                        Last4 = "1234",
+                        PaymentMethodTypeId = (int)paymentTypeId,
+                        IsDefault = isDefault,
+                        Name = name,
+                        VaultId = $"A{RandomNumber(1000000, 99999999)}",
+                        NameOnAccount = nameOnAccount,
                         MaskedDisplay = "•••• •••• •••• 1234",
-                        Name = "Visa Card",
-                        //NameOnAccount = person.Name,
-                        PaymentMethodTypeId = PaymentMethodTypeCode.Visa,
-                        VaultId = $"A{RandomNumber(1000000, 99999999)}"
+                        Last4 = cardNumber.Substring(cardNumber.Length - 4, 4),
+                        ExpiresMonth = Convert.ToInt32(expiresMonth),
+                        ExpiresYear = Convert.ToInt32(expiresYear),
+                        GatewayAccountId = 1,
                     };
+                    paymentMethod.Encrypt();
                     break;
                 case 3: // Mastercard
                     break;
@@ -94,19 +96,23 @@ namespace CmsWeb.Areas.Giving.Controllers
                 default:
                     break;
             }
-            
+
+            CurrentDatabase.PaymentMethods.InsertOnSubmit(paymentMethod);
+            CurrentDatabase.SubmitChanges();
+
             return View();
         }
 
         [HttpPost]
-        [Route("~/Delete/{id?}")]
-        public ActionResult PaymentMethodsDelete()
+        public ActionResult MethodsDelete(Guid? paymentMethodId = null)
         {
-            return View();
+            var model = new GivingPaymentModel(CurrentDatabase);
+            var result = model.DeleteMethod(paymentMethodId);
+            return Json(result, JsonRequestBehavior.AllowGet);
         }
 
         [HttpGet]
-        public ActionResult PaymentSchedulesList()
+        public ActionResult SchedulesList()
         {
             var paymentSchedules = new ScheduledGiftTypeCode();
             var list = paymentSchedules.GetType().GetFields().Select(p => new { id = p.GetValue(paymentSchedules), p.Name }).ToList();
@@ -114,24 +120,27 @@ namespace CmsWeb.Areas.Giving.Controllers
         }
 
         [HttpPost]
-        [Route("~/Create")]
-        public ActionResult PaymentSchedulesCreate()
+        public ActionResult SchedulesCreate(GivingPaymentViewModel viewModel)
         {
-            return View();
+            var model = new GivingPaymentModel(CurrentDatabase);
+            var result = model.CreateSchedule(viewModel);
+            return Json(result, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
-        [Route("~/Update")]
-        public ActionResult PaymentSchedulesUpdate()
+        public ActionResult SchedulesUpdate(GivingPaymentViewModel viewModel)
         {
-            return View();
+            var model = new GivingPaymentModel(CurrentDatabase);
+            var result = model.UpdateSchedule(viewModel);
+            return Json(result, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
-        [Route("~/Delete/{id?}")]
-        public ActionResult PaymentSchedulesDelete()
+        public ActionResult SchedulesDelete(Guid? scheduledGiftId)
         {
-            return View();
+            var model = new GivingPaymentModel(CurrentDatabase);
+            var result = model.DeleteSchedule(scheduledGiftId);
+            return Json(result, JsonRequestBehavior.AllowGet);
         }
     }
 }
