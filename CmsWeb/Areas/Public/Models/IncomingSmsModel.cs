@@ -160,11 +160,11 @@ Auto Reply: {row.ActionResponse}<br><br>";
 
         private string GetActionReplyMessage()
         {
-            row.ActionResponse = DoReplacments(Util.PickFirst(action.ReplyMessage, action.DefaultMessage));
+            row.ActionResponse = DoReplacments(Util.PickFirst(action.ReplyMessage, action.DefaultMessage)) ?? "";
             CurrentDatabase.SmsReceiveds.InsertOnSubmit(row);
             CurrentDatabase.SubmitChanges();
             SendNotices();
-            if (action.ReplyMessage.Trim().Equal("NONE"))
+            if (row.ActionResponse.Trim().Equal("NONE"))
                 return string.Empty;
             return row.ActionResponse;
         }
