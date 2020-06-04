@@ -9,11 +9,11 @@ namespace CmsData
     public partial class TextReplacements
     {
         // match all links generated in the unlayer special links prompt, and handle from there
-        private const string MatchUnlayerLinkRe = @"https{0,1}://(?:rsvplink|regretslink|registerlink|registerlink2|sendlink|sendlink2|votelink)/\?[^\s,.;]*";
-        private static readonly Regex UnlayerLinkRe = new Regex(MatchUnlayerLinkRe, RegexOptions.IgnoreCase | RegexOptions.Singleline);
+        private const string MatchSpecialLinkRe = @"https{0,1}://(?:rsvplink|regretslink|registerlink|registerlink2|sendlink|sendlink2|votelink)/\?[^\s,.;]*";
+        private static readonly Regex SpecialLinkRe = new Regex(MatchSpecialLinkRe, RegexOptions.IgnoreCase | RegexOptions.Singleline);
         private readonly Dictionary<string, OneTimeLink> oneTimeLinkList = new Dictionary<string, OneTimeLink>();
 
-        private string UnlayerLinkReplacement(string code, SMSItem item)
+        private string SpecialLinkReplacement(string code, SMSItem item)
         {
             // remove the non url parts and reformat
             code = code.Replace("\"", string.Empty);

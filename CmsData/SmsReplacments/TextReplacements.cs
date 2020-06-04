@@ -12,14 +12,13 @@ namespace CmsData
         private readonly string[] stringlist;
         private const string MatchCodeRe = "(?<!{){(?!{)[^}]*?}";
         private readonly Dictionary<string, Func<Person, string>> codeFunctions;
-        private const string MatchRes = MatchUnlayerLinkRe;
 
-        private const string Pattern = "(" + MatchCodeRe + "|" + MatchRes + ")";
+        private readonly string pattern = $"({MatchCodeRe}|{MatchSpecialLinkRe}|{MatchOtherLinkRe})";
 
         public TextReplacements(CMSDataContext callingContext, string text)
         {
             CurrentDatabase = callingContext;
-            stringlist = Regex.Split(text, Pattern, RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.IgnorePatternWhitespace);
+            stringlist = Regex.Split(text, pattern, RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.IgnorePatternWhitespace);
             codeFunctions = new Dictionary<string, Func<Person, string>>
             {
                 { "{address}", PersonPrimaryAddress },
@@ -69,9 +68,13 @@ namespace CmsData
                 var func = codeFunctions[code];
                 return func(person);
             }
-            if (UnlayerLinkRe.IsMatch(code))
+            if (SpecialLinkRe.IsMatch(code))
             {
-                return UnlayerLinkReplacement(code, item);
+                return SpecialLinkReplacement(code, item);
+            }
+            if (OtherLinkRe.IsMatch(code))
+            {
+                return OtherLinkReplacement(code);
             }
             return code; // nothing matched
         }

@@ -24,6 +24,8 @@
             specialLinks.el.modal('hide');
         });
         $('.done-special-links-modal').click(function () {
+            var v = specialLinks.resultInput.val().replace(/ /g, '+');
+            specialLinks.resultInput.val(v);
             specialLinks.resultInput.select();
             document.execCommand('copy');
             specialLinks.el.modal('hide');
