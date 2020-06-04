@@ -102,7 +102,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
         public bool AcceptACH
         {
             get => _acceptACH.HasValue ? _acceptACH.Value : (_acceptACH = CurrentDatabase.PaymentProcess
-                .Where(x => x.ProcessId == (int)PaymentProcessTypes.RecurringGiving)
+                .Where(x => x.ProcessId == (int)ProcessType)
                 .Select(x => x.AcceptACH).Single()).Value;
         }
 
