@@ -99,10 +99,12 @@
             @Html.EditorFor(m => m.Email)
         </div>
         <div class="well" style="@hidePaymentEl">
-            @Html.Hidden("allowcc", Model.AcceptCredit)
+            @if (Model.AcceptCredit) {
+                Html.Hidden("allowcc", "true")
+            }
             @if (!Model.AcceptCredit || !Model.AcceptACH)
             {
-                @Html.Hidden("Type", Model.Type)
+                <input type="radio" checked name="Type" value="@Model.Type" style="display:none;" />
             }
             else
             {
