@@ -23,6 +23,8 @@ namespace CmsData
 
         private EntityRef<User> _User;
 
+        private bool? _ReceiveNotifications;
+
         #endregion
 
         #region Extensibility Method Definitions
@@ -39,6 +41,9 @@ namespace CmsData
 
         partial void OnUserIDChanging(int value);
         partial void OnUserIDChanged();
+
+		partial void OnErrorOccurredChanging(bool? value);
+		partial void OnErrorOccurredChanged();
 
         #endregion
 
@@ -118,6 +123,27 @@ namespace CmsData
                 }
             }
         }
+
+		[Column(Name="ReceiveNotifications", UpdateCheck=UpdateCheck.Never, Storage="_ReceiveNotifications", DbType="bit")]
+		public bool? ReceiveNotifications
+		{
+			get { return this._ReceiveNotifications; }
+
+			set
+			{
+				if (this._ReceiveNotifications != value)
+				{
+				
+                    this.OnErrorOccurredChanging(value);
+					this.SendPropertyChanging();
+					this._ReceiveNotifications = value;
+					this.SendPropertyChanged("ReceiveNotifications");
+					this.OnErrorOccurredChanged();
+				}
+
+			}
+
+		}
 
         #endregion
 

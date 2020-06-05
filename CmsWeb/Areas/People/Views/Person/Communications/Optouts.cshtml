@@ -1,0 +1,81 @@
+﻿@using UtilityExtensions
+@model CmsWeb.Areas.People.Models.Communications.OptOutsModel
+@{
+    var optouts = Model.OptOuts();
+}
+<form class="non-modal ajax" method="post">
+    <h4>Opt Outs</h4>
+    @if (ViewBag.Error != null)
+    {
+        <div class="alert alert-danger">
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+            <strong>Oops!</strong> @ViewBag.Error
+        </div>
+    }
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="well">
+                <label class="control-label">OptOut of Email Address</label>
+                <div class="form-inline">
+                    <div class="input-group">
+                        <input type="text" name="email" class="form-control" />
+                    </div>
+                    <div class="input-group">
+                        <a href="/Person2/AddOptoutEmail/@Model.PeopleId" class="btn btn-warning ajax validate">Add Optout</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="well">
+                <label class="control-label">OptOut of SMS Group</label>
+                <div class="form-inline">
+                    <div class="input-group">
+                        <select name="groupid" class="form-control">
+                            @foreach (var g in Model.PersonSmsGroups())
+                            {
+                                <option value="@g.Value">@g.Text</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <a href="/Person2/AddOptoutText/@Model.PeopleId" class="btn btn-warning ajax validate">Add Optout</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @if (optouts.Any())
+    {
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>From</th>
+                        <th>Date</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var oo in optouts)
+                    {
+                        <tr>
+                            <td><b>@(oo.IsText?"SMS":"Email")</b>:&nbsp;@oo.OptedOutOf</td>
+                            <td>@oo.CreatedDt.FormatDate()</td>
+                            <td>
+                                <a class="ajax btn btn-danger btn-sm"
+                                   data-confirm="Are you sure you want to receive @(oo.IsText ? "text messages" : "emails") from @oo.OptedOutOf?"
+                                   data-confirm-type="warning"
+                                   data-confirm-btn-class="btn-danger"
+                                   data-confirm-btn-text="Yes, delete!"
+                                   href="/Person2/DeleteOptout/@oo.PeopleId/@Html.Encode(oo.OptedOutOf)/@(oo.GroupId??0)/@oo.IsText.ToString()">
+                                    <i class="fa fa-trash"></i> Delete
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</form>

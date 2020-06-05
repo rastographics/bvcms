@@ -10,7 +10,7 @@ namespace CmsData
     {
         public bool InRole(string role) => Roles.Any(ro => ro == role);
 
-        public bool InAnyRole(params string[] roles) => roles.Any(r => InRole(r));
+        public bool InAnyRole(params string[] roles) => roles.Any(r => r == "" || InRole(r));
 
         public bool IsOnLine
         {
@@ -157,7 +157,7 @@ namespace CmsData
 
         public static string[] BasicLevel2 =
         {
-            "Coupon", "SendSMS", "ManageEmails", "ScheduleEmails"
+            "Coupon", "SendSMS", "ManageEmails", "ScheduleEmails", "ManageSms"
         };
 
         public static string[] SpecialPurpose =

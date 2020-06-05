@@ -3,7 +3,7 @@
 :: Optionally set %on_error% to the command you want to run if a step fails
 @echo off
 setlocal
-set path=%path%;%ProgramFiles(x86)%\Microsoft Visual Studio\2017\Community\MSBuild\15.0\Bin
+set "path=%path%;%ProgramFiles(x86)%\Microsoft Visual Studio\2019\Community\MSBuild\Current\Bin;%ProgramFiles(x86)%\Microsoft Visual Studio\2017\Community\MSBuild\15.0\Bin"
 set "source_root=%~dp0"
 set buildconfiguration=%1
 if EXIST env.cmd call env.cmd

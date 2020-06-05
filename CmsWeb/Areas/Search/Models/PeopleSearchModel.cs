@@ -17,8 +17,6 @@ namespace CmsWeb.Models
     {
         public PeopleSearchInfo()
         {
-            marital = 99;
-            gender = 99;
         }
 
         public string name { get; set; }
@@ -28,8 +26,8 @@ namespace CmsWeb.Models
         public int campus { get; set; }
         public int memberstatus { get; set; }
         public string[] statusflags { get; set; }
-        public int marital { get; set; }
-        public int gender { get; set; }
+        public int? marital { get; set; }
+        public int? gender { get; set; }
 
         public string nameHelp = ViewExtensions2.Markdown(@"
 **Full Name Match**
@@ -252,12 +250,12 @@ namespace CmsWeb.Models
                 people = people.Where(p => p.CampusId == null);
             }
 
-            if (m.gender != 99)
+            if (m.gender.HasValue && m.gender.Value != 99)
             {
                 people = people.Where(p => p.GenderId == m.gender);
             }
 
-            if (m.marital != 99)
+            if (m.marital.HasValue && m.marital.Value != 99)
             {
                 people = people.Where(p => p.MaritalStatusId == m.marital);
             }
@@ -583,16 +581,16 @@ namespace CmsWeb.Models
                     IdValue(cv.AllCampuses(), m.campus));
             }
 
-            if (m.gender != 99)
+            if (m.gender.HasValue && m.gender.Value != 99)
             {
                 cc.AddNewClause(QueryType.GenderId, CompareType.Equal,
-                    IdValue(cv.GenderCodes(), m.gender));
+                    IdValue(cv.GenderCodes(), m.gender.Value));
             }
 
-            if (m.marital != 99)
+            if (m.marital.HasValue && m.marital.Value != 99)
             {
                 cc.AddNewClause(QueryType.MaritalStatusId, CompareType.Equal,
-                    IdValue(cv.MaritalStatusCodes(), m.marital));
+                    IdValue(cv.MaritalStatusCodes(), m.marital.Value));
             }
 
             if (m.statusflags != null)
