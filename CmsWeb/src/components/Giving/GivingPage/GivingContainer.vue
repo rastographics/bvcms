@@ -1,14 +1,28 @@
 ﻿<template>
-    <div class="panel panel-default">
-        <div class="panel-body">
-            <nav aria-label="Page navigation" class="text-center">
-                <ul class="pagination">
-                    <li v-for="type in pageTypes" :key="type.Name" :class="{active: givingType == type.Name}"><a @click="updateType(type.Name)">{{ type.Name }}</a></li>
-                </ul>
-            </nav>
-            <one-time-gift v-for="(gift, index) in gifts" v-model="gifts[index]" :index="index" :key="index" :funds="unusedFunds.concat(gift.fund)" @remove="removeGift(index)"></one-time-gift>
-            <a v-if="unusedFunds.length" @click="addGift" class="btn btn-sm btn-default">Add Gift</a>
-            {{ gifts }}
+    <div>
+        <div class="page-header text-center">
+            <h1>{{ page.PageName }}</h1>
+        </div>
+        <div class="panel">
+            <div class="panel-body">
+                <nav aria-label="Page navigation" class="text-center">
+                    <ul class="pagination">
+                        <li v-for="type in pageTypes" :key="type.Name" :class="{active: givingType == type.Name}"><a @click="updateType(type.Name)">{{ type.Name }}</a></li>
+                    </ul>
+                </nav>
+                <div v-if="givingType == 'One Time'" class="gifts">
+                    <transition-group name="gift">
+                        <one-time-gift v-for="(gift, index) in gifts" v-model="gifts[index]" :count="gifts.length" :key="index" :funds="unusedFunds" @remove="removeGift(index)"></one-time-gift>
+                    </transition-group>
+                    <a v-if="unusedFunds.length" @click="addGift" class="btn btn-sm btn-default pull-right">Add Gift</a>
+                </div>
+                <div v-else-if="givingType == 'Recurring'">
+                    Recurring Giving
+                </div>
+                <div v-else-if="givingType == 'Pledge'">
+                    Pledge
+                </div>
+            </div>
         </div>
     </div>
 </template>
@@ -98,3 +112,43 @@
         }
     };
 </script>
+<style>
+    .gift {
+        transition: all 1s;
+        height: 159px;
+    }
+    .gift-enter,
+    .gift-leave-to {
+        opacity: 0;
+    }
+    .gift-enter {
+        transform: translateY(30%);
+    }
+    .gift-leave-to {
+        transform: translateY(30%);
+    }
+    .well.gift-leave-to {
+        height: 0px;
+        min-height: 0;
+        padding: 0;
+        margin: 0;
+    }
+    .gift-leave-to .form-group,
+    .gift-leave-to .money-input,
+    .gift-leave-to .close {
+        height: 0;
+        padding: 0;
+        opacity: 0;
+        margin: 0;
+        font-size: 0;
+    }
+    .gift .form-group {
+        height: 74px;
+    }
+    .gift .money-input {
+        height: 46px;
+    }
+    .gift .form-group, .gift .money-input {
+        transition: all 1s;
+    }
+</style>
