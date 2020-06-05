@@ -1,34 +1,33 @@
 ﻿<template>
-    <div>
+    <div class="gift well">
+        <button v-if="count > 1" @click="remove" type="button" class="close" aria-label="Remove"><span aria-hidden="true">&times;</span></button>
         <money-input v-model="value.amount"></money-input>
-        <div v-if="funds && funds.length" class="form-group">
-            <select class="form-control" v-model="fundId">
-                <option v-for="fund in funds" :key="fund.Id" :value="fund.Id">{{ fund.Name }}</option>
+        <div v-if="fundOptions && fundOptions.length" class="form-group" style="margin-top:25px;">
+            <select class="form-control" @change="updateFund($event)">
+                <option v-for="fund in fundOptions" :key="fund.Id" :value="fund.Id" :selected="fund.Id == value.fund.Id">{{ fund.Name }}</option>
             </select>
         </div>
-        <a v-if="index != 0" @click="remove">x</a>
     </div>
 </template>
 <script>
     export default {
-        props: ["value", "index", "funds"],
-        data: function () {
-            return {
-                fundId: this.value.fund.Id
+        props: ["value", "count", "funds"],
+        computed: {
+            fundOptions: function () {
+                return this.funds.concat(this.value.fund);
             }
         },
-        watch: {
-            "fundId": function (fundId) {
+        methods: {
+            updateFund(event) {
+                let id = event.target.value;
                 let gift = this.value;
-                this.funds.forEach((fund) => {
-                    if (fund.Id == fundId) {
+                this.fundOptions.forEach((fund) => {
+                    if (fund.Id == id) {
                         gift.fund = fund;
                     }
                 });
                 this.$emit("input", gift);
-            }
-        },
-        methods: {
+            },
             remove() {
                 this.$emit('remove');
             },

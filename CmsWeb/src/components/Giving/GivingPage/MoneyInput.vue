@@ -44,6 +44,7 @@
         font-size: 30px;
         width: 100%;
         text-align: center;
+        background-color: transparent;
     }
 
     .money-input:before {

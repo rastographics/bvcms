@@ -264,7 +264,7 @@
                 }
                 if (errors.length) {
                     this.showValidation = true;
-                    error_swal("Error", errors.join("\n"));
+                    error_swal("Please fill out all required fields", errors.join("\n"));
                     return false;
                 }
                 return true;
