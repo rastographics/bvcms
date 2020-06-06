@@ -20,7 +20,7 @@ namespace CmsWeb.Areas.Main.Controllers
 
         [ValidateInput(false)]
         [Route("~/Sms/Send/{id:Guid}")]
-        public ActionResult Send(Guid id, int iSendGroup, string sTitle, string sMessage)
+        public ActionResult Send(Guid id, int iSendGroup, string sTitle, string sMessage, DateTime? schedule)
         {
             ViewBag.Title = sTitle;
             ViewBag.Message = sMessage;
@@ -30,7 +30,7 @@ namespace CmsWeb.Areas.Main.Controllers
                 return View("Options", id);
             }
 
-            TwilioHelper.QueueSms(CurrentDatabase, id, iSendGroup, sTitle, sMessage);
+            TwilioHelper.QueueSms(CurrentDatabase, id, iSendGroup, sTitle, sMessage, schedule);
             return View("Send", id);
         }
     }

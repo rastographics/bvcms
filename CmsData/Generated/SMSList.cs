@@ -33,6 +33,10 @@ namespace CmsData
 
         private int? _ReplyToId;
 
+        private bool? _Sent;
+
+        private bool? _ReadyToSend;
+
         private EntitySet<SMSItem> _SMSItems;
 
         private EntityRef<Person> _Person;
@@ -279,6 +283,40 @@ namespace CmsData
                     SendPropertyChanging();
                     _ReplyToId = value;
                     SendPropertyChanged("ReplyToId");
+                    OnSentNoneChanged();
+                }
+            }
+        }
+
+        [Column(Name = "Sent", UpdateCheck = UpdateCheck.Never, Storage = "_Sent", DbType = "bit NULL")]
+        public bool? Sent
+        {
+            get => _Sent;
+
+            set
+            {
+                if (_Sent != value)
+                {
+                    SendPropertyChanging();
+                    _Sent = value;
+                    SendPropertyChanged("Sent");
+                    OnSentNoneChanged();
+                }
+            }
+        }
+
+        [Column(Name = "ReadyToSend", UpdateCheck = UpdateCheck.Never, Storage = "_ReadyToSend", DbType = "bit NULL")]
+        public bool? ReadyToSend
+        {
+            get => _ReadyToSend;
+
+            set
+            {
+                if (_ReadyToSend != value)
+                {
+                    SendPropertyChanging();
+                    _ReadyToSend = value;
+                    SendPropertyChanged("ReadyToSend");
                     OnSentNoneChanged();
                 }
             }
