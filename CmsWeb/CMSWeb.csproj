@@ -1217,8 +1217,6 @@
     <Content Include="Areas\Search\Views\PictureDirectory\PictureDirectory.sql" />
     <Content Include="Areas\Giving\Views\GivingManagement\Manage.cshtml" />
     <Content Include="Areas\Giving\Views\GivingPage\Index.cshtml" />
-    <Content Include="Areas\Giving\Views\_ViewStart.cshtml" />
-    <Content Include="Areas\Giving\Views\Shared\_Layout.cshtml" />
     <Content Include="Areas\Giving\Views\GivingManagement\MigrateRecurring.cshtml" />
     <None Include="babel.config.js" />
     <Content Include="Content\css\bootstrap-datetimepicker.css" />
@@ -1281,7 +1279,6 @@
     <Content Include="Content\font-awesome-4.0.3\fonts\fontawesome-webfont.svg" />
     <Content Include="Content\images\check.png" />
     <Content Include="Content\img\textarealine.png" />
-    <Content Include="Content\Site.css" />
     <Content Include="Content\touchpoint\css\account.css" />
     <Content Include="Content\touchpoint\css\app.css" />
     <Content Include="Content\touchpoint\css\checkin.css" />
