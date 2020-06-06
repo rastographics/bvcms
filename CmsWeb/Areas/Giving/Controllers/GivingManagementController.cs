@@ -159,5 +159,21 @@ namespace CmsWeb.Areas.Giving.Controllers
                              select new { c.Id, Name = c.Title }).ToList();
             return Json(shellList, JsonRequestBehavior.AllowGet);
         }
+
+        [HttpGet]
+        public ActionResult MigrateRecurring()
+        {
+            var model = new {
+                Count = CurrentDatabase.ManagedGivings.Count(),
+            };
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult MigrateRecurringConfirm(FormCollection form)
+        {
+            return View(new { status = 1 });
+        }
     }
 }
