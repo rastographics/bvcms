@@ -4,6 +4,7 @@ using CmsWeb.Code;
 using CmsWeb.Constants;
 using CmsWeb.Models;
 using Elmah;
+using OpenXmlPowerTools;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -320,6 +321,12 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
             var org = db.LoadOrganizationById(ti.OrgId);
             pf.AcceptCredit = org?.NoCreditCards != true;
+            if (pf.AcceptCredit)
+            {
+                pf.AcceptCredit = db.PaymentProcess
+                .Where(x => x.ProcessId == (int)pf.ProcessType)
+                .Select(x => x.AcceptCredit || x.AcceptDebit).Single();
+            }
             pf.Type = !pf.AcceptACH ? PaymentType.CreditCard : pf.AcceptCredit ? PaymentType.Ach : "";
             return pf;
         }
@@ -389,13 +396,13 @@ namespace CmsWeb.Areas.OnlineReg.Models
             ClearMaskedNumbers(pf, r.payinfo);
 
             pf.AllowSaveProgress = m.AllowSaveProgress();
-            pf.AcceptCredit = !m.NoCreditCardsAllowed();
+            pf.AcceptCredit = !m.NoCreditCardsAllowed()
+                && m.CurrentDatabase.PaymentProcess
+                .Where(x => x.ProcessId == (int)m.ProcessType)
+                .Select(x => x.AcceptCredit || x.AcceptDebit).Single();
 
             if (m.OnlineGiving())
             {
-                pf.AcceptCredit = m.CurrentDatabase.PaymentProcess
-                    .Where(x => x.ProcessId == (int)m.ProcessType)
-                    .Select(x => x.AcceptCredit || x.AcceptDebit).Single();
                 pf.IsGiving = true;
                 pf.FinanceOnly = true;
                 pf.Type = r.payinfo.PreferredGivingType;

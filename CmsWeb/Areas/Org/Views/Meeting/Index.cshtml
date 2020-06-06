@@ -181,7 +181,7 @@
                             <tbody>
                             @foreach (var a in Model.Attends())
                             {
-                                <tr rowtype="@a.Member" @(!a.Member ? "class=info" : "")>
+                                <tr rowtype="@a.Member" @(!a.Member ? "class=\"info\"" : "")>
                                     <td class="text-center">
                                         <input type="checkbox" pid="@a.PeopleId" @(a.Attended ? "checked=checked" : "") class="atck" onclick="return false" onkeydown="return false"/>
                                     </td>
