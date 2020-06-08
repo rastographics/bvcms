@@ -19,7 +19,7 @@ namespace CmsWeb.Models
         {
         }
 
-        public bool isBusiness { get; set; }
+        public int peoplerecordtype { get; set; }
         public string name { get; set; }
         public string communication { get; set; }
         public string address { get; set; }
@@ -27,7 +27,12 @@ namespace CmsWeb.Models
         public int campus { get; set; }
         public int memberstatus { get; set; }
         public string[] statusflags { get; set; }
-        public int? marital { get; set; }
+        public int? marital { get; set; }        
+        public int PeopleRecordType
+        {
+            get => peoplerecordtype;
+            set => peoplerecordtype = value;
+        }
         public int? gender { get; set; }
 
         public string nameHelp = ViewExtensions2.Markdown(@"
@@ -96,10 +101,7 @@ namespace CmsWeb.Models
             people = Util2.OrgLeadersOnly && !MobileAddGuest
                 ? CurrentDatabase.OrgLeadersOnlyTag2().People(CurrentDatabase)
                 : CurrentDatabase.People.AsQueryable();
-            if(m.isBusiness)
-            {
-                people = people.Where(p => p.IsBusiness == true);
-            }
+            
             if (usersonly)
             {
                 people = people.Where(p => p.Users.Any());
@@ -264,6 +266,11 @@ namespace CmsWeb.Models
                 people = people.Where(p => p.MaritalStatusId == m.marital);
             }
 
+            if (m.PeopleRecordType == 1)
+            {
+                people = people.Where(p => p.IsBusiness == true);
+            }
+
             return people;
         }
        
@@ -408,6 +415,7 @@ namespace CmsWeb.Models
 
         public SelectList GenderCodes()
         {
+            var sl = new SelectList(cv.GenderCodesWithUnspecified(), "Id", "Value", m.gender);
             return new SelectList(cv.GenderCodesWithUnspecified(), "Id", "Value", m.gender);
         }
 
@@ -423,7 +431,7 @@ namespace CmsWeb.Models
                 new SelectListItem {Text = "Business", Value = "1"},
                 new SelectListItem {Text = "Both", Value = "2"}
             }; ;
-
+            
             return list;
         }
         public IEnumerable<SelectListItem> Campuses()
