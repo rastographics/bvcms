@@ -7,6 +7,7 @@ using CmsData.Codes;
 using CmsData.Classes.Giving;
 using System.Text.RegularExpressions;
 using System;
+using CmsWeb.Membership.Extensions;
 
 namespace CmsWeb.Areas.Giving.Controllers
 {
@@ -22,6 +23,10 @@ namespace CmsWeb.Areas.Giving.Controllers
         [Route("~/Giving")]
         public ActionResult Index()
         {
+            if (User.InAnyRole("Admin", "Finance") && CurrentDatabase.ManagedGivings.Count() > 0)
+            {
+                ViewBag.ActionButtons = @"<a href=""/Giving/MigrateRecurring"" class=""btn btn-default"">Migrate Recurring Giving</a>";
+            }
             return View();
         }
 
@@ -161,9 +166,10 @@ namespace CmsWeb.Areas.Giving.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Admin,Finance")]
         public ActionResult MigrateRecurring()
         {
-            var model = new {
+            var model = new MigrateGivingModel {
                 Count = CurrentDatabase.ManagedGivings.Count(),
             };
             return View(model);
@@ -171,9 +177,19 @@ namespace CmsWeb.Areas.Giving.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin,Finance")]
         public ActionResult MigrateRecurringConfirm(FormCollection form)
         {
-            return View(new { status = 1 });
+            if (!MigrateGivingModel.Migrate(CurrentDatabase, out string error))
+            {
+                Util.TempError = $"Failed to complete migrating recurring giving. {error}";
+                return RedirectToAction("MigrateRecurring");
+            }
+            else
+            {
+                Util.TempSuccessMessage = "Successfully completed migrating recurring giving.";
+                return RedirectToAction("Index");
+            }
         }
     }
 }

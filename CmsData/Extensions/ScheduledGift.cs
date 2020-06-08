@@ -17,28 +17,34 @@ namespace CmsData
                 switch (ScheduledGiftTypeId)
                 {
                     case ScheduledGiftTypeCode.Weekly:
-                        next = from.AddDays(7);
+                        next = from.AddDays(Interval * 7);
                         break;
                     case ScheduledGiftTypeCode.BiWeekly:
-                        next = from.AddDays(14);
+                        next = from.AddDays(Interval * 14);
                         break;
                     case ScheduledGiftTypeCode.SemiMonthly:
-                        next = from.Day.IsBetween(1, 14)
-                            ? new DateTime(from.Year, from.Month, 15)
-                            : new DateTime(from.Year, from.Month + 1, 1);
+                        int day1 = Day1.GetValueOrDefault(1);
+                        int day2 = Day2.GetValueOrDefault(15);
+                        next = from.Day.IsBetween(day1, day2 - 1)
+                            ? new DateTime(from.Year, from.Month, day2)
+                            : new DateTime(from.Year, from.Month + Interval, day1);
                         break;
                     case ScheduledGiftTypeCode.Monthly:
-                        next = from.AddMonths(1);
+                        next = from.AddMonths(Interval);
+                        if (Day1 < next.Value.Day || (Day1 > next.Value.Day && Day1 <= next.Value.DaysInMonth()))
+                        {
+                            next = new DateTime(next.Value.Year, next.Value.Month, Day1.Value);
+                        }
                         break;
                     case ScheduledGiftTypeCode.Quarterly:
-                        next = from.AddMonths(3);
-                        if (from.IsLastDayOfMonth())
+                        next = from.AddMonths(Interval * 3);
+                        if (Day1 < next.Value.Day || (Day1 > next.Value.Day && Day1 <= next.Value.DaysInMonth()))
                         {
-                            next = next.Value.LastDayOfMonth();
+                            next = new DateTime(next.Value.Year, next.Value.Month, Day1.Value);
                         }
                         break;
                     case ScheduledGiftTypeCode.Annually:
-                        next = from.AddYears(1);
+                        next = from.AddYears(Interval);
                         if (from.IsLastDayOfMonth())
                         {
                             next = next.Value.LastDayOfMonth();

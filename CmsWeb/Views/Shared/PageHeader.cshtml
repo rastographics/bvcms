@@ -2,7 +2,12 @@
 {
     <div id="page-header">
         <div class="container-fluid">
-            <h2>@ViewBag.PageHeader</h2>
+            <div class="h2">@ViewBag.PageHeader
+            @if (!string.IsNullOrWhiteSpace(ViewBag.ActionButtons))
+            {
+                <div class="box-tools">@Html.Raw(ViewBag.ActionButtons)</div>
+            }
+            </div>
             @if (!string.IsNullOrWhiteSpace(ViewBag.PageSubHeader))
             {
                 <h4>@Html.Raw(ViewBag.PageSubHeader)</h4>

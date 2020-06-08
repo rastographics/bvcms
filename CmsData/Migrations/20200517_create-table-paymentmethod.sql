@@ -45,6 +45,9 @@ CREATE TABLE [dbo].[ScheduledGift](
 	[IsEnabled] bit NOT NULL,
 	[StartDate] datetime NOT NULL,
 	[EndDate] datetime NULL,
+	[Day1] int NULL,
+	[Day2] int NULL,
+	[Interval] int NOT NULL CONSTRAINT DF_ScheduledGift_Interval DEFAULT (1),
 	[LastProcessed] datetime NULL,
 	[NextOccurrence] datetime NULL
 CONSTRAINT [PK_ScheduledGift_ScheduledGiftId] PRIMARY KEY NONCLUSTERED ([ScheduledGiftId])

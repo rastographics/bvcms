@@ -570,7 +570,9 @@
     <Compile Include="Areas\Giving\Models\GivingPageViewModel.cs" />
     <Compile Include="Areas\Giving\Models\GivingPaymentModel.cs" />
     <Compile Include="Areas\Giving\Models\GivingPaymentViewModel.cs" />
+    <Compile Include="Areas\Giving\Models\ManageGivingConversionModel.cs" />
     <Compile Include="Areas\Giving\Models\Message.cs" />
+    <Compile Include="Areas\Giving\Models\MigrateGivingModel.cs" />
     <Compile Include="Areas\Main\Models\Other\CouponResponseModel.cs" />
     <Compile Include="Areas\Manage\Controllers\ActivityController.cs" />
     <Compile Include="Areas\Manage\Controllers\BatchMoveAndDelete.cs" />

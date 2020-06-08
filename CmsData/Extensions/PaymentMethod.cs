@@ -10,10 +10,10 @@ namespace CmsData
         {
             if (!_encrypted.HasValue || _encrypted == true)
             {
-                _Last4 = Util.Decrypt(_Last4);
-                _MaskedDisplay = Util.Decrypt(_MaskedDisplay);
-                _NameOnAccount = Util.Decrypt(_NameOnAccount);
-                _VaultId = Util.Decrypt(_VaultId);
+                if (_Last4.HasValue()) _Last4 = Util.Decrypt(_Last4);
+                if (_MaskedDisplay.HasValue()) _MaskedDisplay = Util.Decrypt(_MaskedDisplay);
+                if (_NameOnAccount.HasValue()) _NameOnAccount = Util.Decrypt(_NameOnAccount);
+                if (_VaultId.HasValue()) _VaultId = Util.Decrypt(_VaultId);
                 _encrypted = false;
             }
         }
@@ -22,10 +22,10 @@ namespace CmsData
         {
             if (!_encrypted.HasValue || _encrypted == false)
             {
-                _Last4 = Util.Encrypt(_Last4);
-                _MaskedDisplay = Util.Encrypt(_MaskedDisplay);
-                _NameOnAccount = Util.Encrypt(_NameOnAccount);
-                _VaultId = Util.Encrypt(_VaultId);
+                if (_Last4.HasValue()) _Last4 = Util.Encrypt(_Last4);
+                if (_MaskedDisplay.HasValue()) _MaskedDisplay = Util.Encrypt(_MaskedDisplay);
+                if (_NameOnAccount.HasValue()) _NameOnAccount = Util.Encrypt(_NameOnAccount);
+                if (_VaultId.HasValue()) _VaultId = Util.Encrypt(_VaultId);
                 _encrypted = true;
             }
         }

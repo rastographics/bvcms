@@ -434,6 +434,11 @@ namespace UtilityExtensions
                 value.Second,
                 value.Millisecond);
         }
+
+        public static int DaysInMonth(this DateTime value)
+        {
+            return DateTime.DaysInMonth(value.Year, value.Month);
+        }
     }
 }
 

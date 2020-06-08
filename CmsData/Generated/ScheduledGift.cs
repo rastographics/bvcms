@@ -17,7 +17,13 @@ namespace CmsData
 
         private int _PeopleId;
 
-        private int _ScheduledGiftTypeId;
+        private int _ScheduledGiftTypeId = 2;
+
+        private int? _Day1;
+
+        private int? _Day2;
+
+        private int _Interval = 1;
 
         private bool _IsEnabled;
 
@@ -30,6 +36,8 @@ namespace CmsData
         private DateTime? _LastProcessed;
 
         private DateTime? _NextOccurrence;
+
+        private EntityRef<PaymentMethod> _PaymentMethod;
 
         private EntityRef<Person> _Person;
 
@@ -48,6 +56,15 @@ namespace CmsData
 
         partial void OnScheduledGiftTypeIdChanging(int value);
         partial void OnScheduledGiftTypeIdChanged();
+
+        partial void OnDay1Changing(int? value);
+        partial void OnDay1Changed();
+
+        partial void OnDay2Changing(int? value);
+        partial void OnDay2Changed();
+
+        partial void OnIntervalChanging(int value);
+        partial void OnIntervalChanged();
 
         partial void OnIsEnabledChanging(bool value);
         partial void OnIsEnabledChanged();
@@ -74,6 +91,8 @@ namespace CmsData
 
         public ScheduledGift()
         {
+            _PaymentMethod = default;
+
             _Person = default;
 
             _ScheduledGiftAmounts = new EntitySet<ScheduledGiftAmount>(new Action<ScheduledGiftAmount>(attach_ScheduledGiftAmounts), new Action<ScheduledGiftAmount>(detach_ScheduledGiftAmounts));
@@ -136,6 +155,57 @@ namespace CmsData
                     _ScheduledGiftTypeId = value;
                     SendPropertyChanged("ScheduledGiftTypeId");
                     OnScheduledGiftTypeIdChanged();
+                }
+            }
+        }
+
+        [Column(Name = "Day1", UpdateCheck = UpdateCheck.Never, Storage = "_Day1", DbType = "int NULL")]
+        public int? Day1
+        {
+            get => _Day1;
+            set
+            {
+                if (_Day1 != value)
+                {
+                    OnDay1Changing(value);
+                    SendPropertyChanging();
+                    _Day1 = value;
+                    SendPropertyChanged("Day1");
+                    OnDay1Changed();
+                }
+            }
+        }
+
+        [Column(Name = "Day2", UpdateCheck = UpdateCheck.Never, Storage = "_Day2", DbType = "int NULL")]
+        public int? Day2
+        {
+            get => _Day2;
+            set
+            {
+                if (_Day2 != value)
+                {
+                    OnDay2Changing(value);
+                    SendPropertyChanging();
+                    _Day2 = value;
+                    SendPropertyChanged("Day2");
+                    OnDay2Changed();
+                }
+            }
+        }
+
+        [Column(Name = "Interval", UpdateCheck = UpdateCheck.Never, Storage = "_Interval", DbType = "int")]
+        public int Interval
+        {
+            get => _Interval;
+            set
+            {
+                if (_Interval != value)
+                {
+                    OnIntervalChanging(value);
+                    SendPropertyChanging();
+                    _Interval = value;
+                    SendPropertyChanged("Interval");
+                    OnIntervalChanged();
                 }
             }
         }
@@ -234,7 +304,7 @@ namespace CmsData
             {
                 if (_PaymentMethodId != value)
                 {
-                    if (_Person.HasLoadedOrAssignedValue)
+                    if (_PaymentMethod.HasLoadedOrAssignedValue)
                     {
                         throw new ForeignKeyReferenceAlreadyHasValueException();
                     }
@@ -263,6 +333,36 @@ namespace CmsData
         #endregion
 
         #region Foreign Keys
+
+        [Association(Name = "FK_ScheduledGift_PaymentMethod", Storage = "_PaymentMethod", ThisKey = "PaymentMethodId", IsForeignKey = true)]
+        public PaymentMethod PaymentMethod
+        {
+            get => _PaymentMethod.Entity;
+            set
+            {
+                PaymentMethod previousValue = _PaymentMethod.Entity;
+                if ((previousValue != value) || (_PaymentMethod.HasLoadedOrAssignedValue == false))
+                {
+                    SendPropertyChanging();
+                    if (previousValue != null)
+                    {
+                        _PaymentMethod.Entity = null;
+                    }
+
+                    _PaymentMethod.Entity = value;
+                    if (value != null)
+                    {
+                        _PaymentMethodId = value.PaymentMethodId;
+                    }
+                    else
+                    {
+                        _PaymentMethodId = default;
+                    }
+
+                    SendPropertyChanged("PaymentMethod");
+                }
+            }
+        }
 
         [Association(Name = "FK_ScheduledGift_People", Storage = "_Person", ThisKey = "PeopleId", IsForeignKey = true)]
         public Person Person
