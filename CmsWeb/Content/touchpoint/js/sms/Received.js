@@ -84,6 +84,7 @@
         }).on("click",
         "a.export",
         function (ev) {
+            ev.preventDefault();
             var f = $('#receivedform');
             f.attr("action", "/SmsMessages/ExportReceived");
             f.submit();

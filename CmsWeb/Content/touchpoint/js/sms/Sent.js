@@ -76,6 +76,7 @@
                 });
         }).on("click", "a.export",
         function (ev) {
+            ev.preventDefault();
             var f = $('#sentform');
             f.attr("action", "/SmsMessages/ExportSent");
             f.submit();
