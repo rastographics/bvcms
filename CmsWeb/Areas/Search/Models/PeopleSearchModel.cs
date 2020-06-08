@@ -19,6 +19,7 @@ namespace CmsWeb.Models
         {
         }
 
+        public bool isBusiness { get; set; }
         public string name { get; set; }
         public string communication { get; set; }
         public string address { get; set; }
@@ -84,7 +85,7 @@ namespace CmsWeb.Models
         private IQueryable<Person> people;
 
         public IQueryable<Person> FetchPeople()
-        {
+        {            
             if (people != null)
             {
                 return people;
@@ -95,7 +96,10 @@ namespace CmsWeb.Models
             people = Util2.OrgLeadersOnly && !MobileAddGuest
                 ? CurrentDatabase.OrgLeadersOnlyTag2().People(CurrentDatabase)
                 : CurrentDatabase.People.AsQueryable();
-
+            if(m.isBusiness)
+            {
+                people = people.Where(p => p.IsBusiness == true);
+            }
             if (usersonly)
             {
                 people = people.Where(p => p.Users.Any());
@@ -411,7 +415,17 @@ namespace CmsWeb.Models
         {
             return new SelectList(cv.MaritalStatusCodes99(), "Id", "Value", m.marital);
         }
+        public IEnumerable<SelectListItem> PeopleRecordTypes()
+        {   
+            var list = new List<SelectListItem>
+            {
+                new SelectListItem {Text = "Person", Value = "0"},
+                new SelectListItem {Text = "Business", Value = "1"},
+                new SelectListItem {Text = "Both", Value = "2"}
+            }; ;
 
+            return list;
+        }
         public IEnumerable<SelectListItem> Campuses()
         {
             var qc = CurrentDatabase.Campus.AsQueryable();

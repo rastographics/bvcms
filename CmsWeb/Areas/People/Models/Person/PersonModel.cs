@@ -10,6 +10,7 @@ namespace CmsWeb.Areas.People.Models
 {
     public class PersonModel
     {
+        private bool? isBusiness;
         private FamilyModel familyModel;
         private Picture familypicture;
         private AddressInfo otherAddr;
@@ -68,6 +69,7 @@ namespace CmsWeb.Areas.People.Models
             FamilyPicture = i.FamilyPicture;
             StatusFlags = (statusflags ?? "").Split(',');
             ShowCombinedGiving = db.GetSetting("CombinedGivingSummary", "") == "true";
+            IsBusiness = (bool)p.IsBusiness.GetValueOrDefault();
 
             basic = new BasicPersonInfo(p.PeopleId);
 
@@ -152,6 +154,12 @@ namespace CmsWeb.Areas.People.Models
 
                 return primaryAddr;
             }
+        }
+
+        public bool? IsBusiness
+        {
+            get => isBusiness ?? false;
+            set => isBusiness = value;
         }
 
         public AddressInfo OtherAddr

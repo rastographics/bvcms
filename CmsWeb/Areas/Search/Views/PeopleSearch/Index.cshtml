@@ -4,101 +4,109 @@
 @model PeopleSearchModel
 @{
   ViewBag.Title = "People Search";
-  ViewBag.PageHeader = "People Search";
+  ViewBag.PageHeader = "People, Business/Entity Search";
   Layout = ViewExtensions2.TouchPointLayout();
 }
 <div class="box box-responsive">
-    <div class="box-content">
+    <div class="bo -content">
         <form method="post" action="/PeopleSearch">
             <div class="well">
                 <div class="row">
-                    <div class="col-lg-3 col-md-3 col-sm-6">
+                    <div class="col-lg-2 col-md-3 col-sm-4">
                         <div class="form-group">
-                          <a tabindex="0" href="#" data-toggle="popover" data-placement="bottom" data-trigger="focus" data-title="Name / ID#" 
-                          data-content="@Model.m.nameHelp"><i class="fa fa-info-circle"></i></a>&nbsp;
-                            <label for="name" class="control-label">Name / ID#</label>
-                            @Html.TextBox("name", Model.m.name, new { @class = "form-control" })
+                            <label for="peoplerecordtype" class="control-label">Record Type</label>
+                            @Html.DropDownList("peoplerecordtype", Model.PeopleRecordTypes(), new { @class = "form-control" })                            
                         </div>
-                    </div>
-                    <div class="col-lg-3 col-md-3 col-sm-6">
-                        <div class="form-group">
-                            <a tabindex="0" href="#" data-toggle="popover" data-placement="bottom" data-trigger="focus" data-title="Email / Phone" data-content="Any part of any phone or email."><i class="fa fa-info-circle"></i></a>&nbsp;
-                            <label for="communication" class="control-label">Email / Phone</label>
-                            @Html.TextBox("communication", Model.m.communication, new { @class = "form-control" })
-                        </div>
-                    </div>
-                    <div class="col-lg-3 col-md-3 col-sm-6">
-                        <div class="form-group">
-                            <a tabindex="0" href="#" data-toggle="popover" data-placement="bottom" data-trigger="focus" data-title="Address" data-content="Any part of the address, city or zip."><i class="fa fa-info-circle"></i></a>&nbsp;
-                            <label for="address" class="control-label">Address</label>
-                            @Html.TextBox("address", Model.m.address, new { @class = "form-control" })
-                        </div>
-                    </div>
-                    <div class="col-lg-3 col-md-3 col-sm-6">
-                        <div class="form-group">
-                            <a tabindex="0" href="#" data-toggle="popover" data-placement="bottom" data-trigger="focus" data-title="Date of Birth" data-content="YYYY or MM or MM/DD or MM/DD/YY"><i class="fa fa-info-circle"></i></a>&nbsp;
-                            <label for="birthdate" class="control-label">Date of Birth</label>
-                            @Html.TextBox("birthdate", Model.m.birthdate, new { placeholder = "mm/dd/yy", @class = "form-control" })
-                        </div>
-                    </div>
+                    </div>                    
                 </div>
-                <div class="row">
-                    <div class="col-lg-2 col-md-3 col-sm-4">
-                        <div class="form-group">
-                            <label for="campus" class="control-label">@Util2.CampusLabel</label>
-                            @Html.DropDownList("campus", Model.Campuses(), new { @class = "form-control" })
-                        </div>
-                    </div>
-                    <div class="col-lg-2 col-md-3 col-sm-4">
-                        <div class="form-group">
-                            <label for="memberstatus" class="control-label">Member</label>
-                            @Html.DropDownList("memberstatus", Model.MemberStatusCodes(), new { @class = "form-control" })
-                        </div>
-                    </div>
-                    <div class="col-lg-2 col-md-3 col-sm-4">
-                        <div class="form-group">
-                            <label for="gender" class="control-label">Gender</label>
-                            @Html.DropDownList("gender", Model.GenderCodes(), new { @class = "form-control" })
-                        </div>
-                    </div>
-                    <div class="col-lg-2 col-md-3 col-sm-4">
-                        <div class="form-group">
-                            <label for="marital" class="control-label">Married</label>
-                            @Html.DropDownList("marital", Model.MaritalCodes(), new { @class = "form-control" })
-                        </div>
-                    </div>
-                    <div class="col-lg-4 col-md-5 col-sm-6">
-                        <div class="form-group">
-                            <label for="statusflags" class="control-label">Status Flags</label>
+                    <div class="row">
+                        <div class="col-lg-3 col-md-3 col-sm-6">
                             <div class="form-group">
-                                @Html.DropDownList("statusflags", new SelectList(new CodeValueModel(ViewExtensions2.CurrentDatabase).StatusFlags(), "Code", "Value"), new { multiple = "multiple", @class = "form-control" })
+                                <a tabindex="0" href="#" data-toggle="popover" data-placement="bottom" data-trigger="focus" data-title="Name / ID#"
+                                   data-content="@Model.m.nameHelp"><i class="fa fa-info-circle"></i></a>&nbsp;
+                                <label for="name" class="control-label">Name / ID#</label>
+                                @Html.TextBox("name", Model.m.name, new { @class = "form-control" })
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-md-3 col-sm-6">
+                            <div class="form-group">
+                                <a tabindex="0" href="#" data-toggle="popover" data-placement="bottom" data-trigger="focus" data-title="Email / Phone" data-content="Any part of any phone or email."><i class="fa fa-info-circle"></i></a>&nbsp;
+                                <label for="communication" class="control-label">Email / Phone</label>
+                                @Html.TextBox("communication", Model.m.communication, new { @class = "form-control" })
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-md-3 col-sm-6">
+                            <div class="form-group">
+                                <a tabindex="0" href="#" data-toggle="popover" data-placement="bottom" data-trigger="focus" data-title="Address" data-content="Any part of the address, city or zip."><i class="fa fa-info-circle"></i></a>&nbsp;
+                                <label for="address" class="control-label">Address</label>
+                                @Html.TextBox("address", Model.m.address, new { @class = "form-control" })
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-md-3 col-sm-6">
+                            <div class="form-group">
+                                <a tabindex="0" href="#" data-toggle="popover" data-placement="bottom" data-trigger="focus" data-title="Date of Birth" data-content="YYYY or MM or MM/DD or MM/DD/YY"><i class="fa fa-info-circle"></i></a>&nbsp;
+                                <label for="birthdate" class="control-label">Date of Birth</label>
+                                @Html.TextBox("birthdate", Model.m.birthdate, new { placeholder = "mm/dd/yy", @class = "form-control" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-2 col-md-3 col-sm-4">
+                            <div class="form-group">
+                                <label for="campus" class="control-label">@Util2.CampusLabel</label>
+                                @Html.DropDownList("campus", Model.Campuses(), new { @class = "form-control" })
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-md-3 col-sm-4">
+                            <div class="form-group">
+                                <label for="memberstatus" class="control-label">Member</label>
+                                @Html.DropDownList("memberstatus", Model.MemberStatusCodes(), new { @class = "form-control" })
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-md-3 col-sm-4">
+                            <div class="form-group">
+                                <label for="gender" class="control-label">Gender</label>
+                                @Html.DropDownList("gender", Model.GenderCodes(), new { @class = "form-control" })
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-md-3 col-sm-4">
+                            <div class="form-group">
+                                <label for="marital" class="control-label">Married</label>
+                                @Html.DropDownList("marital", Model.MaritalCodes(), new { @class = "form-control" })
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-5 col-sm-6">
+                            <div class="form-group">
+                                <label for="statusflags" class="control-label">Status Flags</label>
+                                <div class="form-group">
+                                    @Html.DropDownList("statusflags", new SelectList(new CodeValueModel(ViewExtensions2.CurrentDatabase).StatusFlags(), "Code", "Value"), new { multiple = "multiple", @class = "form-control" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-3 col-md-3 col-sm-4">
+                            <strong>Total Count</strong> <span id="totalcount" class="badge">@Model.Count().ToString("N0")</span>
+                        </div>
+                        <div class="col-lg-3 col-lg-offset-6 col-md-3 col-md-offset-6 col-sm-4 col-sm-offset-4">
+                            <div class="pull-right">
+                                <a id="clear" href="#" class="btn btn-default">Clear</a>
+                                <div class="btn-group">
+                                    <a href="/PeopleSearch/Results" id="search" class="btn btn-primary">Search</a>
+                                    <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+                                        <span class="caret"></span>
+                                        <span class="sr-only">Toggle Dropdown</span>
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-right">
+                                        <li><a id="convert" href="/PeopleSearch/ConvertToQuery">Convert to Search Builder</a></li>
+                                    </ul>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-lg-3 col-md-3 col-sm-4">
-                        <strong>Total Count</strong> <span id="totalcount" class="badge">@Model.Count().ToString("N0")</span>
-                    </div>
-                    <div class="col-lg-3 col-lg-offset-6 col-md-3 col-md-offset-6 col-sm-4 col-sm-offset-4">
-                        <div class="pull-right">
-                            <a id="clear" href="#" class="btn btn-default">Clear</a>
-                            <div class="btn-group">
-                                <a href="/PeopleSearch/Results" id="search" class="btn btn-primary">Search</a>
-                                <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
-                                    <span class="caret"></span>
-                                    <span class="sr-only">Toggle Dropdown</span>
-                                </button>
-                                <ul class="dropdown-menu dropdown-menu-right">
-                                    <li><a id="convert" href="/PeopleSearch/ConvertToQuery">Convert to Search Builder</a></li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            @Html.Partial("Results", Model)
-        </form>
+                @Html.Partial("Results", Model)
+</form>
     </div>
 </div>
 @section scripts

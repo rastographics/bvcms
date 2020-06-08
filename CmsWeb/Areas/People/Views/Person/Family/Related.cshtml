@@ -19,14 +19,17 @@
     {
         <div class="row">
             <div class="col-sm-12">
-                <h4><a id="related-family-collapse" data-toggle="collapse" href="#related-family-section" aria-expanded="true" aria-controls="related-family-section"><i class="fa fa-chevron-circle-down"></i></a> Related Families</h4>
+                <h4>
+                    <a id="related-family-collapse" data-toggle="collapse" href="#related-family-section" aria-expanded="true" aria-controls="related-family-section"><i class="fa fa-chevron-circle-down"></i></a>
+                    @((bool)!Model.IsBusiness ? "Related Families" : "Related Businesses")
+                </h4>
             </div>
         </div>
         <div class="row collapse in" id="related-family-section">
             @if (Model.Person.CanUserEditAll)
             {
                 <div class="col-sm-12">
-                    <a href="@dialog" class="searchadd btn btn-success btn-sm btn-block"><i class="fa fa-plus-circle"></i>&nbsp;&nbsp;Add Related Family</a>
+                    <a href="@dialog" class="searchadd btn btn-success btn-sm btn-block"><i class="fa fa-plus-circle"></i>&nbsp;&nbsp;@((bool)!Model.IsBusiness ? "Add Related Family" : "Add Related Business")</a>
                 </div>
             }
             <div class="col-sm-12">
@@ -40,11 +43,19 @@
             <div class="col-sm-12">
                 @if (showFamilyQueryLink)
                 {
-                    <h4><a id="related-family-collapse" data-toggle="collapse" href="#related-family-section" aria-expanded="true" aria-controls="related-family-section"><i class="fa fa-chevron-circle-down"></i></a> <a href="/Person2/RelatedFamilyQuery/@Model.Family.FamilyId">Related Families</a></h4>
+                <h4>
+                    <a id="related-family-collapse" data-toggle="collapse" href="#related-family-section" aria-expanded="true" aria-controls="related-family-section"><i class="fa fa-chevron-circle-down"></i></a>
+                    <a href="/Person2/RelatedFamilyQuery/@Model.Family.FamilyId">                        
+                        @((bool)!Model.IsBusiness ? "Related Families" : "Related Businesses")
+                    </a>                        
+                </h4>
                 }
                 else
                 {
-                    <h4><a id="related-family-collapse" data-toggle="collapse" href="#related-family-section" aria-expanded="true" aria-controls="related-family-section"><i class="fa fa-chevron-circle-down"></i></a> Related Families</h4>
+            <h4>
+                <a id="related-family-collapse" data-toggle="collapse" href="#related-family-section" aria-expanded="true" aria-controls="related-family-section"><i class="fa fa-chevron-circle-down"></i></a>
+                @((bool)!Model.IsBusiness ? "Related Families" : "Related Businesses")
+            </h4>
                 }
             </div>
         </div>
@@ -87,7 +98,10 @@
             @if (Model.Person.CanUserEditAll)
             {
                 <div class="col-sm-12">
-                    <a href="@dialog" class="searchadd btn btn-success btn-sm btn-block"><i class="fa fa-plus-circle"></i>&nbsp;&nbsp;Add Related Family</a>
+                    <a href="@dialog" class="searchadd btn btn-success btn-sm btn-block">
+                        <i class="fa fa-plus-circle"></i>
+                        &nbsp;&nbsp;@((bool)!Model.IsBusiness ? "Add Related Family" : "Add Related Business")
+                    </a>
                 </div>
             }
             <div class="col-sm-12">

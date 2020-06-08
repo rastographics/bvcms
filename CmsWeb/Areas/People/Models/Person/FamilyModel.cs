@@ -18,9 +18,15 @@ namespace CmsWeb.Areas.People.Models
         public FamilyModel(CMSDataContext db, int id) : base(db)
         {
             Person = db.LoadPersonById(id);
+            IsBusiness = Person.IsBusiness;
             pagesize = 100;
         }
-
+        private bool? isBusiness;
+        public bool? IsBusiness
+        {
+            get => isBusiness ?? false;
+            set => isBusiness = value;
+        }
         private Family family;
         public Family Family
         {
