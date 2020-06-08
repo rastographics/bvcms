@@ -20,6 +20,8 @@ namespace CmsData
 
         private int _PeopleId;
 
+        private bool? _IsBusiness;
+
         private int _CreatedBy;
 
         private DateTime? _CreatedDate;
@@ -629,6 +631,9 @@ namespace CmsData
 
         partial void OnMemberAnyChurchChanging(bool? value);
         partial void OnMemberAnyChurchChanged();
+
+        partial void OnIsBusinessChanging(bool? value);
+        partial void OnIsBusinessChanged();
 
         partial void OnInterestedInJoiningChanging(bool value);
         partial void OnInterestedInJoiningChanged();
@@ -2373,6 +2378,25 @@ namespace CmsData
                     this._MemberAnyChurch = value;
                     this.SendPropertyChanged("MemberAnyChurch");
                     this.OnMemberAnyChurchChanged();
+                }
+            }
+        }
+
+        [Column(Name = "IsBusiness", UpdateCheck = UpdateCheck.Never, Storage = "_IsBusiness",
+            DbType = "bit")]
+        public bool? IsBusiness
+        {
+            get { return this._IsBusiness; }
+
+            set
+            {
+                if (this._IsBusiness != value)
+                {
+                    this.OnIsBusinessChanging(value);
+                    this.SendPropertyChanging();
+                    this._IsBusiness = value;
+                    this.SendPropertyChanged("IsBusiness");
+                    this.OnIsBusinessChanged();
                 }
             }
         }

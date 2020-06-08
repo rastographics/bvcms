@@ -13,12 +13,19 @@
     var showResourcesTab = false;
     var resourcesEnabled = ViewExtensions2.CurrentDatabase.Setting("Resources-Enabled");
     var canviewmemberstatus = User.IsInRole("Access") || !ViewExtensions2.CurrentDatabase.Setting("HideMemberStatusFromMyData");
+    var businessrecordtype = (bool)Model.IsBusiness;
     if (resourcesEnabled)
     {
         showResourcesTab = Model.PeopleId == ViewExtensions2.CurrentDatabase.UserPeopleId || User.IsInRole("ViewResources");
     }
+    showResourcesTab = !businessrecordtype ? showResourcesTab : false;
 
     var showMinistryTab = Util.IsMyDataUser ? false : !RoleChecker.HasSetting(SettingName.HideMinistryTab, false);
+    showMinistryTab = !businessrecordtype ? showMinistryTab : false;
+
+    var showInvolvementTab = !businessrecordtype ? true : false;
+    var showProfileTab = !businessrecordtype ? true : false;
+
 }
 @section head
 {
@@ -183,9 +190,16 @@
             <div class="profile-photo">
                 @if (Model.Person.CanUserEditBasic)
                 {
-                    <a class="personal-picture" href="/Person2/PictureDialog/@Model.PeopleId" title="Click to see larger version or upload new">
-                        <div id="profile-portrait" class="img-circle"></div>
-                    </a>
+                <a class="personal-picture" href="/Person2/PictureDialog/@Model.PeopleId" title="Click to see larger version or upload new">                    
+                    <div id="profile-portrait" class="img-circle">
+                        @if ((bool)Model.IsBusiness)
+                        {
+                            <div class="img-circle biz-watermark">
+                                Business Account
+                            </div>
+                        }
+                    </div>
+                </a>
                 }
                 else
                 {
@@ -217,14 +231,20 @@
             <li class="active">
                 <a href="#personal" aria-controls="personal" data-toggle="tab">Personal</a>
             </li>
+            @if (showInvolvementTab)
+            {
             <li id="involvementstop">
                 <a href="#enrollment" aria-controls="enrollment" data-toggle="tab">Involvement</a>
             </li>
+            }
             @if (canviewmemberstatus)
             {
+                if (showProfileTab)
+                {
                 <li>
                     <a href="#profile" aria-controls="profile" data-toggle="tab">Profile</a>
                 </li>
+                }
             }
             @if (showMinistryTab)
             {

@@ -15,10 +15,12 @@ namespace CmsData
 	public partial class Family : INotifyPropertyChanging, INotifyPropertyChanged
 	{
 		private static PropertyChangingEventArgs emptyChangingEventArgs => new PropertyChangingEventArgs(String.Empty);
-		
-	#region Private Fields
-		
-		private int _FamilyId;
+
+        #region Private Fields
+
+        private bool? _IsBusiness;
+
+        private int _FamilyId;
 		
 		private int _CreatedBy;
 		
@@ -109,8 +111,11 @@ namespace CmsData
 		
 		partial void OnCreatedDateChanging(DateTime? value);
 		partial void OnCreatedDateChanged();
-		
-		partial void OnRecordStatusChanging(bool value);
+
+        partial void OnIsBusinessChanging(bool? value);
+        partial void OnIsBusinessChanged();
+        
+        partial void OnRecordStatusChanging(bool value);
 		partial void OnRecordStatusChanged();
 		
 		partial void OnBadAddressFlagChanging(bool? value);
@@ -300,8 +305,28 @@ namespace CmsData
 
 		}
 
-		
-		[Column(Name="BadAddressFlag", UpdateCheck=UpdateCheck.Never, Storage="_BadAddressFlag", DbType="bit")]
+        [Column(Name = "IsBusiness", UpdateCheck = UpdateCheck.Never, Storage = "_IsBusiness", DbType = "bit")]
+        public bool? IsBusiness
+        {
+            get { return this._IsBusiness; }
+
+            set
+            {
+                if (this._IsBusiness != value)
+                {
+
+                    this.OnIsBusinessChanging(value);
+                    this.SendPropertyChanging();
+                    this._IsBusiness = value;
+                    this.SendPropertyChanged("IsBusiness");
+                    this.OnIsBusinessChanged();
+                }
+
+            }
+
+        }
+
+        [Column(Name="BadAddressFlag", UpdateCheck=UpdateCheck.Never, Storage="_BadAddressFlag", DbType="bit")]
 		public bool? BadAddressFlag
 		{
 			get { return this._BadAddressFlag; }

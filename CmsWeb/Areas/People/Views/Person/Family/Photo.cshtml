@@ -5,7 +5,10 @@
         {
             <div class="row visible-xs-block">
                 <div class="col-sm-12">
-                    <h4><a id="family-picture-collapse" data-toggle="collapse" href="#family-picture-section" aria-expanded="true" aria-controls="family-picture-section"><i class="fa fa-chevron-circle-down"></i></a> Family Photo</h4>
+                    <h4>
+                        <a id="family-picture-collapse" data-toggle="collapse" href="#family-picture-section" aria-expanded="true" aria-controls="family-picture-section"><i class="fa fa-chevron-circle-down"></i></a>
+                        @((bool)!Model.IsBusiness ? "Family Photo" : "Business Photo")
+                    </h4>
                 </div>
             </div>
             <div class="row collapse in" id="family-picture-section">
@@ -27,12 +30,18 @@
             {
                 <div class="row">
                     <div class="col-sm-12">
-                        <h4><a id="family-picture-collapse" data-toggle="collapse" href="#family-picture-section" aria-expanded="true" aria-controls="family-picture-section"><i class="fa fa-chevron-circle-down"></i></a> Family Photo</h4>
+                        <h4>
+                            <a id="family-picture-collapse" data-toggle="collapse" href="#family-picture-section" aria-expanded="true" aria-controls="family-picture-section"><i class="fa fa-chevron-circle-down"></i></a>                            
+                            @((bool)!Model.IsBusiness ? "Family Photo" : "Business Photo")
+                        </h4>
                     </div>
                 </div>
                 <div class="row collapse in" id="family-picture-section">
                     <div class="col-sm-12">
-                        <a class="family-picture btn btn-success btn-sm btn-block" href="/Person2/FamilyPictureDialog/@Model.PeopleId"><i class="fa fa-plus-circle"></i>&nbsp;&nbsp;Add Family Photo</a>
+                        <a class="family-picture btn btn-success btn-sm btn-block" href="/Person2/FamilyPictureDialog/@Model.PeopleId">
+                            <i class="fa fa-plus-circle"></i>&nbsp;&nbsp;                            
+                            @((bool)!Model.IsBusiness ? "Add Family Photo" : "Add Business Photo")
+                        </a>
                         <br/>
                     </div>
                 </div>
