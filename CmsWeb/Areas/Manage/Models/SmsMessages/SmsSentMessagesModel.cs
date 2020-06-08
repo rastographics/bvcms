@@ -6,6 +6,7 @@ using System.Web.Mvc;
 using CmsData;
 using CmsWeb.Constants;
 using CmsWeb.Models;
+using MoreLinq;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Manage.Models.SmsMessages
@@ -165,20 +166,57 @@ namespace CmsWeb.Areas.Manage.Models.SmsMessages
                     where r.PeopleID != null
                     select r.PeopleID.Value).Distinct();
         }
-        public Tag TagAll(Tag tag)
+
+        public void TagAll(string tagname, bool? cleartagfirst)
         {
-            if (tag == null)
+            var workingTag = CurrentDatabase.FetchOrCreateTag(Util2.GetValidTagName(tagname), CurrentDatabase.UserPeopleId, DbUtil.TagTypeId_Personal);
+            var shouldEmptyTag = cleartagfirst ?? false;
+
+            if (shouldEmptyTag)
             {
-                throw new ArgumentNullException(nameof(tag));
+                CurrentDatabase.ClearTag(workingTag);
+            }
+            if (workingTag == null)
+            {
+                throw new ArgumentNullException(nameof(workingTag));
             }
 
-            CurrentDatabase.CurrentTagName = tag.Name;
-            CurrentDatabase.CurrentTagOwnerId = tag.PersonOwner.PeopleId;
+            CurrentDatabase.CurrentTagName = workingTag.Name;
+            CurrentDatabase.CurrentTagOwnerId = workingTag.PersonOwner.PeopleId;
 
             var q = Recipients();
             var listpeople = q.Select(vv => vv).Distinct();
-            CurrentDatabase.TagAll(listpeople, tag);
-            return tag;
+            CurrentDatabase.TagAll(listpeople, workingTag);
+        }
+
+        public Guid ToolBarSend()
+        {
+            var workingTag = CurrentDatabase.NewTemporaryTag();
+            var q = Recipients();
+            CurrentDatabase.TagAll(q, workingTag);
+            var guid = CurrentDatabase.ScratchPadQuery($"HasMyTag(Tag={workingTag.Id})=1");
+            return guid;
+        }
+
+        public EpplusResult ExportSent()
+        {
+            var q = from li in DefineModelList()
+                from i in li.SMSItems
+                where i.Sent
+                select new
+                {
+                    i.PeopleID,
+                    i.Person.FirstName,
+                    i.Person.LastName,
+                    CellNumber = i.Number.FmtFone(),
+                    i.Person.EmailAddress,
+                    MemberStatus = i.Person.MemberStatus.Description,
+                    Group = li.SMSGroup.Name,
+                    DateReceived = li.SendAt.ToShortDateString(),
+                    Time = li.SendAt.FormatTime(),
+                    li.Message
+                };
+            return q.ToDataTable().ToExcel("SentMessages.xlsx");
         }
     }
 }

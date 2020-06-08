@@ -27,14 +27,15 @@
                 });
             $('#tagmessages').addClass("tabsent");
             $('#tagmessages-modal').modal();
-        }).on('keypress', '', 'input[type=text]',
+        }).on('keypress', 'input[type=text]',
         function (e) {
             var key = e.which;
-            if (key == 13)  // the enter key code
+            if (key === 13) // the enter key code
             {
                 $('#searchsent').click();
                 return false;
             }
+            return true;
         }).on('click', 'a.showdetails',
         function (ev) {
             ev.preventDefault();
@@ -57,7 +58,29 @@
             ev.preventDefault();
             var receivedid = $(this).data("receivedid");
             FilterRepliedTo('#' + receivedid);
+        }).on("click", "a.sendemail",
+        function(ev) {
+            ev.preventDefault();
+            var q = $("#sentform").serialize();
+            $.post("/SmsMessages/EmailSent", q,
+                function (ret) {
+                    window.location = ret;
+                });
+        }).on("click", "a.sendtext",
+        function(ev) {
+            ev.preventDefault();
+            var q = $("#sentform").serialize();
+            $.post("/SmsMessages/TextSent", q,
+                function (ret) {
+                    window.location = ret;
+                });
+        }).on("click", "a.export",
+        function (ev) {
+            var f = $('#sentform');
+            f.attr("action", "/SmsMessages/ExportSent");
+            f.submit();
         });
+
 
     $('#tagmessages-modal').on('click',
         'a.btn.tabsent',
