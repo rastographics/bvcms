@@ -1,13 +1,12 @@
-﻿@using UtilityExtensions
+﻿@model CmsWeb.Areas.Giving.Models.GivingPageItem
 @{
-    Layout = ViewExtensions2.TouchPointLayout();
-    ViewBag.Title = "Online Giving Setup";
-    ViewBag.PageHeader = "Online Giving Setup";
+    ViewBag.Title = Model.PageName;
+    Layout = "~/Views/Shared/Giving.cshtml";
 }
-@section head
-{
-    @ViewExtensions2.BootstrapToggleCss()
+@section head {
+<style type="text/css">
+</style>
 }
-<div class="giving">
-    @ViewBag.Id
+<div id="main" class="giving">
+    <giving-container page-prop="@Json.Encode(Model)" type="@ViewBag.Type" fund="@ViewBag.Fund" amount="@ViewBag.Amount"></giving-container>
 </div>
