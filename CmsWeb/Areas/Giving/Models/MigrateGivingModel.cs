@@ -44,6 +44,7 @@ namespace CmsWeb.Areas.Giving.Models
                     if (managedGiving.PaymentInfo != null)
                     {
                         var paymentMethod = PaymentInfoToPaymentMethod(managedGiving.PaymentInfo, managedGiving.Person);
+                        var scheduledGiftTypeId = GetScheduledGiftTypeId(managedGiving);
                         var scheduledGift = new ScheduledGift
                         {
                             IsEnabled = true,
@@ -53,8 +54,8 @@ namespace CmsWeb.Areas.Giving.Models
                             StartDate = managedGiving.StartDate,
                             Day1 = managedGiving.Day1,
                             Day2 = managedGiving.Day2,
-                            Interval = managedGiving.EveryN.GetValueOrDefault(1),
-                            ScheduledGiftTypeId = GetScheduledGiftTypeId(managedGiving)
+                            Interval = GetIntervalValue(managedGiving, scheduledGiftTypeId),
+                            ScheduledGiftTypeId = scheduledGiftTypeId
                         };
                         scheduledGift.ScheduledGiftAmounts.AddRange(RecurringToScheduledGifts(managedGiving.Amounts));
                         db.SubmitChanges();
@@ -193,16 +194,39 @@ namespace CmsWeb.Areas.Giving.Models
                     if (everyN < 3) return semiEvery == "E" ? ScheduledGiftTypeCode.Monthly : ScheduledGiftTypeCode.SemiMonthly;
                     else if (everyN == 3) return ScheduledGiftTypeCode.Quarterly;
                     else if (everyN == 12) return ScheduledGiftTypeCode.Annually;
-                    else throw unrecognized;
+                    else return ScheduledGiftTypeCode.Monthly;
                 case "W":
                     if (everyN < 3) return semiEvery == "E" || everyN == 1 ? ScheduledGiftTypeCode.Weekly : ScheduledGiftTypeCode.BiWeekly;
                     else if (everyN == 5 || everyN == 4) return ScheduledGiftTypeCode.Monthly;
                     else if (everyN == 12) return ScheduledGiftTypeCode.Quarterly;
                     else if (everyN == 52) return ScheduledGiftTypeCode.Annually;
-                    else throw unrecognized;
+                    else return ScheduledGiftTypeCode.Weekly;
                 default:
                     throw unrecognized;
             }
+        }
+
+        private static int GetIntervalValue(ManageGivingConversionModel managedGiving, int scheduledGiftTypeId)
+        {
+            var interval = managedGiving.EveryN.GetValueOrDefault(1);
+            switch (scheduledGiftTypeId)
+            {
+                case ScheduledGiftTypeCode.Annually: //was weekly
+                    if (interval == 12 || interval == 52) interval = 1;
+                    break;
+                case ScheduledGiftTypeCode.Quarterly: //was weekly
+                    if (interval == 3 || interval == 12) interval = 1;
+                    break;
+                case ScheduledGiftTypeCode.Monthly: //was weekly
+                    if (interval == 5 || interval == 4) interval = 1;
+                    break;
+                case ScheduledGiftTypeCode.Weekly:
+                case ScheduledGiftTypeCode.BiWeekly:
+                default:
+                    interval = 1;
+                    break;
+            }
+            return interval;
         }
     }
 }
