@@ -60,7 +60,7 @@ namespace CmsWeb.Areas.Involvement.Controllers
             ViewBag.orgname = m.Org.FullName;
             ViewBag.model = m;
             ViewBag.selectmode = 0;
-            //InitExportToolbar(m);
+            InitExportToolbar(m);
             Util.ActiveOrganization = m.Org.OrganizationName;
             return View(m);
         }
@@ -88,7 +88,7 @@ namespace CmsWeb.Areas.Involvement.Controllers
             return Content("ok");
         }
 
-        private void InitExportToolbar(OrganizationModel m)
+        private void InitExportToolbar(InvolvementModel m)
         {
             ViewBag.oid = m.Id;
             ViewBag.queryid = m.QueryId;

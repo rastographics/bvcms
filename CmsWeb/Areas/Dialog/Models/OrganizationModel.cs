@@ -90,7 +90,7 @@ namespace CmsWeb.Areas.Dialog.Models
                 {
                     if (item.Text == "Ticketed Event")
                     {
-                        indent = "....";
+                        indent = "\xA0 \xA0 \xA0";
                         ticketedTypes.Add(new SelectListItem { Text = "Ticketed Event", Value = item.Value });
                         ticketedTypes.Add(new SelectListItem { Text = "-----LEGACY-----", Value = "", Disabled = true });
                         continue;
