@@ -20,7 +20,6 @@ namespace CmsDataTests.Generated
             var paymentMethod = new PaymentMethod
             {
                 Person = person,
-                BankName = "",
                 GatewayAccountId = 1,
                 ExpiresMonth = 10,
                 ExpiresYear = DateTime.Now.Year + 1,
