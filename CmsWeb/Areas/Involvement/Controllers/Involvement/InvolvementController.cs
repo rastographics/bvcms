@@ -110,8 +110,25 @@ namespace CmsWeb.Areas.Involvement.Controllers
         [HttpPost]
         public ActionResult Meetings(MeetingsModel m)
         {
+
             DbUtil.LogActivity($"Viewing Meetings for orgId={m.Id}", orgid: m.Id);
             return PartialView(m);
+        }
+
+        [HttpPost]
+        public ActionResult MeetingsPast(MeetingsModel m)
+        {
+            m.Future = false;
+            DbUtil.LogActivity($"Viewing Meetings for orgId={m.Id}", orgid: m.Id);
+            return PartialView("Meetings", m);
+        }
+
+        [HttpPost]
+        public ActionResult MeetingsFuture(MeetingsModel m)
+        {
+            m.Future = true;
+            DbUtil.LogActivity($"Viewing Meetings for orgId={m.Id}", orgid: m.Id);
+            return PartialView("Meetings", m);
         }
 
         [HttpPost]
