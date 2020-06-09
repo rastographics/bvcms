@@ -8,10 +8,13 @@
 
 <form class="ajax">
     <div class="row">
-        <div class="col-sm-10">
-            <div id="involvementTabSelector" class="btn-group">
-                @Html.Partial("MeetingTabs", Model)
+        <div class="col-sm-10 text-right">
+            <div class="checkbox pull-left">
+                <label class="control-label">
+                    <input id="Future" name="Future" type="checkbox" value="true" @Checked(Model.Future)> Show future meetings
+                </label>
             </div>
+            @FormAction()
         </div>
         <div class="col-sm-2">
             <a class="btn btn-success btn-block dialog-options" href="/Dialog/ForNewMeeting/@Model.Id"><i class="fa fa-plus-circle"></i> New Meeting</a>
