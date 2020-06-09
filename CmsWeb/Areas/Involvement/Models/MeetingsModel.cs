@@ -14,6 +14,7 @@ namespace CmsWeb.Areas.Involvement.Models
     {
         public int Id { get; set; }
         public bool Future { get; set; }
+        public bool Past { get; set; }
 
         public bool ShowCreateNewMeeting { get; } = RoleChecker.HasSetting(SettingName.Organization_ShowCreateNewMeeting, true);
         public bool ShowEditMeeting { get; } = RoleChecker.HasSetting(SettingName.Organization_ShowEditMeeting, true);

@@ -1,7 +1,7 @@
 ﻿@using CmsData.Codes
 @model CmsWeb.Areas.Involvement.Models.MeetingsModel
 <div class="btn-group">
-    <a class="btn btn-default" tabindex="0" href="#" data-toggle="popover" data-container="body" data-placement="bottom" data-trigger="focus" data-title="Group Buttons" data-content="@Model.GroupHelp"><i class="fa fa-info-circle"></i></a>
+    @*<a class="btn btn-default" tabindex="0" href="#" data-toggle="popover" data-container="body" data-placement="bottom" data-trigger="focus" data-title="Group Buttons" data-content="@Model.GroupHelp"><i class="fa fa-info-circle"></i></a>*@
     @MeetingTab(InvolvementMeetingTabCode.Upcoming, "Upcoming")
     &nbsp;
 </div>
@@ -9,7 +9,22 @@
 
 @helper MeetingTab(string tab, string name)
 {
-    <div class="btn-group">
-        <button class="btn btn-default grp active" value="@tab">@name</button>
-    </div>
+<div class="btn-group">
+    <button class="btn btn-default grp active" value="@tab">@name</button>
+    @switch (tab)
+    {
+        case InvolvementMeetingTabCode.Upcoming:
+            Model.Future = true;
+            Model.Past = false;
+            break;
+        case InvolvementMeetingTabCode.Past:
+            Model.Past = true;
+            Model.Future = false;
+            break;
+    }
+
+</div>
 }
+
+
+
