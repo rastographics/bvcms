@@ -33,6 +33,7 @@ namespace CmsWeb.Areas.People.Models
             var qo = from o in CurrentDatabase.SMSLists
                      join i in CurrentDatabase.SMSItems on o.Id equals i.ListID
                      where i.PeopleID == PeopleId
+                     where i.Sent
                      select new SmsViewModel()
                      {
                          Id = o.Id,

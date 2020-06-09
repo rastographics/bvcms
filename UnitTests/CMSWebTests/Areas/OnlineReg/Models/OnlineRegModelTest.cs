@@ -68,7 +68,7 @@ namespace CMSWebTests.Areas.OnlineReg.Models
 
             OnlineRegModel om = FakeOrganizationUtils.GetFakeOnlineRegModel(org.org.OrganizationId);
             om.List = new List<OnlineRegPersonModel>() { person };
-            om.CheckDuplicateGift(30).ShouldNotBeNull();
+            om.CheckDuplicateGift(30, (int)GatewayTypes.Sage).ShouldNotBeNull();
             FakeOrganizationUtils.DeleteOrg(org.org.OrganizationId);
         }
     }

@@ -14,6 +14,9 @@
     var recaptchaSiteKey = db.Setting("googleReCaptchaSiteKey", ConfigurationManager.AppSettings["googleReCaptchaSiteKey"]);
     var useRecaptcha = db.Setting("UseRecaptcha") && recaptchaSiteKey.HasValue();
     var useRecaptchaClass = useRecaptcha ? "recaptcha" : "noRecaptcha";
+
+    var hidePaymentEl = Model.isExternalPayment ? "display:none" : "";
+    var formURL = Model.isExternalPayment ? "/Pushpay/Registration" : "/OnlineReg/ProcessPayment";
 }
 @section scripts
 {
@@ -45,7 +48,7 @@
             @Html.Raw(Model.Terms)
         </div>
     }
-    <form class="showform form-horizontal @useRecaptchaClass" id="OnlineRegProcessPayment" action="/OnlineReg/ProcessPayment" method="post">
+    <form class="showform form-horizontal @useRecaptchaClass" id="OnlineRegProcessPayment" action="@formURL" method="post">
         @Html.ValidationSummary()
         <div class="form-group" style="font-size: 1.5em;">
             @Html.LabelFor(m => m.AmtToPay, new { @class = "control-label col-sm-4" })
@@ -81,7 +84,7 @@
         @Html.HiddenFor(m => m.ProcessType)
         @Html.HiddenFor(m => m.TermsSignature)
 
-        <div class="well">
+        <div class="well" style="@hidePaymentEl">
             @Html.EditorFor(m => m.First)
             @Html.EditorFor(m => m.MiddleInitial, new { classes = "narrow" })
             @Html.EditorFor(m => m.Last)
@@ -95,7 +98,7 @@
             @Html.EditorFor(m => m.Phone)
             @Html.EditorFor(m => m.Email)
         </div>
-        <div class="well">
+        <div class="well" style="@hidePaymentEl">
             @if (Model.NoCreditCardsAllowed || Model.NoEChecksAllowed)
             {
                 @Html.Hidden("Type", Model.Type)
@@ -140,7 +143,7 @@
         <div class="form-group">
             <div class="col-sm-offset-3 col-sm-9 text-right">
                 <div>
-                    @if (Model.IsLoggedIn == true && !VaultDisabled)
+                    @if (Model.IsLoggedIn == true && !VaultDisabled && !Model.isExternalPayment)
                     {
                         <span id="savePayArea" style="margin-right: 2em;">@Html.CheckBoxFor(m => m.SavePayInfo) Save Payment Information</span>
                     }
