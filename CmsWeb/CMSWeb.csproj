@@ -1274,6 +1274,7 @@
     <Content Include="Content\css\select2.png" />
     <Content Include="Content\css\select2x2.png" />
     <Content Include="Content\css\typeahead.js-bootstrap.css" />
+    <Content Include="Content\dist\css\app.css" />
     <Content Include="Content\dist\js\app.js" />
     <Content Include="Content\font-awesome-4.0.3\css\font-awesome.css" />
     <Content Include="Content\font-awesome-4.0.3\css\font-awesome.min.css" />
