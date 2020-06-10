@@ -19,8 +19,15 @@ namespace CmsWeb.Areas.Giving.Models
         {
             CurrentDatabase = db;
         }
-
         public CMSDataContext CurrentDatabase { get; set; }
+
+        public int currentPeopleId { get; set; }
+
+        public Message CreateMethod()
+        {
+            currentPeopleId = (int)CurrentDatabase.UserPeopleId;
+            return Models.Message.successMessage("Payment schedule deleted.", Models.Message.API_ERROR_NONE);
+        }
 
         public Message DeleteMethod(Guid? paymentMethodId = null)
         {
@@ -56,9 +63,9 @@ namespace CmsWeb.Areas.Giving.Models
             {
                 return Models.Message.createErrorReturn("No scheduled gift start date found.", Models.Message.API_ERROR_SCHEDULED_GIFT_START_DATE_NOT_FOUND);
             }
-            if (viewModel.amount == null || viewModel.amount == 0)
+            if (viewModel.amount == null || viewModel.amount == 0 || viewModel.amount < 0)
             {
-                return Models.Message.createErrorReturn("Contribution amount is null.", Models.Message.API_ERROR_SCHEDULED_GIFT_AMOUNT_NOT_FOUND);
+                return Models.Message.createErrorReturn("Contribution amount is null or a negative number.", Models.Message.API_ERROR_SCHEDULED_GIFT_AMOUNT_NOT_FOUND);
             }
             if (viewModel.paymentMethodId == null)
             {
@@ -150,9 +157,9 @@ namespace CmsWeb.Areas.Giving.Models
             {
                 return Models.Message.createErrorReturn("No scheduled gift start date found.", Models.Message.API_ERROR_SCHEDULED_GIFT_START_DATE_NOT_FOUND);
             }
-            if (viewModel.amount == null || viewModel.amount == 0)
+            if (viewModel.amount == null || viewModel.amount == 0 || viewModel.amount < 0)
             {
-                return Models.Message.createErrorReturn("Contribution amount is null.", Models.Message.API_ERROR_SCHEDULED_GIFT_AMOUNT_NOT_FOUND);
+                return Models.Message.createErrorReturn("Contribution amount is null or a negative number.", Models.Message.API_ERROR_SCHEDULED_GIFT_AMOUNT_NOT_FOUND);
             }
             var scheduledGift = CurrentDatabase.ScheduledGifts.Where(s => s.ScheduledGiftId == viewModel.scheduledGiftId).FirstOrDefault();
             if (scheduledGift == null)

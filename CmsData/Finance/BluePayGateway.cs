@@ -97,6 +97,11 @@ namespace CmsData.Finance
             db.SubmitChanges();
         }
 
+        void IGateway.StoreInVault(PaymentMethod paymentMethod, string type, string cardNumber, string bankAccountNum, string bankRoutingNum, int expireMonth, int expireYear, string address, string address2, string city, string state, string country, string zip, string phone, string emailAddress)
+        {
+            throw new NotImplementedException();
+        }
+
         public void RemoveFromVault(int peopleId)
         {
             var person = db.LoadPersonById(peopleId);
@@ -203,6 +208,25 @@ namespace CmsData.Finance
             gateway.setupVaultTransaction(description, tranid);
 
             gateway.auth(amt.ToString("F2"), masterId);
+
+            gateway.Process();
+            return getResponse(gateway);
+        }
+
+        public TransactionResponse AuthCreditCardVault(PaymentMethod paymentMethod, decimal amt, string description, int tranid, string lastName, string firstName, string address, string address2, string city, string state, string country, string zip, string phone, string emailAddress)
+        {
+            if (paymentMethod == null || paymentMethod.VaultId == null)
+            {
+                return new TransactionResponse
+                {
+                    Approved = false,
+                    Message = "missing payment info",
+                };
+            }
+            var gateway = createGateway();
+            gateway.setupVaultTransaction(description, tranid);
+
+            gateway.auth(amt.ToString("F2"), paymentMethod.VaultId);
 
             gateway.Process();
             return getResponse(gateway);
