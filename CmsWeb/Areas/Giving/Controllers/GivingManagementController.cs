@@ -24,7 +24,7 @@ namespace CmsWeb.Areas.Giving.Controllers
         public ActionResult Index()
         {
             //MethodsCreate(1,true,"My Bank","Jason", "Rice","123456789", "111000614","","","","","","","","","","","","authOnlyTransaction");
-            MethodsCreate(2, true, "My Visa", "Jason", "Rice","","", "4111111111111111", "999", "05", "2021","33", "my address 2", "Dallas", "Texas", "United States", "99997-0008", "2149123704", "authOnlyTransaction");
+            //MethodsCreate(2, true, "My Visa", "Jason", "Rice","","", "4111111111111111", "999", "05", "2021","33", "my address 2", "Dallas", "Texas", "United States", "99997-0008", "2149123704", "authOnlyTransaction");
 
             //var pm1 = CurrentDatabase.PaymentMethods.Where(p => p.PeopleId == 3199047 && p.PaymentMethodTypeId == 2).FirstOrDefault();
             //MethodsDelete(pm1.PaymentMethodId);
