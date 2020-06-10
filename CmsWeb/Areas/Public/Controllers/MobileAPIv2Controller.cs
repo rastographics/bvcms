@@ -174,7 +174,7 @@ namespace CmsWeb.Areas.Public.Controllers
 
             MobileAccount account = new MobileAccount(CurrentDatabase);
             account.setDeepLinkFields(message.device, message.instance, message.key, message.argString);
-            if (CurrentDatabase.Setting("UseMobileQuickSignInCodes"))
+            if (CurrentDatabase.Setting("UseMobileQuickSignInCodes", true))
             {
                 account.sendLoginCode();
             }
