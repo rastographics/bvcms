@@ -1,6 +1,8 @@
 ﻿using CmsData;
 using CmsData.Codes;
+using CmsData.Finance;
 using CmsWeb.Areas.Giving.Models;
+using CmsWeb.Code;
 using CmsWeb.Lifecycle;
 using System;
 using System.Linq;
@@ -31,22 +33,55 @@ namespace CmsWeb.Areas.Giving.Controllers
             return Json(list, JsonRequestBehavior.AllowGet);
         }
 
+        public PaymentProcessTypes ProcessType { get; set; }
         [HttpPost]
-        public ActionResult MethodsCreate(int? paymentTypeId = null, bool isDefault = true, string name = "", string nameOnAccount = "", string bankAccount = "",
-            string bankRouting = "", string cardNumber = "", string ccv = "", string expiresMonth = null, string expiresYear = null, int? processTypeId = null)
+        public ActionResult MethodsCreate(int? paymentTypeId = null, bool isDefault = true, string name = "", string firstName = "", string lastName = "", string bankAccount = "",
+            string bankRouting = "", string cardNumber = "", string cvv = "", string expiresMonth = null, string expiresYear = null, string address ="", string address2 = "", string city = "",
+            string state = "", string country = "", string zip = "", string phone = "", string transactionTypeId = "", string emailAddress = "")
         {
-            if (!paymentTypeId.HasValue)
+            if (paymentTypeId == null || paymentTypeId == 0)
             {
-                throw new HttpException(404, "No payment method type ID found.");
+                return Models.Message.createErrorReturn("No payment method type ID found.", Models.Message.API_ERROR_PAYMENT_METHOD_TYPE_ID_NOT_FOUND);
+            }
+            if(firstName == "")
+            {
+                return Models.Message.createErrorReturn("First name required.", Models.Message.API_ERROR_PAYMENT_METHOD_REQUIRED_FIELD_EMPTY);
+            }
+            if (lastName == "")
+            {
+                return Models.Message.createErrorReturn("First name required.", Models.Message.API_ERROR_PAYMENT_METHOD_REQUIRED_FIELD_EMPTY);
+            }
+            if(paymentTypeId != 1)
+            {
+                if (address == "")
+                {
+                    return Models.Message.createErrorReturn("Address required.", Models.Message.API_ERROR_PAYMENT_METHOD_REQUIRED_FIELD_EMPTY);
+                }
+                if (city == "")
+                {
+                    return Models.Message.createErrorReturn("City required.", Models.Message.API_ERROR_PAYMENT_METHOD_REQUIRED_FIELD_EMPTY);
+                }
+                if (state == "")
+                {
+                    return Models.Message.createErrorReturn("State required.", Models.Message.API_ERROR_PAYMENT_METHOD_REQUIRED_FIELD_EMPTY);
+                }
+                if (country == "")
+                {
+                    return Models.Message.createErrorReturn("Country required.", Models.Message.API_ERROR_PAYMENT_METHOD_REQUIRED_FIELD_EMPTY);
+                }
+                if (zip == "")
+                {
+                    return Models.Message.createErrorReturn("Zip required.", Models.Message.API_ERROR_PAYMENT_METHOD_REQUIRED_FIELD_EMPTY);
+                }
+            }
+            if (transactionTypeId == "")
+            {
+                return Models.Message.createErrorReturn("Transaction Type ID required.", Models.Message.API_ERROR_PAYMENT_METHOD_REQUIRED_FIELD_EMPTY);
             }
 
-            //transactionResponse = gateway.AuthCreditCard(pid, dollarAmt, CreditCard, Expires,
-            //               "Recurring Giving Auth", 0, CVV, string.Empty,
-            //               FirstName, LastName, Address, Address2, City, State, Country, Zip, Phone);
-            // if we got this far that means the auth worked so now let's do a void for that auth.
-            //var voidResponse = gateway.VoidCreditCardTransaction(transactionResponse.TransactionId);
-
             var paymentMethod = new PaymentMethod();
+            var cardValidation = new Message();
+            var bankValidation = new Message();
             switch (paymentTypeId)
             {
                 case 1: // bank
@@ -56,17 +91,15 @@ namespace CmsWeb.Areas.Giving.Controllers
                         PaymentMethodTypeId = (int)paymentTypeId,
                         IsDefault = isDefault,
                         Name = name,
-                        VaultId = $"A{RandomNumber(1000000, 99999999)}",
-                        NameOnAccount = nameOnAccount,
-                        //MaskedDisplay = "•••• •••• •••• 1234".PadLeft(1, '•'),
+                        NameOnAccount = firstName + " " + lastName,
                         MaskedDisplay = "•••• •••• •••• 1234",
-                        Last4 = bankAccount.Substring(bankAccount.Length - 4, 4),
-                        ExpiresMonth = Convert.ToInt32(expiresMonth),
-                        ExpiresYear = Convert.ToInt32(expiresYear),
-                        GatewayAccountId = 1, // find class multiple gateway utils, use to determine GatewayAccountId, may be different based on pledge type
+                        Last4 = bankAccount.Substring(bankAccount.Length - 4, 4)
                     };
-                    //person.PaymentMethods.Add(paymentMethod);
-                    paymentMethod.Encrypt();
+                    bankValidation = PaymentValidator.ValidateBankAccountInfo(bankAccount, bankRouting);
+                    if (bankValidation.error != 0)
+                    {
+                        return Models.Message.createErrorReturn(bankValidation.data, bankValidation.error);
+                    }
                     break;
                 case 2: // Visa
                     paymentMethod = new PaymentMethod
@@ -75,21 +108,74 @@ namespace CmsWeb.Areas.Giving.Controllers
                         PaymentMethodTypeId = (int)paymentTypeId,
                         IsDefault = isDefault,
                         Name = name,
-                        VaultId = $"A{RandomNumber(1000000, 99999999)}",
-                        NameOnAccount = nameOnAccount,
+                        NameOnAccount = firstName + " " + lastName,
                         MaskedDisplay = "•••• •••• •••• 1234",
                         Last4 = cardNumber.Substring(cardNumber.Length - 4, 4),
                         ExpiresMonth = Convert.ToInt32(expiresMonth),
                         ExpiresYear = Convert.ToInt32(expiresYear),
-                        GatewayAccountId = 1,
                     };
-                    paymentMethod.Encrypt();
+                    //cardValidation = PaymentValidator.ValidateCreditCardInfo(cardNumber, cvv, expiresMonth, expiresYear);
+                    //if(cardValidation.error != 0)
+                    //{
+                    //    return Models.Message.createErrorReturn(cardValidation.data, cardValidation.error);
+                    //}
                     break;
                 case 3: // Mastercard
+                    paymentMethod = new PaymentMethod
+                    {
+                        PeopleId = (int)CurrentDatabase.UserPeopleId,
+                        PaymentMethodTypeId = (int)paymentTypeId,
+                        IsDefault = isDefault,
+                        Name = name,
+                        NameOnAccount = firstName + " " + lastName,
+                        MaskedDisplay = "•••• •••• •••• 1234",
+                        Last4 = cardNumber.Substring(cardNumber.Length - 4, 4),
+                        ExpiresMonth = Convert.ToInt32(expiresMonth),
+                        ExpiresYear = Convert.ToInt32(expiresYear),
+                    };
+                    cardValidation = PaymentValidator.ValidateCreditCardInfo(cardNumber, cvv, expiresMonth, expiresYear);
+                    if (cardValidation.error != 0)
+                    {
+                        return Models.Message.createErrorReturn(cardValidation.data, cardValidation.error);
+                    }
                     break;
                 case 4: // Amex
+                    paymentMethod = new PaymentMethod
+                    {
+                        PeopleId = (int)CurrentDatabase.UserPeopleId,
+                        PaymentMethodTypeId = (int)paymentTypeId,
+                        IsDefault = isDefault,
+                        Name = name,
+                        NameOnAccount = firstName + " " + lastName,
+                        MaskedDisplay = "•••• •••• •••• 1234",
+                        Last4 = cardNumber.Substring(cardNumber.Length - 4, 4),
+                        ExpiresMonth = Convert.ToInt32(expiresMonth),
+                        ExpiresYear = Convert.ToInt32(expiresYear),
+                    };
+                    cardValidation = PaymentValidator.ValidateCreditCardInfo(cardNumber, cvv, expiresMonth, expiresYear);
+                    if (cardValidation.error != 0)
+                    {
+                        return Models.Message.createErrorReturn(cardValidation.data, cardValidation.error);
+                    }
                     break;
                 case 5: // Discover
+                    paymentMethod = new PaymentMethod
+                    {
+                        PeopleId = (int)CurrentDatabase.UserPeopleId,
+                        PaymentMethodTypeId = (int)paymentTypeId,
+                        IsDefault = isDefault,
+                        Name = name,
+                        NameOnAccount = firstName + " " + lastName,
+                        MaskedDisplay = "•••• •••• •••• 1234",
+                        Last4 = cardNumber.Substring(cardNumber.Length - 4, 4),
+                        ExpiresMonth = Convert.ToInt32(expiresMonth),
+                        ExpiresYear = Convert.ToInt32(expiresYear),
+                    };
+                    cardValidation = PaymentValidator.ValidateCreditCardInfo(cardNumber, cvv, expiresMonth, expiresYear);
+                    if (cardValidation.error != 0)
+                    {
+                        return Models.Message.createErrorReturn(cardValidation.data, cardValidation.error);
+                    }
                     break;
                 case 99: // Other
                     break;
@@ -97,9 +183,42 @@ namespace CmsWeb.Areas.Giving.Controllers
                     break;
             }
 
+            var account = MultipleGatewayUtils.GetAccount(CurrentDatabase, PaymentProcessTypes.RecurringGiving);
+            paymentMethod.GatewayAccountId = account.GatewayAccountId;
+
+            var currentPeopleId = CurrentDatabase.UserPeopleId;
+            var testing = true;
+            var gateway = CurrentDatabase.Gateway(testing, account, PaymentProcessTypes.RecurringGiving);
+            var dollarAmt = 1;
+
+            var expires = HelperMethods.FormatExpirationDate(Convert.ToInt32(expiresMonth), Convert.ToInt32(expiresYear));
+
+            if(paymentTypeId == 1)
+            {
+
+            }
+            else if (paymentTypeId == 2 || paymentTypeId == 3 || paymentTypeId == 4 || paymentTypeId == 5)
+            {
+                var transactionResponse = gateway.AuthCreditCard((int)currentPeopleId, dollarAmt, cardNumber, expires, "Recurring Giving Auth", 0, cvv, string.Empty, firstName, lastName, address, address2, city, state, country, zip, phone);
+                if(transactionResponse.Approved == false)
+                {
+                    return Models.Message.createErrorReturn("Card authorization failed.", Models.Message.API_ERROR_PAYMENT_METHOD_AUTHORIZATION_FAILED);
+                }
+                else
+                {
+                    var voidResponse = gateway.VoidCreditCardTransaction(transactionResponse.TransactionId);
+                    var type = PaymentType.CreditCard;
+                    gateway.StoreInVault(paymentMethod, type, cardNumber, null, null, Convert.ToInt32(expiresMonth), Convert.ToInt32(expiresYear), address, address2, city, state, country, zip, phone, emailAddress);
+                }
+            }
+            else
+            {
+                return Models.Message.createErrorReturn("Payment method type not supported.", Models.Message.API_ERROR_PAYMENT_METHOD_AUTHORIZATION_FAILED);
+            }
+
+            paymentMethod.Encrypt();
             CurrentDatabase.PaymentMethods.InsertOnSubmit(paymentMethod);
             CurrentDatabase.SubmitChanges();
-
             return View();
         }
 

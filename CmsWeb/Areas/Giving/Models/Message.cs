@@ -113,6 +113,13 @@ namespace CmsWeb.Areas.Giving.Models
 
         public const int API_ERROR_PAYMENT_METHOD_NOT_FOUND = 110;
         public const int API_ERROR_PAYMENT_METHOD_IN_USE = 111;
+        public const int API_ERROR_PAYMENT_METHOD_TYPE_ID_NOT_FOUND = 112;
+        public const int API_ERROR_PAYMENT_METHOD_REQUIRED_FIELD_EMPTY = 113;
+        public const int API_ERROR_PAYMENT_METHOD_CREDIT_CARD_NUM_INVALID = 114;
+        public const int API_ERROR_PAYMENT_METHOD_CREDIT_CARD_EXPIRED = 115;
+        public const int API_ERROR_PAYMENT_METHOD_BANK_ACCOUNT_NUM_INVALID = 116;
+        public const int API_ERROR_PAYMENT_METHOD_BANK_ROUTING_NUM_INVALID = 117;
+        public const int API_ERROR_PAYMENT_METHOD_AUTHORIZATION_FAILED = 118;
 
         public const int API_ERROR_SCHEDULED_GIFT_NOT_FOUND = 120;
         public const int API_ERROR_SCHEDULED_GIFT_TYPE_ID_NOT_FOUND = 121;
