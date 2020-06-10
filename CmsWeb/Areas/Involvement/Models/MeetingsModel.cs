@@ -60,17 +60,6 @@ namespace CmsWeb.Areas.Involvement.Models
                            where m.MeetingDate >= midnight
                            select m;
 
-
-            //if (Future)
-            //    meetings = from m in meetings
-            //               where m.MeetingDate >= midnight
-            //               select m;
-            //else
-            //    meetings = from m in meetings
-            //               where m.MeetingDate < midnight
-            //               select m;
-
-
             return meetings;
         }
 
