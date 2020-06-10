@@ -708,6 +708,7 @@
     <Compile Include="Generated\ResourceType.cs" />
     <Compile Include="Generated\ScheduledGift.cs" />
     <Compile Include="Generated\ScheduledGiftAmount.cs" />
+    <Compile Include="Generated\ScheduledGiftType.cs" />
     <Compile Include="Generated\SessionValue.cs" />
     <Compile Include="Generated\SettingCategory.cs" />
     <Compile Include="Generated\SettingMetadatum.cs" />
