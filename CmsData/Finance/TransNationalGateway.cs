@@ -586,6 +586,11 @@ namespace CmsData.Finance
             };
         }
 
+        public TransactionResponse AuthCreditCardVault(PaymentMethod paymentMethod, decimal amt, string description, int tranid, string lastName, string firstName, string address, string address2, string city, string state, string country, string zip, string phone, string emailAddress)
+        {
+            throw new NotImplementedException();
+        }
+
         public TransactionResponse PayWithVault(int peopleId, decimal amt, string description, int tranid, string type)
         {
             var person = db.LoadPersonById(peopleId);
@@ -920,6 +925,11 @@ namespace CmsData.Finance
                     return (paymentInfo.TbnCardVaultId ?? paymentInfo.TbnBankVaultId).ToString();
             }
 
+        }
+
+        void IGateway.StoreInVault(PaymentMethod paymentMethod, string type, string cardNumber, string bankAccountNum, string bankRoutingNum, int expireMonth, int expireYear, string address, string address2, string city, string state, string country, string zip, string phone, string emailAddress)
+        {
+            throw new NotImplementedException();
         }
     }
 }

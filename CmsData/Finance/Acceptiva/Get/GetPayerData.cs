@@ -15,6 +15,12 @@ namespace CmsData.Finance.Acceptiva.Get
             Data["params[0][client_payer_id]"] = peopleId.ToString();
         }
 
+        public GetPayerData(bool isTesting, string apiKey, string vaultId)
+            : base(isTesting, apiKey, action)
+        {
+            Data["params[0][client_payer_id]"] = vaultId;
+        }
+
         public new AcceptivaResponse<PayerDataResponse> Execute()
         {
             var response = base.Execute();

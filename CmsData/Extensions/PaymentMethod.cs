@@ -14,6 +14,7 @@ namespace CmsData
                 _MaskedDisplay = Util.Decrypt(_MaskedDisplay);
                 _NameOnAccount = Util.Decrypt(_NameOnAccount);
                 _VaultId = Util.Decrypt(_VaultId);
+                _CustomerId = Util.Decrypt(_CustomerId);
                 _encrypted = false;
             }
         }
@@ -26,6 +27,7 @@ namespace CmsData
                 _MaskedDisplay = Util.Encrypt(_MaskedDisplay);
                 _NameOnAccount = Util.Encrypt(_NameOnAccount);
                 _VaultId = Util.Encrypt(_VaultId);
+                _CustomerId = Util.Encrypt(_CustomerId);
                 _encrypted = true;
             }
         }

@@ -103,6 +103,102 @@ namespace CmsData.Finance
 
             db.SubmitChanges();
         }
+        
+        public void StoreInVault(PaymentMethod paymentMethod, string type, string cardNumber, string bankAccountNum, string bankRoutingNum, int expireMonth, int expireYear,
+            string address, string address2, string city, string state, string country, string zip, string phone, string emailAddress)
+        {
+            if (paymentMethod == null)
+            {
+                throw new Exception($"Payment method is required.");
+            }
+
+            if (type == PaymentType.CreditCard)
+            {
+                var expires = HelperMethods.FormatExpirationDate(Convert.ToInt32(expireMonth), Convert.ToInt32(expireYear));
+                if (paymentMethod.VaultId == null) // create new vault.
+                {
+                    paymentMethod.VaultId = (CreateCreditCardVault(paymentMethod.PeopleId, cardNumber, expires)).ToString();
+                }
+                else // update existing vault.
+                {
+                    var vaultId = new Guid(paymentMethod.VaultId);
+                    UpdateCreditCardVault(vaultId, paymentMethod.PeopleId, cardNumber, expires);
+                }
+            }
+            else if (type == PaymentType.Ach)
+            {
+                if (paymentMethod.VaultId == null) // create new vault
+                {
+                    paymentMethod.VaultId = (CreateAchVault(paymentMethod.PeopleId, bankAccountNum, bankRoutingNum)).ToString();
+                }
+                else // update existing vault.
+                {
+                    var vaultId = new Guid(paymentMethod.VaultId);
+                    UpdateAchVault(vaultId, paymentMethod.PeopleId, bankAccountNum, bankRoutingNum);
+                }
+            }
+            else
+            {
+                throw new ArgumentException($"Type {type} not supported", nameof(type));
+            }
+        }
+
+        private Guid CreateCreditCardVault(int peopleId, string cardNumber, string expiration)
+        {
+            var createCreditCardVaultRequest = new CreateCreditCardVaultRequest(_id, _key, expiration, cardNumber);
+
+            var response = createCreditCardVaultRequest.Execute();
+            if (!response.Success)
+                throw new Exception(
+                    $"Sage failed to create the credit card for people id: {peopleId}, message: {response.Message}");
+
+            return response.VaultGuid;
+        }
+
+        private void UpdateCreditCardVault(Guid vaultGuid, int peopleId, string cardNumber, string expiration)
+        {
+            var updateCreditCardVaultRequest = new UpdateCreditCardVaultRequest(_id,
+                                                                                _key,
+                                                                                vaultGuid,
+                                                                                expiration,
+                                                                                cardNumber);
+
+            var response = updateCreditCardVaultRequest.Execute();
+            if (!response.Success)
+                throw new Exception(
+                    $"Sage failed to update the credit card for people id: {peopleId}, message: {response.Message}");
+        }
+
+        private Guid CreateAchVault(int peopleId, string accountNumber, string routingNumber)
+        {
+            var createAchVaultRequest = new CreateAchVaultRequest(_id, _key, accountNumber, routingNumber);
+
+            var response = createAchVaultRequest.Execute();
+            if (!response.Success)
+                throw new Exception(
+                    $"Sage failed to create the ach account for people id: {peopleId}, message: {response.Message}");
+
+            return response.VaultGuid;
+        }
+
+        private void UpdateAchVault(Guid vaultGuid, int peopleId, string accountNumber, string routingNumber)
+        {
+            var updateAchVaultRequest = new UpdateAchVaultRequest(_id, _key, vaultGuid, accountNumber, routingNumber);
+
+            var response = updateAchVaultRequest.Execute();
+            if (!response.Success)
+                throw new Exception(
+                    $"Sage failed to update the ach account for people id: {peopleId}, message: {response.Message}");
+        }
+
+        private void DeleteVault(Guid vaultGuid, int peopleId)
+        {
+            var deleteVaultRequest = new DeleteVaultRequest(_id, _key, vaultGuid);
+
+            var success = deleteVaultRequest.Execute();
+            if (!success)
+                throw new Exception($"Sage failed to delete the vault for people id: {peopleId}");
+        }
 
         private Guid CreateCreditCardVault(Person person, string cardNumber, string expiration)
         {
@@ -391,6 +487,45 @@ namespace CmsData.Finance
                 amt,
                 tranid.ToString(CultureInfo.InvariantCulture),
                 person.PeopleId.ToString(CultureInfo.InvariantCulture));
+
+            var response = creditCardVaultAuthRequest.Execute();
+
+            return new TransactionResponse
+            {
+                Approved = response.ApprovalIndicator == ApprovalIndicator.Approved,
+                AuthCode = response.Code,
+                Message = response.Message,
+                TransactionId = response.Reference
+            };
+        }
+
+        public TransactionResponse AuthCreditCardVault(PaymentMethod paymentMethod, decimal amt, string description, int tranid, string lastName, string firstName, string address, string address2, string city, string state, string country, string zip, string phone, string emailAddress)
+        {
+            if (paymentMethod == null || paymentMethod.VaultId == null)
+                return new TransactionResponse
+                {
+                    Approved = false,
+                    Message = "missing payment info",
+                };
+
+            var vaultGuid = new Guid(paymentMethod.VaultId);
+
+            var creditCardVaultAuthRequest = new CreditCardVaultAuthRequest(_id,
+                _key,
+                vaultGuid,
+                $"{firstName} {lastName}",
+                new BillingAddress
+                {
+                    Address1 = address,
+                    City = city,
+                    State = state,
+                    Zip = zip,
+                    Email = emailAddress,
+                    Phone = phone
+                },
+                amt,
+                tranid.ToString(CultureInfo.InvariantCulture),
+                paymentMethod.CustomerId);
 
             var response = creditCardVaultAuthRequest.Execute();
 

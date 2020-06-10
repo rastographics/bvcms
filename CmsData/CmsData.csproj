@@ -465,6 +465,7 @@
     <Compile Include="Finance\GatewaysEnum.cs" />
     <Compile Include="Finance\Acceptiva\Transaction\Charge\CreditCardCharge.cs" />
     <Compile Include="Finance\GivingConfirmationBuilder.cs" />
+    <Compile Include="Finance\HelperMethods.cs" />
     <Compile Include="Finance\MultipleGatewayUtils.cs" />
     <Compile Include="Finance\ProcessesEnum.cs" />
     <Compile Include="Finance\ReturnedCheck.cs" />
