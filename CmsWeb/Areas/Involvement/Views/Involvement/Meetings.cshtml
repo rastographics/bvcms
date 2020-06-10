@@ -11,7 +11,8 @@
         <div class="col-sm-10 text-right">
             <div class="checkbox pull-left">
                 <label class="control-label">
-                    <input id="Future" name="Future" type="checkbox" value="true" @Checked(Model.Future)> Show future meetings
+                    @*<input id="Future" name="Future" type="checkbox" value="true" @Checked(Model.Future)> Show past meetings*@
+                    <input id="Past" name="Past" type="checkbox" value="true" @Checked(Model.Past)> Show past meetings
                 </label>
             </div>
             @FormAction()

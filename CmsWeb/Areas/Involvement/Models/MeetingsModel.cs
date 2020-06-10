@@ -50,14 +50,27 @@ namespace CmsWeb.Areas.Involvement.Models
             var meetings = from m in CurrentDatabase.Meetings
                            where m.OrganizationId == Id
                            select m;
-            if (Future)
-                meetings = from m in meetings
-                           where m.MeetingDate >= midnight
-                           select m;
-            else
+
+            if (Past)
                 meetings = from m in meetings
                            where m.MeetingDate < midnight
                            select m;
+            else
+                meetings = from m in meetings
+                           where m.MeetingDate >= midnight
+                           select m;
+
+
+            //if (Future)
+            //    meetings = from m in meetings
+            //               where m.MeetingDate >= midnight
+            //               select m;
+            //else
+            //    meetings = from m in meetings
+            //               where m.MeetingDate < midnight
+            //               select m;
+
+
             return meetings;
         }
 

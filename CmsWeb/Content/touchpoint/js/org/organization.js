@@ -611,6 +611,10 @@ $(function () {
         $.formAjaxClick($(this));
     });
 
+    $('body').on('click', '#Past', function () {
+        $.formAjaxClick($(this));
+    });
+
     $.InitFunctions.CreateMeeting = function ($a) {
     };
 
