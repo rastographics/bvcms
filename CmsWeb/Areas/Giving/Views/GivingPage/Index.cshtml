@@ -4,9 +4,14 @@
     Layout = "~/Views/Shared/Giving.cshtml";
 }
 @section head {
-<style type="text/css">
-</style>
+
+    @Fingerprint.Css("/Content/touchpoint/lib/bootstrap-editable/css/bootstrap-editable.css")
 }
 <div id="main" class="giving">
     <giving-container page-prop="@Json.Encode(Model)" type="@ViewBag.Type" fund="@ViewBag.Fund" amount="@ViewBag.Amount"></giving-container>
 </div>
+
+@section scripts
+{
+    @Fingerprint.Script("/Content/touchpoint/lib/bootstrap-editable/js/bootstrap-editable.min.js")
+}

@@ -144,6 +144,13 @@ namespace CmsWeb.Areas.Giving.Controllers
         }
 
         [HttpGet]
+        public JsonResult GetGivingFrequencies()
+        {
+            var givingFrequencyList = (from t in CurrentDatabase.ScheduledGiftTypes orderby t.Id select new { Id = t.Id, Name = t.Description }).ToList();
+            return Json(givingFrequencyList, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpGet]
         public JsonResult GetEntryPoints()
         {
             var entryPointsList = (from ep in CurrentDatabase.EntryPoints orderby ep.Description select new { ep.Id, Name = ep.Description }).ToList();

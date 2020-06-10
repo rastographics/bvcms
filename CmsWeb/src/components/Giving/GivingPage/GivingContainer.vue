@@ -14,15 +14,19 @@
                     <transition-group name="gift">
                         <one-time-gift v-for="(gift, index) in gifts" v-model="gifts[index]" :count="gifts.length" :key="index" :funds="unusedFunds" @remove="removeGift(index)"></one-time-gift>
                     </transition-group>
-                    <a v-if="unusedFunds.length" @click="addGift" class="btn btn-sm btn-default pull-right">Add Gift</a>
+                    <a v-if="unusedFunds.length" @click="addGift" class="btn btn-sm btn-default pull-right"><i class="fa fa-plus-circle"></i> Add Gift</a>
                 </div>
                 <div v-else-if="givingType == 'Recurring'">
-                    Recurring Giving
+                    <transition-group name="gift">
+                        <recurring-gift v-for="(gift, index) in gifts" v-model="gifts[index]" :count="gifts.length" :key="index" :funds="unusedFunds" :frequencies="recurringFrequencies" @remove="removeGift(index)"></recurring-gift>
+                    </transition-group>
+                    <a v-if="unusedFunds.length" @click="addGift" class="btn btn-sm btn-default pull-right"><i class="fa fa-plus-circle"></i> Add Gift</a>
                 </div>
                 <div v-else-if="givingType == 'Pledge'">
                     Pledge
                 </div>
             </div>
+            <pre>{{ gifts }}</pre>
         </div>
     </div>
 </template>
@@ -33,11 +37,11 @@
         props: ["pageProp", "fund", "type", "amount" ],
         data: function () {
             return {
+                recurringFrequencies: [],
                 givingType: "",
                 gifts: [],
                 pageTypes: [],
-                page: {
-                },
+                page: {}
             };
         },
         computed: {
@@ -46,6 +50,10 @@
                 return this.page.AvailableFunds.filter(fund => {
                     return !this.gifts.some(gift => gift.fund.Id === fund.Id);
                 });
+            },
+            today: function () {
+                var today = new Date();
+                return today.getFullYear() + '-' + String(today.getMonth() + 1).padStart(2, '0') + '-' + String(today.getDate()).padStart(2, '0');
             }
         },
         methods: {
@@ -55,7 +63,9 @@
             addGift() {
                 this.gifts.push({
                     amount: 0.00,
-                    fund: this.unusedFunds[0]
+                    frequency: 0,
+                    fund: this.unusedFunds[0],
+                    date: this.today
                 });
             },
             removeGift(index) {
@@ -68,8 +78,8 @@
                     .then(
                         response => {
                             if (response.status === 200) {
-                                vm.pageTypeList = response.data;
-                                vm.pageTypeList.forEach(function (type) {
+                                let pageTypeList = response.data;
+                                pageTypeList.forEach(function (type) {
                                     if (vm.page.PageType & type.Id) {
                                         vm.pageTypes.push(type);
                                     }
@@ -88,14 +98,36 @@
                         console.log(error);
                     });
             },
+            getGivingFrequencies: function () {
+                let vm = this;
+                axios.get("/Giving/GetGivingFrequencies")
+                .then(
+                    response => {
+                        if (response.status === 200) {
+                            vm.recurringFrequencies = response.data;
+                        } else {
+                            warning_swal("Warning", "Error getting giving frequencies.");
+                        }
+                    },
+                    err => {
+                        error_swal("Error", "Error getting giving frequencies.");
+                    }
+                )
+                .catch(function (error) {
+                    console.log(error);
+                });
+            }
         },
         mounted() {
             this.page = JSON.parse(this.pageProp);
             this.getPageTypes();
+            this.getGivingFrequencies();
 
             let gift = {
                 amount: 0.00,
-                fund: {}
+                frequency: 0,
+                fund: {},
+                date: this.today
             };
             // initialize based on params (or defaults)
             gift.amount = parseFloat(this.amount) || 0;
@@ -116,6 +148,9 @@
     .gift {
         transition: all 1s;
         height: 159px;
+    }
+    .gift.recurring {
+        height: 219px;
     }
     .gift-enter,
     .gift-leave-to {
@@ -144,6 +179,9 @@
     }
     .gift .form-group {
         height: 74px;
+    }
+    .gift.recurring .form-group {
+        height: 30px;
     }
     .gift .money-input {
         height: 46px;
