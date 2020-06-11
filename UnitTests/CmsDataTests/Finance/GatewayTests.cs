@@ -1,16 +1,32 @@
 ﻿using System;
 using CmsData;
 using CmsData.Finance;
+using CmsWeb.Areas.Giving.Models;
+using SharedTestFixtures;
 using Xunit;
 
 namespace CmsData.Finance.Tests
 {
-    [Collection("AcceptivaGateway Tests")]
-    public class AcceptivaGatewayTests
+    [Collection("Gateway Tests")]
+    public class GatewayTests : DatabaseTestBase
     {
         [Fact]
         public void PayWithCreditCard()
         {
+            //(int ? paymentTypeId = null, bool isDefault = true, string name = "", string firstName = "", string lastName = "", string bankAccount = "", string bankRouting = "",
+            //string cardNumber = "", string cvv = "", string expiresMonth = null, string expiresYear = null, string address = "", string address2 = "", string city = "",
+            //string state = "", string country = "", string zip = "", string phone = "", string transactionTypeId = "", string emailAddress = "")
+
+            GivingPaymentViewModel viewModel = new GivingPaymentViewModel()
+            {
+                paymentTypeId = 1,
+                isDefault = true,
+                name = "My Bank",
+                
+            };
+            //MethodsCreate(1,true,"My Bank","Jason", "Rice","123456789", "111000614","","","","","","","","","","","","authOnlyTransaction");
+            //MethodsCreate(2, true, "My Visa", "Jason", "Rice","","", "4111111111111111", "999", "05", "2021","33", "my address 2", "Dallas", "Texas", "United States", "99997-0008", "2149123704", "authOnlyTransaction");
+
             //TODO: Finish this test
             //int peopleId = 1;
             //decimal amt = 0;        

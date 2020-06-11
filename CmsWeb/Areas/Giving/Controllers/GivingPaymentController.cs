@@ -191,14 +191,14 @@ namespace CmsWeb.Areas.Giving.Controllers
             var gateway = CurrentDatabase.Gateway(testing, account, PaymentProcessTypes.RecurringGiving);
             var dollarAmt = 1;
 
-            var expires = HelperMethods.FormatExpirationDate(Convert.ToInt32(expiresMonth), Convert.ToInt32(expiresYear));
-
             if(paymentTypeId == 1)
             {
-
+                var type = PaymentType.Ach;
+                gateway.StoreInVault(paymentMethod, type, null, null, bankAccount, bankRouting, null, null, address, address2, city, state, country, zip, phone, emailAddress);
             }
             else if (paymentTypeId == 2 || paymentTypeId == 3 || paymentTypeId == 4 || paymentTypeId == 5)
             {
+                var expires = HelperMethods.FormatExpirationDate(Convert.ToInt32(expiresMonth), Convert.ToInt32(expiresYear));
                 var transactionResponse = gateway.AuthCreditCard((int)currentPeopleId, dollarAmt, cardNumber, expires, "Recurring Giving Auth", 0, cvv, string.Empty, firstName, lastName, address, address2, city, state, country, zip, phone);
                 if(transactionResponse.Approved == false)
                 {
@@ -208,7 +208,7 @@ namespace CmsWeb.Areas.Giving.Controllers
                 {
                     var voidResponse = gateway.VoidCreditCardTransaction(transactionResponse.TransactionId);
                     var type = PaymentType.CreditCard;
-                    gateway.StoreInVault(paymentMethod, type, cardNumber, null, null, Convert.ToInt32(expiresMonth), Convert.ToInt32(expiresYear), address, address2, city, state, country, zip, phone, emailAddress);
+                    gateway.StoreInVault(paymentMethod, type, cardNumber, cvv, null, null, Convert.ToInt32(expiresMonth), Convert.ToInt32(expiresYear), address, address2, city, state, country, zip, phone, emailAddress);
                 }
             }
             else

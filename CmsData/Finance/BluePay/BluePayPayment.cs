@@ -211,7 +211,16 @@ namespace BPCSharp
             if (tranid.HasValue)
                 this.setInvoiceID(tranid.GetValueOrDefault().ToString());
             this.setMemo(description);
-
+        }
+        public void setupCCTransaction(int peopleId, string cardnumber, string expires, string description, int? tranid, string cardcode, string email, string first, string last, string addr, string addr2, string city, string state, string zip, string phone)
+        {
+            this.setCCInformation(cardnumber, expires, cardcode);
+            this.setCustomerInformation(first, last, addr, addr2, city, state, zip, peopleId);
+            this.setPhone(phone);
+            this.setEmail(email);
+            if (tranid.HasValue)
+                this.setInvoiceID(tranid.GetValueOrDefault().ToString());
+            this.setMemo(description);
         }
 
         /// <summary>

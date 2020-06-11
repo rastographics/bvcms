@@ -5,7 +5,6 @@ using System.Linq;
 using System.Text;
 using AuthorizeNet;
 using AuthorizeNet.APICore;
-using MoreLinq;
 using UtilityExtensions;
 using UtilityExtensions.Extensions;
 
@@ -48,8 +47,190 @@ namespace CmsData.Finance
             }
         }
 
-        public void StoreInVault(int peopleId, string type, string cardNumber, string expires, string cardCode,
-            string routing, string account, bool giving)
+        public TransactionResponse AuthCreditCard(int peopleId, decimal amt, string cardnumber, string expires, string description, int tranid, string cardcode, string email, string first, string last, string addr, string addr2, string city, string state, string country, string zip, string phone)
+        {
+            var request = new AuthorizationRequest(cardnumber, expires, amt, description, includeCapture: false);
+
+            request.AddCustomer(peopleId.ToString(), email, first, last, addr, city, state, zip);
+            request.Country = country;
+            request.CardCode = cardcode;
+            request.Phone = phone;
+            request.InvoiceNum = tranid.ToString();
+
+            var response = Gateway.Send(request);
+
+            return new TransactionResponse
+            {
+                Approved = response.Approved,
+                AuthCode = response.AuthorizationCode,
+                Message = response.Message,
+                TransactionId = response.TransactionID
+            };
+        }
+
+        // New methods
+        public void StoreInVault(PaymentMethod paymentMethod, string type, string cardNumber, string cvv, string bankAccountNum, string bankRoutingNum, int? expireMonth, int? expireYear, string address, string address2, string city, string state, string country, string zip, string phone, string emailAddress)
+        {
+            if (paymentMethod == null)
+                throw new Exception($"Payment method not found.");
+            var custName = paymentMethod.NameOnAccount.Split(' ').ToList();
+            var billToAddress = new AuthorizeNet.Address
+            {
+                First = custName[0],
+                Last = custName[1],
+                Street = address + " " + address2,
+                City = city,
+                State = state,
+                Country = country,
+                Zip = zip,
+                Phone = phone
+            };
+            Customer customer;
+
+            if (paymentMethod.CustomerId == null) // create a new profile in Authorize.NET CIM
+            {
+                // NOTE: this can throw an error if the email address already exists...
+                // TODO: Authorize.net needs to release a new Nuget package, because they don't have a clean way to pass in customer ID (aka PeopleId) yet...
+                // the latest code has a parameter for this, though - we could call UpdateCustomer after the fact to do this if we wanted to
+                customer = CustomerGateway.CreateCustomer(emailAddress, paymentMethod.NameOnAccount);
+                customer.ID = paymentMethod.PeopleId.ToString();
+
+                paymentMethod.CustomerId = customer.ProfileID;
+            }
+            else
+            {
+                customer = CustomerGateway.GetCustomer(paymentMethod.CustomerId);
+            }
+
+            customer.BillingAddress = billToAddress;
+            var isSaved = CustomerGateway.UpdateCustomer(customer);
+            if (!isSaved)
+                throw new Exception($"UpdateCustomer failed to save for {paymentMethod.PeopleId}");
+
+            if (type == PaymentType.Ach)
+            {
+                var paymentProfile = customer.PaymentProfiles.SingleOrDefault(p => p.ProfileID == paymentMethod.VaultId);
+                var bankAccount = new BankAccount
+                {
+                    accountType = BankAccountType.Checking,
+                    nameOnAccount = customer.Description,
+                    accountNumber = bankAccountNum,
+                    routingNumber = bankRoutingNum
+                };
+                if (paymentProfile == null)
+                {
+                    var paymentProfileId = CustomerGateway.AddECheckBankAccount(customer.ProfileID, BankAccountType.Checking, bankRoutingNum, bankAccountNum, customer.Description);
+                    paymentMethod.VaultId = paymentProfileId;
+                }
+                else
+                {
+                    paymentProfile.eCheckBankAccount = bankAccount;
+                    var updatePaymentProfile = CustomerGateway.UpdatePaymentProfile(customer.ProfileID, paymentProfile);
+                    if (!updatePaymentProfile)
+                    {
+                        throw new Exception($"UpdatePaymentProfile failed to save bank account for {paymentMethod.PeopleId}");
+                    }
+                }
+            }
+            else if (type == PaymentType.CreditCard)
+            {
+                var paymentProfile = customer.PaymentProfiles.SingleOrDefault(p => p.ProfileID == paymentMethod.VaultId);
+                if (paymentProfile == null)
+                {
+                    var paymentProfileId = CustomerGateway.AddCreditCard(customer.ProfileID, cardNumber, (int)expireMonth, (int)expireYear, null, customer.BillingAddress);
+                    paymentMethod.VaultId = paymentProfileId;
+                }
+                else
+                {
+                    paymentProfile.CardNumber = cardNumber;
+                    paymentProfile.CardExpiration = HelperMethods.FormatExpirationDate((int)expireMonth, (int)expireYear);
+                    var updatePaymentProfile = CustomerGateway.UpdatePaymentProfile(customer.ProfileID, paymentProfile);
+                    if (!updatePaymentProfile)
+                    {
+                        throw new Exception($"UpdatePaymentProfile failed to save echeck for {paymentMethod.PeopleId}");
+                    }
+                }
+            }
+            else
+            {
+                throw new ArgumentException($"Type {type} not supported", nameof(type));
+            }
+        }
+
+        public void RemoveFromVault(PaymentMethod paymentMethod)
+        {
+            if (paymentMethod != null && !CustomerGateway.DeleteCustomer(paymentMethod.CustomerId))
+            {
+                throw new Exception($"Failed to delete customer {paymentMethod.CustomerId}");
+            }
+        }
+
+        public TransactionResponse AuthCreditCardVault(PaymentMethod paymentMethod, decimal amt, string description, int tranid, string lastName, string firstName, string address, string address2, string city, string state, string country, string zip, string phone, string emailAddress)
+        {
+            if (paymentMethod?.VaultId == null)
+            {
+                return new TransactionResponse
+                {
+                    Approved = false,
+                    Message = "missing payment info",
+                };
+            }
+
+            var paymentProfileId = paymentMethod.VaultId;
+
+            var order = new Order(paymentMethod.CustomerId, paymentProfileId, null)
+            {
+                Description = description,
+                Amount = amt,
+                InvoiceNumber = tranid.ToString()
+            };
+            var response = CustomerGateway.Authorize(order);
+
+            return new TransactionResponse
+            {
+                Approved = response.Approved,
+                AuthCode = response.AuthorizationCode,
+                Message = response.Message,
+                TransactionId = response.TransactionID
+            };
+        }
+
+        public TransactionResponse PayWithVault(PaymentMethod paymentMethod, decimal amt, string description, int tranid, string type)
+        {
+            if (paymentMethod?.VaultId == null)
+                return new TransactionResponse
+                {
+                    Approved = false,
+                    Message = "missing payment info",
+                };
+
+            string paymentProfileId;
+            if (type == PaymentType.Ach)
+                paymentProfileId = paymentMethod.VaultId;
+            else if (type == PaymentType.CreditCard)
+                paymentProfileId = paymentMethod.VaultId;
+            else
+                throw new ArgumentException($"Type {type} not supported", nameof(type));
+
+            var order = new Order(paymentMethod.CustomerId, paymentProfileId, null)
+            {
+                Description = description,
+                Amount = amt,
+                InvoiceNumber = tranid.ToString()
+            };
+            var response = CustomerGateway.AuthorizeAndCapture(order);
+
+            return new TransactionResponse
+            {
+                Approved = response.Approved,
+                AuthCode = response.AuthorizationCode,
+                Message = response.Message,
+                TransactionId = response.TransactionID
+            };
+        }
+
+        // Old methods
+        public void StoreInVault(int peopleId, string type, string cardNumber, string expires, string cardCode, string routing, string account, bool giving)
         {
             var person = db.LoadPersonById(peopleId);
             var paymentInfo = person.PaymentInfo(GatewayAccountId);
@@ -123,102 +304,6 @@ namespace CmsData.Finance
                 paymentInfo.PreferredPaymentType = type;
 
             db.SubmitChanges();
-        }
-
-        // PaymentMethod must be decrypted before passing to this method
-        public void StoreInVault(PaymentMethod paymentMethod, string type, string cardNumber, string bankAccountNum, string bankRoutingNum,
-            int expireMonth, int expireYear, string address, string address2, string city, string state, string country, string zip, string phone, string emailAddress)
-        {
-            if (paymentMethod == null)
-            {
-                throw new Exception($"Payment method required fields missing.");
-            }
-            var custName = paymentMethod.NameOnAccount.Split(' ').ToList();
-            var billToAddress = new AuthorizeNet.Address
-            {
-                First = custName[0],
-                Last = custName[1],
-                Street = address + " " + address2,
-                City = city,
-                State = state,
-                Country = country,
-                Zip = zip,
-                Phone = phone
-            };
-            Customer customer;
-
-            if (paymentMethod.CustomerId == null) // create a new profile in Authorize.NET CIM
-            {
-                // NOTE: this can throw an error if the email address already exists...
-                // TODO: Authorize.net needs to release a new Nuget package, because they don't have a clean way to pass in customer ID (aka PeopleId) yet...
-                // the latest code has a parameter for this, though - we could call UpdateCustomer after the fact to do this if we wanted to
-                customer = CustomerGateway.CreateCustomer(emailAddress, paymentMethod.NameOnAccount);
-                customer.ID = paymentMethod.PeopleId.ToString();
-
-                paymentMethod.CustomerId = customer.ProfileID;
-            }
-            else
-            {
-                customer = CustomerGateway.GetCustomer(paymentMethod.CustomerId);
-            }
-
-            customer.BillingAddress = billToAddress;
-            var isSaved = CustomerGateway.UpdateCustomer(customer);
-            if (!isSaved)
-            {
-                throw new Exception($"UpdateCustomer failed to save for {paymentMethod.PeopleId}");
-            }
-
-            if (type == PaymentType.Ach)
-            {
-                var paymentProfile = customer.PaymentProfiles.SingleOrDefault(p => p.ProfileID == paymentMethod.VaultId);
-                var bankAccount = new BankAccount
-                {
-                    accountType = BankAccountType.Checking,
-                    nameOnAccount = customer.Description,
-                    accountNumber = bankAccountNum,
-                    routingNumber = bankRoutingNum
-                };
-                if (paymentProfile == null)
-                {
-                    var paymentProfileId = CustomerGateway.AddECheckBankAccount(customer.ProfileID, BankAccountType.Checking, bankRoutingNum, bankAccountNum, customer.Description);
-                    paymentMethod.VaultId = paymentProfileId;
-                }
-                else
-                {
-                    paymentProfile.eCheckBankAccount = bankAccount;
-                    var updatePaymentProfile = CustomerGateway.UpdatePaymentProfile(customer.ProfileID, paymentProfile);
-                    if (!updatePaymentProfile)
-                    {
-                        throw new Exception($"UpdatePaymentProfile failed to save bank account for {paymentMethod.PeopleId}");
-                    }
-                }
-            }
-            else if (type == PaymentType.CreditCard)
-            {
-                var paymentProfile = customer.PaymentProfiles.SingleOrDefault(p => p.ProfileID == paymentMethod.VaultId);
-                if (paymentProfile == null)
-                {
-                    var paymentProfileId = CustomerGateway.AddCreditCard(customer.ProfileID, cardNumber, expireMonth, expireYear, null, customer.BillingAddress);
-                    paymentMethod.VaultId = paymentProfileId;
-                }
-                else
-                {
-                    paymentProfile.CardNumber = cardNumber;
-                    paymentProfile.CardExpiration = HelperMethods.FormatExpirationDate(expireMonth, expireYear);
-                    var updatePaymentProfile = CustomerGateway.UpdatePaymentProfile(customer.ProfileID, paymentProfile);
-                    if (!updatePaymentProfile)
-                    {
-                        throw new Exception($"UpdatePaymentProfile failed to save echeck for {paymentMethod.PeopleId}");
-                    }
-                }
-            }
-            else
-            {
-                throw new ArgumentException($"Type {type} not supported", nameof(type));
-            }
-
-            //db.SubmitChanges();
         }
 
         private void SaveECheckToProfile(string routingNumber, string accountNumber, PaymentInfo paymentInfo, Customer customer)
@@ -301,14 +386,6 @@ namespace CmsData.Finance
             }
         }
 
-        public void RemoveFromVault(PaymentMethod paymentMethod)
-        {
-            if (paymentMethod != null && !CustomerGateway.DeleteCustomer(paymentMethod.CustomerId))
-            {
-                throw new Exception($"Failed to delete customer {paymentMethod.CustomerId}");
-            }
-        }
-
         public TransactionResponse VoidCreditCardTransaction(string reference)
         {
             return VoidRequest(reference);
@@ -367,28 +444,6 @@ namespace CmsData.Finance
             };
         }
 
-        public TransactionResponse AuthCreditCard(int peopleId, decimal amt, string cardnumber, string expires, string description, int tranid, string cardcode, string email,
-            string first, string last, string addr, string addr2, string city, string state, string country, string zip, string phone)
-        {
-            var request = new AuthorizationRequest(cardnumber, expires, amt, description, includeCapture: false);
-
-            request.AddCustomer(peopleId.ToString(), email, first, last, addr, city, state, zip);
-            request.Country = country;
-            request.CardCode = cardcode;
-            request.Phone = phone;
-            request.InvoiceNum = tranid.ToString();
-
-            var response = Gateway.Send(request);
-
-            return new TransactionResponse
-            {
-                Approved = response.Approved,
-                AuthCode = response.AuthorizationCode,
-                Message = response.Message,
-                TransactionId = response.TransactionID
-            };
-        }
-
         public TransactionResponse PayWithCreditCard(int peopleId, decimal amt, string cardnumber, string expires, string description, int tranid, string cardcode, string email, string first, string last, string addr, string addr2, string city, string state, string country, string zip, string phone)
         {
             var request = new AuthorizationRequest(cardnumber, expires, amt, description, includeCapture: true);
@@ -430,36 +485,6 @@ namespace CmsData.Finance
             };
         }
 
-        public TransactionResponse AuthCreditCardVault(PaymentMethod paymentMethod, decimal amt, string description, int tranid, string lastName, string firstName, string address, string address2, string city, string state, string country, string zip, string phone, string emailAddress)
-        {
-            if (paymentMethod?.VaultId == null)
-            {
-                return new TransactionResponse
-                {
-                    Approved = false,
-                    Message = "missing payment info",
-                };
-            }
-
-            var paymentProfileId = paymentMethod.VaultId;
-
-            var order = new Order(paymentMethod.CustomerId, paymentProfileId, null)
-            {
-                Description = description,
-                Amount = amt,
-                InvoiceNumber = tranid.ToString()
-            };
-            var response = CustomerGateway.Authorize(order);
-
-            return new TransactionResponse
-            {
-                Approved = response.Approved,
-                AuthCode = response.AuthorizationCode,
-                Message = response.Message,
-                TransactionId = response.TransactionID
-            };
-        }
-
         public TransactionResponse AuthCreditCardVault(int peopleId, decimal amt, string description, int tranid)
         {
             var paymentInfo = db.PaymentInfos.Single(pp => pp.PeopleId == peopleId && pp.GatewayAccountId == GatewayAccountId);
@@ -479,40 +504,6 @@ namespace CmsData.Finance
                 InvoiceNumber = tranid.ToString()
             };
             var response = CustomerGateway.Authorize(order);
-
-            return new TransactionResponse
-            {
-                Approved = response.Approved,
-                AuthCode = response.AuthorizationCode,
-                Message = response.Message,
-                TransactionId = response.TransactionID
-            };
-        }
-
-        public TransactionResponse PayWithVault(PaymentMethod paymentMethod, decimal amt, string description, int tranid, string type)
-        {
-            if (paymentMethod?.VaultId == null)
-                return new TransactionResponse
-                {
-                    Approved = false,
-                    Message = "missing payment info",
-                };
-
-            string paymentProfileId;
-            if (type == PaymentType.Ach)
-                paymentProfileId = paymentMethod.VaultId;
-            else if (type == PaymentType.CreditCard)
-                paymentProfileId = paymentMethod.VaultId;
-            else
-                throw new ArgumentException($"Type {type} not supported", nameof(type));
-
-            var order = new Order(paymentMethod.CustomerId, paymentProfileId, null)
-            {
-                Description = description,
-                Amount = amt,
-                InvoiceNumber = tranid.ToString()
-            };
-            var response = CustomerGateway.AuthorizeAndCapture(order);
 
             return new TransactionResponse
             {
@@ -558,6 +549,20 @@ namespace CmsData.Finance
             };
         }
 
+        private static BatchType GetBatchType(string paymentMethod)
+        {
+            var pm = paymentMethod.ParseEnum<paymentMethodEnum>();
+            switch (pm)
+            {
+                case paymentMethodEnum.creditCard:
+                    return BatchType.CreditCard;
+                case paymentMethodEnum.eCheck:
+                    return BatchType.Ach;
+                default:
+                    return BatchType.Unknown;
+            }
+        }
+
         public BatchResponse GetBatchDetails(DateTime start, DateTime end)
         {
             var batchTransactions = new List<BatchTransaction>();
@@ -590,20 +595,6 @@ namespace CmsData.Finance
             }
 
             return new BatchResponse(batchTransactions);
-        }
-
-        private static BatchType GetBatchType(string paymentMethod)
-        {
-            var pm = paymentMethod.ParseEnum<paymentMethodEnum>();
-            switch (pm)
-            {
-                case paymentMethodEnum.creditCard:
-                    return BatchType.CreditCard;
-                case paymentMethodEnum.eCheck:
-                    return BatchType.Ach;
-                default:
-                    return BatchType.Unknown;
-            }
         }
 
         private static TransactionType GetTransactionType(string transactionStatus)
@@ -657,6 +648,7 @@ namespace CmsData.Finance
         public bool CanGetBounces => false;
 
         private AuthorizeNet.IGateway _gateway;
+
         private AuthorizeNet.IGateway Gateway
         {
             get
@@ -668,9 +660,8 @@ namespace CmsData.Finance
         }
 
         private ICustomerGateway _customerGateway;
-        /// <summary>
-        /// For "vault"-like functionality
-        /// </summary>
+        
+        // For "vault"-like functionality
         private ICustomerGateway CustomerGateway
         {
             get
@@ -682,9 +673,8 @@ namespace CmsData.Finance
         }
 
         private IReportingGateway _reportingGateway;
-        /// <summary>
-        /// For batches, settlement, etc.
-        /// </summary>
+        
+        // For batches, settlement, etc.
         private IReportingGateway ReportingGateway
         {
             get
@@ -696,6 +686,7 @@ namespace CmsData.Finance
         }
 
         public bool UseIdsForSettlementDates => false;
+
         public void CheckBatchSettlements(DateTime start, DateTime end)
         {
             CheckBatchedTransactions.CheckBatchSettlements(db, this, start, end);

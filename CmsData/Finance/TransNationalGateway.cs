@@ -52,8 +52,306 @@ namespace CmsData.Finance
             }
         }
 
-        public void StoreInVault(int peopleId, string type, string cardNumber, string expires, string cardCode,
-            string routing, string account, bool giving)
+        public TransactionResponse AuthCreditCard(int peopleId, decimal amt, string cardnumber, string expires, string description, int tranid, string cardcode, string email, string first, string last, string addr, string addr2, string city, string state, string country, string zip, string phone)
+        {
+            var creditCardAuthRequest = new CreditCardAuthRequest(
+                _userName,
+                _password,
+                new CreditCard
+                {
+                    CardNumber = cardnumber,
+                    Expiration = expires,
+                    CardCode = cardcode,
+                    BillingAddress = new BillingAddress
+                    {
+                        FirstName = first,
+                        LastName = last,
+                        Address1 = addr,
+                        Address2 = addr2,
+                        City = city,
+                        State = state,
+                        Country = country,
+                        Zip = zip,
+                        Email = email,
+                        Phone = phone
+                    }
+                },
+                amt,
+                tranid.ToString(CultureInfo.InvariantCulture),
+                description,
+                peopleId.ToString(CultureInfo.InvariantCulture));
+
+            var response = creditCardAuthRequest.Execute();
+
+            return new TransactionResponse
+            {
+                Approved = response.ResponseStatus == ResponseStatus.Approved,
+                AuthCode = response.AuthCode,
+                Message = response.ResponseText,
+                TransactionId = response.TransactionId
+            };
+        }
+
+        // New methods
+        public void StoreInVault(PaymentMethod paymentMethod, string type, string cardNumber, string cvv, string bankAccountNum, string bankRoutingNum, int? expireMonth, int? expireYear, string address, string address2, string city, string state, string country, string zip, string phone, string emailAddress)
+        {
+            if (paymentMethod == null)
+                throw new Exception($"Payment method not found.");
+            if (type == PaymentType.CreditCard)
+            {
+                var expires = HelperMethods.FormatExpirationDate((int)expireMonth, (int)expireYear);
+                StoreCreditCardVault(paymentMethod, cardNumber, expires, address, address2, city, state, country, zip, phone, emailAddress);
+            }
+            else if (type == PaymentType.Ach)
+                StoreAchVault(paymentMethod, bankAccountNum, bankRoutingNum, address, address2, city, state, country, zip, phone, emailAddress);
+            else
+                throw new ArgumentException($"Type {type} not supported", nameof(type));
+        }
+
+        public TransactionResponse AuthCreditCardVault(PaymentMethod paymentMethod, decimal amt, string description, int tranid, string lastName, string firstName, string address, string address2, string city, string state, string country, string zip, string phone, string emailAddress)
+        {
+            if (paymentMethod.VaultId == null)
+                throw new Exception("InvalidVaultId");
+
+            var creditCardVaultAuthRequest = new CreditCardVaultAuthRequest(
+                _userName,
+                _password,
+                paymentMethod.VaultId,
+                amt,
+                tranid.ToString(CultureInfo.InvariantCulture),
+                description,
+                paymentMethod.PeopleId.ToString(CultureInfo.InvariantCulture));
+
+            var response = creditCardVaultAuthRequest.Execute();
+            ResetVault(response.ResponseText, paymentMethod);
+
+            return new TransactionResponse
+            {
+                Approved = response.ResponseStatus == ResponseStatus.Approved,
+                AuthCode = response.AuthCode,
+                Message = response.ResponseText,
+                TransactionId = response.TransactionId
+            };
+        }
+
+        private void StoreCreditCardVault(PaymentMethod paymentMethod, string cardNumber, string expires, string address, string address2, string city, string state, string country, string zip, string phone, string emailAddress)
+        {
+            if (paymentMethod.VaultId == null) // create new vault.
+            {
+                paymentMethod.VaultId = CreateCreditCardVault(paymentMethod, cardNumber, expires, address, address2, city, state, country, zip, phone, emailAddress);
+                paymentMethod.CustomerId = null;
+            }
+            else
+                UpdateCreditCardVault(paymentMethod, cardNumber, expires, address, address2, city, state, country, zip, phone, emailAddress);
+        }
+
+        private string CreateCreditCardVault(PaymentMethod paymentMethod, string cardNumber, string expiration, string address, string address2, string city, string state, string country, string zip, string phone, string emailAddress)
+        {
+            var custName = paymentMethod.NameOnAccount.Split(' ').ToList();
+            var createCreditCardVaultRequest = new CreateCreditCardVaultRequest(
+                _userName,
+                _password,
+                new CreditCard
+                {
+                    CardNumber = cardNumber,
+                    Expiration = expiration,
+                    BillingAddress = new BillingAddress
+                    {
+                        FirstName = custName[0],
+                        LastName = custName[1],
+                        Address1 = address,
+                        Address2 = address2,
+                        City = city,
+                        State = state,
+                        Zip = zip,
+                        Email = emailAddress,
+                        Phone = phone
+                    }
+                });
+
+            var response = createCreditCardVaultRequest.Execute();
+            if (response.ResponseStatus != ResponseStatus.Approved)
+                throw new Exception($"TransNational failed to create the credit card for people id: {paymentMethod.PeopleId}, responseCode: {response.ResponseCode}, responseText: {response.ResponseText}");
+            if (string.IsNullOrEmpty(response.VaultId))
+                throw new Exception($"TransNational is not returning VaultId. Please contact the system administrator to activate this feature.");
+            return response.VaultId;
+        }
+
+        private void UpdateCreditCardVault(PaymentMethod paymentMethod, string cardNumber, string expiration, string address, string address2, string city, string state, string country, string zip, string phone, string emailAddress)
+        {
+            var vaultId = paymentMethod.VaultId;
+            var custName = paymentMethod.NameOnAccount.Split(' ').ToList();
+            var updateCreditCardVaultRequest = new UpdateCreditCardVaultRequest(
+                _userName,
+                _password,
+                vaultId,
+                new CreditCard
+                {
+                    CardNumber = cardNumber,
+                    Expiration = expiration,
+                    BillingAddress = new BillingAddress
+                    {
+                        FirstName = custName[0],
+                        LastName = custName[1],
+                        Address1 = address,
+                        Address2 = address2,
+                        City = city,
+                        State = state,
+                        Zip = zip,
+                        Email = emailAddress,
+                        Phone = phone
+                    }
+                });
+
+            var response = updateCreditCardVaultRequest.Execute();
+            if (response.ResponseStatus == ResponseStatus.Approved)
+            {
+                paymentMethod.VaultId = response.VaultId;
+                paymentMethod.CustomerId = null;
+            }
+            else
+            {
+                ResetVault(response.ResponseText, paymentMethod);
+                throw new Exception($"TransNational failed to update the credit card for people id: {paymentMethod.PeopleId}, responseCode: {response.ResponseCode}, responseText: {response.ResponseText}");
+            }
+        }
+
+
+
+
+
+
+        private void StoreAchVault(PaymentMethod paymentMethod, string account, string routing, string address, string address2, string city, string state, string country, string zip, string phone, string emailAddress)
+        {
+            if (paymentMethod.VaultId == null) // create new vault
+            {
+                paymentMethod.VaultId = CreateAchVault(paymentMethod, account, routing, address, address2, city, state, country, zip, phone, emailAddress);
+                paymentMethod.CustomerId = null;
+            }
+            else // we can only update the ach account if there is a full account number.
+            {
+                UpdateAchVault(paymentMethod, account, routing, address, address2, city, state, country, zip, phone, emailAddress);
+            }
+        }
+
+        private string CreateAchVault(PaymentMethod paymentMethod, string accountNumber, string routingNumber, string address, string address2, string city, string state, string country, string zip, string phone, string emailAddress)
+        {
+            var custName = paymentMethod.NameOnAccount.Split(' ').ToList();
+            var createAchVaultRequest = new CreateAchVaultRequest(
+                _userName,
+                _password,
+                new Ach
+                {
+                    NameOnAccount = $"{custName[0]} {custName[1]}",
+                    AccountNumber = accountNumber,
+                    RoutingNumber = routingNumber,
+                    Type = AchType(paymentMethod.PeopleId),
+                    BillingAddress = new BillingAddress
+                    {
+                        FirstName = custName[0],
+                        LastName = custName[1],
+                        Address1 = address,
+                        Address2 = address2,
+                        City = city,
+                        State = state,
+                        Zip = zip,
+                        Email = emailAddress,
+                        Phone = phone
+                    }
+                });
+
+            var response = createAchVaultRequest.Execute();
+            if (response.ResponseStatus != ResponseStatus.Approved)
+                throw new Exception(
+                    $"TransNational failed to create the ach account for people id: {paymentMethod.PeopleId}, responseCode: {response.ResponseCode}, responseText: {response.ResponseText}");
+            if (string.IsNullOrEmpty(response.VaultId))
+                throw new Exception(
+                    $"TransNational is not returning VaultId. Please contact the system administrator to activate this feature.");
+
+            return response.VaultId;
+        }
+
+        private void UpdateAchVault(PaymentMethod paymentMethod, string accountNumber, string routingNumber, string address, string address2, string city, string state, string country, string zip, string phone, string emailAddress)
+        {
+            var vaultId = paymentMethod.VaultId;
+            var custName = paymentMethod.NameOnAccount.Split(' ').ToList();
+
+            var updateAchVaultRequest = new UpdateAchVaultRequest(
+                _userName,
+                _password,
+                vaultId,
+                new Ach
+                {
+                    NameOnAccount = $"{custName[0]} {custName[1]}",
+                    AccountNumber = accountNumber,
+                    RoutingNumber = routingNumber,
+                    Type = AchType(paymentMethod.PeopleId),
+                    BillingAddress = new BillingAddress
+                    {
+                        FirstName = custName[0],
+                        LastName = custName[1],
+                        Address1 = address,
+                        Address2 = address2,
+                        City = city,
+                        State = state,
+                        Zip = zip,
+                        Email = emailAddress,
+                        Phone = phone
+                    }
+                });
+
+            var response = updateAchVaultRequest.Execute();
+            if (response.ResponseStatus == ResponseStatus.Approved)
+            {
+                paymentMethod.VaultId = response.VaultId;
+                paymentMethod.CustomerId = null;
+            }
+            else
+            {
+                ResetVault(response.ResponseText, paymentMethod);
+                throw new Exception(
+                        $"TransNational failed to update the ach account for people id: {paymentMethod.PeopleId}, responseCode: {response.ResponseCode}, responseText: {response.ResponseText}");
+            }
+        }
+
+        private void ResetVault(string responseText, PaymentMethod paymentMethod)
+        {
+            if (responseText.ToLower().Contains("invalid customer vault id"))
+            {
+                RemoveFromVault(paymentMethod);
+                throw new Exception("InvalidVaultId");
+            }
+        }
+
+        public void RemoveFromVault(PaymentMethod paymentMethod)
+        {
+            if (paymentMethod == null || paymentMethod.VaultId == null)
+                return;
+            DeleteVault(paymentMethod);
+            paymentMethod.VaultId = null;
+            paymentMethod.CustomerId = null;
+        }
+
+        private void DeleteVault(PaymentMethod paymentMethod)
+        {
+            var deleteVaultRequest = new DeleteVaultRequest(
+                _userName,
+                _password,
+                paymentMethod.VaultId);
+
+            var response = deleteVaultRequest.Execute();
+            if (response.ResponseStatus != ResponseStatus.Approved)
+                throw new Exception(
+                    $"TransNational failed to delete the vault for people id: {paymentMethod.PeopleId}, responseCode: {response.ResponseCode}, responseText: {response.ResponseText}");
+        }
+
+
+
+
+
+
+        // Old methods
+        public void StoreInVault(int peopleId, string type, string cardNumber, string expires, string cardCode, string routing, string account, bool giving)
         {
             var person = db.LoadPersonById(peopleId);
             var paymentInfo = person.PaymentInfo(GatewayAccountId);
@@ -421,51 +719,7 @@ namespace CmsData.Finance
             };
         }
 
-        public TransactionResponse AuthCreditCard(int peopleId, decimal amt, string cardnumber, string expires, string description,
-            int tranid, string cardcode, string email, string first, string last, string addr, string addr2, string city, string state,
-            string country, string zip, string phone)
-        {
-            var creditCardAuthRequest = new CreditCardAuthRequest(
-                _userName,
-                _password,
-                new CreditCard
-                {
-                    CardNumber = cardnumber,
-                    Expiration = expires,
-                    CardCode = cardcode,
-                    BillingAddress = new BillingAddress
-                    {
-                        FirstName = first,
-                        LastName = last,
-                        Address1 = addr,
-                        Address2 = addr2,
-                        City = city,
-                        State = state,
-                        Country = country,
-                        Zip = zip,
-                        Email = email,
-                        Phone = phone
-                    }
-                },
-                amt,
-                tranid.ToString(CultureInfo.InvariantCulture),
-                description,
-                peopleId.ToString(CultureInfo.InvariantCulture));
-
-            var response = creditCardAuthRequest.Execute();
-
-            return new TransactionResponse
-            {
-                Approved = response.ResponseStatus == ResponseStatus.Approved,
-                AuthCode = response.AuthCode,
-                Message = response.ResponseText,
-                TransactionId = response.TransactionId
-            };
-        }
-
-        public TransactionResponse PayWithCreditCard(int peopleId, decimal amt, string cardnumber, string expires,
-            string description, int tranid, string cardcode, string email, string first, string last, string addr,
-            string addr2, string city, string state, string country, string zip, string phone)
+        public TransactionResponse PayWithCreditCard(int peopleId, decimal amt, string cardnumber, string expires, string description, int tranid, string cardcode, string email, string first, string last, string addr, string addr2, string city, string state, string country, string zip, string phone)
         {
             var creditCardSaleRequest = new CreditCardSaleRequest(
                 _userName,
@@ -505,9 +759,7 @@ namespace CmsData.Finance
             };
         }
 
-        public TransactionResponse PayWithCheck(int peopleId, decimal amt, string routing, string acct,
-            string description, int tranid, string email, string first, string middle, string last, string suffix,
-            string addr, string addr2, string city, string state, string country, string zip, string phone)
+        public TransactionResponse PayWithCheck(int peopleId, decimal amt, string routing, string acct, string description, int tranid, string email, string first, string middle, string last, string suffix, string addr, string addr2, string city, string state, string country, string zip, string phone)
         {
             var type = AchType(peopleId);
             var ach = new Ach
@@ -586,11 +838,6 @@ namespace CmsData.Finance
             };
         }
 
-        public TransactionResponse AuthCreditCardVault(PaymentMethod paymentMethod, decimal amt, string description, int tranid, string lastName, string firstName, string address, string address2, string city, string state, string country, string zip, string phone, string emailAddress)
-        {
-            throw new NotImplementedException();
-        }
-
         public TransactionResponse PayWithVault(int peopleId, decimal amt, string description, int tranid, string type)
         {
             var person = db.LoadPersonById(peopleId);
@@ -603,11 +850,9 @@ namespace CmsData.Finance
                     description);
             else // bank account
                 return ChargeAchVault(paymentInfo.TbnBankVaultId.GetValueOrDefault(), peopleId, amt, tranid, description);
-
         }
 
-        private TransactionResponse ChargeCreditCardVault(int vaultId, int peopleId, decimal amount, int tranid,
-            string description)
+        private TransactionResponse ChargeCreditCardVault(int vaultId, int peopleId, decimal amount, int tranid, string description)
         {
             var creditCardVaultSaleRequest = new CreditCardVaultSaleRequest(
                 _userName,
@@ -629,8 +874,7 @@ namespace CmsData.Finance
             };
         }
 
-        private TransactionResponse ChargeAchVault(int vaultId, int peopleId, decimal amount, int tranid,
-            string description)
+        private TransactionResponse ChargeAchVault(int vaultId, int peopleId, decimal amount, int tranid, string description)
         {
             var achVaultSaleRequest = new AchVaultSaleRequest(
                 _userName,
@@ -653,10 +897,12 @@ namespace CmsData.Finance
         }
 
         public List<string> TransactionIds;
+
         public BatchResponse GetBatchDetails(DateTime start, DateTime end)
         {
             throw new NotImplementedException();
         }
+
         public BatchResponse GetBatchDetails()
         {
             var batchTransactions = new List<BatchTransaction>();
@@ -701,7 +947,6 @@ namespace CmsData.Finance
                     });
                 }
             }
-
         }
 
         private static TransactionType GetTransactionType(ActionType actionType)
@@ -778,6 +1023,7 @@ namespace CmsData.Finance
         public bool CanGetSettlementDates => true;
 
         public bool CanGetBounces => false;
+
         private string AchType(int? pid)
         {
             var type = "checking";
@@ -799,6 +1045,7 @@ namespace CmsData.Finance
         {
             throw new NotImplementedException();
         }
+
         public void CheckBatchSettlements(List<string> transactionids)
         {
             TransactionIds = transactionids;
@@ -908,10 +1155,9 @@ namespace CmsData.Finance
                 else
                     checkedBatch.CheckedX = DateTime.Now;
             }
-
             db.SubmitChanges();
-
         }
+
         public string VaultId(int peopleId)
         {
             var paymentInfo = db.PaymentInfos.Single(pp => pp.PeopleId == peopleId && pp.GatewayAccountId == GatewayAccountId);
@@ -925,11 +1171,6 @@ namespace CmsData.Finance
                     return (paymentInfo.TbnCardVaultId ?? paymentInfo.TbnBankVaultId).ToString();
             }
 
-        }
-
-        void IGateway.StoreInVault(PaymentMethod paymentMethod, string type, string cardNumber, string bankAccountNum, string bankRoutingNum, int expireMonth, int expireYear, string address, string address2, string city, string state, string country, string zip, string phone, string emailAddress)
-        {
-            throw new NotImplementedException();
         }
     }
 }
