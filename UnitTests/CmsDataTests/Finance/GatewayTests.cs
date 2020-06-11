@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq.Dynamic;
 using CmsData;
 using CmsData.Finance;
 using CmsWeb.Areas.Giving.Models;
@@ -11,19 +12,28 @@ namespace CmsData.Finance.Tests
     public class GatewayTests : DatabaseTestBase
     {
         [Fact]
-        public void PayWithCreditCard()
+        public void AuthCreditCardCreatePaymentMethod()
         {
             //(int ? paymentTypeId = null, bool isDefault = true, string name = "", string firstName = "", string lastName = "", string bankAccount = "", string bankRouting = "",
             //string cardNumber = "", string cvv = "", string expiresMonth = null, string expiresYear = null, string address = "", string address2 = "", string city = "",
             //string state = "", string country = "", string zip = "", string phone = "", string transactionTypeId = "", string emailAddress = "")
 
+            var person = CreatePerson();
             GivingPaymentViewModel viewModel = new GivingPaymentViewModel()
             {
                 paymentTypeId = 1,
                 isDefault = true,
                 name = "My Bank",
-                
+                firstName = "Jason",
+                lastName = "Rice",
+                bankAccount = "123456789",
+                bankRouting = "111000614",
+                transactionTypeId = "authOnlyTransaction",
+                testing = true
             };
+
+            //var paymentMethod = db.PaymentMethods.Where(pm => pm.)
+
             //MethodsCreate(1,true,"My Bank","Jason", "Rice","123456789", "111000614","","","","","","","","","","","","authOnlyTransaction");
             //MethodsCreate(2, true, "My Visa", "Jason", "Rice","","", "4111111111111111", "999", "05", "2021","33", "my address 2", "Dallas", "Texas", "United States", "99997-0008", "2149123704", "authOnlyTransaction");
 
