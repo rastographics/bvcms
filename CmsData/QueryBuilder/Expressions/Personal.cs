@@ -110,5 +110,27 @@ namespace CmsData
                 expr = Expression.Not(expr);
             return expr;
         }
+        internal Expression PeopleRecordType()
+        {
+            var codes0 = CodeValues.Split(',').Select(ff => ff.Trim()).ToList();
+            var isbusiness = (codes0[0].ToInt() == 1 ? true : false);
+            var q = from p in db.People select p;
+            if (codes0[0].ToInt() != 2)
+            {
+                switch (op)
+                {   
+                    case CompareType.Equal:
+                        q = q.Where(p => isbusiness ? p.IsBusiness == true : p.IsBusiness == false || p.IsBusiness == null);
+                        break;
+                    case CompareType.NotEqual:
+                        q = q.Where(p => p.IsBusiness != isbusiness); break;
+                }
+            }
+            var tag = db.PopulateTemporaryTag(q.Select(pp => pp.PeopleId));
+            Expression<Func<Person, bool>> pred = p => p.Tags.Any(t => t.Id == tag.Id);
+            Expression expr = Expression.Invoke(pred, parm);
+            return expr;
+        }
+
     }
 }

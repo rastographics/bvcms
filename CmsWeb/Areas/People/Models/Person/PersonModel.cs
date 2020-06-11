@@ -71,8 +71,8 @@ namespace CmsWeb.Areas.People.Models
             ShowCombinedGiving = db.GetSetting("CombinedGivingSummary", "") == "true";
             IsBusiness = (bool)p.IsBusiness.GetValueOrDefault();
 
-            basic = new BasicPersonInfo(p.PeopleId);
-
+            basic = new BasicPersonInfo(p.PeopleId, IsBusiness);
+            
             FamilyAddr = new AddressInfo
             {
                 Name = "FamilyAddr",
@@ -223,7 +223,7 @@ namespace CmsWeb.Areas.People.Models
                 return null;
             }
         }
-
+                 
         public string CheckView()
         {
             if (Person == null)

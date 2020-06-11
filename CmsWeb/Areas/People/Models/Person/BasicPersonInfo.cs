@@ -104,6 +104,8 @@ namespace CmsWeb.Areas.People.Models
 
         [NoUpdate]
         public int PeopleId { get; set; }
+
+        public int PeopleRecordType { get; set; }
         public Person person { get; set; }
 
         [DisplayName("Title"), StringLength(10)]
@@ -202,7 +204,7 @@ namespace CmsWeb.Areas.People.Models
         {
 
         }
-        public BasicPersonInfo(int id)
+        public BasicPersonInfo(int id, bool? isBusiness = null)
         {
             Id = id;
             if (person == null)
@@ -211,6 +213,10 @@ namespace CmsWeb.Areas.People.Models
             }
 
             person.SendEmailAddress1 = person.SendEmailAddress1 ?? true; // set sendemailaddress1 to either true or false, null is not allowed, default is true
+            
+            person.IsBusiness = isBusiness;
+            PeopleRecordType = (bool)isBusiness ? 1 : 0;
+            
             this.CopyPropertiesFrom(person);
         }
         public void UpdatePerson(CMSDataContext db)

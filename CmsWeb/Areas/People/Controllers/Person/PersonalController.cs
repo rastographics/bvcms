@@ -17,10 +17,10 @@ namespace CmsWeb.Areas.People.Controllers
         }
 
         [HttpPost]
-        public ActionResult PersonalDisplay(int id)
+        public ActionResult PersonalDisplay(int id, bool isBusiness)
         {
             InitExportToolbar(id);
-            var m = new BasicPersonInfo(id);
+            var m = new BasicPersonInfo(id, isBusiness);
             return View("Personal/Display", m);
         }
 
