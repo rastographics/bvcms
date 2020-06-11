@@ -29,7 +29,8 @@ namespace CmsData.Finance.Tests
                 bankAccount = "123456789",
                 bankRouting = "111000614",
                 transactionTypeId = "authOnlyTransaction",
-                //testing = true
+                incomingPeopleId = person.PeopleId,
+                testing = true
             };
 
             //var paymentMethod = db.PaymentMethods.Where(pm => pm.)
