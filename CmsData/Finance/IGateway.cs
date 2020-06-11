@@ -29,7 +29,7 @@ namespace CmsData
         TransactionResponse RefundCreditCard(string reference, decimal amt, string lastDigits = "");
         TransactionResponse RefundCheck(string reference, decimal amt, string lastDigits = "");
         void RemoveFromVault(int peopleId);
-        void StoreInVault(PaymentMethod paymentMethod, string type, string cardNumber, string bankAccountNum, string bankRoutingNum, int expireMonth, int expireYear, string address, string address2, string city, string state, string country,string zip, string phone, string emailAddress);
+        void StoreInVault(PaymentMethod paymentMethod, string type, string cardNumber, string cvv, string bankAccountNum, string bankRoutingNum, int? expireMonth, int? expireYear, string address, string address2, string city, string state, string country,string zip, string phone, string emailAddress);
         void StoreInVault(int peopleId, string type, string cardNumber, string expires, string cardCode, string routing, string account, bool giving);
         string VaultId(int peopleId);
         TransactionResponse VoidCheckTransaction(string reference);

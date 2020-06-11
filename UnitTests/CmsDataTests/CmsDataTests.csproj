@@ -138,7 +138,7 @@
     <Compile Include="Email\SendEmailTests.cs" />
     <Compile Include="Extensions\ContributionTests.cs" />
     <Compile Include="Extensions\PaymentMethodTests.cs" />
-    <Compile Include="Finance\AcceptivaGatewayTests.cs" />
+    <Compile Include="Finance\GatewayTests.cs" />
     <Compile Include="Finance\Acceptiva\Core\Helpers\ISO3166Tests.cs" />
     <Compile Include="Finance\MultipleGatewayUtilsTests.cs" />
     <Compile Include="Generated\CMSDataContextFunctionTests.cs" />
@@ -171,6 +171,10 @@
     <ProjectReference Include="..\..\CmsData\CmsData.csproj">
       <Project>{98aee43c-4226-49e7-bd46-c1a85467eced}</Project>
       <Name>CmsData</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\CmsWeb\CMSWeb.csproj">
+      <Project>{FC942D51-94B5-456B-9683-0BA000A1EAF4}</Project>
+      <Name>CMSWeb</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\UtilityExtensions\UtilityExtensions.csproj">
       <Project>{C504E3D2-5498-451B-BF82-309623706F11}</Project>

@@ -67,6 +67,219 @@ namespace CmsData.Finance
         public bool UseIdsForSettlementDates => false;
         public bool CanGetBounces => true;
 
+        public TransactionResponse AuthCreditCard(int peopleId, decimal amt, string cardnumber, string expires, string description, int tranid, string cardcode, string email, string first, string last, string addr, string addr2, string city, string state, string country, string zip, string phone)
+        {
+            return CreditCardCharge(peopleId, amt, cardnumber, expires, description, tranid, cardcode, email, first, last, addr, addr2, city, state, country, zip, phone);
+        }
+
+        // New methods
+        public void StoreInVault(PaymentMethod paymentMethod, string type, string cardNumber, string cvv, string bankAccountNum, string bankRoutingNum, int? expireMonth, int? expireYear, string address, string address2, string city, string state, string country, string zip, string phone, string emailAddress)
+        {
+            if (paymentMethod == null)
+                throw new Exception($"Payment method not found.");
+            string acceptivaPayerid = GetAcceptivaPayerId(paymentMethod.VaultId);
+            var expires = "";
+            if (type == PaymentType.CreditCard)
+            {
+                expires = HelperMethods.FormatExpirationDate((int)expireMonth, (int)expireYear);
+            }
+            else if (type == PaymentType.Ach)
+            {
+                expires = null;
+            }
+                var custName = paymentMethod.NameOnAccount.Split(' ').ToList();
+            if (string.IsNullOrEmpty(acceptivaPayerid))
+            {
+                paymentMethod.VaultId = StoreNewPayerData(paymentMethod, type, cardNumber, expires, bankAccountNum, bankRoutingNum, custName[0], custName[1], address, address2, city, state, country, zip, phone, emailAddress);
+                paymentMethod.CustomerId = null;
+            }
+            else
+                StorePayerData(paymentMethod, type, cardNumber, expires, bankAccountNum, bankRoutingNum, custName[0], custName[1], address, address2, city, state, country, zip, phone, emailAddress);
+        }
+
+        public TransactionResponse AuthCreditCardVault(PaymentMethod paymentMethod, decimal amt, string description, int tranid, string lastName, string firstName, string address, string address2, string city, string state, string country, string zip, string phone, string emailAddress)
+        {
+            if (paymentMethod?.VaultId == null)
+                return new TransactionResponse
+                {
+                    Approved = false,
+                    Message = "missing payment info",
+                };
+
+            return StoredPayerCharge(_merch_cc_id, paymentMethod.VaultId, amt, tranid.ToString(), description, 1, lastName, firstName);
+        }
+
+        private void StorePayerData(PaymentMethod paymentMethod, string type, string cardNumber, string expires, string account, string routing, string firstName, string lastName, string address, string address2, string city, string state, string country, string zip, string phone, string emailAddress)
+        {
+            if (type == PaymentType.CreditCard)
+            {
+                var storePayer = new StorePayer(
+                _isTesting,
+                _apiKey,
+                new Payer
+                {
+                    LastName = lastName,
+                    FirstName = firstName,
+                    Address = address,
+                    Address2 = address2,
+                    City = city,
+                    State = UPSStateCodes.FromStateCountry(state, country, db) ?? state,
+                    Country = ISO3166.Alpha3FromName(country) ?? null,
+                    Zip = zip,
+                    Email = emailAddress,
+                    Phone = phone
+                },
+                paymentMethod.VaultId,
+                new CreditCard
+                {
+                    CardNum = cardNumber,
+                    CardExpiration = expires
+                },
+                new Ach
+                {
+                    AchAccNum = null,
+                    AchRoutingNum = null
+                });
+
+                var response = storePayer.Execute();
+                if (response.Response.Status != "success")
+                    throw new Exception(
+                        $"Acceptiva failed to update the credit card for people id: {paymentMethod.PeopleId}, responseCode: {response.Response.Errors.FirstOrDefault()?.ErrorNo}, responseText: {response.Response.Errors.FirstOrDefault()?.ErrorMsg}");
+
+            }
+            else if (type == PaymentType.Ach)
+            {
+                var storePayer = new StorePayer(
+                _isTesting,
+                _apiKey,
+                new Payer
+                {
+                    LastName = lastName,
+                    FirstName = firstName,
+                    Address = address,
+                    Address2 = address2,
+                    State = UPSStateCodes.FromStateCountry(state, country, db) ?? state,
+                    Country = ISO3166.Alpha3FromName(country) ?? null,
+                    Zip = zip,
+                    Email = emailAddress,
+                    Phone = phone
+                },
+                paymentMethod.VaultId,
+                new CreditCard
+                {
+                    CardNum = null,
+                    CardExpiration = null
+                },
+                new Ach
+                {
+                    AchAccNum = account,
+                    AchRoutingNum = routing
+                });
+
+                var response = storePayer.Execute();
+                if (response.Response.Status != "success")
+                    throw new Exception(
+                        $"Acceptiva failed to update the credit card for people id: {paymentMethod.PeopleId}, responseCode: {response.Response.Errors.FirstOrDefault()?.ErrorNo}, responseText: {response.Response.Errors.FirstOrDefault()?.ErrorMsg}");
+
+            }
+            else
+            {
+                throw new Exception($"Acceptiva failed to store new payer data for people id: {paymentMethod.PeopleId}");
+            }
+        }
+
+        private string StoreNewPayerData(PaymentMethod paymentMethod, string type, string cardNumber, string expires, string account, string routing, string firstName, string lastName, string address, string address2, string city, string state, string country, string zip, string phone, string emailAddress)
+        {
+            if (type == PaymentType.CreditCard)
+            {
+                var storePayer = new StoreNewPayer(
+                _isTesting,
+                _apiKey,
+                new Payer
+                {
+                    LastName = lastName,
+                    FirstName = firstName,
+                    Address = address,
+                    Address2 = address2,
+                    City = city,
+                    State = UPSStateCodes.FromStateCountry(state, country, db) ?? state,
+                    Country = ISO3166.Alpha3FromName(country) ?? null,
+                    Zip = zip,
+                    Email = emailAddress,
+                    Phone = phone
+                },
+                paymentMethod.VaultId,
+                new CreditCard
+                {
+                    CardNum = cardNumber,
+                    CardExpiration = expires
+                },
+                new Ach
+                {
+                    AchAccNum = null,
+                    AchRoutingNum = null
+                });
+                var response = storePayer.Execute();
+                if (response.Response.Status != "success")
+                    throw new Exception(
+                        $"Acceptiva failed to update the credit card for people id: {paymentMethod.PeopleId}, responseCode: {response.Response.Errors.FirstOrDefault()?.ErrorNo}, responseText: {response.Response.Errors.FirstOrDefault()?.ErrorMsg}");
+
+                return response.Response.PayerIdStr;
+            }
+            else if (type == PaymentType.Ach)
+            {
+                var storePayer = new StoreNewPayer(
+                _isTesting,
+                _apiKey,
+                new Payer
+                {
+                    LastName = lastName,
+                    FirstName = firstName,
+                    Address = address,
+                    Address2 = address2,
+                    City = city,
+                    State = UPSStateCodes.FromStateCountry(state, country, db) ?? state,
+                    Country = ISO3166.Alpha3FromName(country) ?? null,
+                    Zip = zip,
+                    Email = emailAddress,
+                    Phone = phone
+                },
+                paymentMethod.VaultId,
+                new CreditCard
+                {
+                    CardNum = null,
+                    CardExpiration = null
+                },
+                new Ach
+                {
+                    AchAccNum = account,
+                    AchRoutingNum = routing
+                });
+                var response = storePayer.Execute();
+                if (response.Response.Status != "success")
+                    throw new Exception(
+                        $"Acceptiva failed to update the credit card for people id: {paymentMethod.PeopleId}, responseCode: {response.Response.Errors.FirstOrDefault()?.ErrorNo}, responseText: {response.Response.Errors.FirstOrDefault()?.ErrorMsg}");
+
+                return response.Response.PayerIdStr;
+            }
+            else
+            {
+                throw new Exception($"Acceptiva failed to store new payer data for people id: {paymentMethod.PeopleId}");
+            }
+        }
+
+        private string GetAcceptivaPayerId(string vaultId)
+        {
+            var getPayerData = new GetPayerData(_isTesting, _apiKey, vaultId);
+            var response = getPayerData.Execute();
+            if (response.Response.Status != "success")
+            {
+                return null;
+            }
+            return response.Response.PayerIdStr;
+        }
+
+        // Old methods
         public void StoreInVault(int peopleId, string type, string cardNumber, string expires, string cardCode, string routing, string account, bool giving)
         {
             var person = db.LoadPersonById(peopleId);
@@ -117,26 +330,6 @@ namespace CmsData.Finance
             db.SubmitChanges();
         }
 
-        public void StoreInVault(PaymentMethod paymentMethod, string type, string cardNumber, string bankAccountNum, string bankRoutingNum, int expireMonth, int expireYear,
-            string address, string address2, string city, string state, string country, string zip, string phone, string emailAddress)
-        {
-            if (paymentMethod == null)
-            {
-                throw new Exception($"Payment method is required.");
-            }
-            string acceptivaPayerid = GetAcceptivaPayerId(paymentMethod.VaultId);
-            var expires = HelperMethods.FormatExpirationDate(expireMonth, expireYear);
-            var custName = paymentMethod.NameOnAccount.Split(' ').ToList();
-            if (string.IsNullOrEmpty(acceptivaPayerid))
-            {
-                paymentMethod.VaultId = StoreNewPayerData(paymentMethod, type, cardNumber, expires, bankAccountNum, bankRoutingNum, custName[0], custName[1], address, address2, city, state, country, zip, phone, emailAddress);
-            }
-            else
-            {
-                StorePayerData(paymentMethod, type, cardNumber, expires, bankAccountNum, bankRoutingNum, custName[0], custName[1], address, address2, city, state, country, zip, phone, emailAddress);
-            }
-        }
-
         public void RemoveFromVault(int peopleId)
         {
             var person = db.LoadPersonById(peopleId);
@@ -170,11 +363,6 @@ namespace CmsData.Finance
         public TransactionResponse RefundCheck(string reference, decimal amt, string lastDigits = "")
         {
             return RefundTransaction(reference, amt);
-        }
-
-        public TransactionResponse AuthCreditCard(int peopleId, decimal amt, string cardnumber, string expires, string description, int tranid, string cardcode, string email, string first, string last, string addr, string addr2, string city, string state, string country, string zip, string phone)
-        {
-            return CreditCardCharge(peopleId, amt, cardnumber, expires, description, tranid, cardcode, email, first, last, addr, addr2, city, state, country, zip, phone);
         }
 
         public TransactionResponse PayWithCreditCard(int peopleId, decimal amt, string cardnumber, string expires, string description, int tranid, string cardcode, string email, string first, string last, string addr, string addr2, string city, string state, string country, string zip, string phone)
@@ -230,18 +418,6 @@ namespace CmsData.Finance
                 SettleTransaction(response.Response.TransIdStr);
 
             return transactionResponse;
-        }
-
-        public TransactionResponse AuthCreditCardVault(PaymentMethod paymentMethod, decimal amt, string description, int tranid, string lastName, string firstName, string address, string address2, string city, string state, string country, string zip, string phone, string emailAddress)
-        {
-            if (paymentMethod?.VaultId == null)
-                return new TransactionResponse
-                {
-                    Approved = false,
-                    Message = "missing payment info",
-                };
-
-            return StoredPayerCharge(_merch_cc_id, paymentMethod.VaultId, amt, tranid.ToString(), description, 1, lastName,firstName);
         }
 
         public TransactionResponse AuthCreditCardVault(int peopleId, decimal amt, string description, int tranid)
@@ -598,178 +774,6 @@ namespace CmsData.Finance
         private string GetBatchReference(DateTime start, DateTime end)
         {
             return $"{start.ToString("yyMMdd")}{end.ToString("yyMMdd")}{DateTime.Now.ToString("MMddhhmm")}";
-        }
-
-        private string GetAcceptivaPayerId(string vaultId)
-        {
-            var getPayerData = new GetPayerData(_isTesting, _apiKey, vaultId);
-            var response = getPayerData.Execute();
-            if (response.Response.Status != "success")
-            {
-                return null;
-            }
-            return response.Response.PayerIdStr;
-        }
-
-        private void StorePayerData(PaymentMethod paymentMethod, string type, string cardNumber, string expires, string account, string routing, string firstName, string lastName,
-            string address, string address2, string city, string state, string country, string zip, string phone, string emailAddress)
-        {
-            if (type == PaymentType.CreditCard)
-            {
-                var storePayer = new StorePayer(
-                _isTesting,
-                _apiKey,
-                new Payer
-                {
-                    LastName = lastName,
-                    FirstName = firstName,
-                    Address = address,
-                    Address2 = address2,
-                    City = city,
-                    State = UPSStateCodes.FromStateCountry(state, country, db) ?? state,
-                    Country = ISO3166.Alpha3FromName(country) ?? null,
-                    Zip = zip,
-                    Email = emailAddress,
-                    Phone = phone
-                },
-                paymentMethod.VaultId,
-                new CreditCard
-                {
-                    CardNum = cardNumber,
-                    CardExpiration = expires
-                },
-                new Ach
-                {
-                    AchAccNum = null,
-                    AchRoutingNum = null
-                });
-
-                var response = storePayer.Execute();
-                if (response.Response.Status != "success")
-                    throw new Exception(
-                        $"Acceptiva failed to update the credit card for people id: {paymentMethod.PeopleId}, responseCode: {response.Response.Errors.FirstOrDefault()?.ErrorNo}, responseText: {response.Response.Errors.FirstOrDefault()?.ErrorMsg}");
-
-            }
-            else if (type == PaymentType.Ach)
-            {
-                var storePayer = new StorePayer(
-                _isTesting,
-                _apiKey,
-                new Payer
-                {
-                    LastName = lastName,
-                    FirstName = firstName,
-                    Address = address,
-                    Address2 = address2,
-                    State = UPSStateCodes.FromStateCountry(state, country, db) ?? state,
-                    Country = ISO3166.Alpha3FromName(country) ?? null,
-                    Zip = zip,
-                    Email = emailAddress,
-                    Phone = phone
-                },
-                paymentMethod.VaultId,
-                new CreditCard
-                {
-                    CardNum = null,
-                    CardExpiration = null
-                },
-                new Ach
-                {
-                    AchAccNum = account,
-                    AchRoutingNum = routing
-                });
-
-                var response = storePayer.Execute();
-                if (response.Response.Status != "success")
-                    throw new Exception(
-                        $"Acceptiva failed to update the credit card for people id: {paymentMethod.PeopleId}, responseCode: {response.Response.Errors.FirstOrDefault()?.ErrorNo}, responseText: {response.Response.Errors.FirstOrDefault()?.ErrorMsg}");
-
-            }
-            else
-            {
-                throw new Exception($"Acceptiva failed to store new payer data for people id: {paymentMethod.PeopleId}");
-            }
-        }
-
-        private string StoreNewPayerData(PaymentMethod paymentMethod, string type, string cardNumber, string expires, string account, string routing, string firstName, string lastName,
-            string address, string address2, string city, string state, string country, string zip, string phone, string emailAddress)
-        {
-            if (type == PaymentType.CreditCard)
-            {
-                var storePayer = new StoreNewPayer(
-                _isTesting,
-                _apiKey,
-                new Payer
-                {
-                    LastName = lastName,
-                    FirstName = firstName,
-                    Address = address,
-                    Address2 = address2,
-                    City = city,
-                    State = UPSStateCodes.FromStateCountry(state, country, db) ?? state,
-                    Country = ISO3166.Alpha3FromName(country) ?? null,
-                    Zip = zip,
-                    Email = emailAddress,
-                    Phone = phone
-                },
-                paymentMethod.VaultId,
-                new CreditCard
-                {
-                    CardNum = cardNumber,
-                    CardExpiration = expires
-                },
-                new Ach
-                {
-                    AchAccNum = null,
-                    AchRoutingNum = null
-                });
-                var response = storePayer.Execute();
-                if (response.Response.Status != "success")
-                    throw new Exception(
-                        $"Acceptiva failed to update the credit card for people id: {paymentMethod.PeopleId}, responseCode: {response.Response.Errors.FirstOrDefault()?.ErrorNo}, responseText: {response.Response.Errors.FirstOrDefault()?.ErrorMsg}");
-
-                return response.Response.PayerIdStr;
-            }
-            else if (type == PaymentType.Ach)
-            {
-                var storePayer = new StoreNewPayer(
-                _isTesting,
-                _apiKey,
-                new Payer
-                {
-                    LastName = lastName,
-                    FirstName = firstName,
-                    Address = address,
-                    Address2 = address2,
-                    City = city,
-                    State = UPSStateCodes.FromStateCountry(state, country, db) ?? state,
-                    Country = ISO3166.Alpha3FromName(country) ?? null,
-                    Zip = zip,
-                    Email = emailAddress,
-                    Phone = phone
-                },
-                paymentMethod.VaultId,
-                new CreditCard
-                {
-                    CardNum = null,
-                    CardExpiration = null
-                },
-                new Ach
-                {
-                    AchAccNum = account,
-                    AchRoutingNum = routing
-                });
-                var response = storePayer.Execute();
-                if (response.Response.Status != "success")
-                    throw new Exception(
-                        $"Acceptiva failed to update the credit card for people id: {paymentMethod.PeopleId}, responseCode: {response.Response.Errors.FirstOrDefault()?.ErrorNo}, responseText: {response.Response.Errors.FirstOrDefault()?.ErrorMsg}");
-
-                return response.Response.PayerIdStr;
-            }
-            else
-            {
-                throw new Exception($"Acceptiva failed to store new payer data for people id: {paymentMethod.PeopleId}");
-            }
         }
 
         private string GetAcceptivaPayerId(int peopleId)

@@ -51,66 +51,48 @@ namespace CmsData.Finance
             }
         }
 
-        public void StoreInVault(int peopleId, string type, string cardNumber, string expires, string cardCode, string routing, string account, bool giving)
+        public TransactionResponse AuthCreditCard(int peopleId, decimal amt, string cardnumber, string expires, string description, int tranid, string cardcode, string email, string first, string last, string addr, string addr2, string city, string state, string country, string zip, string phone)
         {
-            var person = db.LoadPersonById(peopleId);
-            PaymentInfo paymentInfo = person.PaymentInfo(GatewayAccountId);
-
-            if (paymentInfo == null)
-            {
-                paymentInfo = new PaymentInfo() { GatewayAccountId = GatewayAccountId };
-                person.PaymentInfos.Add(paymentInfo);
-            }
-
-            if (type == PaymentType.CreditCard)
-            {
-                if (paymentInfo.SageCardGuid == null) // create new vault.
-                    paymentInfo.SageCardGuid = CreateCreditCardVault(person, cardNumber, expires);
-                else
+            var creditCardAuthRequest = new CreditCardAuthRequest(
+                _id,
+                _key,
+                new CreditCard
                 {
-                    // update existing vault.
-                    // check for updating the entire card or only expiration.
-                    if (!cardNumber.StartsWith("X"))
-                        UpdateCreditCardVault(paymentInfo.SageCardGuid.GetValueOrDefault(), person, cardNumber, expires);
-                    else
-                        UpdateCreditCardVault(paymentInfo.SageCardGuid.GetValueOrDefault(), person, expires);
-                }
+                    NameOnCard = $"{first} {last}",
+                    CardNumber = cardnumber,
+                    Expiration = expires,
+                    CardCode = cardcode,
+                    BillingAddress = new BillingAddress
+                    {
+                        Address1 = addr,
+                        City = city,
+                        State = state,
+                        Country = country,
+                        Zip = zip,
+                        Email = email,
+                        Phone = phone
+                    }
+                },
+                amt,
+                tranid.ToString(CultureInfo.InvariantCulture),
+                peopleId.ToString(CultureInfo.InvariantCulture));
 
-                paymentInfo.MaskedCard = Util.MaskCC(cardNumber);
-                paymentInfo.Expires = expires;
-            }
-            else if (type == PaymentType.Ach)
+            var response = creditCardAuthRequest.Execute();
+
+            return new TransactionResponse
             {
-                if (paymentInfo.SageBankGuid == null) // create new vault
-                    paymentInfo.SageBankGuid = CreateAchVault(person, account, routing);
-                else
-                {
-                    // we can only update the ach account if there is a full account number.
-                    if (!account.StartsWith("X"))
-                        UpdateAchVault(paymentInfo.SageBankGuid.GetValueOrDefault(), person, account, routing);
-                }
-
-                paymentInfo.MaskedAccount = Util.MaskAccount(account);
-                paymentInfo.Routing = Util.Mask(new StringBuilder(routing), 2);
-            }
-            else
-                throw new ArgumentException($"Type {type} not supported", nameof(type));
-
-            if (giving)
-                paymentInfo.PreferredGivingType = type;
-            else
-                paymentInfo.PreferredPaymentType = type;
-
-            db.SubmitChanges();
+                Approved = response.ApprovalIndicator == ApprovalIndicator.Approved,
+                AuthCode = response.Code,
+                Message = response.Message,
+                TransactionId = response.Reference
+            };
         }
-        
-        public void StoreInVault(PaymentMethod paymentMethod, string type, string cardNumber, string bankAccountNum, string bankRoutingNum, int expireMonth, int expireYear,
-            string address, string address2, string city, string state, string country, string zip, string phone, string emailAddress)
+
+        // New methods
+        public void StoreInVault(PaymentMethod paymentMethod, string type, string cardNumber, string cvv, string bankAccountNum, string bankRoutingNum, int? expireMonth, int? expireYear, string address, string address2, string city, string state, string country, string zip, string phone, string emailAddress)
         {
             if (paymentMethod == null)
-            {
-                throw new Exception($"Payment method is required.");
-            }
+                throw new Exception($"Payment method not found.");
 
             if (type == PaymentType.CreditCard)
             {
@@ -118,6 +100,7 @@ namespace CmsData.Finance
                 if (paymentMethod.VaultId == null) // create new vault.
                 {
                     paymentMethod.VaultId = (CreateCreditCardVault(paymentMethod.PeopleId, cardNumber, expires)).ToString();
+                    paymentMethod.CustomerId = null;
                 }
                 else // update existing vault.
                 {
@@ -130,6 +113,7 @@ namespace CmsData.Finance
                 if (paymentMethod.VaultId == null) // create new vault
                 {
                     paymentMethod.VaultId = (CreateAchVault(paymentMethod.PeopleId, bankAccountNum, bankRoutingNum)).ToString();
+                    paymentMethod.CustomerId = null;
                 }
                 else // update existing vault.
                 {
@@ -138,9 +122,46 @@ namespace CmsData.Finance
                 }
             }
             else
-            {
                 throw new ArgumentException($"Type {type} not supported", nameof(type));
-            }
+        }
+
+        public TransactionResponse AuthCreditCardVault(PaymentMethod paymentMethod, decimal amt, string description, int tranid, string lastName, string firstName, string address, string address2, string city, string state, string country, string zip, string phone, string emailAddress)
+        {
+            if (paymentMethod == null || paymentMethod.VaultId == null)
+                return new TransactionResponse
+                {
+                    Approved = false,
+                    Message = "missing payment info",
+                };
+
+            var vaultGuid = new Guid(paymentMethod.VaultId);
+
+            var creditCardVaultAuthRequest = new CreditCardVaultAuthRequest(_id,
+                _key,
+                vaultGuid,
+                $"{firstName} {lastName}",
+                new BillingAddress
+                {
+                    Address1 = address,
+                    City = city,
+                    State = state,
+                    Zip = zip,
+                    Email = emailAddress,
+                    Phone = phone
+                },
+                amt,
+                tranid.ToString(CultureInfo.InvariantCulture),
+                paymentMethod.CustomerId);
+
+            var response = creditCardVaultAuthRequest.Execute();
+
+            return new TransactionResponse
+            {
+                Approved = response.ApprovalIndicator == ApprovalIndicator.Approved,
+                AuthCode = response.Code,
+                Message = response.Message,
+                TransactionId = response.Reference
+            };
         }
 
         private Guid CreateCreditCardVault(int peopleId, string cardNumber, string expiration)
@@ -198,6 +219,60 @@ namespace CmsData.Finance
             var success = deleteVaultRequest.Execute();
             if (!success)
                 throw new Exception($"Sage failed to delete the vault for people id: {peopleId}");
+        }
+
+        // Old methods
+        public void StoreInVault(int peopleId, string type, string cardNumber, string expires, string cardCode, string routing, string account, bool giving)
+        {
+            var person = db.LoadPersonById(peopleId);
+            PaymentInfo paymentInfo = person.PaymentInfo(GatewayAccountId);
+
+            if (paymentInfo == null)
+            {
+                paymentInfo = new PaymentInfo() { GatewayAccountId = GatewayAccountId };
+                person.PaymentInfos.Add(paymentInfo);
+            }
+
+            if (type == PaymentType.CreditCard)
+            {
+                if (paymentInfo.SageCardGuid == null) // create new vault.
+                    paymentInfo.SageCardGuid = CreateCreditCardVault(person, cardNumber, expires);
+                else
+                {
+                    // update existing vault.
+                    // check for updating the entire card or only expiration.
+                    if (!cardNumber.StartsWith("X"))
+                        UpdateCreditCardVault(paymentInfo.SageCardGuid.GetValueOrDefault(), person, cardNumber, expires);
+                    else
+                        UpdateCreditCardVault(paymentInfo.SageCardGuid.GetValueOrDefault(), person, expires);
+                }
+
+                paymentInfo.MaskedCard = Util.MaskCC(cardNumber);
+                paymentInfo.Expires = expires;
+            }
+            else if (type == PaymentType.Ach)
+            {
+                if (paymentInfo.SageBankGuid == null) // create new vault
+                    paymentInfo.SageBankGuid = CreateAchVault(person, account, routing);
+                else
+                {
+                    // we can only update the ach account if there is a full account number.
+                    if (!account.StartsWith("X"))
+                        UpdateAchVault(paymentInfo.SageBankGuid.GetValueOrDefault(), person, account, routing);
+                }
+
+                paymentInfo.MaskedAccount = Util.MaskAccount(account);
+                paymentInfo.Routing = Util.Mask(new StringBuilder(routing), 2);
+            }
+            else
+                throw new ArgumentException($"Type {type} not supported", nameof(type));
+
+            if (giving)
+                paymentInfo.PreferredGivingType = type;
+            else
+                paymentInfo.PreferredPaymentType = type;
+
+            db.SubmitChanges();
         }
 
         private Guid CreateCreditCardVault(Person person, string cardNumber, string expiration)
@@ -345,45 +420,6 @@ namespace CmsData.Finance
             };
         }
 
-        public TransactionResponse AuthCreditCard(int peopleId, decimal amt, string cardnumber, string expires, string description,
-            int tranid, string cardcode, string email, string first, string last, string addr, string addr2, string city, string state,
-            string country, string zip, string phone)
-        {
-            var creditCardAuthRequest = new CreditCardAuthRequest(
-                _id,
-                _key,
-                new CreditCard
-                {
-                    NameOnCard = $"{first} {last}",
-                    CardNumber = cardnumber,
-                    Expiration = expires,
-                    CardCode = cardcode,
-                    BillingAddress = new BillingAddress
-                    {
-                        Address1 = addr,
-                        City = city,
-                        State = state,
-                        Country = country,
-                        Zip = zip,
-                        Email = email,
-                        Phone = phone
-                    }
-                },
-                amt,
-                tranid.ToString(CultureInfo.InvariantCulture),
-                peopleId.ToString(CultureInfo.InvariantCulture));
-
-            var response = creditCardAuthRequest.Execute();
-
-            return new TransactionResponse
-            {
-                Approved = response.ApprovalIndicator == ApprovalIndicator.Approved,
-                AuthCode = response.Code,
-                Message = response.Message,
-                TransactionId = response.Reference
-            };
-        }
-
         public TransactionResponse PayWithCreditCard(int peopleId, decimal amt, string cardnumber, string expires, string description, int tranid, string cardcode, string email, string first, string last, string addr, string addr2, string city, string state, string country, string zip, string phone)
         {
             var creditCardSaleRequest = new CreditCardSaleRequest(
@@ -487,45 +523,6 @@ namespace CmsData.Finance
                 amt,
                 tranid.ToString(CultureInfo.InvariantCulture),
                 person.PeopleId.ToString(CultureInfo.InvariantCulture));
-
-            var response = creditCardVaultAuthRequest.Execute();
-
-            return new TransactionResponse
-            {
-                Approved = response.ApprovalIndicator == ApprovalIndicator.Approved,
-                AuthCode = response.Code,
-                Message = response.Message,
-                TransactionId = response.Reference
-            };
-        }
-
-        public TransactionResponse AuthCreditCardVault(PaymentMethod paymentMethod, decimal amt, string description, int tranid, string lastName, string firstName, string address, string address2, string city, string state, string country, string zip, string phone, string emailAddress)
-        {
-            if (paymentMethod == null || paymentMethod.VaultId == null)
-                return new TransactionResponse
-                {
-                    Approved = false,
-                    Message = "missing payment info",
-                };
-
-            var vaultGuid = new Guid(paymentMethod.VaultId);
-
-            var creditCardVaultAuthRequest = new CreditCardVaultAuthRequest(_id,
-                _key,
-                vaultGuid,
-                $"{firstName} {lastName}",
-                new BillingAddress
-                {
-                    Address1 = address,
-                    City = city,
-                    State = state,
-                    Zip = zip,
-                    Email = emailAddress,
-                    Phone = phone
-                },
-                amt,
-                tranid.ToString(CultureInfo.InvariantCulture),
-                paymentMethod.CustomerId);
 
             var response = creditCardVaultAuthRequest.Execute();
 
