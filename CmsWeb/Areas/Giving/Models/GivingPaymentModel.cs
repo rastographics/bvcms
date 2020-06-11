@@ -23,8 +23,6 @@ namespace CmsWeb.Areas.Giving.Models
         }
         public CMSDataContext CurrentDatabase { get; set; }
 
-        public int currentPeopleId { get; set; }
-
         public Message CreateMethod(GivingPaymentViewModel viewModel)
         {
             if (viewModel.paymentTypeId == null || viewModel.paymentTypeId == 0)
