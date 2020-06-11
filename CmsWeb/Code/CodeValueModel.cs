@@ -840,8 +840,18 @@ namespace CmsWeb.Code
                 Value = p.Name
             });
             return list;
+        }        
+        public IEnumerable<CodeValueItem> PeopleRecordCodes()
+        {
+            //return new SelectList(PeopleRecordTypes(), "Id", "Value", m.peoplerecordtype);
+            var list = new List<CodeValueItem>
+            {
+                new CodeValueItem {Code = "Person", Value = "Person", Id = 0},
+                new CodeValueItem {Code = "Business/Entity", Value = "Business/Entity", Id = 1},
+                new CodeValueItem {Code = "Both", Value = "Both", Id = 2}
+            };
+            return list;
         }
-
         public static List<CodeValueItem> PmmLabels()
         {
             var list = (from lab in DbUtil.Db.BackgroundCheckLabels
