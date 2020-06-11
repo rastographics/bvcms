@@ -1,4 +1,6 @@
 ﻿using CmsData;
+using CmsData.Finance;
+using CmsWeb.Code;
 using CmsWeb.Constants;
 using CmsWeb.Models;
 using Elmah;
@@ -23,10 +25,277 @@ namespace CmsWeb.Areas.Giving.Models
 
         public int currentPeopleId { get; set; }
 
-        public Message CreateMethod()
+        public Message CreateMethod(GivingPaymentViewModel viewModel)
         {
-            currentPeopleId = (int)CurrentDatabase.UserPeopleId;
-            return Models.Message.successMessage("Payment schedule deleted.", Models.Message.API_ERROR_NONE);
+            if (viewModel.paymentTypeId == null || viewModel.paymentTypeId == 0)
+            {
+                return Models.Message.createErrorReturn("No payment method type ID found.", Models.Message.API_ERROR_PAYMENT_METHOD_TYPE_ID_NOT_FOUND);
+            }
+            if (viewModel.firstName == "")
+            {
+                return Models.Message.createErrorReturn("First name required.", Models.Message.API_ERROR_PAYMENT_METHOD_REQUIRED_FIELD_EMPTY);
+            }
+            if (viewModel.lastName == "")
+            {
+                return Models.Message.createErrorReturn("First name required.", Models.Message.API_ERROR_PAYMENT_METHOD_REQUIRED_FIELD_EMPTY);
+            }
+            if (viewModel.paymentTypeId != 1)
+            {
+                if (viewModel.address == "")
+                {
+                    return Models.Message.createErrorReturn("Address required.", Models.Message.API_ERROR_PAYMENT_METHOD_REQUIRED_FIELD_EMPTY);
+                }
+                if (viewModel.city == "")
+                {
+                    return Models.Message.createErrorReturn("City required.", Models.Message.API_ERROR_PAYMENT_METHOD_REQUIRED_FIELD_EMPTY);
+                }
+                if (viewModel.state == "")
+                {
+                    return Models.Message.createErrorReturn("State required.", Models.Message.API_ERROR_PAYMENT_METHOD_REQUIRED_FIELD_EMPTY);
+                }
+                if (viewModel.country == "")
+                {
+                    return Models.Message.createErrorReturn("Country required.", Models.Message.API_ERROR_PAYMENT_METHOD_REQUIRED_FIELD_EMPTY);
+                }
+                if (viewModel.zip == "")
+                {
+                    return Models.Message.createErrorReturn("Zip required.", Models.Message.API_ERROR_PAYMENT_METHOD_REQUIRED_FIELD_EMPTY);
+                }
+            }
+            if (viewModel.transactionTypeId == "")
+            {
+                return Models.Message.createErrorReturn("Transaction Type ID required.", Models.Message.API_ERROR_PAYMENT_METHOD_REQUIRED_FIELD_EMPTY);
+            }
+
+            var paymentMethod = new PaymentMethod();
+            var cardValidation = new Message();
+            var bankValidation = new Message();
+            int currentPeopleId = 0;
+            if (viewModel.incomingPeopleId == null)
+            {
+                currentPeopleId = (int)CurrentDatabase.UserPeopleId;
+            }
+            else
+            {
+                currentPeopleId = (int)viewModel.incomingPeopleId;
+            }
+
+            if (viewModel.testing == true)
+            {
+                switch (viewModel.paymentTypeId)
+                {
+                    case 1: // bank
+                        paymentMethod = new PaymentMethod
+                        {
+                            PeopleId = currentPeopleId,
+                            PaymentMethodTypeId = (int)viewModel.paymentTypeId,
+                            IsDefault = viewModel.isDefault,
+                            Name = viewModel.name,
+                            NameOnAccount = viewModel.firstName + " " + viewModel.lastName,
+                            MaskedDisplay = "•••• •••• •••• 1234",
+                            Last4 = viewModel.bankAccount.Substring(viewModel.bankAccount.Length - 4, 4)
+                        };
+                        break;
+                    case 2: // Visa
+                        paymentMethod = new PaymentMethod
+                        {
+                            PeopleId = currentPeopleId,
+                            PaymentMethodTypeId = (int)viewModel.paymentTypeId,
+                            IsDefault = viewModel.isDefault,
+                            Name = viewModel.name,
+                            NameOnAccount = viewModel.firstName + " " + viewModel.lastName,
+                            MaskedDisplay = "•••• •••• •••• 1234",
+                            Last4 = viewModel.cardNumber.Substring(viewModel.cardNumber.Length - 4, 4),
+                            ExpiresMonth = Convert.ToInt32(viewModel.expiresMonth),
+                            ExpiresYear = Convert.ToInt32(viewModel.expiresYear),
+                        };
+                        break;
+                    case 3: // Mastercard
+                        paymentMethod = new PaymentMethod
+                        {
+                            PeopleId = currentPeopleId,
+                            PaymentMethodTypeId = (int)viewModel.paymentTypeId,
+                            IsDefault = viewModel.isDefault,
+                            Name = viewModel.name,
+                            NameOnAccount = viewModel.firstName + " " + viewModel.lastName,
+                            MaskedDisplay = "•••• •••• •••• 1234",
+                            Last4 = viewModel.cardNumber.Substring(viewModel.cardNumber.Length - 4, 4),
+                            ExpiresMonth = Convert.ToInt32(viewModel.expiresMonth),
+                            ExpiresYear = Convert.ToInt32(viewModel.expiresYear),
+                        };
+                        break;
+                    case 4: // Amex
+                        paymentMethod = new PaymentMethod
+                        {
+                            PeopleId = currentPeopleId,
+                            PaymentMethodTypeId = (int)viewModel.paymentTypeId,
+                            IsDefault = viewModel.isDefault,
+                            Name = viewModel.name,
+                            NameOnAccount = viewModel.firstName + " " + viewModel.lastName,
+                            MaskedDisplay = "•••• •••• •••• 1234",
+                            Last4 = viewModel.cardNumber.Substring(viewModel.cardNumber.Length - 4, 4),
+                            ExpiresMonth = Convert.ToInt32(viewModel.expiresMonth),
+                            ExpiresYear = Convert.ToInt32(viewModel.expiresYear),
+                        };
+                        break;
+                    case 5: // Discover
+                        paymentMethod = new PaymentMethod
+                        {
+                            PeopleId = currentPeopleId,
+                            PaymentMethodTypeId = (int)viewModel.paymentTypeId,
+                            IsDefault = viewModel.isDefault,
+                            Name = viewModel.name,
+                            NameOnAccount = viewModel.firstName + " " + viewModel.lastName,
+                            MaskedDisplay = "•••• •••• •••• 1234",
+                            Last4 = viewModel.cardNumber.Substring(viewModel.cardNumber.Length - 4, 4),
+                            ExpiresMonth = Convert.ToInt32(viewModel.expiresMonth),
+                            ExpiresYear = Convert.ToInt32(viewModel.expiresYear),
+                        };
+                        break;
+                    case 99: // Other
+                        break;
+                    default:
+                        break;
+                }
+            }
+            else
+            {
+                switch (viewModel.paymentTypeId)
+                {
+                    case 1: // bank
+                        paymentMethod = new PaymentMethod
+                        {
+                            PeopleId = currentPeopleId,
+                            PaymentMethodTypeId = (int)viewModel.paymentTypeId,
+                            IsDefault = viewModel.isDefault,
+                            Name = viewModel.name,
+                            NameOnAccount = viewModel.firstName + " " + viewModel.lastName,
+                            MaskedDisplay = "•••• •••• •••• 1234",
+                            Last4 = viewModel.bankAccount.Substring(viewModel.bankAccount.Length - 4, 4)
+                        };
+                        bankValidation = PaymentValidator.ValidateBankAccountInfo(viewModel.bankAccount, viewModel.bankRouting);
+                        if (bankValidation.error != 0)
+                        {
+                            return Models.Message.createErrorReturn(bankValidation.data, bankValidation.error);
+                        }
+                        break;
+                    case 2: // Visa
+                        paymentMethod = new PaymentMethod
+                        {
+                            PeopleId = currentPeopleId,
+                            PaymentMethodTypeId = (int)viewModel.paymentTypeId,
+                            IsDefault = viewModel.isDefault,
+                            Name = viewModel.name,
+                            NameOnAccount = viewModel.firstName + " " + viewModel.lastName,
+                            MaskedDisplay = "•••• •••• •••• 1234",
+                            Last4 = viewModel.cardNumber.Substring(viewModel.cardNumber.Length - 4, 4),
+                            ExpiresMonth = Convert.ToInt32(viewModel.expiresMonth),
+                            ExpiresYear = Convert.ToInt32(viewModel.expiresYear),
+                        };
+                        cardValidation = PaymentValidator.ValidateCreditCardInfo(viewModel.cardNumber, viewModel.cvv, viewModel.expiresMonth, viewModel.expiresYear);
+                        if (cardValidation.error != 0)
+                        {
+                            return Models.Message.createErrorReturn(cardValidation.data, cardValidation.error);
+                        }
+                        break;
+                    case 3: // Mastercard
+                        paymentMethod = new PaymentMethod
+                        {
+                            PeopleId = currentPeopleId,
+                            PaymentMethodTypeId = (int)viewModel.paymentTypeId,
+                            IsDefault = viewModel.isDefault,
+                            Name = viewModel.name,
+                            NameOnAccount = viewModel.firstName + " " + viewModel.lastName,
+                            MaskedDisplay = "•••• •••• •••• 1234",
+                            Last4 = viewModel.cardNumber.Substring(viewModel.cardNumber.Length - 4, 4),
+                            ExpiresMonth = Convert.ToInt32(viewModel.expiresMonth),
+                            ExpiresYear = Convert.ToInt32(viewModel.expiresYear),
+                        };
+                        cardValidation = PaymentValidator.ValidateCreditCardInfo(viewModel.cardNumber, viewModel.cvv, viewModel.expiresMonth, viewModel.expiresYear);
+                        if (cardValidation.error != 0)
+                        {
+                            return Models.Message.createErrorReturn(cardValidation.data, cardValidation.error);
+                        }
+                        break;
+                    case 4: // Amex
+                        paymentMethod = new PaymentMethod
+                        {
+                            PeopleId = currentPeopleId,
+                            PaymentMethodTypeId = (int)viewModel.paymentTypeId,
+                            IsDefault = viewModel.isDefault,
+                            Name = viewModel.name,
+                            NameOnAccount = viewModel.firstName + " " + viewModel.lastName,
+                            MaskedDisplay = "•••• •••• •••• 1234",
+                            Last4 = viewModel.cardNumber.Substring(viewModel.cardNumber.Length - 4, 4),
+                            ExpiresMonth = Convert.ToInt32(viewModel.expiresMonth),
+                            ExpiresYear = Convert.ToInt32(viewModel.expiresYear),
+                        };
+                        cardValidation = PaymentValidator.ValidateCreditCardInfo(viewModel.cardNumber, viewModel.cvv, viewModel.expiresMonth, viewModel.expiresYear);
+                        if (cardValidation.error != 0)
+                        {
+                            return Models.Message.createErrorReturn(cardValidation.data, cardValidation.error);
+                        }
+                        break;
+                    case 5: // Discover
+                        paymentMethod = new PaymentMethod
+                        {
+                            PeopleId = currentPeopleId,
+                            PaymentMethodTypeId = (int)viewModel.paymentTypeId,
+                            IsDefault = viewModel.isDefault,
+                            Name = viewModel.name,
+                            NameOnAccount = viewModel.firstName + " " + viewModel.lastName,
+                            MaskedDisplay = "•••• •••• •••• 1234",
+                            Last4 = viewModel.cardNumber.Substring(viewModel.cardNumber.Length - 4, 4),
+                            ExpiresMonth = Convert.ToInt32(viewModel.expiresMonth),
+                            ExpiresYear = Convert.ToInt32(viewModel.expiresYear),
+                        };
+                        cardValidation = PaymentValidator.ValidateCreditCardInfo(viewModel.cardNumber, viewModel.cvv, viewModel.expiresMonth, viewModel.expiresYear);
+                        if (cardValidation.error != 0)
+                        {
+                            return Models.Message.createErrorReturn(cardValidation.data, cardValidation.error);
+                        }
+                        break;
+                    case 99: // Other
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            var account = MultipleGatewayUtils.GetAccount(CurrentDatabase, PaymentProcessTypes.RecurringGiving);
+            paymentMethod.GatewayAccountId = account.GatewayAccountId;
+            var gateway = CurrentDatabase.Gateway(viewModel.testing, account, PaymentProcessTypes.RecurringGiving);
+
+            if (viewModel.paymentTypeId == 1)
+            {
+                var type = PaymentType.Ach;
+                gateway.StoreInVault(paymentMethod, type, null, null, viewModel.bankAccount, viewModel.bankRouting, null, null, viewModel.address, viewModel.address2, viewModel.city, viewModel.state, viewModel.country, viewModel.zip, viewModel.phone, viewModel.emailAddress);
+            }
+            else if (viewModel.paymentTypeId == 2 || viewModel.paymentTypeId == 3 || viewModel.paymentTypeId == 4 || viewModel.paymentTypeId == 5)
+            {
+                var expires = HelperMethods.FormatExpirationDate(Convert.ToInt32(viewModel.expiresMonth), Convert.ToInt32(viewModel.expiresYear));
+                var dollarAmt = 1;
+                var transactionResponse = gateway.AuthCreditCard(currentPeopleId, dollarAmt, viewModel.cardNumber, expires, "Recurring Giving Auth", 0, viewModel.cvv, string.Empty, viewModel.firstName, viewModel.lastName, viewModel.address, viewModel.address2, viewModel.city, viewModel.state, viewModel.country, viewModel.zip, viewModel.phone);
+                if (transactionResponse.Approved == false)
+                {
+                    return Models.Message.createErrorReturn("Card authorization failed.", Models.Message.API_ERROR_PAYMENT_METHOD_AUTHORIZATION_FAILED);
+                }
+                else
+                {
+                    gateway.VoidCreditCardTransaction(transactionResponse.TransactionId);
+                    var type = PaymentType.CreditCard;
+                    gateway.StoreInVault(paymentMethod, type, viewModel.cardNumber, viewModel.cvv, null, null, Convert.ToInt32(viewModel.expiresMonth), Convert.ToInt32(viewModel.expiresYear), viewModel.address, viewModel.address2, viewModel.city, viewModel.state, viewModel.country, viewModel.zip, viewModel.phone, viewModel.emailAddress);
+                }
+            }
+            else
+            {
+                return Models.Message.createErrorReturn("Payment method type not supported.", Models.Message.API_ERROR_PAYMENT_METHOD_AUTHORIZATION_FAILED);
+            }
+
+            paymentMethod.Encrypt();
+            CurrentDatabase.PaymentMethods.InsertOnSubmit(paymentMethod);
+            CurrentDatabase.SubmitChanges();
+            return Models.Message.successMessage("Payment method created.", Models.Message.API_ERROR_NONE);
         }
 
         public Message DeleteMethod(Guid? paymentMethodId = null)
@@ -49,7 +318,7 @@ namespace CmsWeb.Areas.Giving.Models
             {
                 CurrentDatabase.PaymentMethods.DeleteOnSubmit(paymentMethod);
                 CurrentDatabase.SubmitChanges();
-                return Models.Message.successMessage("Payment schedule deleted.", Models.Message.API_ERROR_NONE);
+                return Models.Message.successMessage("Payment method deleted.", Models.Message.API_ERROR_NONE);
             }
         }
 
