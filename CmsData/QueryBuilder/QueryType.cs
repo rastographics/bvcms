@@ -190,6 +190,7 @@ namespace CmsData
         PeopleExtraAttr,
         PeopleId,
         PeopleIds,
+        PeopleRecordType,
         PledgeAmountBothJointHistory,
         PledgeBalance,
         PmmBackgroundCheckStatus,

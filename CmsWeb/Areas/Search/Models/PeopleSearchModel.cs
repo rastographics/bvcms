@@ -27,12 +27,7 @@ namespace CmsWeb.Models
         public int campus { get; set; }
         public int memberstatus { get; set; }
         public string[] statusflags { get; set; }
-        public int? marital { get; set; }        
-        public int PeopleRecordType
-        {
-            get => peoplerecordtype;
-            set => peoplerecordtype = value;
-        }
+        public int? marital { get; set; }                
         public int? gender { get; set; }
 
         public string nameHelp = ViewExtensions2.Markdown(@"
@@ -265,10 +260,18 @@ namespace CmsWeb.Models
             {
                 people = people.Where(p => p.MaritalStatusId == m.marital);
             }
-
-            if (m.PeopleRecordType == 1)
+            
+            switch (m.peoplerecordtype)
             {
-                people = people.Where(p => p.IsBusiness == true);
+                case 0:
+                    people = people.Where(p => p.IsBusiness == false || p.IsBusiness == null); ;
+                    break;
+                case 1:
+                    people = people.Where(p => p.IsBusiness == true);
+                    break;
+                //case 2:
+                //    people = people.Where(p => p.IsBusiness == true || p.IsBusiness == false || p.IsBusiness == null); ;
+                //    break;
             }
 
             return people;
@@ -423,16 +426,20 @@ namespace CmsWeb.Models
         {
             return new SelectList(cv.MaritalStatusCodes99(), "Id", "Value", m.marital);
         }
-        public IEnumerable<SelectListItem> PeopleRecordTypes()
+        public IEnumerable<CodeValueItem> PeopleRecordTypes()
         {   
-            var list = new List<SelectListItem>
+            var list = new List<CodeValueItem>
             {
-                new SelectListItem {Text = "Person", Value = "0"},
-                new SelectListItem {Text = "Business", Value = "1"},
-                new SelectListItem {Text = "Both", Value = "2"}
+                new CodeValueItem {Code = "Person", Value = "Person", Id = 0},
+                new CodeValueItem {Code = "Business/Entity", Value = "Business/Entity", Id = 1},
+                new CodeValueItem {Code = "Both", Value = "Both", Id = 2}
             }; ;
             
             return list;
+        }
+        public SelectList PeopleRecordCodes()
+        {
+            return new SelectList(PeopleRecordTypes(), "Id", "Value", m.peoplerecordtype);
         }
         public IEnumerable<SelectListItem> Campuses()
         {

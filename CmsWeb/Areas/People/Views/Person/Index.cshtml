@@ -6,6 +6,8 @@
 @{
     Layout = ViewExtensions2.TouchPointLayout();
     ViewBag.Title = "Person";
+    ViewBag.IsBusiness = Model.IsBusiness;
+    
     var gender = Model.Person.Gender.Code;
     var portraitUrl = gender == "M" ? Model.Picture.MediumMaleUrl : gender == "F" ? Model.Picture.MediumFemaleUrl : Model.Picture.MediumUrl;
     var portraitBgPos = Model.Picture.X.HasValue || Model.Picture.Y.HasValue ? $"{Model.Picture.X.GetValueOrDefault()}% {Model.Picture.Y.GetValueOrDefault()}%" : "top";
@@ -216,10 +218,16 @@
             }
         </div>
         <div id="sidebar">
-            @Html.Partial("Family/Members", Model.FamilyModel)
+            @if (!(bool)Model.IsBusiness)
+            {
+                @Html.Partial("Family/Members", Model.FamilyModel)
+            }
             @Html.Partial("Family/Related", Model.FamilyModel)
-            @Html.Partial("Family/Photo", Model)
-        </div>
+            @if (!(bool)Model.IsBusiness)
+            {
+                @Html.Partial("Family/Photo", Model)
+            }
+            </div>
     </div>
     <div class="col-sm-8 col-md-9 col-lg-10">
         <div id="toolbar-container" class="hidden-print">

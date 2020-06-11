@@ -4,21 +4,13 @@
 @model PeopleSearchModel
 @{
   ViewBag.Title = "People Search";
-  ViewBag.PageHeader = "People, Business/Entity Search";
+  ViewBag.PageHeader = "People Search";
   Layout = ViewExtensions2.TouchPointLayout();
 }
 <div class="box box-responsive">
-    <div class="bo -content">
+    <div class="box-content">
         <form method="post" action="/PeopleSearch">
-            <div class="well">
-                <div class="row">
-                    <div class="col-lg-2 col-md-3 col-sm-4">
-                        <div class="form-group">
-                            <label for="peoplerecordtype" class="control-label">Record Type</label>
-                            @Html.DropDownList("peoplerecordtype", Model.PeopleRecordTypes(), new { @class = "form-control" })                            
-                        </div>
-                    </div>                    
-                </div>
+            <div class="well">                
                     <div class="row">
                         <div class="col-lg-3 col-md-3 col-sm-6">
                             <div class="form-group">
@@ -75,12 +67,18 @@
                                 @Html.DropDownList("marital", Model.MaritalCodes(), new { @class = "form-control" })
                             </div>
                         </div>
-                        <div class="col-lg-4 col-md-5 col-sm-6">
+                        <div class="col-lg-2 col-md-3 col-sm-4">
                             <div class="form-group">
                                 <label for="statusflags" class="control-label">Status Flags</label>
                                 <div class="form-group">
                                     @Html.DropDownList("statusflags", new SelectList(new CodeValueModel(ViewExtensions2.CurrentDatabase).StatusFlags(), "Code", "Value"), new { multiple = "multiple", @class = "form-control" })
                                 </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-md-3 col-sm-4">
+                            <div class="form-group">
+                                <label for="peoplerecordtype" class="control-label">Record Type</label>
+                                @Html.DropDownList("peoplerecordtype", Model.PeopleRecordCodes(), new { @class = "form-control" })
                             </div>
                         </div>
                     </div>
