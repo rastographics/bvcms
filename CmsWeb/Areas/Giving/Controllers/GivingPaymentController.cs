@@ -37,7 +37,7 @@ namespace CmsWeb.Areas.Giving.Controllers
         [HttpPost]
         public ActionResult MethodsCreate(int? paymentTypeId = null, bool isDefault = true, string name = "", string firstName = "", string lastName = "", string bankAccount = "",
             string bankRouting = "", string cardNumber = "", string cvv = "", string expiresMonth = null, string expiresYear = null, string address ="", string address2 = "", string city = "",
-            string state = "", string country = "", string zip = "", string phone = "", string transactionTypeId = "", string emailAddress = "")
+            string state = "", string country = "", string zip = "", string phone = "", string transactionTypeId = "", string emailAddress = "", int? incomingPeopleId = null, bool testing = false)
         {
             if (paymentTypeId == null || paymentTypeId == 0)
             {
@@ -82,114 +82,201 @@ namespace CmsWeb.Areas.Giving.Controllers
             var paymentMethod = new PaymentMethod();
             var cardValidation = new Message();
             var bankValidation = new Message();
-            switch (paymentTypeId)
+            int currentPeopleId = 0;
+            if (incomingPeopleId == null)
             {
-                case 1: // bank
-                    paymentMethod = new PaymentMethod
-                    {
-                        PeopleId = (int)CurrentDatabase.UserPeopleId,
-                        PaymentMethodTypeId = (int)paymentTypeId,
-                        IsDefault = isDefault,
-                        Name = name,
-                        NameOnAccount = firstName + " " + lastName,
-                        MaskedDisplay = "•••• •••• •••• 1234",
-                        Last4 = bankAccount.Substring(bankAccount.Length - 4, 4)
-                    };
-                    bankValidation = PaymentValidator.ValidateBankAccountInfo(bankAccount, bankRouting);
-                    if (bankValidation.error != 0)
-                    {
-                        return Models.Message.createErrorReturn(bankValidation.data, bankValidation.error);
-                    }
-                    break;
-                case 2: // Visa
-                    paymentMethod = new PaymentMethod
-                    {
-                        PeopleId = (int)CurrentDatabase.UserPeopleId,
-                        PaymentMethodTypeId = (int)paymentTypeId,
-                        IsDefault = isDefault,
-                        Name = name,
-                        NameOnAccount = firstName + " " + lastName,
-                        MaskedDisplay = "•••• •••• •••• 1234",
-                        Last4 = cardNumber.Substring(cardNumber.Length - 4, 4),
-                        ExpiresMonth = Convert.ToInt32(expiresMonth),
-                        ExpiresYear = Convert.ToInt32(expiresYear),
-                    };
-                    //cardValidation = PaymentValidator.ValidateCreditCardInfo(cardNumber, cvv, expiresMonth, expiresYear);
-                    //if(cardValidation.error != 0)
-                    //{
-                    //    return Models.Message.createErrorReturn(cardValidation.data, cardValidation.error);
-                    //}
-                    break;
-                case 3: // Mastercard
-                    paymentMethod = new PaymentMethod
-                    {
-                        PeopleId = (int)CurrentDatabase.UserPeopleId,
-                        PaymentMethodTypeId = (int)paymentTypeId,
-                        IsDefault = isDefault,
-                        Name = name,
-                        NameOnAccount = firstName + " " + lastName,
-                        MaskedDisplay = "•••• •••• •••• 1234",
-                        Last4 = cardNumber.Substring(cardNumber.Length - 4, 4),
-                        ExpiresMonth = Convert.ToInt32(expiresMonth),
-                        ExpiresYear = Convert.ToInt32(expiresYear),
-                    };
-                    cardValidation = PaymentValidator.ValidateCreditCardInfo(cardNumber, cvv, expiresMonth, expiresYear);
-                    if (cardValidation.error != 0)
-                    {
-                        return Models.Message.createErrorReturn(cardValidation.data, cardValidation.error);
-                    }
-                    break;
-                case 4: // Amex
-                    paymentMethod = new PaymentMethod
-                    {
-                        PeopleId = (int)CurrentDatabase.UserPeopleId,
-                        PaymentMethodTypeId = (int)paymentTypeId,
-                        IsDefault = isDefault,
-                        Name = name,
-                        NameOnAccount = firstName + " " + lastName,
-                        MaskedDisplay = "•••• •••• •••• 1234",
-                        Last4 = cardNumber.Substring(cardNumber.Length - 4, 4),
-                        ExpiresMonth = Convert.ToInt32(expiresMonth),
-                        ExpiresYear = Convert.ToInt32(expiresYear),
-                    };
-                    cardValidation = PaymentValidator.ValidateCreditCardInfo(cardNumber, cvv, expiresMonth, expiresYear);
-                    if (cardValidation.error != 0)
-                    {
-                        return Models.Message.createErrorReturn(cardValidation.data, cardValidation.error);
-                    }
-                    break;
-                case 5: // Discover
-                    paymentMethod = new PaymentMethod
-                    {
-                        PeopleId = (int)CurrentDatabase.UserPeopleId,
-                        PaymentMethodTypeId = (int)paymentTypeId,
-                        IsDefault = isDefault,
-                        Name = name,
-                        NameOnAccount = firstName + " " + lastName,
-                        MaskedDisplay = "•••• •••• •••• 1234",
-                        Last4 = cardNumber.Substring(cardNumber.Length - 4, 4),
-                        ExpiresMonth = Convert.ToInt32(expiresMonth),
-                        ExpiresYear = Convert.ToInt32(expiresYear),
-                    };
-                    cardValidation = PaymentValidator.ValidateCreditCardInfo(cardNumber, cvv, expiresMonth, expiresYear);
-                    if (cardValidation.error != 0)
-                    {
-                        return Models.Message.createErrorReturn(cardValidation.data, cardValidation.error);
-                    }
-                    break;
-                case 99: // Other
-                    break;
-                default:
-                    break;
+                currentPeopleId = (int)CurrentDatabase.UserPeopleId;
+            }
+            else
+            {
+                currentPeopleId = (int)incomingPeopleId;
+            }
+
+            if(testing == true)
+            {
+                switch (paymentTypeId)
+                {
+                    case 1: // bank
+                        paymentMethod = new PaymentMethod
+                        {
+                            PeopleId = currentPeopleId,
+                            PaymentMethodTypeId = (int)paymentTypeId,
+                            IsDefault = isDefault,
+                            Name = name,
+                            NameOnAccount = firstName + " " + lastName,
+                            MaskedDisplay = "•••• •••• •••• 1234",
+                            Last4 = bankAccount.Substring(bankAccount.Length - 4, 4)
+                        };
+                        break;
+                    case 2: // Visa
+                        paymentMethod = new PaymentMethod
+                        {
+                            PeopleId = currentPeopleId,
+                            PaymentMethodTypeId = (int)paymentTypeId,
+                            IsDefault = isDefault,
+                            Name = name,
+                            NameOnAccount = firstName + " " + lastName,
+                            MaskedDisplay = "•••• •••• •••• 1234",
+                            Last4 = cardNumber.Substring(cardNumber.Length - 4, 4),
+                            ExpiresMonth = Convert.ToInt32(expiresMonth),
+                            ExpiresYear = Convert.ToInt32(expiresYear),
+                        };
+                        break;
+                    case 3: // Mastercard
+                        paymentMethod = new PaymentMethod
+                        {
+                            PeopleId = currentPeopleId,
+                            PaymentMethodTypeId = (int)paymentTypeId,
+                            IsDefault = isDefault,
+                            Name = name,
+                            NameOnAccount = firstName + " " + lastName,
+                            MaskedDisplay = "•••• •••• •••• 1234",
+                            Last4 = cardNumber.Substring(cardNumber.Length - 4, 4),
+                            ExpiresMonth = Convert.ToInt32(expiresMonth),
+                            ExpiresYear = Convert.ToInt32(expiresYear),
+                        };
+                        break;
+                    case 4: // Amex
+                        paymentMethod = new PaymentMethod
+                        {
+                            PeopleId = currentPeopleId,
+                            PaymentMethodTypeId = (int)paymentTypeId,
+                            IsDefault = isDefault,
+                            Name = name,
+                            NameOnAccount = firstName + " " + lastName,
+                            MaskedDisplay = "•••• •••• •••• 1234",
+                            Last4 = cardNumber.Substring(cardNumber.Length - 4, 4),
+                            ExpiresMonth = Convert.ToInt32(expiresMonth),
+                            ExpiresYear = Convert.ToInt32(expiresYear),
+                        };
+                        break;
+                    case 5: // Discover
+                        paymentMethod = new PaymentMethod
+                        {
+                            PeopleId = currentPeopleId,
+                            PaymentMethodTypeId = (int)paymentTypeId,
+                            IsDefault = isDefault,
+                            Name = name,
+                            NameOnAccount = firstName + " " + lastName,
+                            MaskedDisplay = "•••• •••• •••• 1234",
+                            Last4 = cardNumber.Substring(cardNumber.Length - 4, 4),
+                            ExpiresMonth = Convert.ToInt32(expiresMonth),
+                            ExpiresYear = Convert.ToInt32(expiresYear),
+                        };
+                        break;
+                    case 99: // Other
+                        break;
+                    default:
+                        break;
+                }
+            }
+            else
+            {
+                switch (paymentTypeId)
+                {
+                    case 1: // bank
+                        paymentMethod = new PaymentMethod
+                        {
+                            PeopleId = currentPeopleId,
+                            PaymentMethodTypeId = (int)paymentTypeId,
+                            IsDefault = isDefault,
+                            Name = name,
+                            NameOnAccount = firstName + " " + lastName,
+                            MaskedDisplay = "•••• •••• •••• 1234",
+                            Last4 = bankAccount.Substring(bankAccount.Length - 4, 4)
+                        };
+                        bankValidation = PaymentValidator.ValidateBankAccountInfo(bankAccount, bankRouting);
+                        if (bankValidation.error != 0)
+                        {
+                            return Models.Message.createErrorReturn(bankValidation.data, bankValidation.error);
+                        }
+                        break;
+                    case 2: // Visa
+                        paymentMethod = new PaymentMethod
+                        {
+                            PeopleId = currentPeopleId,
+                            PaymentMethodTypeId = (int)paymentTypeId,
+                            IsDefault = isDefault,
+                            Name = name,
+                            NameOnAccount = firstName + " " + lastName,
+                            MaskedDisplay = "•••• •••• •••• 1234",
+                            Last4 = cardNumber.Substring(cardNumber.Length - 4, 4),
+                            ExpiresMonth = Convert.ToInt32(expiresMonth),
+                            ExpiresYear = Convert.ToInt32(expiresYear),
+                        };
+                        cardValidation = PaymentValidator.ValidateCreditCardInfo(cardNumber, cvv, expiresMonth, expiresYear);
+                        if (cardValidation.error != 0)
+                        {
+                            return Models.Message.createErrorReturn(cardValidation.data, cardValidation.error);
+                        }
+                        break;
+                    case 3: // Mastercard
+                        paymentMethod = new PaymentMethod
+                        {
+                            PeopleId = currentPeopleId,
+                            PaymentMethodTypeId = (int)paymentTypeId,
+                            IsDefault = isDefault,
+                            Name = name,
+                            NameOnAccount = firstName + " " + lastName,
+                            MaskedDisplay = "•••• •••• •••• 1234",
+                            Last4 = cardNumber.Substring(cardNumber.Length - 4, 4),
+                            ExpiresMonth = Convert.ToInt32(expiresMonth),
+                            ExpiresYear = Convert.ToInt32(expiresYear),
+                        };
+                        cardValidation = PaymentValidator.ValidateCreditCardInfo(cardNumber, cvv, expiresMonth, expiresYear);
+                        if (cardValidation.error != 0)
+                        {
+                            return Models.Message.createErrorReturn(cardValidation.data, cardValidation.error);
+                        }
+                        break;
+                    case 4: // Amex
+                        paymentMethod = new PaymentMethod
+                        {
+                            PeopleId = currentPeopleId,
+                            PaymentMethodTypeId = (int)paymentTypeId,
+                            IsDefault = isDefault,
+                            Name = name,
+                            NameOnAccount = firstName + " " + lastName,
+                            MaskedDisplay = "•••• •••• •••• 1234",
+                            Last4 = cardNumber.Substring(cardNumber.Length - 4, 4),
+                            ExpiresMonth = Convert.ToInt32(expiresMonth),
+                            ExpiresYear = Convert.ToInt32(expiresYear),
+                        };
+                        cardValidation = PaymentValidator.ValidateCreditCardInfo(cardNumber, cvv, expiresMonth, expiresYear);
+                        if (cardValidation.error != 0)
+                        {
+                            return Models.Message.createErrorReturn(cardValidation.data, cardValidation.error);
+                        }
+                        break;
+                    case 5: // Discover
+                        paymentMethod = new PaymentMethod
+                        {
+                            PeopleId = currentPeopleId,
+                            PaymentMethodTypeId = (int)paymentTypeId,
+                            IsDefault = isDefault,
+                            Name = name,
+                            NameOnAccount = firstName + " " + lastName,
+                            MaskedDisplay = "•••• •••• •••• 1234",
+                            Last4 = cardNumber.Substring(cardNumber.Length - 4, 4),
+                            ExpiresMonth = Convert.ToInt32(expiresMonth),
+                            ExpiresYear = Convert.ToInt32(expiresYear),
+                        };
+                        cardValidation = PaymentValidator.ValidateCreditCardInfo(cardNumber, cvv, expiresMonth, expiresYear);
+                        if (cardValidation.error != 0)
+                        {
+                            return Models.Message.createErrorReturn(cardValidation.data, cardValidation.error);
+                        }
+                        break;
+                    case 99: // Other
+                        break;
+                    default:
+                        break;
+                }
             }
 
             var account = MultipleGatewayUtils.GetAccount(CurrentDatabase, PaymentProcessTypes.RecurringGiving);
             paymentMethod.GatewayAccountId = account.GatewayAccountId;
-
-            var currentPeopleId = CurrentDatabase.UserPeopleId;
-            var testing = true;
             var gateway = CurrentDatabase.Gateway(testing, account, PaymentProcessTypes.RecurringGiving);
-            var dollarAmt = 1;
 
             if(paymentTypeId == 1)
             {
@@ -199,14 +286,15 @@ namespace CmsWeb.Areas.Giving.Controllers
             else if (paymentTypeId == 2 || paymentTypeId == 3 || paymentTypeId == 4 || paymentTypeId == 5)
             {
                 var expires = HelperMethods.FormatExpirationDate(Convert.ToInt32(expiresMonth), Convert.ToInt32(expiresYear));
-                var transactionResponse = gateway.AuthCreditCard((int)currentPeopleId, dollarAmt, cardNumber, expires, "Recurring Giving Auth", 0, cvv, string.Empty, firstName, lastName, address, address2, city, state, country, zip, phone);
+                var dollarAmt = 1;
+                var transactionResponse = gateway.AuthCreditCard(currentPeopleId, dollarAmt, cardNumber, expires, "Recurring Giving Auth", 0, cvv, string.Empty, firstName, lastName, address, address2, city, state, country, zip, phone);
                 if(transactionResponse.Approved == false)
                 {
                     return Models.Message.createErrorReturn("Card authorization failed.", Models.Message.API_ERROR_PAYMENT_METHOD_AUTHORIZATION_FAILED);
                 }
                 else
                 {
-                    var voidResponse = gateway.VoidCreditCardTransaction(transactionResponse.TransactionId);
+                    gateway.VoidCreditCardTransaction(transactionResponse.TransactionId);
                     var type = PaymentType.CreditCard;
                     gateway.StoreInVault(paymentMethod, type, cardNumber, cvv, null, null, Convert.ToInt32(expiresMonth), Convert.ToInt32(expiresYear), address, address2, city, state, country, zip, phone, emailAddress);
                 }
