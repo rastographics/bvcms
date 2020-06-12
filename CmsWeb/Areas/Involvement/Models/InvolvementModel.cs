@@ -2,6 +2,7 @@
 using CmsData.Classes.RoleChecker;
 using CmsData.Codes;
 using CmsData.View;
+using CmsWeb.Areas.Org.Models;
 using CmsWeb.Code;
 using CmsWeb.Constants;
 using System;
@@ -37,11 +38,13 @@ namespace CmsWeb.Areas.Involvement.Models
                 var filter = Db.NewOrgFilter(value);
                 filter.CopyPropertiesTo(this);
                 QueryId = filter.QueryId;
-                // populate(value);
+                populate(value);
             }
         }
 
-        public InvolvementMain InvolvementMain { get; set; }
+
+        //public InvolvementMain InvolvementMain { get; set; }
+        public OrgMain OrgMain { get; set; }
 
         /*
         private SettingsGeneralModel settingsGeneralModel;
@@ -70,6 +73,7 @@ namespace CmsWeb.Areas.Involvement.Models
                 return settingsRegistrationModel;
             }
         }
+        */
 
         private void populate(int id)
         {
@@ -85,6 +89,7 @@ namespace CmsWeb.Areas.Involvement.Models
             IsVolunteerLeader = OrganizationMember.VolunteerLeaderInOrg(Db, Id);
         }
 
+        /*
         public IEnumerable<SelectListItem> Groups()
         {
             var q = from g in Db.MemberTags

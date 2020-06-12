@@ -10,7 +10,7 @@ using System.Web;
 
 namespace CmsWeb.Areas.Involvement.Models
 {
-    public class MeetingsModel : PagedTableModel<Meeting, MeetingInfo>
+    public class InvolvementMeetingsModel : PagedTableModel<Meeting, MeetingInfo>
     {
         public Meeting meeting;
         public int Id { get; set; }
@@ -40,7 +40,7 @@ namespace CmsWeb.Areas.Involvement.Models
         private bool? _ShowESpaceSyncMeetings;
 
         [Obsolete(Errors.ModelBindingConstructorError, true)]
-        public MeetingsModel()
+        public InvolvementMeetingsModel()
         {
             Sort = "";
             Direction = "";

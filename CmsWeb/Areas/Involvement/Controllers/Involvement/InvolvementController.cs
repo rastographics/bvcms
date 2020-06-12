@@ -3,6 +3,7 @@ using System.Linq;
 using System.Web.Mvc;
 using CmsData;
 using CmsWeb.Areas.Involvement.Models;
+using CmsWeb.Areas.Org.Models;
 //using CmsWeb.Areas.Involvement.Models;
 using CmsWeb.Lifecycle;
 using UtilityExtensions;
@@ -31,13 +32,13 @@ namespace CmsWeb.Areas.Involvement.Controllers
                 return Redirect($"/Org/{id}");
             }
 
-            var m = InvolvementModel.Create(CurrentDatabase, CurrentUser);
-            m.InvolvementId = id;
+            var m = OrganizationModel.Create(CurrentDatabase, CurrentUser);
+            m.OrgId = id;
             if (peopleid.HasValue)
                 m.NameFilter = peopleid.ToString();
 
             if (m.Org == null)
-                return Content("organization not found");
+                return Content("Involvement not found");
 
             if (Util2.OrgLeadersOnly)
             {
@@ -89,7 +90,7 @@ namespace CmsWeb.Areas.Involvement.Controllers
             return Content("ok");
         }
 
-        private void InitExportToolbar(InvolvementModel m)
+        private void InitExportToolbar(OrganizationModel m)
         {
             ViewBag.oid = m.Id;
             ViewBag.queryid = m.QueryId;
@@ -109,7 +110,7 @@ namespace CmsWeb.Areas.Involvement.Controllers
         }
 
         [HttpPost]
-        public ActionResult Meetings(MeetingsModel m)
+        public ActionResult Meetings(InvolvementMeetingsModel m)
         {
 
             DbUtil.LogActivity($"Viewing Meetings for orgId={m.Id}", orgid: m.Id);

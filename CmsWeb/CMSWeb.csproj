@@ -571,7 +571,7 @@
     <Compile Include="Areas\Involvement\Models\InvolvementModel.cs" />
     <Compile Include="Areas\Involvement\Models\InvolvementPeopleModel.cs" />
     <Compile Include="Areas\Involvement\Models\InvolvementVenuesModel.cs" />
-    <Compile Include="Areas\Involvement\Models\Involvement\MeetingsModel.cs" />
+    <Compile Include="Areas\Involvement\Models\Involvement\InvolvementMeetingsModel.cs" />
     <Compile Include="Areas\Involvement\Models\MeetingInfo.cs" />
     <Compile Include="Areas\Involvement\Models\MeetingModel.cs" />
     <Compile Include="Areas\Main\Models\Other\CouponResponseModel.cs" />
@@ -1981,7 +1981,7 @@
     <Content Include="Areas\Involvement\Views\Involvement\People\Hidden.cshtml" />
     <Content Include="Areas\Involvement\Views\Involvement\Venues\Venues.cshtml" />
     <Content Include="Areas\Involvement\Views\Involvement\Venues\CreateVenue.cshtml" />
-    <Content Include="Areas\Involvement\Views\Involvement\Meetings.cshtml" />
+    <Content Include="Areas\Involvement\Views\Involvement\InvolvementMeetings.cshtml" />
     <Content Include="Areas\Involvement\Views\InvolvementMeeting\Index.cshtml" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
