@@ -114,7 +114,7 @@ namespace CmsWeb.Areas.Involvement.Controllers
         {
 
             DbUtil.LogActivity($"Viewing Meetings for orgId={m.Id}", orgid: m.Id);
-            return PartialView(m);
+            return PartialView("InvolvementMeetings", m);
         }
 
         [HttpPost]

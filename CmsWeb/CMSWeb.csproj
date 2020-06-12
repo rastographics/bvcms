@@ -1981,8 +1981,8 @@
     <Content Include="Areas\Involvement\Views\Involvement\People\Hidden.cshtml" />
     <Content Include="Areas\Involvement\Views\Involvement\Venues\Venues.cshtml" />
     <Content Include="Areas\Involvement\Views\Involvement\Venues\CreateVenue.cshtml" />
-    <Content Include="Areas\Involvement\Views\Involvement\InvolvementMeetings.cshtml" />
     <Content Include="Areas\Involvement\Views\InvolvementMeeting\Index.cshtml" />
+    <Content Include="Areas\Involvement\Views\Involvement\InvolvementMeetings.cshtml" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
