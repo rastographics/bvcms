@@ -1,4 +1,5 @@
-﻿using CmsWeb.Lifecycle;
+﻿using CmsData.Classes.Twilio;
+using CmsWeb.Lifecycle;
 using System.Linq;
 using System.Net;
 using System.Web.Mvc;
@@ -16,32 +17,16 @@ namespace CmsWeb.Controllers
         [AllowAnonymous, HttpPost, Route("WebHook/Twilio/{Id}")]
         public ActionResult Twilio(int Id, string MessageSid, string SmsStatus)
         {
-            int? errorCode = null;
-            string errorMessage = null;
-
             if (MessageSid.HasValue())
             {
-                if (MessageResource.StatusEnum.Failed.Equals(SmsStatus) ||
-                    MessageResource.StatusEnum.Undelivered.Equals(SmsStatus))
+                var message = MessageResource.Fetch(MessageSid);
+                var smsItem = CurrentDatabase.SMSItems.FirstOrDefault(m => m.Id == Id);
+
+                if (smsItem != null && message != null)
                 {
-                    var message = MessageResource.Fetch(MessageSid);
-                    errorCode = message.ErrorCode;
-                    errorMessage = message.ErrorMessage;
+                    TwilioHelper.UpdateSMSItemStatus(CurrentDatabase, smsItem, new TwilioMessageResult(message));
                 }
             }
-
-            var smsItem = CurrentDatabase.SMSItems.FirstOrDefault(m => m.Id == Id);
-
-            if (smsItem != null)
-            {
-                if (errorMessage.IsNotNull() || errorCode.IsNotNull())
-                {
-                    smsItem.ErrorMessage = $"({errorCode}) {errorMessage}".MaxString(150);
-                }
-                smsItem.ResultStatus = SmsStatus;
-                CurrentDatabase.SubmitChanges();
-            }
-
             // No response needed
             return new HttpStatusCodeResult(HttpStatusCode.NoContent);
         }
