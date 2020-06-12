@@ -12,6 +12,7 @@ namespace CmsWeb.Areas.Involvement.Models
 {
     public class MeetingsModel : PagedTableModel<Meeting, MeetingInfo>
     {
+        public Meeting meeting;
         public int Id { get; set; }
         public bool Future { get; set; }
         public bool Past { get; set; }
@@ -19,19 +20,22 @@ namespace CmsWeb.Areas.Involvement.Models
         public bool ShowCreateNewMeeting { get; } = RoleChecker.HasSetting(SettingName.Organization_ShowCreateNewMeeting, true);
         public bool ShowEditMeeting { get; } = RoleChecker.HasSetting(SettingName.Organization_ShowEditMeeting, true);
         public bool ShowDeleteMeeting { get; } = RoleChecker.HasSetting(SettingName.Organization_ShowDeleteMeeting, true);
-        public bool ShowESpaceSyncMeetings
-        {
-            get
-            {
-                if (!_ShowESpaceSyncMeetings.HasValue)
-                {
-                    _ShowESpaceSyncMeetings = ShowCreateNewMeeting &&
-                        CurrentDatabase.Setting("eSpaceEnabled") &&
-                        OrgHasEspaceEventId();
-                }
-                return _ShowESpaceSyncMeetings.Value;
-            }
-        }
+        public bool ShowAttendType => RoleChecker.HasSetting(SettingName.Meeting_ShowAttendType, true);
+        public bool ShowOtherAttend => RoleChecker.HasSetting(SettingName.Meeting_ShowOtherAttend, false);
+        public bool ShowCurrentMemberType => RoleChecker.HasSetting(SettingName.Meeting_ShowCurrentMemberType, true);
+        //public bool ShowESpaceSyncMeetings
+        //{
+        //    get
+        //    {
+        //        if (!_ShowESpaceSyncMeetings.HasValue)
+        //        {
+        //            _ShowESpaceSyncMeetings = ShowCreateNewMeeting &&
+        //                CurrentDatabase.Setting("eSpaceEnabled") &&
+        //                OrgHasEspaceEventId();
+        //        }
+        //        return _ShowESpaceSyncMeetings.Value;
+        //    }
+        //}
 
         private bool? _ShowESpaceSyncMeetings;
 
@@ -129,6 +133,6 @@ namespace CmsWeb.Areas.Involvement.Models
 * Click one of the buttons to see upcoming or past meetings.
 ");
 
-    private bool OrgHasEspaceEventId() => CurrentDatabase.Organizations.Any(o => o.OrganizationId == Id && o.ESpaceEventId.HasValue);
+        private bool OrgHasEspaceEventId() => CurrentDatabase.Organizations.Any(o => o.OrganizationId == Id && o.ESpaceEventId.HasValue);
     }
 }

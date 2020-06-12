@@ -40,7 +40,7 @@
                         @foreach (var m in Model.ViewList())
                         {
                             <tr>
-                                <td class="@(m.Conflict ? "alert-danger" : "")"><a href="/Meeting/@m.MeetingId">@m.MeetingDate.FormatDate()</a></td>
+                                <td class="@(m.Conflict ? "alert-danger" : "")"><a href="/InvolvementMeeting/@m.MeetingId">@m.MeetingDate.FormatDate()</a></td>
                                 <td class="@(m.Conflict ? "alert-danger" : "")">@m.MeetingDate.ToString2("t")</td>
                                 <td>@m.Venue</td>
                                 <td>@m.Description</td>

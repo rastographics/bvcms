@@ -1,11 +1,12 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Web.Mvc;
 using CmsData;
 using CmsWeb.Areas.Involvement.Models;
-using CmsWeb.Areas.Org.Models;
+//using CmsWeb.Areas.Involvement.Models;
 using CmsWeb.Lifecycle;
 using UtilityExtensions;
-using MeetingsModel = CmsWeb.Areas.Involvement.Models.MeetingsModel;
+using MeetingModel = CmsWeb.Areas.Involvement.Models.MeetingModel;
 
 namespace CmsWeb.Areas.Involvement.Controllers
 {
@@ -118,65 +119,70 @@ namespace CmsWeb.Areas.Involvement.Controllers
         [HttpPost]
         public ActionResult Settings(int id)
         {
-            var m = OrganizationModel.Create(CurrentDatabase, CurrentUser);
-            m.OrgId = id;
-            return PartialView(m);
+            throw new NotImplementedException();
+            //var m = OrganizationModel.Create(CurrentDatabase, CurrentUser);
+            //m.OrgId = id;
+            //return PartialView(m);
         }
 
         [HttpPost]
         public ActionResult Registrations(int id)
         {
-            var m = OrganizationModel.Create(CurrentDatabase, CurrentUser);
-            m.OrgId = id;
-            return PartialView(m);
+            throw new NotImplementedException();
+            //var m = OrganizationModel.Create(CurrentDatabase, CurrentUser);
+            //m.OrgId = id;
+            //return PartialView(m);
         }
 
         [HttpPost]
         public ActionResult ContactsReceived(int id)
         {
-            var m = new ContactsReceivedModel(CurrentDatabase)
-            {
-                OrganizationId = id
-            };
+            throw new NotImplementedException();
+            //var m = new ContactsReceivedModel(CurrentDatabase)
+            //{
+            //    OrganizationId = id
+            //};
 
-            return PartialView("Contacts", m);
+            //return PartialView("Contacts", m);
         }
 
         [HttpPost]
         public ActionResult CommunityGroup(int id)
         {
-            var m = OrganizationModel.Create(CurrentDatabase, CurrentUser);
-            m.OrgId = id;
-            return PartialView(m);
+            throw new NotImplementedException();
+            //var m = OrganizationModel.Create(CurrentDatabase, CurrentUser);
+            //m.OrgId = id;
+            //return PartialView(m);
         }
 
         [HttpPost]
         public ActionResult AddContactReceived(int id)
         {
-            var o = CurrentDatabase.LoadOrganizationById(id);
-            DbUtil.LogPersonActivity($"Adding contact to organization: {o.FullName}", id, o.FullName);
-            var c = new Contact
-            {
-                CreatedDate = Util.Now,
-                CreatedBy = CurrentDatabase.UserId1,
-                ContactDate = Util.Now.Date,
-                OrganizationId = o.OrganizationId
-            };
+            throw new NotImplementedException();
+            //var o = CurrentDatabase.LoadOrganizationById(id);
+            //DbUtil.LogPersonActivity($"Adding contact to organization: {o.FullName}", id, o.FullName);
+            //var c = new Contact
+            //{
+            //    CreatedDate = Util.Now,
+            //    CreatedBy = CurrentDatabase.UserId1,
+            //    ContactDate = Util.Now.Date,
+            //    OrganizationId = o.OrganizationId
+            //};
 
-            CurrentDatabase.Contacts.InsertOnSubmit(c);
-            CurrentDatabase.SubmitChanges();
+            //CurrentDatabase.Contacts.InsertOnSubmit(c);
+            //CurrentDatabase.SubmitChanges();
 
-            c.contactsMakers.Add(new Contactor { PeopleId = CurrentDatabase.UserPeopleId.Value });
-            CurrentDatabase.SubmitChanges();
+            //c.contactsMakers.Add(new Contactor { PeopleId = CurrentDatabase.UserPeopleId.Value });
+            //CurrentDatabase.SubmitChanges();
 
-            var defaultRole = CurrentDatabase.Setting("Contacts-DefaultRole", null);
-            if (!string.IsNullOrEmpty(defaultRole) && CurrentDatabase.Roles.Any(x => x.RoleName == defaultRole))
-            {
-                Util.TempSetRole = defaultRole;
-            }
+            //var defaultRole = CurrentDatabase.Setting("Contacts-DefaultRole", null);
+            //if (!string.IsNullOrEmpty(defaultRole) && CurrentDatabase.Roles.Any(x => x.RoleName == defaultRole))
+            //{
+            //    Util.TempSetRole = defaultRole;
+            //}
 
-            Util.TempContactEdit = true;
-            return Content($"/Contact2/{c.ContactId}");
+            //Util.TempContactEdit = true;
+            //return Content($"/Contact2/{c.ContactId}");
         }
     }
 }

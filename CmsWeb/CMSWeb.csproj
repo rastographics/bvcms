@@ -562,17 +562,18 @@
     <Compile Include="Areas\Finance\Models\RemoteDepositCaptureError.cs" />
     <Compile Include="Areas\Finance\Models\TotalsByFundRange.cs" />
     <Compile Include="Areas\Finance\Models\TotalsByFundAgeRangeModel.cs" />
+    <Compile Include="Areas\Involvement\Controllers\InvolvementMeetingController.cs" />
     <Compile Include="Areas\Involvement\Controllers\InvolvementSearchController.cs" />
     <Compile Include="Areas\Involvement\Controllers\Involvement\InvolvementPeople.cs" />
-    <Compile Include="Areas\Involvement\Controllers\MeetingController.cs" />
     <Compile Include="Areas\Involvement\InvolvementAreaRegistration.cs" />
     <Compile Include="Areas\Involvement\Controllers\Involvement\InvolvementController.cs" />
     <Compile Include="Areas\Involvement\Models\InvolvementMain.cs" />
     <Compile Include="Areas\Involvement\Models\InvolvementModel.cs" />
     <Compile Include="Areas\Involvement\Models\InvolvementPeopleModel.cs" />
     <Compile Include="Areas\Involvement\Models\InvolvementVenuesModel.cs" />
+    <Compile Include="Areas\Involvement\Models\Involvement\MeetingsModel.cs" />
     <Compile Include="Areas\Involvement\Models\MeetingInfo.cs" />
-    <Compile Include="Areas\Involvement\Models\MeetingsModel.cs" />
+    <Compile Include="Areas\Involvement\Models\MeetingModel.cs" />
     <Compile Include="Areas\Main\Models\Other\CouponResponseModel.cs" />
     <Compile Include="Areas\Manage\Controllers\ActivityController.cs" />
     <Compile Include="Areas\Manage\Controllers\BatchMoveAndDelete.cs" />
@@ -1981,6 +1982,7 @@
     <Content Include="Areas\Involvement\Views\Involvement\Venues\Venues.cshtml" />
     <Content Include="Areas\Involvement\Views\Involvement\Venues\CreateVenue.cshtml" />
     <Content Include="Areas\Involvement\Views\Involvement\Meetings.cshtml" />
+    <Content Include="Areas\Involvement\Views\InvolvementMeeting\Index.cshtml" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
@@ -3501,6 +3503,7 @@
     <Folder Include="Areas\CheckIn\Views\Shared\" />
     <Folder Include="Areas\Dialog\Views\Shared\" />
     <Folder Include="Areas\Figures\Views\Shared\" />
+    <Folder Include="Areas\Involvement\Views\Meeting\" />
     <Folder Include="Areas\Involvement\Views\Shared\" />
     <Folder Include="Areas\Main\Views\Shared\" />
     <Folder Include="Areas\Manage\Views\Shared\" />
