@@ -80,7 +80,7 @@ namespace CmsWeb.Areas.Dialog.Controllers
 
             CurrentDatabase.SubmitChanges();
             DbUtil.LogActivity($"Add new org {m.org.OrganizationName}");
-            return Redirect($"/Org/{m.org.OrganizationId}");
+            return Redirect($"/Inv/{m.org.OrganizationId}");
         }
     }
 }

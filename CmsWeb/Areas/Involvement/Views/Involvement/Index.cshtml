@@ -6,7 +6,6 @@
 @{
     Layout = ViewExtensions2.TouchPointLayout();
     ViewBag.Title = "Organization";
-    ViewBag.PageHeader = Model.OrgMain.OrganizationName;
     //ViewBag.PageSubHeader = Model.OrgMain.LeaderId.HasValue ? Model.OrgMain.LeaderName : "";
     ViewBag.OrgMemberContext = true;
 }
@@ -63,7 +62,7 @@
 <div class="row">
     <div class="col-sm-12 form-inline">
         <div class="col-xs-4 col-sm-3">
-            <h2>Online Giving</h2>
+            <h2>@Model.OrgMain.OrganizationName</h2>
         </div>
         <div class="col-xs-2 col-sm-2">
             @*<a href="/OrgMemberDialog/DocumentDownload/@d.DocumentId" class="btn btn-success"><i class="fa fa-download"></i> Download</a>*@

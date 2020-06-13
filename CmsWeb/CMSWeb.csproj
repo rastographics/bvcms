@@ -1983,6 +1983,14 @@
     <Content Include="Areas\Involvement\Views\Involvement\Venues\CreateVenue.cshtml" />
     <Content Include="Areas\Involvement\Views\InvolvementMeeting\Index.cshtml" />
     <Content Include="Areas\Involvement\Views\Involvement\InvolvementMeetings.cshtml" />
+    <Content Include="Areas\Involvement\Views\InvolvementSearch\Toolbar\Custom.cshtml" />
+    <Content Include="Areas\Involvement\Views\InvolvementSearch\Toolbar\Toolbar.cshtml" />
+    <Content Include="Areas\Involvement\Views\InvolvementSearch\Toolbar\Email.cshtml" />
+    <Content Include="Areas\Involvement\Views\InvolvementSearch\Toolbar\Reports.cshtml" />
+    <Content Include="Areas\Involvement\Views\InvolvementSearch\Toolbar\Gear.cshtml" />
+    <Content Include="Areas\Involvement\Views\InvolvementSearch\Tabs.cshtml" />
+    <Content Include="Areas\Involvement\Views\InvolvementSearch\Results.cshtml" />
+    <Content Include="Areas\Involvement\Views\InvolvementSearch\Row.cshtml" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
