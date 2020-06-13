@@ -565,6 +565,7 @@
     <Compile Include="Areas\Involvement\Controllers\InvolvementMeetingController.cs" />
     <Compile Include="Areas\Involvement\Controllers\InvolvementSearchController.cs" />
     <Compile Include="Areas\Involvement\Controllers\Involvement\InvolvementPeople.cs" />
+    <Compile Include="Areas\Involvement\Controllers\Involvement\OrganizationMOdel.cs" />
     <Compile Include="Areas\Involvement\InvolvementAreaRegistration.cs" />
     <Compile Include="Areas\Involvement\Controllers\Involvement\InvolvementController.cs" />
     <Compile Include="Areas\Involvement\Models\InvolvementMain.cs" />
