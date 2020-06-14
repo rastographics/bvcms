@@ -2,13 +2,10 @@
 @model CmsWeb.Areas.Org.Models.OrganizationModel
 <div class="btn-group">
     @GroupButton(InvolvementGroupSelectCode.TicketBuyer, "Ticket Buyers", false)
-    <span id="totalcount" class="badge">@Model.Count().ToString("N0")</span>
-    &nbsp;
 </div>
 @if (!Model.HidePreviousButton)
 {
     @GroupButton(InvolvementGroupSelectCode.Previous, "Previous", true)
-    <span id="totalcount" class="badge">@Model.Count().ToString("N0")</span>
 }
 
 @helper GroupButton(string group, string name, bool showdrop)
@@ -19,18 +16,23 @@
     return;
 }
 //var showdrop = Model.Showdrop(group);
-    <div class="btn-group">
-        <button class="btn btn-default grp @Model.GroupActive(group)" value="@group">@name</button>
-        <button class="btn btn-info dropdown-toggle @(showdrop ? "" : "hide")" data-toggle="dropdown"><span class="caret"></span></button>
-        @switch (showdrop ? group : "")
-        {
-            case InvolvementGroupSelectCode.TicketBuyer:
-                break;
-            case InvolvementGroupSelectCode.Previous:
-                <ul class="dropdown-menu dropdown-menu-right">
-                    <li><a href="/AddToOrgFromTag/@Model.QueryId" class="longrunop" title="Add Previous Members From Tag"><i class="fa fa-tag"></i>&nbsp;&nbsp;Select Multiple</a></li>
-                </ul>
-                break;
-        }
-    </div>
+        <div class="btn-group">
+            @*<button class="btn btn-default grp @Model.GroupActive(group)" value="@group">@name</button>*@
+
+
+            <button class="btn btn-default grp @Model.GroupActive(group)" value="@group">@name &nbsp;
+                    <span id="totalcount" class="badge">@Model.Count().ToString("N0")</span></button>
+
+            <button class="btn btn-info dropdown-toggle @(showdrop ? "" : "hide")" data-toggle="dropdown"><span class="caret"></span></button>
+            @switch (showdrop ? group : "")
+            {
+                case InvolvementGroupSelectCode.TicketBuyer:
+                    break;
+                case InvolvementGroupSelectCode.Previous:
+                    <ul class="dropdown-menu dropdown-menu-right">
+                        <li><a href="/AddToOrgFromTag/@Model.QueryId" class="longrunop" title="Add Previous Members From Tag"><i class="fa fa-tag"></i>&nbsp;&nbsp;Select Multiple</a></li>
+                    </ul>
+                    break;
+            }
+        </div>
 }
