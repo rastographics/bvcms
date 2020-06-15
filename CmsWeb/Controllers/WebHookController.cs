@@ -19,6 +19,7 @@ namespace CmsWeb.Controllers
         {
             if (MessageSid.HasValue())
             {
+                TwilioHelper.Init(CurrentDatabase);
                 var message = MessageResource.Fetch(MessageSid);
                 var smsItem = CurrentDatabase.SMSItems.FirstOrDefault(m => m.Id == Id);
 

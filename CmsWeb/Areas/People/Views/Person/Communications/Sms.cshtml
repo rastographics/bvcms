@@ -27,7 +27,7 @@
                             <td>@i.Date.FormatTime()</td>
                             <td title="@i.Id">@i.Sender (@(i.IsIncoming ? i.Number.FmtFone() : i.Number))</td>
                             <td>
-                                @if (i.ReplyToIncomingId != 0)
+                                @if (i.ReplyToIncomingId.GetValueOrDefault() > 0)
                                 {
                                     <i class="fa fa-reply text-muted"></i>
                                 }

@@ -19,6 +19,11 @@ namespace CmsData.Classes.Twilio
     {
         public static Func<PhoneNumber, PhoneNumber, string, Uri, TwilioMessageResult> MockSender; //For mocking SMS in unit tests
 
+        public static void Init(CMSDataContext db)
+        {
+            TwilioClient.Init(GetSid(db), GetToken(db));
+        }
+
         public static void QueueSms(CMSDataContext db, object query, int iSendGroupID, string sTitle, string sMessage, DateTime? schedule = null)
         {
             var q = db.PeopleQuery2(query);
@@ -365,7 +370,7 @@ namespace CmsData.Classes.Twilio
         {
             List<TwilioNumber> available = new List<TwilioNumber>();
 
-            TwilioClient.Init(GetSid(DbUtil.Db), GetToken(DbUtil.Db));
+            Init(DbUtil.Db);
             var numbers = IncomingPhoneNumberResource.Read().ToList();
 
             var used = (from number in DbUtil.Db.SMSNumbers
