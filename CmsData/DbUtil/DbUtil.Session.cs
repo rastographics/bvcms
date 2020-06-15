@@ -163,29 +163,30 @@ namespace CmsData
             get
             {
                 // TEMP CODE to return some recent involvements
-                List<MostRecentItem> recentItems = new List<MostRecentItem>();
+                //List<MostRecentItem> recentItems = new List<MostRecentItem>();
 
-                MostRecentItem item = new MostRecentItem { Id = 34, Name = "Online Giving" };
-                recentItems.Add(item);
+                //MostRecentItem item = new MostRecentItem { Id = 34, Name = "Online Giving" };
+                //recentItems.Add(item);
 
-                MostRecentItem item2 = new MostRecentItem { Id = 40, Name = "JrrInvTest01" };
-                recentItems.Add(item2);
+                //MostRecentItem item2 = new MostRecentItem { Id = 40, Name = "JrrInvTest01" };
+                //recentItems.Add(item2);
 
-                return recentItems;
+                //return recentItems;
                 
 
-                /*
-                 * TODO: implement this
+                
+                
                 var mru = Util.GetFromSession<List<MostRecentItem>>(STR_MostRecentInvolvements, null);
                 if (mru == null)
                 {
                     mru = (from i in Db.MostRecentItems(Db.UserId)
-                           where i.Type == "inv"
+                           where i.Type == "inv" || i.Type == "org"
                            select new MostRecentItem() { Id = i.Id.Value, Name = i.Name }).ToList();
                     Util.SetValueInSession(STR_MostRecentInvolvements, mru);
                 }
+
                 return mru;
-                */
+                
             }
             set
             {
