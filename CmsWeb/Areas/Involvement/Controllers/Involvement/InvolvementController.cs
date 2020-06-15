@@ -120,19 +120,19 @@ namespace CmsWeb.Areas.Involvement.Controllers
         [HttpPost]
         public ActionResult Settings(int id)
         {
-            throw new NotImplementedException();
-            //var m = OrganizationModel.Create(CurrentDatabase, CurrentUser);
-            //m.OrgId = id;
-            //return PartialView(m);
+            //throw new NotImplementedException();
+            var m = OrganizationModel.Create(CurrentDatabase, CurrentUser);
+            m.OrgId = id;
+            return PartialView("InvolvementSettings", m);
         }
 
         [HttpPost]
         public ActionResult Registrations(int id)
         {
-            throw new NotImplementedException();
-            //var m = OrganizationModel.Create(CurrentDatabase, CurrentUser);
-            //m.OrgId = id;
-            //return PartialView(m);
+            //throw new NotImplementedException();
+            var m = OrganizationModel.Create(CurrentDatabase, CurrentUser);
+            m.OrgId = id;
+            return PartialView("InvolvementRegistrations", m);
         }
 
         [HttpPost]

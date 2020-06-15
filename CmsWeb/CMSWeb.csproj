@@ -1992,6 +1992,10 @@
     <Content Include="Areas\Involvement\Views\InvolvementSearch\Tabs.cshtml" />
     <Content Include="Areas\Involvement\Views\InvolvementSearch\Results.cshtml" />
     <Content Include="Areas\Involvement\Views\InvolvementSearch\Row.cshtml" />
+    <Content Include="Areas\Involvement\Views\Involvement\InvolvementSettings.cshtml" />
+    <Content Include="Areas\Involvement\Views\Involvement\InvolvementRegistrations.cshtml" />
+    <Content Include="Areas\Involvement\Views\Involvement\Settings\General.cshtml" />
+    <Content Include="Areas\Involvement\Views\Involvement\Registration\Registration.cshtml" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
