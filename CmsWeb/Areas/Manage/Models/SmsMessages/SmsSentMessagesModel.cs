@@ -212,6 +212,7 @@ namespace CmsWeb.Areas.Manage.Models.SmsMessages
                     i.Person.EmailAddress,
                     MemberStatus = i.Person.MemberStatus.Description,
                     Group = li.SMSGroup.Name,
+                    Sender = li.Person.Name,
                     DateReceived = li.SendAt.ToShortDateString(),
                     Time = li.SendAt.FormatTime(),
                     li.Message
