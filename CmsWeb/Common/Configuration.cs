@@ -29,6 +29,10 @@ namespace CmsWeb.Common
 
         public string PushpayScope => GetString("PushpayScope");
 
+        public string RemoteDepositCaptureService => GetString("x9service");
+
+        public string RemoteDepositCaptureServiceToken => GetString("x9serviceToken");
+
         public string StatusCheckUrl => GetString("StatusCheckUrl");
 
         public string TenantHostDev => GetString("TenantHostDev");
@@ -37,9 +41,7 @@ namespace CmsWeb.Common
 
         public string TwoFactorAuthSecretKey => GetString("TwoFactorAuthSecretKey");
 
-        public string RemoteDepositCaptureService => GetString("x9service");
-
-        public string RemoteDepositCaptureServiceToken => GetString("x9serviceToken");
+        public bool UseCDN => GetBool("UseCDN");
 
         /// <summary>
         ///     Returns a string representation of this application setting

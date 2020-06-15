@@ -1000,21 +1000,6 @@ namespace CmsWeb
             return IncludeOnce(@"<script src=""https://www.google.com/recaptcha/api.js""></script>");
         }
 
-        public static HtmlString OldStyles()
-        {
-            return Fingerprint.Css("/content/styles/bundle.stylecss.css");
-        }
-
-        public static HtmlString NewStyles()
-        {
-            return Fingerprint.Css("/content/css/bundle.new2css.css");
-        }
-
-        public static HtmlString FixupsCss()
-        {
-            return Fingerprint.Css("/content/css/Fixups2.css");
-        }
-
         public static string Bootstrap3Css()
         {
             return @"
