@@ -1,17 +1,13 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Linq.Dynamic;
-using CmsData;
-using CmsData.Finance;
 using CmsWeb.Areas.Giving.Models;
-using CmsWeb.Areas.Giving.Controllers;
 using SharedTestFixtures;
 using Xunit;
 using Shouldly;
 
 namespace CmsData.Finance.Tests
 {
-    [Collection("Gateway Tests")]
+    [Collection(Collections.Database)]
     public class GatewayTests : DatabaseTestBase
     {
         public GatewayTests() : base()
@@ -26,8 +22,7 @@ namespace CmsData.Finance.Tests
         public void AuthCreditCardCreatePaymentMethod()
         {
             var person = CreatePerson();
-            // Add/remove reference to CMSWeb in solution explorer to update metadata
-            GivingPaymentViewModel viewModel = new GivingPaymentViewModel()
+            var viewModel = new GivingPaymentViewModel
             {
                 paymentTypeId = 2,
                 isDefault = true,
@@ -64,8 +59,7 @@ namespace CmsData.Finance.Tests
         public void AuthBankCreatePaymentMethod()
         {
             var person = CreatePerson();
-            // Add/remove reference to CMSWeb in solution explorer to update metadata
-            GivingPaymentViewModel viewModel = new GivingPaymentViewModel()
+            var viewModel = new GivingPaymentViewModel
             {
                 paymentTypeId = 1,
                 isDefault = true,
