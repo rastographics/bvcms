@@ -21,6 +21,8 @@ namespace CmsData.Finance
 
         public string Identifier => $"{GatewayType}-{_login}-{_key}";
 
+        // BluePay stores payment methods by simply using a past transaction's ID as a token.
+        // We will do an Auth for $0, and save the resulting TransactionID as a Token in the payment profile BluePayCardVaultId.
         public BluePayGateway(CMSDataContext db, bool testing, PaymentProcessTypes ProcessType)
         {
             this.db = db;
@@ -36,10 +38,70 @@ namespace CmsData.Finance
                 throw new Exception("bluepay_secretKey setting not found, which is required for BluePay.");
 
         }
-        //BluePay stores payment methods by simply using a past transaction's ID as a token.
-        //We will do an Auth for $0, and save the resulting TransactionID as a Token in the payment profile BluePayCardVaultId.
-        public void StoreInVault(int peopleId, string type, string cardNumber, string expires, string cardCode,
-            string routing, string account, bool giving)
+
+        public TransactionResponse AuthCreditCard(int peopleId, decimal amt, string cardnumber, string expires, string description, int tranid, string cardcode, string email, string first, string last, string addr, string addr2, string city, string state, string country, string zip, string phone)
+        {
+            var gateway = createGateway();
+            gateway.setupCCTransaction(peopleId, cardnumber, expires, description, tranid, cardcode, email, first, last, addr, city, state, zip, phone);
+
+            gateway.auth(amt.ToString("F2"));
+
+            gateway.Process();
+            return getResponse(gateway);
+        }
+
+        // New methods
+        public void StoreInVault(PaymentMethod paymentMethod, string type, string cardNumber, string cvv, string bankAccountNum, string bankRoutingNum, int? expireMonth, int? expireYear,
+            string address, string address2, string city, string state, string country, string zip, string phone, string emailAddress)
+        {
+            if (paymentMethod == null)
+                throw new Exception($"Payment method not found.");
+            const string description = "Storing payment info in BluePay vault.";
+            var gateway = createGateway();
+            var custName = paymentMethod.NameOnAccount.Split(' ').ToList();
+
+            if (type == PaymentType.CreditCard)
+            {
+                var expires = HelperMethods.FormatExpirationDate(Convert.ToInt32(expireMonth), Convert.ToInt32(expireYear));
+                gateway.setupCCTransaction(paymentMethod.PeopleId, cardNumber, expires, description, null, cvv, emailAddress, custName[0], custName[1], address, city, state, zip, phone);
+
+                if (string.IsNullOrEmpty(paymentMethod.VaultId))
+                    gateway.auth("0.00");
+                else //send MasterId if available (this will allow for updating payment profile without re-entering card number)
+                    gateway.auth("0.00", paymentMethod.VaultId);
+                gateway.Process();
+                var response = getResponse(gateway);
+                if (!response.Approved)
+                    throw new Exception(
+                        $"BluePay failed to save the credit card info for people id: {paymentMethod.PeopleId}, message: {response.Message}; transactionID: {response.TransactionId}");
+
+                //save for future
+                paymentMethod.VaultId = response.TransactionId;
+            }
+            //TODO: Handle bank accounts too (not just credit cards)
+            else
+                throw new ArgumentException($"Type {type} not supported", nameof(type));
+        }
+
+        public TransactionResponse AuthCreditCardVault(PaymentMethod paymentMethod, decimal amt, string description, int tranid, string lastName, string firstName, string address, string address2, string city, string state, string country, string zip, string phone, string emailAddress)
+        {
+            if (paymentMethod == null || paymentMethod.VaultId == null)
+            {
+                return new TransactionResponse
+                {
+                    Approved = false,
+                    Message = "missing payment info",
+                };
+            }
+            var gateway = createGateway();
+            gateway.setupVaultTransaction(description, tranid);
+            gateway.auth(amt.ToString("F2"), paymentMethod.VaultId);
+            gateway.Process();
+            return getResponse(gateway);
+        }
+
+        // Old methods
+        public void StoreInVault(int peopleId, string type, string cardNumber, string expires, string cardCode, string routing, string account, bool giving)
         {
             var person = db.LoadPersonById(peopleId);
             var paymentInfo = person.PaymentInfo(GatewayAccountId);
@@ -114,6 +176,27 @@ namespace CmsData.Finance
             }
         }
 
+        public TransactionResponse AuthCreditCardVault(int peopleId, decimal amt, string description, int tranid)
+        {
+            var paymentInfo = db.PaymentInfos.Single(pp => pp.PeopleId == peopleId && pp.GatewayAccountId == GatewayAccountId);
+            if (paymentInfo == null || !string.IsNullOrEmpty(paymentInfo.BluePayCardVaultId))
+                return new TransactionResponse
+                {
+                    Approved = false,
+                    Message = "missing payment info",
+                };
+
+            var masterId = paymentInfo.BluePayCardVaultId;
+
+            var gateway = createGateway();
+            gateway.setupVaultTransaction(description, tranid);
+
+            gateway.auth(amt.ToString("F2"), masterId);
+
+            gateway.Process();
+            return getResponse(gateway);
+        }
+
         public TransactionResponse VoidCreditCardTransaction(string reference)
         {
             var gateway = createGateway();
@@ -150,19 +233,6 @@ namespace CmsData.Finance
             return getResponse(gateway);
         }
 
-        public TransactionResponse AuthCreditCard(int peopleId, decimal amt, string cardnumber, string expires, string description,
-            int tranid, string cardcode, string email, string first, string last, string addr, string addr2, string city, string state,
-            string country, string zip, string phone)
-        {
-            var gateway = createGateway();
-            gateway.setupCCTransaction(peopleId, cardnumber, expires, description, tranid, cardcode, email, first, last, addr, city, state, zip, phone);
-
-            gateway.auth(amt.ToString("F2"));
-
-            gateway.Process();
-            return getResponse(gateway);
-        }
-
         public TransactionResponse PayWithCreditCard(int peopleId, decimal amt, string cardnumber, string expires, string description, int tranid, string cardcode, string email, string first, string last, string addr, string addr2, string city, string state, string country, string zip, string phone)
         {
             var gateway = createGateway();
@@ -186,29 +256,6 @@ namespace CmsData.Finance
 
             return getResponse(gateway);
         }
-
-        public TransactionResponse AuthCreditCardVault(int peopleId, decimal amt, string description, int tranid)
-        {
-            var paymentInfo = db.PaymentInfos.Single(pp => pp.PeopleId == peopleId && pp.GatewayAccountId == GatewayAccountId);
-            if (paymentInfo == null || !string.IsNullOrEmpty(paymentInfo.BluePayCardVaultId))
-                return new TransactionResponse
-                {
-                    Approved = false,
-                    Message = "missing payment info",
-                };
-
-            var masterId = paymentInfo.BluePayCardVaultId;
-
-            var gateway = createGateway();
-            gateway.setupVaultTransaction(description, tranid);
-
-            gateway.auth(amt.ToString("F2"), masterId);
-
-            gateway.Process();
-            return getResponse(gateway);
-        }
-
-
 
         //As long as the transaction was within the last 3 years, we can send the transaction ID as a parameter to use all the same info that was used in that transaction.
         //Any info that needs to be overrided (invoiceID, amount, description, etc.) can be done by simply including it with the TransactionID
@@ -269,7 +316,6 @@ namespace CmsData.Finance
                 batchTransactions.Add(batchTransaction);
             }
 
-
             return new BatchResponse(batchTransactions);
         }
 
@@ -288,7 +334,6 @@ namespace CmsData.Finance
 
         private static TransactionType GetTransactionType(string transactionStatus)
         {
-
             switch (transactionStatus)
             {
                 case "REFUND":
@@ -300,7 +345,6 @@ namespace CmsData.Finance
                     return TransactionType.Credit;
                 default:
                     return TransactionType.Unknown;
-
             }
         }
 
@@ -322,7 +366,6 @@ namespace CmsData.Finance
 
         public bool CanTakeBankAccounts => false;
 
-
         private BluePayPayment createGateway()
         {
             return new BluePayPayment(_login, _key, ServiceMode);
@@ -337,7 +380,6 @@ namespace CmsData.Finance
                 Message = gateway.getMessage(),
                 TransactionId = gateway.getTransID()
             };
-
         }
 
         public bool UseIdsForSettlementDates => false;

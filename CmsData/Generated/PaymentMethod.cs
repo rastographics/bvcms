@@ -17,6 +17,8 @@ namespace CmsData
 
         private int _PeopleId;
 
+        private string _CustomerId;
+
         private int _PaymentMethodTypeId;
 
         private string _Name;
@@ -49,6 +51,9 @@ namespace CmsData
 
         partial void OnPeopleIdChanging(int value);
         partial void OnPeopleIdChanged();
+
+        partial void OnCustomerIdChanging(string value);
+        partial void OnCustomerIdChanged();
 
         partial void OnPaymentMethodTypeIdChanging(int value);
         partial void OnPaymentMethodTypeIdChanged();
@@ -113,6 +118,23 @@ namespace CmsData
                     _PeopleId = value;
                     SendPropertyChanged("PeopleId");
                     OnPeopleIdChanged();
+                }
+            }
+        }
+
+        [Column(Name = "CustomerId", UpdateCheck = UpdateCheck.Never, Storage = "_CustomerId", DbType = "nvarchar(max)")]
+        public string CustomerId
+        {
+            get => _CustomerId;
+            set
+            {
+                if (_CustomerId != value)
+                {
+                    OnCustomerIdChanging(value);
+                    SendPropertyChanging();
+                    _CustomerId = value;
+                    SendPropertyChanged("CustomerId");
+                    OnCustomerIdChanged();
                 }
             }
         }

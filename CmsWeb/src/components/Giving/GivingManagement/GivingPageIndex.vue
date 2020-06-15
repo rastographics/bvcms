@@ -28,9 +28,9 @@
                                 <span v-else>none</span>
                             </td>
                             <td>
-                                <span v-if="!page.Enabled && page.DisabledRedirect">{{ givePrefix }}{{ page.PageUrl }} redirects to <a target="_blank" :href="page.DisabledRedirect">{{ page.DisabledRedirect }}</a></span>
+                                <span v-if="!page.Enabled && page.DisabledRedirect">/Give/{{ page.PageUrl }} redirects to <a target="_blank" :href="page.DisabledRedirect">{{ page.DisabledRedirect }}</a></span>
                                 <span v-else-if="!page.Enabled">(no redirect set)</span>
-                                <a v-else target="_blank" :href="givePrefix + page.PageUrl">{{ givePrefix }}{{ page.PageUrl }}</a>
+                                <a v-else target="_blank" :href="'/Give/' + page.PageUrl">{{ givePrefix }}{{ page.PageUrl }}</a>
                             </td>
                             <td class="text-center">
                                 <tp-toggle v-model="page.Enabled" @input="toggleEnabled(page.PageId, page.Enabled)"></tp-toggle>

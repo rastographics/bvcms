@@ -33,7 +33,8 @@ namespace CmsData.Tests
                 Name = "Visa Card",
                 NameOnAccount = person.Name,
                 PaymentMethodTypeId = PaymentMethodTypeCode.Visa,
-                VaultId = $"A{RandomNumber(1000000, 99999999)}"
+                VaultId = $"A{RandomNumber(1000000, 99999999)}",
+                CustomerId = $"A{RandomNumber(1000000, 99999999)}"
             };
             person.PaymentMethods.Add(pm1);
             pm1.Encrypt();
@@ -46,6 +47,7 @@ namespace CmsData.Tests
             pm1.MaskedDisplay.ShouldNotBe(pm2.MaskedDisplay);
             pm1.NameOnAccount.ShouldNotBe(pm2.NameOnAccount);
             pm1.VaultId.ShouldNotBe(pm2.VaultId);
+            pm1.CustomerId.ShouldNotBe(pm2.CustomerId);
 
             pm1.Decrypt();
             pm1.ExpiresMonth.ShouldBe(pm2.ExpiresMonth);
@@ -56,6 +58,7 @@ namespace CmsData.Tests
             pm1.Name.ShouldBe(pm2.Name);
             pm1.NameOnAccount.ShouldBe(pm2.NameOnAccount);
             pm1.VaultId.ShouldBe(pm2.VaultId);
+            pm1.CustomerId.ShouldBe(pm2.CustomerId);
         }
 
         public override void Dispose()

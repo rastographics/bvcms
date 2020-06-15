@@ -1275,6 +1275,7 @@
     <Content Include="Content\css\select2.png" />
     <Content Include="Content\css\select2x2.png" />
     <Content Include="Content\css\typeahead.js-bootstrap.css" />
+    <Content Include="Content\dist\css\app.css" />
     <Content Include="Content\dist\js\app.js" />
     <Content Include="Content\font-awesome-4.0.3\css\font-awesome.css" />
     <Content Include="Content\font-awesome-4.0.3\css\font-awesome.min.css" />
@@ -1812,7 +1813,8 @@
     <None Include="Properties\Files\ContributionStatementTemplate.html" />
     <None Include="Properties\Files\ContributionStatementTemplateBody.html" />
     <Content Include="src\components\Giving\GivingPage\GivingContainer.vue" />
-    <None Include="src\main.js" />
+    <Content Include="src\components\Giving\GivingPage\MoneyInput.vue" />
+    <Content Include="src\components\Giving\GivingPage\OneTimeGift.vue" />
     <Content Include="Views\Shared\Account\_Layout.cshtml" />
     <Content Include="Areas\Reports\Views\Reports\EditCustomReport.cshtml" />
     <Content Include="Areas\Manage\Views\Account\SetPasswordConfirm.cshtml" />
@@ -2895,6 +2897,7 @@
     <Content Include="Views\Home\Dashboard.cshtml" />
     <Content Include="src\components\Setup\Gateway\Manage.vue" />
     <Content Include="src\components\CheckIn\CheckinSetup.vue" />
+    <Content Include="Views\Shared\Giving.cshtml" />
     <None Include="Web.staging.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

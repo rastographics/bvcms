@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using CmsData;
+﻿using CmsData;
 using CmsWeb.Areas.Public.Models;
 using Twilio.AspNet.Common;
 using Twilio.AspNet.Mvc;
@@ -12,12 +11,17 @@ namespace CmsWeb.Areas.Public.Controllers
     {
         public TwiMLResult Index(SmsRequest incomingMessage)
         {
-            var db = CMSDataContext.Create(HttpContext);
-            var model = new IncomingSmsModel(db, incomingMessage);
-            var returnMessage = model.ProcessAndRespond();
             var messagingResponse = new MessagingResponse();
-            if(returnMessage.HasValue())
-                messagingResponse.Message(returnMessage);
+            if (incomingMessage.From != null)
+            {
+                var db = CMSDataContext.Create(HttpContext);
+                var model = new IncomingSmsModel(db, incomingMessage);
+                var returnMessage = model.ProcessAndRespond();
+                if (returnMessage.HasValue())
+                {
+                    messagingResponse.Message(returnMessage);
+                }
+            }
             return TwiML(messagingResponse);
         }
     }

@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import axios from 'axios';
+
 Vue.prototype.$http = axios;
 Vue.config.productionTip = false;
 
@@ -12,6 +13,11 @@ Vue.component('gateway-management', require('./components/Setup/Gateway/Manage.v
 // Giving Management
 Vue.component('giving-page-index', require('./components/Giving/GivingManagement/GivingPageIndex.vue').default);
 Vue.component('edit-giving-page', require('./components/Giving/GivingManagement/GivingPageEdit.vue').default);
+
+// Giving Frontend
+Vue.component('giving-container', require('./components/Giving/GivingPage/GivingContainer.vue').default);
+Vue.component('one-time-gift', require('./components/Giving/GivingPage/OneTimeGift.vue').default);
+Vue.component('money-input', require('./components/Giving/GivingPage/MoneyInput.vue').default);
 
 // Touchpoint Common Components
 Vue.component('tp-toggle', require('./components/Common/Toggle.vue').default);

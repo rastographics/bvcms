@@ -8,6 +8,7 @@ using CmsData.Classes.Giving;
 using System.Text.RegularExpressions;
 using System;
 using CmsWeb.Membership.Extensions;
+using MoreLinq;
 
 namespace CmsWeb.Areas.Giving.Controllers
 {

@@ -1,6 +1,8 @@
 ﻿using CmsData;
 using CmsData.Codes;
+using CmsData.Finance;
 using CmsWeb.Areas.Giving.Models;
+using CmsWeb.Code;
 using CmsWeb.Lifecycle;
 using System;
 using System.Linq;
@@ -17,12 +19,6 @@ namespace CmsWeb.Areas.Giving.Controllers
         {
         }
 
-        static Random randomizer = new Random();
-        public static int RandomNumber(int min = 0, int max = 65535)
-        {
-            return randomizer.Next(min, max);
-        }
-
         [HttpGet]
         public ActionResult MethodsList()
         {
@@ -32,75 +28,11 @@ namespace CmsWeb.Areas.Giving.Controllers
         }
 
         [HttpPost]
-        public ActionResult MethodsCreate(int? paymentTypeId = null, bool isDefault = true, string name = "", string nameOnAccount = "", string bankAccount = "",
-            string bankRouting = "", string cardNumber = "", string ccv = "", string expiresMonth = null, string expiresYear = null, int? processTypeId = null)
+        public ActionResult MethodsCreate(GivingPaymentViewModel viewModel)
         {
-            if (!paymentTypeId.HasValue)
-            {
-                throw new HttpException(404, "No payment method type ID found.");
-            }
-
-            //transactionResponse = gateway.AuthCreditCard(pid, dollarAmt, CreditCard, Expires,
-            //               "Recurring Giving Auth", 0, CVV, string.Empty,
-            //               FirstName, LastName, Address, Address2, City, State, Country, Zip, Phone);
-            // if we got this far that means the auth worked so now let's do a void for that auth.
-            //var voidResponse = gateway.VoidCreditCardTransaction(transactionResponse.TransactionId);
-
-            var paymentMethod = new PaymentMethod();
-            switch (paymentTypeId)
-            {
-                case 1: // bank
-                    paymentMethod = new PaymentMethod
-                    {
-                        PeopleId = (int)CurrentDatabase.UserPeopleId,
-                        PaymentMethodTypeId = (int)paymentTypeId,
-                        IsDefault = isDefault,
-                        Name = name,
-                        VaultId = $"A{RandomNumber(1000000, 99999999)}",
-                        NameOnAccount = nameOnAccount,
-                        //MaskedDisplay = "•••• •••• •••• 1234".PadLeft(1, '•'),
-                        MaskedDisplay = "•••• •••• •••• 1234",
-                        Last4 = bankAccount.Substring(bankAccount.Length - 4, 4),
-                        ExpiresMonth = Convert.ToInt32(expiresMonth),
-                        ExpiresYear = Convert.ToInt32(expiresYear),
-                        GatewayAccountId = 1, // find class multiple gateway utils, use to determine GatewayAccountId, may be different based on pledge type
-                    };
-                    //person.PaymentMethods.Add(paymentMethod);
-                    paymentMethod.Encrypt();
-                    break;
-                case 2: // Visa
-                    paymentMethod = new PaymentMethod
-                    {
-                        PeopleId = (int)CurrentDatabase.UserPeopleId,
-                        PaymentMethodTypeId = (int)paymentTypeId,
-                        IsDefault = isDefault,
-                        Name = name,
-                        VaultId = $"A{RandomNumber(1000000, 99999999)}",
-                        NameOnAccount = nameOnAccount,
-                        MaskedDisplay = "•••• •••• •••• 1234",
-                        Last4 = cardNumber.Substring(cardNumber.Length - 4, 4),
-                        ExpiresMonth = Convert.ToInt32(expiresMonth),
-                        ExpiresYear = Convert.ToInt32(expiresYear),
-                        GatewayAccountId = 1,
-                    };
-                    paymentMethod.Encrypt();
-                    break;
-                case 3: // Mastercard
-                    break;
-                case 4: // Amex
-                    break;
-                case 5: // Discover
-                    break;
-                case 99: // Other
-                    break;
-                default:
-                    break;
-            }
-
-            CurrentDatabase.PaymentMethods.InsertOnSubmit(paymentMethod);
-            CurrentDatabase.SubmitChanges();
-
-            return View();
+            var model = new GivingPaymentModel(CurrentDatabase);
+            var result = model.CreateMethod(viewModel);
+            return Json(result, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]

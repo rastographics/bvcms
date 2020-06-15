@@ -254,7 +254,7 @@
     </div>
 </div>
 
-<div id="Modal-VueApp">
+<div>
     <div class="modal fade" id="new-modal">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -267,13 +267,12 @@
                     <div class="modal-body">
                         <div class="form-group">
                             <label for="newName" class="control-label">File Name</label>
-                            <input type="text" id="newName" v-model="newName" name="newName" class="form-control" />
-                            <small v-if="notValidName" class="red-empty">"Empty Template" name cannot be used</small>
+                            <input type="text" id="newName" name="newName" class="form-control" />
                         </div>
                     </div>
                     <div class="modal-footer">
                         <input type="button" id="cancel" value="Cancel" class="btn btn-default" data-dismiss="modal" />
-                        <input type="submit" id="post" value="Submit" v-bind:class="'btn btn-primary ' + (notValidName ? 'disabled' : '')" />
+                        <input type="submit" id="post" value="Submit" class="btn btn-primary" />
                     </div>
                 </form>
             </div>
@@ -314,15 +313,14 @@
                             <div class="col-sm-12">
                                 <div class="form-group">
                                     <label for="newName-role" class="control-label">Template Name</label>
-                                    <input type="text" id="newName-role" v-model="newName" name="newName" class="form-control" />
-                                    <small v-if="notValidName" class="red-empty">"Empty Template" name cannot be used</small>
+                                    <input type="text" id="newName-role" name="newName" class="form-control" />
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="modal-footer">
                         <input type="button" id="cancel" value="Cancel" class="btn btn-default" data-dismiss="modal" />
-                        <input type="submit" id="post-role" value="Submit" v-bind:class="'btn btn-primary ' + (notValidName ? 'disabled' : '')" />
+                        <input type="submit" id="post-role" value="Submit" class="btn btn-primary" />
                     </div>
                 </form>
             </div>
@@ -476,22 +474,15 @@
                 }
             }
 
-            checkChanged();
-        });
-    </script>
-
-    <script type="text/javascript">
-        const ModalApp = new Vue({
-            el: '#Modal-VueApp',
-            data: {
-                newName: '',
-                notValidName: false
-            },
-            watch: {
-                newName: function (val) {
-                    this.notValidName = val.toLowerCase().split(' ').join('') === 'emptytemplate';
+            $("#new-modal-role form").submit(function (e) {
+                var el = $(this).find('input[type=text]');
+                if (el.val().toLowerCase().split(' ').join('') === 'emptytemplate') {
+                    e.preventDefault();
+                    warning_swal("Invalid Name", "Empty Template name can't be used");
                 }
-            }
+            });
+
+            checkChanged();
         });
     </script>
 }
