@@ -91,7 +91,11 @@ namespace CmsData.Classes.Twilio
 
             db.SubmitChanges();
 
+#if DEBUG
+            ProcessQueue(list.Id, db.Host);
+#else
             ExecuteCmsTwilio(list.Id, db.Host);
+#endif
         }
 
         public static bool IsConfigured(CMSDataContext db)
@@ -164,6 +168,9 @@ namespace CmsData.Classes.Twilio
             };
             list.SMSItems.Add(item);
 
+            var r = new TextReplacements(db, message);
+            if(item.PeopleID != null)
+                message = r.DoReplacements(item);
             var response = SendSmsInternal(sSid, sToken, fromNumber.Number, toNumber, message);
 
             var succeeded = !IsSmsFailed(response);
@@ -222,15 +229,19 @@ namespace CmsData.Classes.Twilio
             var iCount = 0;
 
             var hostUrl = db.Setting("DefaultHost", "");
+            var r = new TextReplacements(db, smsList.Message);
 
             foreach (var item in smsItems)
             {
                 try
                 {
                     if (item.NoNumber || item.NoOptIn) continue;
-
                     var callbackUrl = hostUrl.HasValue() ? $"{hostUrl}/WebHook/Twilio/{item.Id}" : null;
-                    var response = SendSmsInternal(sSID, sToken, smsGroup[iCount].Number, item.Number, smsList.Message, callbackUrl);
+
+                    var message = smsList.Message;
+                    if(item.PeopleID != null)
+                        message = r.DoReplacements(item);
+                    var response = SendSmsInternal(sSID, sToken, smsGroup[iCount].Number, item.Number, message, callbackUrl);
 
                     if (!callbackUrl.HasValue())
                     {
