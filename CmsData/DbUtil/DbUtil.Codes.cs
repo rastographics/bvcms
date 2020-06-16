@@ -232,10 +232,10 @@ namespace CmsData.Codes
         {
             yield return new KeyValuePair<int, string>(None, "No Online Registration");
 
-            if (db != null && db.Setting("UseTicketed", "true").ToBool())
-            {
-                yield return new KeyValuePair<int, string>(TicketedEvent, "Ticketed Event");
-            }
+            //if (db != null && db.Setting("UseTicketed", "true").ToBool())
+            //{
+            //    yield return new KeyValuePair<int, string>(TicketedEvent, "Ticketed Event");
+            //}
 
             yield return new KeyValuePair<int, string>(JoinOrganization, "Join Organization");
             yield return new KeyValuePair<int, string>(UserSelects, "User Selects Organization");

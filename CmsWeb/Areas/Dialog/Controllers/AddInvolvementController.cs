@@ -1,4 +1,5 @@
 ﻿using CmsData;
+using CmsData.Codes;
 using CmsData.Registration;
 using CmsWeb.Areas.Dialog.Models;
 using CmsWeb.Lifecycle;
@@ -21,6 +22,9 @@ namespace CmsWeb.Areas.Dialog.Controllers
             var m = new NewOrganizationModel(CurrentDatabase, CurrentDatabase.CurrentSessionOrgId, displayCopySettings);
             m.org.OrganizationName = "";
             m.org.Location = "";
+            m.org.RegistrationTypeId = 0;
+            m.org.CampusId = 0;
+
             return View(m);
         }
 
@@ -80,7 +84,15 @@ namespace CmsWeb.Areas.Dialog.Controllers
 
             CurrentDatabase.SubmitChanges();
             DbUtil.LogActivity($"Add new org {m.org.OrganizationName}");
-            return Redirect($"/Inv/{m.org.OrganizationId}");
+
+            var registrationId = m.org.RegistrationTypeId;
+
+            if (registrationId == RegistrationTypeCode.TicketedEvent)
+            {
+                return Redirect($"/Inv/{m.org.OrganizationId}");
+            }
+
+            return Redirect($"/Org/{m.org.OrganizationId}");
         }
     }
 }
