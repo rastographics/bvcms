@@ -1,4 +1,5 @@
-﻿@using CmsData.Classes.Twilio;
+﻿@using System.Configuration
+@using CmsData.Classes.Twilio;
 @model Guid
 @{
     ViewBag.Title = "SMS Message Options";
@@ -6,6 +7,8 @@
     Layout = ViewExtensions2.TouchPointLayout();
     var groups = TwilioHelper.GetAvailableLists(ViewExtensions2.CurrentDatabase.UserId);
     var count = TwilioHelper.GetSendCount(Model);
+    var canSchedule = (User.IsInRole("ScheduleEmails") || User.IsInRole("Edit"))
+                      && ConfigurationManager.AppSettings["UseEmailScheduler"] == "true";
 }
 <div class="row">
     <div class="col-md-7">
@@ -29,6 +32,31 @@
                         <label for="sTitle" class="control-label">Title</label>
                         <input name="sTitle" id="sTitle" size="40" class="form-control" value="@ViewBag.Title" />
                     </div>
+                    @if (canSchedule)
+                    {
+                        <div id="scheddiv" style="display: none">
+                            <div class="form-group">
+                                <label for="Schedule" class="control-label">Schedule:</label>
+                                <div>
+                                    <div class="input-group scheduleDateTime">
+                                        @Html.TextBox("Schedule", "", new { @class = "form-control", placeholder = "Immediately" })<span class="input-group-addon hidden-xs hidden-sm"><i class="fa fa-calendar"></i></span>
+                                        @Html.Hidden("ScheduleIso", "", new { disabled = "disabled", placeholder = "Immediately" })
+                                    </div>
+                                    <p class="help-block">Note: Time is Central Time (CST)</p>
+                                </div>
+                            </div>
+                        </div>
+                    }
+
+                    <div class="pull-right" style="margin-bottom: 5px;">
+                        @if (canSchedule)
+                        {
+                            <label class="checkbox-inline">
+                                @Html.CheckBox("ChangeSched") Schedule Text?
+                            </label>
+                        }
+                        <a class="create-special-link btn btn-default btn-sm"><i class="fa fa-link"></i> Insert Special Link</a>
+                    </div>
                     <div class="form-group">
                         <label for="sMessage" class="control-label">Message</label>
                         <textarea id="sMessage" name="sMessage" id="sMessage" cols="40" rows="4" class="form-control">@ViewBag.Message</textarea><br />
@@ -41,14 +69,35 @@
     </div>
 </div>
 <br />
-
+@Html.Partial("~/Views/SpecialLinks/Index.cshtml")
 @section scripts
 {
+    @Fingerprint.Script("/Content/touchpoint/js/speciallinks.js")
     <script type="text/javascript">
         var maxSMS = 1600;
 
         $(document).ready(function () {
             $("#sMessage").on("keypress", checkSize).on("input", checkSize);
+
+            var extraSmallDevice = $('.device-xs').is(':visible');
+            var smallDevice = $('.device-sm').is(':visible');
+            if (extraSmallDevice || smallDevice) {
+                $('#Schedule').val($('#ScheduleIso').val());
+                $('#Schedule').attr('type', 'datetime-local');
+            } else {
+                $("div.scheduleDateTime")
+                    .datetimepicker({ format: 'MM/DD/YYYY h:mm A', widgetPositioning: { horizontal: 'left' } });
+            }
+            $("#ChangeSched")
+                .click(function () {
+                    if ($(this).is(':checked')) {
+                        $("#scheddiv").show(1000);
+                    } else {
+                        $("#scheddiv").hide(1000);
+                        $("#Schedule").val('');
+                        $("#ScheduleIso").val('');
+                    }
+                });
         });
         function checkSize(event) {
             if ($(this).val().length >= maxSMS)
