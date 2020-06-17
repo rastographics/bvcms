@@ -5,28 +5,37 @@
         </div>
         <div class="panel">
             <div class="panel-body">
-                <nav aria-label="Page navigation" class="text-center">
-                    <ul class="pagination">
-                        <li v-for="type in pageTypes" :key="type.Name" :class="{active: givingType == type.Name}"><a @click="updateType(type.Name)" style="cursor: pointer">{{ type.Name }}</a></li>
-                    </ul>
-                </nav>
-                <div v-if="givingType == 'One Time'" class="gifts">
+                <div v-if="pageTypes.length > 1" class="text-center" style="margin-bottom: 25px;">
+                    <div aria-label="Giving Type" class="btn-group give-type text-center" role="group"  style="margin: 0 auto;">
+                        <button v-for="type in pageTypes" :key="type.Name" :class="[givingType == type.Name ? 'btn-primary' : '', 'btn-default', 'btn']" @click="updateType(type.Name)">{{ type.Name }}</button>
+                    </div>
+                </div>
+                <div v-if="givingType == 'One Time'">
                     <transition-group name="gift">
                         <one-time-gift v-for="(gift, index) in gifts" v-model="gifts[index]" :count="gifts.length" :key="index" :funds="unusedFunds" @remove="removeGift(index)"></one-time-gift>
                     </transition-group>
-                    <a v-if="unusedFunds.length" @click="addGift" class="btn btn-sm btn-default pull-right"><i class="fa fa-plus-circle"></i> Add Gift</a>
                 </div>
                 <div v-else-if="givingType == 'Recurring'">
                     <transition-group name="gift">
                         <recurring-gift v-for="(gift, index) in gifts" v-model="gifts[index]" :count="gifts.length" :key="index" :funds="unusedFunds" :frequencies="recurringFrequencies" @remove="removeGift(index)"></recurring-gift>
                     </transition-group>
-                    <a v-if="unusedFunds.length" @click="addGift" class="btn btn-sm btn-default pull-right"><i class="fa fa-plus-circle"></i> Add Gift</a>
                 </div>
                 <div v-else-if="givingType == 'Pledge'">
                     Pledge
                 </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <button v-if="unusedFunds.length" @click="addGift" class="btn-block btn btn-default">
+                            <i class="fa fa-plus-circle"></i> Add Gift
+                        </button>
+                    </div>
+                    <div class="col-md-6">
+                        <button class="btn-block btn btn-primary">
+                            Next
+                        </button>
+                    </div>
+                </div>
             </div>
-            <pre>{{ gifts }}</pre>
         </div>
     </div>
 </template>
@@ -85,6 +94,7 @@
                                     }
                                 });
                                 vm.givingType = vm.type || vm.pageTypes[0].Name;
+                                vm.getGivingFrequencies();
                             } else {
                                 warning_swal("Warning!", "Something went wrong, try again later");
                             }
@@ -121,7 +131,6 @@
         mounted() {
             this.page = JSON.parse(this.pageProp);
             this.getPageTypes();
-            this.getGivingFrequencies();
 
             let gift = {
                 amount: 0.00,
@@ -144,49 +153,3 @@
         }
     };
 </script>
-<style>
-    .gift {
-        transition: all 1s;
-        height: 159px;
-    }
-    .gift.recurring {
-        height: 219px;
-    }
-    .gift-enter,
-    .gift-leave-to {
-        opacity: 0;
-    }
-    .gift-enter {
-        transform: translateY(30%);
-    }
-    .gift-leave-to {
-        transform: translateY(30%);
-    }
-    .well.gift-leave-to {
-        height: 0px;
-        min-height: 0;
-        padding: 0;
-        margin: 0;
-    }
-    .gift-leave-to .form-group,
-    .gift-leave-to .money-input,
-    .gift-leave-to .close {
-        height: 0;
-        padding: 0;
-        opacity: 0;
-        margin: 0;
-        font-size: 0;
-    }
-    .gift .form-group {
-        height: 74px;
-    }
-    .gift.recurring .form-group {
-        height: 30px;
-    }
-    .gift .money-input {
-        height: 46px;
-    }
-    .gift .form-group, .gift .money-input {
-        transition: all 1s;
-    }
-</style>

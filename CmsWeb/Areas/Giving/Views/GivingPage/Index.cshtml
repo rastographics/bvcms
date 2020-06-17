@@ -4,14 +4,51 @@
     Layout = "~/Views/Shared/Giving.cshtml";
 }
 @section head {
+<style type="text/css">
+    .editableform .editable-date.well {
+        background: transparent;
+        border: none;
+        box-shadow: none;
+    }
+    #main .control-label {
+        color: #4d4d4d;
+        font-weight: 500;
+    }
+    #main .form-control:not(.input-sm) {
+        font-size: 16px;
+        padding: 8px 12px;
+        height: 40px;
+    }
+    #main .btn {
+        font-size: 16px;
+    }
+    #main .btn-primary {
+        background-color: #003f72;
+    }
+    #main a {
+        color: #003f72;
+    }
+    #main .editable-click, #main a.editable-click, #main a.editable-click:hover {
+        border-color: #003f72;
+    }
+    #main .gift {
+        position: relative;
+    }
+    #main button.close {
+        position: absolute;
+        right: 15px;
+        top: 13px;
+        z-index: 99;
+    }
+    #main .give-type .btn {
+        padding: 8px 30px;
+    }
 
-    @Fingerprint.Css("/Content/touchpoint/lib/bootstrap-editable/css/bootstrap-editable.css")
+    #main div.form-group select.form-control:not(.input-sm) {
+        height: 40px !important;
+    }
+</style>
 }
 <div id="main" class="giving">
     <giving-container page-prop="@Json.Encode(Model)" type="@ViewBag.Type" fund="@ViewBag.Fund" amount="@ViewBag.Amount"></giving-container>
 </div>
-
-@section scripts
-{
-    @Fingerprint.Script("/Content/touchpoint/lib/bootstrap-editable/js/bootstrap-editable.min.js")
-}

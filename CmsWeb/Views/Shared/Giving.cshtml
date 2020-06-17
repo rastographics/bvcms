@@ -7,6 +7,10 @@
     <meta name="viewport" content="width=device-width, maximum-scale=1.0">
     <title>@ViewBag.Title</title>
     @Fingerprint.Css("/Content/dist/css/app.css")
+    @ViewExtensions2.FontAwesome()
+    @Fingerprint.Css("/Content/touchpoint/lib/jquery-ui-custom/css/jquery-ui.min.css")
+    @Fingerprint.Css("/Content/touchpoint/lib/bootstrap-editable/css/bootstrap-editable.css")
+    @Fingerprint.Css("/Content/touchpoint/css/OrgSearch.css")
     @RenderSection("head", false)
 </head>
 <body style="@ViewBag.BodyStyle">
@@ -14,7 +18,10 @@
     @Html.Raw((string)ViewBag.top)
     @RenderBody()
     @Html.Raw((string)ViewBag.bottom)
+    @ViewExtensions2.GoogleAnalytics()
     @ViewExtensions2.jQuery()
+    @ViewExtensions2.Bootstrap3()
+    @Fingerprint.Script("/Content/touchpoint/lib/bootstrap-editable/js/bootstrap-editable.min.js")
     @Fingerprint.Script("/Content/dist/js/app.js")
     @RenderSection("scripts", false)
     <script type="text/javascript">
@@ -25,6 +32,3 @@
     </script>
 </body>
 </html>
-
-
-
