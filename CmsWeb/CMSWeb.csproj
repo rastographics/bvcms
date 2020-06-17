@@ -2143,7 +2143,7 @@
     <Content Include="Content\touchpoint\js\support\Support2.js" />
     <Content Include="Content\touchpoint\js\onlinereg\AutoSaveProgress.js" />
     <Content Include="Content\touchpoint\js\onlinereg\OnlineReg2.js" />
-    <Content Include="Content\touchpoint\js\onlinereg\OnlineRegPayment2.js" />
+    <Content Include="Content\touchpoint\js\onlinereg\onlineregpayment2.js" />
     <Content Include="Content\touchpoint\js\org\GetVolSub.js" />
     <Content Include="Content\touchpoint\js\search\OrgSearch.js" />
     <Content Include="Content\touchpoint\js\org\RegSetting.js" />
