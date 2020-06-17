@@ -57,7 +57,7 @@ public class Fingerprint
     private static HtmlString GulpFilesFor(string section)
     {
         var gulpfile = File.ReadAllText(HttpContextFactory.Current.Server.MapPath("~/gulpfile.js"));
-        var beginEnd = new Regex($@"//{section}FilesStart(.*)//{section}FilesEnd", RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Multiline);
+        var beginEnd = new Regex($@"//Debug{section}FilesStart(.*)//Debug{section}FilesEnd", RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Multiline);
         var files = beginEnd.Match(gulpfile).Groups[1].Value;
         var fileMatcher = new Regex("'(.*?)'", RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Multiline);
         var match = fileMatcher.Match(files);
