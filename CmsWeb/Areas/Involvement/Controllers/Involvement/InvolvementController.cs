@@ -4,6 +4,7 @@ using System.Web.Mvc;
 using CmsData;
 using CmsWeb.Areas.Involvement.Models;
 using CmsWeb.Areas.Org.Models;
+using CmsWeb.Areas.People.Models;
 //using CmsWeb.Areas.Involvement.Models;
 using CmsWeb.Lifecycle;
 using UtilityExtensions;
@@ -62,6 +63,10 @@ namespace CmsWeb.Areas.Involvement.Controllers
             ViewBag.orgname = m.Org.FullName;
             ViewBag.model = m;
             ViewBag.selectmode = 0;
+
+            var pm = new PersonModel(id, CurrentDatabase);
+            m.PersonModel = pm;
+
             InitExportToolbar(m);
             Util.ActiveOrganization = m.Org.OrganizationName;
             return View(m);

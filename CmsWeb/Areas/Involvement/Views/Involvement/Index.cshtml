@@ -72,8 +72,17 @@
             <h4>@Model.OrgMain.OrganizationName</h4>
         </div>
         <div class="col-xs-2 col-sm-2">
+            @*<ul class="meta list-unstyled">
+                <li class="badges">
+                    @if (Model.PersonModel.basic.Campus.Items.Count() > 1)
+                    {
+                        @Html.DisplayFor(m => m.PersonModel.basic.Campus, "InlineCodeEditCampus", new { label = Util2.CampusLabel, Model.PersonModel.Person.CanUserEditCampus })
+                    }
+                </li>
+            </ul>*@
+
             <a id="Campus" class="edit-inline-label label label-info editable editable-click" title="campus picker">Select Campus</a>
-            &nbsp; <span class="label label-info" title="displayTicketing">Ticketing</span>
+                &nbsp; <span class="label label-info" title="displayTicketing">Ticketing</span>
         </div>
         <div class="col-xs-2 col-sm-4">
             @if (Model.ShowBlueToolbar)
@@ -98,6 +107,7 @@
                             {
                                 <li><a href="#ContactsReceived-tab" aria-controls="ContactsReceived-tab" class="ajax" data-toggle="tab">@ViewExtensions2.CurrentDatabase.Setting("UX-CGVisitsTabLabel", "Visits")</a></li>
                             }*@
+                        <li><a href="#ContactsReceived-tab" aria-controls="ContactsReceived-tab" class="ajax" data-toggle="tab"></a></li>
                         @if (Model.ShowSettingsTab)
                         {
                             <li><a href="#Settings-tab" aria-controls="Settings-tab" class="ajax" data-toggle="tab">Settings</a></li>
@@ -110,6 +120,7 @@
                             {
                                 <li><a href="#CommunityGroup-tab" aria-controls="CommunityGroup-tab" class="ajax" data-toggle="tab">@ViewExtensions2.CurrentDatabase.Setting("UX-CGInfoTabLabel", "CG Info")</a></li>
                             }*@
+                        <li><a href="#CommunityGroup-tab" aria-controls="CommunityGroup-tab" class="ajax" data-toggle="tab"></a></li>
                     </ul>
                     <div class="tab-content">
                         <div class="tab-pane fade in active" id="Members-tab" data-link="/Involvement/People">
@@ -125,6 +136,8 @@
                                 <div class="tab-pane fade" id="ContactsReceived-tab" data-link="/Involvement/ContactsReceived/@Model.Id" data-init="showHideRegTypes" data-init2="SettingFormsInit">
                                 </div>
                             }*@
+                        <div class="tab-pane fade" id="ContactsReceived-tab" data-link="/Involvement/ContactsReceived/@Model.Id" data-init="showHideRegTypes" data-init2="SettingFormsInit">
+                        </div>
                         <div class="tab-pane fade" id="Settings-tab" data-link="/Involvement/Settings/@Model.Id" data-init="showHideRegTypes" data-init2="SettingFormsInit">
                         </div>
                         <div class="tab-pane fade" id="Registrations-tab" data-link="/Involvement/Registrations/@Model.Id" data-init="showHideRegTypes" data-init2="SettingFormsInit">
@@ -134,6 +147,8 @@
                                 <div class="tab-pane fade" id="CommunityGroup-tab" data-link="/Org/CommunityGroup/@Model.Id" data-init="showHideRegTypes" data-init2="SettingFormsInit">
                                 </div>
                             }*@
+                        <div class="tab-pane fade" id="CommunityGroup-tab" data-link="/Org/CommunityGroup/@Model.Id" data-init="showHideRegTypes" data-init2="SettingFormsInit">
+                        </div>
                     </div>
                 </div>
             </div>
