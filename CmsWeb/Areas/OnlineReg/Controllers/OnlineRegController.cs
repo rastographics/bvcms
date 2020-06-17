@@ -8,8 +8,10 @@ using CmsWeb.Membership;
 using CmsWeb.Models;
 using Elmah;
 using ImageData;
+using MoreLinq;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -89,7 +91,52 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 return Redirect(m.MissionTripSelfSupportPaylink);
             }
 
+            if (m.org.RedirectUrl.HasValue())
+            {
+                if (m.ProcessType == PaymentProcessTypes.RecurringGiving)
+                {
+                    return Redirect(m.org.RedirectUrl + "?type=recurring");
+                }
+                else if (m.ProcessType == PaymentProcessTypes.OneTimeGiving)
+                {
+                    return Redirect(m.org.RedirectUrl + "?type=onetime");
+                }
+            }
+            else
+            {
+                var today = DateTime.Now;
+                var cutoffDate = today.AddYears(100);
+                DataTable table = OrganizationColumns(m.org.OrganizationId);
+                DataColumnCollection columns = table.Columns;
+                var useGivingPages = columns.Contains("UseGivingPages");
+                if (cutoffDate < today || useGivingPages == true)
+                {
+                    if (m.org.RedirectUrl.HasValue())
+                    {
+                        if (m.ProcessType == PaymentProcessTypes.RecurringGiving)
+                        {
+                            return Redirect(m.org.RedirectUrl + "?type=recurring");
+                        }
+                        else if (m.ProcessType == PaymentProcessTypes.OneTimeGiving)
+                        {
+                            return Redirect(m.org.RedirectUrl + "?type=onetime");
+                        }
+                    }
+                    else
+                    {
+                        return Redirect("/Give");
+                    }
+                }
+            }
+
             return RouteRegistration(m, pid, showfamily);
+        }
+
+        public DataTable OrganizationColumns(int organizationId)
+        {
+            var orgs = from o in CurrentDatabase.Organizations where o.OrganizationId == organizationId select o;
+            var thisguyhere = orgs.Take(1).ToDataTable();
+            return thisguyhere;
         }
 
         private void AssignPaymentProcessType(ref OnlineRegModel m)
@@ -556,18 +603,18 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             return Content("/Error/");
         }
 
-        protected override void OnException(ExceptionContext filterContext)
-        {
-            if (filterContext.ExceptionHandled)
-            {
-                return;
-            }
+        //protected override void OnException(ExceptionContext filterContext)
+        //{
+        //    if (filterContext.ExceptionHandled)
+        //    {
+        //        return;
+        //    }
 
-            ErrorSignal.FromCurrentContext().Raise(filterContext.Exception);
-            DbUtil.LogActivity("OnlineReg Error:" + filterContext.Exception.Message);
-            filterContext.Result = Message(filterContext.Exception.Message, filterContext.Exception.StackTrace);
-            filterContext.ExceptionHandled = true;
-        }
+        //    ErrorSignal.FromCurrentContext().Raise(filterContext.Exception);
+        //    DbUtil.LogActivity("OnlineReg Error:" + filterContext.Exception.Message);
+        //    filterContext.Result = Message(filterContext.Exception.Message, filterContext.Exception.StackTrace);
+        //    filterContext.ExceptionHandled = true;
+        //}
 
         protected override void Initialize(RequestContext requestContext)
         {
