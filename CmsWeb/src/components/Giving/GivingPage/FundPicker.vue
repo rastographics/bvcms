@@ -1,5 +1,5 @@
 ﻿<template>
-    <div v-if="fundOptions && fundOptions.length" class="form-group" style="margin-top:25px;">
+    <div v-if="fundOptions && fundOptions.length" class="form-group">
         <select class="form-control" @change="updateFund($event)">
             <option v-for="fund in fundOptions" :key="fund.Id" :value="fund.Id" :selected="fund.Id == value.fund.Id">{{ fund.Name }}</option>
         </select>
