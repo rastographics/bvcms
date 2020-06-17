@@ -5,7 +5,6 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Web.Mvc;
 using CmsWeb.Areas.People.Models.Communications;
-using UtilityExtensions;
 
 namespace CmsWeb.Areas.People.Controllers
 {
