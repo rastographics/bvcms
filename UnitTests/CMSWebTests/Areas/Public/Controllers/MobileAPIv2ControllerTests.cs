@@ -1,5 +1,4 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using CmsWeb.Areas.Public.Controllers;
+﻿using CmsWeb.Areas.Public.Controllers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,7 +15,6 @@ using CmsData.Codes;
 using CmsData;
 using UtilityExtensions;
 using CmsData.Classes.Twilio;
-using CmsWeb.Common.Extensions;
 using System.Data.Linq;
 
 namespace CmsWeb.Areas.Public.ControllersTests
@@ -275,15 +273,6 @@ namespace CmsWeb.Areas.Public.ControllersTests
         [Fact]
         public void QuickSignInTest()
         {
-            var requestManager = FakeRequestManager.Create();
-            db = requestManager.CurrentDatabase;
-            var membershipProvider = new MockCMSMembershipProvider { ValidUser = true };
-            var roleProvider = new MockCMSRoleProvider();
-            var build = "2020.2.1";
-            CMSMembershipProvider.SetCurrentProvider(membershipProvider);
-            CMSRoleProvider.SetCurrentProvider(roleProvider);
-            var person = CreatePerson();
-            person.CellPhone = RandomPhoneNumber();
             db.SetSetting("UseMobileQuickSignInCodes", "true");
             db.SetSetting("TwilioToken", RandomString());
             db.SetSetting("TwilioSid", RandomString());
@@ -296,6 +285,17 @@ namespace CmsWeb.Areas.Public.ControllersTests
             }
             db.SMSNumbers.InsertOnSubmit(new SMSNumber { GroupID = group.Id, Number = RandomPhoneNumber(), LastUpdated = DateTime.Now });
             db.SubmitChanges();
+            var person = CreatePerson();
+            person.CellPhone = RandomPhoneNumber();
+            db.SubmitChanges();
+
+            var requestManager = FakeRequestManager.Create();
+            var membershipProvider = new MockCMSMembershipProvider { ValidUser = true };
+            var roleProvider = new MockCMSRoleProvider();
+            var build = "2020.2.1";
+            CMSMembershipProvider.SetCurrentProvider(membershipProvider);
+            CMSRoleProvider.SetCurrentProvider(roleProvider);
+            
             string smsBody = "";
             TwilioHelper.MockSender = (to, from, body, statusCallback) => {
                 smsBody = body;
