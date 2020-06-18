@@ -1240,6 +1240,8 @@ namespace CmsData
 
         public Table<ScheduledGift> ScheduledGifts => GetTable<ScheduledGift>();
 
+        public Table<ScheduledGiftType> ScheduledGiftTypes => GetTable<ScheduledGiftType>();
+
         public Table<SecurityCode> SecurityCodes => GetTable<SecurityCode>();
 
         public Table<SessionValue> SessionValues => GetTable<SessionValue>();

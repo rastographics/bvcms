@@ -2895,6 +2895,8 @@
     <Content Include="src\components\Setup\Gateway\Manage.vue" />
     <Content Include="src\components\CheckIn\CheckinSetup.vue" />
     <Content Include="Views\Shared\Giving.cshtml" />
+    <Content Include="src\components\Giving\GivingPage\RecurringGift.vue" />
+    <Content Include="src\components\Giving\GivingPage\FundPicker.vue" />
     <None Include="Web.staging.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -3517,6 +3519,7 @@
     <Folder Include="Areas\Search\Views\Shared\" />
     <Folder Include="Pushpay\Enums\" />
     <Folder Include="Pushpay\Exceptions\" />
+    <Folder Include="src\components\Manage\Display\" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{3259AA49-8AA1-44D3-9025-A0B520596A8C}" />
