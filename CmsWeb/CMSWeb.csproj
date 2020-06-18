@@ -1999,6 +1999,7 @@
     <Content Include="Areas\Involvement\Views\Involvement\Registration\Registration.cshtml" />
     <Content Include="Areas\Org\Views\Org\Registration\RegistrationTypes.cshtml" />
     <Content Include="Views\SpecialLinks\Index.cshtml" />
+    <Content Include="Areas\Involvement\Views\Involvement\DisplayTemplates\EditCampusTemplate.cshtml" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>

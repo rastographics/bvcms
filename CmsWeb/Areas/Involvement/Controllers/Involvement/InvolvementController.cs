@@ -7,6 +7,7 @@ using CmsData.View;
 using CmsWeb.Areas.Involvement.Models;
 using CmsWeb.Areas.Org.Models;
 using CmsWeb.Areas.People.Models;
+using CmsWeb.Code;
 //using CmsWeb.Areas.Involvement.Models;
 using CmsWeb.Lifecycle;
 using UtilityExtensions;
@@ -58,6 +59,16 @@ namespace CmsWeb.Areas.Involvement.Controllers
                     return NotAllowed("no privilege to view ", m.Org.OrganizationName);
 
             DbUtil.LogOrgActivity($"Viewing Org({m.Org.OrganizationName})", id, m.Org.OrganizationName);
+            CodeValueModel cvm = new CodeValueModel();
+            m.AllCampuses = cvm.AllCampuses();
+            m.CanUserEditCampus = true;
+
+            // JRR EXPERIENTAL
+            //var campus = new CodeInfo
+            //{
+            //    Items
+            //};
+
 
             m.OrgMain.Divisions = GetOrgDivisions(id); 
 
@@ -200,6 +211,14 @@ namespace CmsWeb.Areas.Involvement.Controllers
                     orderby d.IsMain descending, d.IsChecked descending, d.Program, d.Division
                     select d;
             return q.AsEnumerable();
+        }
+
+        [HttpPost]
+        public ActionResult PostData(int pk, string name, string value)
+        {
+            var org = CurrentDatabase.LoadOrganizationById(pk);
+            org.UpdateCampus(CurrentDatabase, value.ToInt());
+            return new EmptyResult();
         }
     }
 }

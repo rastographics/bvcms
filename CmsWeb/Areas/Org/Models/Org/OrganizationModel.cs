@@ -46,6 +46,13 @@ namespace CmsWeb.Areas.Org.Models
 
         public PersonModel PersonModel { get; set; }
 
+        public CodeInfo Campus { get; set; }
+
+        public IEnumerable<CodeValueItem> AllCampuses { get; set; }
+
+        public bool CanUserEditCampus { get; set; }
+
+
         private SettingsGeneralModel settingsGeneralModel;
         public SettingsGeneralModel SettingsGeneralModel
         {

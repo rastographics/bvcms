@@ -1061,6 +1061,13 @@ $(function () {
     if (window.collapseOrgSection === true) {
         $('#org-main-section').collapse('hide');
     }
+
+    $('#Campus').editable({
+        source: "/Person2/Campuses",
+        type: "select",
+        url: "/Involvement/PostData",
+        name: "campus"
+    });
 });
 
 $.RebindMemberGrids = function() {
@@ -1148,5 +1155,5 @@ function SaveFee() {
         error: function (err) {
             console.log(err);
         }
-    });   
+    });
 }
