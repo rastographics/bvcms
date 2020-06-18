@@ -45,7 +45,12 @@ namespace CmsWeb.Areas.Public.Models
         public Person FindPerson()
         {
             var per = (from p in CurrentDatabase.People
-                          where p.CellPhone == From || p.HomePhone == From
+                          where p.CellPhone == From 
+                          orderby p.PositionInFamilyId, p.Age descending, p.GenderId
+                          select p).FirstOrDefault() ??
+                      (from p in CurrentDatabase.People
+                          where p.HomePhone == From 
+                          orderby p.PositionInFamilyId, p.Age descending, p.GenderId
                           select p).FirstOrDefault();
             row.FromPeopleId = per?.PeopleId;
             return per;
@@ -80,13 +85,13 @@ namespace CmsWeb.Areas.Public.Models
                 return GetError(e.Message);
             }
 
-            var rval = "";
             foreach(var r in model.Actions)
             {
                 action = r;
                 if (!Body.Equal(action.Word))
                     continue;
                 row.Action = action.Action;
+                string rval = null;
                 switch (action.Action)
                 {
                     case "OptOut":
@@ -123,9 +128,9 @@ namespace CmsWeb.Areas.Public.Models
                         rval = GetError($"{action.Action} action not recognized for {action.Word} on number {To}");
                         break;
                 }
+                if(rval != null)
+                    return rval;
             }
-            if(rval.HasValue())
-                return rval;
 
             var sendReplyOnlyActionWithNoWord = model.Actions.SingleOrDefault(vv =>
                 vv.Action == "SendReplyOnly" && string.IsNullOrEmpty(vv.Word));
@@ -150,7 +155,7 @@ SMS Group: {groupName}<br>
 Received: {row.DateReceived}<br>
 From: {person?.Name ?? "name unknown"}<br>
 Message: {Body} <a href='{CurrentDatabase.CmsHost}/SmsMessages#{row.Id}'>(view)</a><br>
-Auto Reply: {action.ReplyMessage}<br><br>";
+Auto Reply: {row.ActionResponse}<br><br>";
             foreach (var p in q)
             {
                 CurrentDatabase.Email(Util.AdminMail, p, null, subject, body, false);
@@ -159,25 +164,33 @@ Auto Reply: {action.ReplyMessage}<br><br>";
 
         private string GetActionReplyMessage()
         {
-            row.ActionResponse = DoReplacments(Util.PickFirst(action.ReplyMessage, action.DefaultMessage));
-            CurrentDatabase.SmsReceiveds.InsertOnSubmit(row);
-            CurrentDatabase.SubmitChanges();
-            SendNotices();
-            if (action.ReplyMessage.Equal("NONE"))
-                return string.Empty;
-            return row.ActionResponse;
+            row.ActionResponse = DoReplacments(Util.PickFirst(action.ReplyMessage, action.DefaultMessage)) ?? "";
+            return SaveAndSendNotices();
         }
         private string GetError(string message)
         {
             row.ErrorOccurred = true;
             row.ActionResponse = message;
+            return SaveAndSendNotices();
+        }
+
+        private string GetNoPersonMessage()
+        {
+            const string noPersonMessage = "We don't recognize this number. Please contact the church office";
+            var defaultReplyUnknownNumbers = CurrentDatabase.Setting("DefaultReplyUnknownNumbers", null);
+            row.ActionResponse = DoReplacments(Util.PickFirst(defaultReplyUnknownNumbers, noPersonMessage)) ?? "";
+            return SaveAndSendNotices();
+        }
+
+        private string SaveAndSendNotices()
+        {
             CurrentDatabase.SmsReceiveds.InsertOnSubmit(row);
             CurrentDatabase.SubmitChanges();
             SendNotices();
-            return message;
+            if (row.ActionResponse.Trim().Equal("NONE"))
+                return string.Empty;
+            return row.ActionResponse;
         }
-
-        private const string GetNoPersonMessage = "We don't recognize this number. Please contact the church office";
 
         private const string MatchCodeRe = "({[^}]*})";
         private string DoReplacments(string message)
@@ -217,7 +230,7 @@ Auto Reply: {action.ReplyMessage}<br><br>";
         private string GroupOptOut()
         {
             if (person == null)
-                return GetNoPersonMessage;
+                return GetNoPersonMessage();
             var o = new SmsGroupOptOut
             {
                 FromGroup = model.GroupIdInt,
@@ -229,7 +242,7 @@ Auto Reply: {action.ReplyMessage}<br><br>";
         private string GroupOptIn()
         {
             if (person == null)
-                return GetNoPersonMessage;
+                return GetNoPersonMessage();
             CurrentDatabase.Connection.Execute(
                 "delete dbo.SmsGroupOptOut where FromGroup = @gid and ToPeopleId = @pid",
                 new {gid = model.GroupId, pid = person.PeopleId});
@@ -240,7 +253,7 @@ Auto Reply: {action.ReplyMessage}<br><br>";
         private string MarkAttendingIntention(int code)
         {
             if (person == null)
-                return GetNoPersonMessage;
+                return GetNoPersonMessage();
             try
             {
                 row.Args = $"{{ \"MeetingId\": \"{action.MeetingId}\"}}";
@@ -262,7 +275,7 @@ Auto Reply: {action.ReplyMessage}<br><br>";
         private string RecordAttendance()
         {
             if (person == null)
-                return GetNoPersonMessage;
+                return GetNoPersonMessage();
             try
             {
                 row.Args = $"{{ \"MeetingId\": \"{action.MeetingId}\"}}";
@@ -285,7 +298,7 @@ Auto Reply: {action.ReplyMessage}<br><br>";
         private string AddToOrg()
         {
             if (person == null)
-                return GetNoPersonMessage;
+                return GetNoPersonMessage();
             try
             {
                 row.Args = $"{{ \"OrgId\": \"{action.OrgId}\"}}";
@@ -307,7 +320,7 @@ Auto Reply: {action.ReplyMessage}<br><br>";
         private string AddToSmallGroup()
         {
             if (person == null)
-                return GetNoPersonMessage;
+                return GetNoPersonMessage();
             try
             {
                 row.Args = $"{{ \"OrgId\": \"{action.OrgId}\", \"SmallGroup\": \"{action.SmallGroup}\"}}";
@@ -331,7 +344,7 @@ Auto Reply: {action.ReplyMessage}<br><br>";
         private string SendAnEmail()
         {
             if (person == null)
-                return GetNoPersonMessage;
+                return GetNoPersonMessage();
             row.Args = $"{{ \"EmailId\": \"{action.EmailId}\"}}";
             if (action.EmailId == null)
                 return GetError($"Email Draft not found for id {action.EmailId}");
@@ -349,7 +362,7 @@ Auto Reply: {action.ReplyMessage}<br><br>";
         private string RunScript()
         {
             if (person == null)
-                return GetNoPersonMessage;
+                return GetNoPersonMessage();
             var m = new PythonModel(CurrentDatabase);
             var script = CurrentDatabase.ContentOfTypePythonScript(action.ScriptName);
             if (!script.HasValue())

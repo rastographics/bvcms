@@ -6,6 +6,7 @@ using System.Web.Mvc;
 using CmsData;
 using CmsWeb.Constants;
 using CmsWeb.Models;
+using MoreLinq;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Manage.Models.SmsMessages
@@ -162,11 +163,44 @@ namespace CmsWeb.Areas.Manage.Models.SmsMessages
             CurrentDatabase.CurrentTagName = workingTag.Name;
             CurrentDatabase.CurrentTagOwnerId = workingTag.PersonOwner.PeopleId;
 
-            var q = DefineModelList();
+            var q = Senders();
+            CurrentDatabase.TagAll(q, workingTag);
+        }
 
-            var listpeople = q.Select(vv => vv.Person.PeopleId).Distinct();
-            CurrentDatabase.TagAll(listpeople, workingTag);
-            Util2.CurrentTag = workingTag.Name;
+        public IQueryable<int> Senders()
+        {
+            return (from msg in DefineModelList()
+                    where msg.FromPeopleId > 0
+                    select msg.FromPeopleId.Value).Distinct();
+        }
+
+        public Guid ToolBarSend()
+        {
+            var workingTag = CurrentDatabase.NewTemporaryTag();
+            var q = Senders();
+            CurrentDatabase.TagAll(q, workingTag);
+            var guid = CurrentDatabase.ScratchPadQuery($"HasMyTag(Tag={workingTag.Id})=1");
+            return guid;
+        }
+
+        public EpplusResult ExportReceived()
+        {
+            var q = DefineModelList();
+            return (from h in q
+                    select new
+                    {
+                        h.FromPeopleId,
+                        h.Person.FirstName,
+                        h.Person.LastName,
+                        CellNumber = h.FromNumber.FmtFone(),
+                        h.Person.EmailAddress,
+                        MemberStatus = h.Person.MemberStatus.Description,
+                        Group = h.SMSGroup.Name,
+                        h.ToNumber,
+                        DateReceived = h.DateReceived.FormatDate(),
+                        Time = h.DateReceived.FormatTime(),
+                        Message = h.Body
+                    }).ToDataTable().ToExcel("ReceivedMessages.xlsx");
         }
 
         public static ReceivedDetailViewModel Detail(CMSDataContext db, int id)
