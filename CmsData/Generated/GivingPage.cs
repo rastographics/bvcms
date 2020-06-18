@@ -29,6 +29,8 @@ namespace CmsData
 
         private bool _Enabled;
 
+        private bool? _DefaultPage;
+
         private string _DisabledRedirect;
 
         private int? _SkinFileId;
@@ -89,6 +91,9 @@ namespace CmsData
 
         partial void OnEnabledChanging(bool value);
         partial void OnEnabledChanged();
+
+        partial void OnDefaultPageChanging(bool? value);
+        partial void OnDefaultPageChanged();
 
         partial void OnDisabledRedirectChanging(string value);
         partial void OnDisabledRedirectChanged();
@@ -252,6 +257,24 @@ namespace CmsData
                     _Enabled = value;
                     SendPropertyChanged("Enabled");
                     OnEnabledChanged();
+                }
+            }
+        }
+
+        [Column(Name = "DefaultPage", UpdateCheck = UpdateCheck.Never, Storage = "_DefaultPage", DbType = "bit")]
+        public bool? DefaultPage
+        {
+            get => _DefaultPage;
+
+            set
+            {
+                if (_DefaultPage != value)
+                {
+                    OnDefaultPageChanging(value);
+                    SendPropertyChanging();
+                    _DefaultPage = value;
+                    SendPropertyChanged("DefaultPage");
+                    OnDefaultPageChanged();
                 }
             }
         }

@@ -38,26 +38,20 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             var isMissionTrip = (m.org?.IsMissionTrip).GetValueOrDefault();
 
             if (isMissionTrip)
-            {
                 m.ProcessType = PaymentProcessTypes.OnlineRegistration;
-            }
             else
-            {
                 AssignPaymentProcessType(ref m);
-            }
 
             if (pledgeFund != null)            
                 m.pledgeFundId = pledgeFund.Value;            
 
             SetHeaders(m);
 
-            int? GatewayId = MultipleGatewayUtils.GatewayId(CurrentDatabase, m.ProcessType);
+            var GatewayId = MultipleGatewayUtils.GatewayId(CurrentDatabase, m.ProcessType);
             var gatewayRequired = (m.PayAmount() > 0 || m.ProcessType == PaymentProcessTypes.OneTimeGiving || m.ProcessType == PaymentProcessTypes.RecurringGiving);
 
             if (GatewayId.IsNull() && gatewayRequired)
-            {
                 return View("OnePageGiving/NotConfigured");
-            }
 
             if ((int)GatewayTypes.Pushpay == GatewayId && string.IsNullOrEmpty(MultipleGatewayUtils.Setting(CurrentDatabase, "PushpayMerchant", "", (int)m.ProcessType)))
             {
@@ -68,39 +62,29 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 
             if (m.ManageGiving())
             {
-                RequestManager.SessionProvider.Add($"Campus-{m.Orgid}",
-                    m.Campus = Request.QueryString["campus"]);
+                RequestManager.SessionProvider.Add($"Campus-{m.Orgid}", m.Campus = Request.QueryString["campus"]);
                 m.DefaultFunds = Util.DefaultFunds = Request.QueryString["funds"];
             }
 
             if (isMissionTrip)
             {
                 if (gsid != null || goerid != null)
-                {
                     m.PrepareMissionTrip(gsid, goerid);
-                }
             }
 
             var pid = m.CheckRegisterLink(registertag);
             if (m.NotActive())
-            {
                 return View("OnePageGiving/NotActive", m);
-            }
+
             if (m.MissionTripSelfSupportPaylink.HasValue() && m.GoerId > 0)
-            {
                 return Redirect(m.MissionTripSelfSupportPaylink);
-            }
 
             if (m.org.RedirectUrl.HasValue())
             {
                 if (m.ProcessType == PaymentProcessTypes.RecurringGiving)
-                {
                     return Redirect(m.org.RedirectUrl + "?type=recurring");
-                }
                 else if (m.ProcessType == PaymentProcessTypes.OneTimeGiving)
-                {
                     return Redirect(m.org.RedirectUrl + "?type=onetime");
-                }
             }
             else
             {
@@ -109,23 +93,17 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 DataTable table = OrganizationColumns(m.org.OrganizationId);
                 DataColumnCollection columns = table.Columns;
                 var useGivingPages = columns.Contains("UseGivingPages");
-                if (cutoffDate < today || useGivingPages == true)
+                if (cutoffDate < today || useGivingPages == true) // still need to check value of this field, not just whether it exists or not
                 {
                     if (m.org.RedirectUrl.HasValue())
                     {
                         if (m.ProcessType == PaymentProcessTypes.RecurringGiving)
-                        {
                             return Redirect(m.org.RedirectUrl + "?type=recurring");
-                        }
                         else if (m.ProcessType == PaymentProcessTypes.OneTimeGiving)
-                        {
                             return Redirect(m.org.RedirectUrl + "?type=onetime");
-                        }
                     }
                     else
-                    {
                         return Redirect("/Give");
-                    }
                 }
             }
 
@@ -134,9 +112,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 
         public DataTable OrganizationColumns(int organizationId)
         {
-            var orgs = from o in CurrentDatabase.Organizations where o.OrganizationId == organizationId select o;
-            var thisguyhere = orgs.Take(1).ToDataTable();
-            return thisguyhere;
+            return (from o in CurrentDatabase.Organizations where o.OrganizationId == organizationId select o).Take(1).ToDataTable();
         }
 
         private void AssignPaymentProcessType(ref OnlineRegModel m)

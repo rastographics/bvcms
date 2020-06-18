@@ -17,6 +17,14 @@ namespace CmsWeb.Areas.Giving.Controllers
         }
 
         [HttpGet]
+        [Route("~/Give")]
+        public ActionResult DefaultPageIndex()
+        {
+            var givingPage = CurrentDatabase.GivingPages.Where(p => p.DefaultPage == true).SingleOrDefault();
+            return Redirect("/Give/"+ givingPage.PageUrl + "?type=onetime");
+        }
+
+        [HttpGet]
         [Route("~/Give/{id}")]
         public ActionResult Index(string id, string type = null, int fund = 0, string amount = null)
         {
