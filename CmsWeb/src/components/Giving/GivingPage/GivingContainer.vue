@@ -1,26 +1,39 @@
-﻿<template>
+<template>
     <div>
         <div class="page-header text-center">
             <h1>{{ page.PageName }}</h1>
         </div>
         <div class="panel">
             <div class="panel-body">
-                <nav aria-label="Page navigation" class="text-center">
-                    <ul class="pagination">
-                        <li v-for="type in pageTypes" :key="type.Name" :class="{active: givingType == type.Name}"><a @click="updateType(type.Name)" style="cursor: pointer">{{ type.Name }}</a></li>
-                    </ul>
-                </nav>
-                <div v-if="givingType == 'One Time'" class="gifts">
+                <div v-if="pageTypes.length > 1" class="text-center" style="margin-bottom: 25px;">
+                    <div aria-label="Giving Type" class="btn-group give-type text-center" role="group"  style="margin: 0 auto;">
+                        <button v-for="type in pageTypes" :key="type.Name" :class="[givingType == type.Name ? 'btn-primary' : '', 'btn-default', 'btn']" @click="updateType(type.Name)">{{ type.Name }}</button>
+                    </div>
+                </div>
+                <div v-if="givingType == 'One Time'">
                     <transition-group name="gift">
                         <one-time-gift v-for="(gift, index) in gifts" v-model="gifts[index]" :count="gifts.length" :key="index" :funds="unusedFunds" @remove="removeGift(index)"></one-time-gift>
                     </transition-group>
-                    <a v-if="unusedFunds.length" @click="addGift" class="btn btn-sm btn-default pull-right">Add Gift</a>
                 </div>
                 <div v-else-if="givingType == 'Recurring'">
-                    Recurring Giving
+                    <transition-group name="gift">
+                        <recurring-gift v-for="(gift, index) in gifts" v-model="gifts[index]" :count="gifts.length" :key="index" :funds="unusedFunds" :frequencies="recurringFrequencies" @remove="removeGift(index)"></recurring-gift>
+                    </transition-group>
                 </div>
                 <div v-else-if="givingType == 'Pledge'">
                     Pledge
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <button v-if="unusedFunds.length" @click="addGift" class="btn-block btn btn-default">
+                            <i class="fa fa-plus-circle"></i> Add Gift
+                        </button>
+                    </div>
+                    <div class="col-md-6">
+                        <button class="btn-block btn btn-primary">
+                            Next
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -33,11 +46,11 @@
         props: ["pageProp", "fund", "type", "amount" ],
         data: function () {
             return {
+                recurringFrequencies: [],
                 givingType: "",
                 gifts: [],
                 pageTypes: [],
-                page: {
-                },
+                page: {}
             };
         },
         computed: {
@@ -46,6 +59,10 @@
                 return this.page.AvailableFunds.filter(fund => {
                     return !this.gifts.some(gift => gift.fund.Id === fund.Id);
                 });
+            },
+            today: function () {
+                var today = new Date();
+                return today.getFullYear() + '-' + String(today.getMonth() + 1).padStart(2, '0') + '-' + String(today.getDate()).padStart(2, '0');
             }
         },
         methods: {
@@ -55,7 +72,9 @@
             addGift() {
                 this.gifts.push({
                     amount: 0.00,
-                    fund: this.unusedFunds[0]
+                    frequency: 0,
+                    fund: this.unusedFunds[0],
+                    date: this.today
                 });
             },
             removeGift(index) {
@@ -68,13 +87,14 @@
                     .then(
                         response => {
                             if (response.status === 200) {
-                                vm.pageTypeList = response.data;
-                                vm.pageTypeList.forEach(function (type) {
+                                let pageTypeList = response.data;
+                                pageTypeList.forEach(function (type) {
                                     if (vm.page.PageType & type.Id) {
                                         vm.pageTypes.push(type);
                                     }
                                 });
                                 vm.givingType = vm.type || vm.pageTypes[0].Name;
+                                vm.getGivingFrequencies();
                             } else {
                                 warning_swal("Warning!", "Something went wrong, try again later");
                             }
@@ -88,6 +108,25 @@
                         console.log(error);
                     });
             },
+            getGivingFrequencies: function () {
+                let vm = this;
+                axios.get("/Giving/GetGivingFrequencies")
+                .then(
+                    response => {
+                        if (response.status === 200) {
+                            vm.recurringFrequencies = response.data;
+                        } else {
+                            warning_swal("Warning", "Error getting giving frequencies.");
+                        }
+                    },
+                    err => {
+                        error_swal("Error", "Error getting giving frequencies.");
+                    }
+                )
+                .catch(function (error) {
+                    console.log(error);
+                });
+            }
         },
         mounted() {
             this.page = JSON.parse(this.pageProp);
@@ -95,7 +134,9 @@
 
             let gift = {
                 amount: 0.00,
-                fund: {}
+                frequency: 0,
+                fund: {},
+                date: this.today
             };
             // initialize based on params (or defaults)
             gift.amount = parseFloat(this.amount) || 0;
@@ -112,43 +153,3 @@
         }
     };
 </script>
-<style>
-    .gift {
-        transition: all 1s;
-        height: 159px;
-    }
-    .gift-enter,
-    .gift-leave-to {
-        opacity: 0;
-    }
-    .gift-enter {
-        transform: translateY(30%);
-    }
-    .gift-leave-to {
-        transform: translateY(30%);
-    }
-    .well.gift-leave-to {
-        height: 0px;
-        min-height: 0;
-        padding: 0;
-        margin: 0;
-    }
-    .gift-leave-to .form-group,
-    .gift-leave-to .money-input,
-    .gift-leave-to .close {
-        height: 0;
-        padding: 0;
-        opacity: 0;
-        margin: 0;
-        font-size: 0;
-    }
-    .gift .form-group {
-        height: 74px;
-    }
-    .gift .money-input {
-        height: 46px;
-    }
-    .gift .form-group, .gift .money-input {
-        transition: all 1s;
-    }
-</style>
