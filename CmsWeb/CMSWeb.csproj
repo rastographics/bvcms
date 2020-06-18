@@ -1960,6 +1960,7 @@
     <Content Include="Areas\People\Views\Person\Communications\Sms.cshtml" />
     <Content Include="Content\fingerprints.json" />
     <Content Include="Views\SpecialLinks\Index.cshtml" />
+    <Content Include="Content\touchpoint\src\less\bootstrap-variables.less" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
