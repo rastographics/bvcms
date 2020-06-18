@@ -7,7 +7,7 @@
             <div class="panel-body">
                 <nav aria-label="Page navigation" class="text-center">
                     <ul class="pagination">
-                        <li v-for="type in pageTypes" :key="type.Name" :class="{active: givingType == type.Name}"><a @click="updateType(type.Name)">{{ type.Name }}</a></li>
+                        <li v-for="type in pageTypes" :key="type.Name" :class="{active: givingType == type.Name}"><a @click="updateType(type.Name)" style="cursor: pointer">{{ type.Name }}</a></li>
                     </ul>
                 </nav>
                 <div v-if="givingType == 'One Time'" class="gifts">

@@ -34,6 +34,7 @@ namespace CmsWeb.Areas.Giving.Models
                                 PageUrl = gp.PageUrl,
                                 EditUrl = "/Giving/" + gp.GivingPageId,
                                 Enabled = gp.Enabled,
+                                DefaultPage = (bool)gp.DefaultPage,
                                 SkinFile = new ContentFile
                                 {
                                     Id = gp.SkinFile.Id,
@@ -96,10 +97,15 @@ namespace CmsWeb.Areas.Giving.Models
         
         public GivingPageItem Create(GivingPageViewModel viewModel)
         {
+            var givingPageList = (from gpList in CurrentDatabase.GivingPages select gpList).ToList();
+            var defaultPage = false;
+            if (givingPageList.Count == 0)
+                defaultPage = true;
             var newGivingPage = new GivingPage()
             {
                 PageName = viewModel.PageName,
-                PageUrl = viewModel.PageUrl
+                PageUrl = viewModel.PageUrl,
+                DefaultPage = defaultPage
             };
             CurrentDatabase.GivingPages.InsertOnSubmit(newGivingPage);
             CurrentDatabase.SubmitChanges();
@@ -183,6 +189,7 @@ namespace CmsWeb.Areas.Giving.Models
         public string PageUrl { get; set; }
         public string EditUrl { get; set; }
         public bool Enabled { get; set; }
+        public bool DefaultPage { get; set; }
         public ContentFile SkinFile { get; set; }
         public int PageType { get; set; }
         public string DisabledRedirect { get; set; }
