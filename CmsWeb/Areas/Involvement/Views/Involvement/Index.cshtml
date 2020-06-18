@@ -73,22 +73,35 @@
         </div>
         <div class="col-xs-2 col-sm-2">
             @*<ul class="meta list-unstyled">
-                <li class="badges">
-                    @if (Model.PersonModel.basic.Campus.Items.Count() > 1)
-                    {
-                        @Html.DisplayFor(m => m.PersonModel.basic.Campus, "InlineCodeEditCampus", new { label = Util2.CampusLabel, Model.PersonModel.Person.CanUserEditCampus })
-                    }
-                </li>
-            </ul>*@
+                    <li class="badges">
+                        @if (Model.PersonModel.basic.Campus.Items.Count() > 1)
+                        {
+                            @Html.DisplayFor(m => m.PersonModel.basic.Campus, "InlineCodeEditCampus", new { label = Util2.CampusLabel, Model.PersonModel.Person.CanUserEditCampus })
+                        }
+                    </li>
+                </ul>*@
 
             <a id="Campus" class="edit-inline-label label label-info editable editable-click" title="campus picker">Select Campus</a>
-                &nbsp; <span class="label label-info" title="displayTicketing">Ticketing</span>
+            &nbsp; <span class="label label-info" title="displayTicketing">Ticketing</span>
         </div>
         <div class="col-xs-2 col-sm-4">
             @if (Model.ShowBlueToolbar)
             {
                 @Html.Partial("Toolbar/Toolbar")
             }
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-lg-10">
+        <div class="form-group">
+            @*@Html.Partial("~/Areas/Org/Views/Org/Settings/Main.cshtml", Model.OrgMain)*@
+
+            <a tabindex="0" href="#" data-toggle="popover" data-placement="bottom" data-trigger="focus" data-title="Programs & Divisions" data-content="Use this link to manage the divisions this organization belongs to. A dialog box will pop up."><i class="fa fa-info-circle"></i></a>
+            <label for="name" class="control-label">Programs & Divisions</label>
+            <a id="divisionlist" href="/SearchDivisions/@Model.OrgMain.Id" data-refresh="~/Areas/Org/Controllers/Org/Org/DivisionList/@Model.OrgMain.Id">@Html.Partial("~/Areas/Org/Views/Org/Other/DivisionList.cshtml", Model.OrgMain.Divisions)</a>
+
+            @*@Html.Partial("~/Areas/Org/Views/Org/Other/DivisionList.cshtml", Model.OrgMain.Divisions)*@
         </div>
     </div>
 </div>

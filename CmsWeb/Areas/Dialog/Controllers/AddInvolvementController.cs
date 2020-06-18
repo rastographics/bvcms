@@ -84,6 +84,7 @@ namespace CmsWeb.Areas.Dialog.Controllers
 
             CurrentDatabase.SubmitChanges();
             DbUtil.LogActivity($"Add new org {m.org.OrganizationName}");
+            Util.SetValueInSession(Util2.STR_MostRecentInvolvements, null);
 
             var registrationId = m.org.RegistrationTypeId;
 

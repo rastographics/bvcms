@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
 using CmsData;
+using CmsData.View;
 using CmsWeb.Areas.Involvement.Models;
 using CmsWeb.Areas.Org.Models;
 using CmsWeb.Areas.People.Models;
@@ -57,7 +59,7 @@ namespace CmsWeb.Areas.Involvement.Controllers
 
             DbUtil.LogOrgActivity($"Viewing Org({m.Org.OrganizationName})", id, m.Org.OrganizationName);
 
-            // m.OrgMain.Divisions = GetOrgDivisions(id); TODO: Where to define this?
+            m.OrgMain.Divisions = GetOrgDivisions(id); 
 
             ViewBag.OrganizationContext = true;
             ViewBag.orgname = m.Org.FullName;
@@ -189,6 +191,15 @@ namespace CmsWeb.Areas.Involvement.Controllers
 
             //Util.TempContactEdit = true;
             //return Content($"/Contact2/{c.ContactId}");
+        }
+
+        private IEnumerable<SearchDivision> GetOrgDivisions(int? id)
+        {
+            var q = from d in CurrentDatabase.SearchDivisions(id, null)
+                    where d.IsChecked == true
+                    orderby d.IsMain descending, d.IsChecked descending, d.Program, d.Division
+                    select d;
+            return q.AsEnumerable();
         }
     }
 }
