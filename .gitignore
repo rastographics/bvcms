@@ -91,9 +91,10 @@ test_coverage.xml
 #gulp output
 CmsWeb/Content/touchpoint/css/account.css
 CmsWeb/Content/touchpoint/css/app.css
-CmsWeb/Content/touchpoint/js/app.min.js
 CmsWeb/Content/touchpoint/css/checkin.css
 CmsWeb/Content/touchpoint/css/editor.css
 CmsWeb/Content/touchpoint/css/error.css
 CmsWeb/Content/touchpoint/css/print.css
+CmsWeb/Content/touchpoint/js/app.min.js
 CmsWeb/Content/touchpoint/js/onlineregister.min.js
+CmsWeb/Content/touchpoint/lib/select2/css/select2-bootstrap.css
