@@ -25,8 +25,7 @@ namespace CmsData.Finance.Tests
         [Fact]
         public void AuthCreditCardCreatePaymentMethod()
         {
-            var family = (from f in db.Families select f).FirstOrDefault();
-            var person = CreatePerson(family);
+            var person = CreatePerson();
             // Add/remove reference to CMSWeb in solution explorer to update metadata
             GivingPaymentViewModel viewModel = new GivingPaymentViewModel()
             {
@@ -64,8 +63,7 @@ namespace CmsData.Finance.Tests
         [Fact]
         public void AuthBankCreatePaymentMethod()
         {
-            var family = (from f in db.Families select f).FirstOrDefault();
-            var person = CreatePerson(family);
+            var person = CreatePerson();
             // Add/remove reference to CMSWeb in solution explorer to update metadata
             GivingPaymentViewModel viewModel = new GivingPaymentViewModel()
             {
