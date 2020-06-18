@@ -11,7 +11,7 @@ using Shouldly;
 
 namespace CmsData.Finance.Tests
 {
-    [Collection("Gateway Tests")]
+    [Collection(Collections.Database)]
     public class GatewayTests : DatabaseTestBase
     {
         public GatewayTests() : base()
