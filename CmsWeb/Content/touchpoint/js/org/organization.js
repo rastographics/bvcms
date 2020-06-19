@@ -222,6 +222,7 @@ $(function () {
         $("#groupSelector button.grp.active").each(function () {
             $a += $(this).val();
         });
+
         if ($a === "") {
             $this.toggleClass("active");
             return false;

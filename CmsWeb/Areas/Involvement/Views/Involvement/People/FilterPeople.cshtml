@@ -29,9 +29,10 @@
                 </ul>
             </div>
         </div>
-        <div class="form-group" style="display:none">
+        <div class="form-group">
             <div class="btn-group">
                 <a class="btn btn-default setfilter">
+                    Filter@(Html.Raw(Model.IsFiltered ? " <span style='color: red'>(filtered)</span>" : ""))
                 </a>
             </div>
         </div>

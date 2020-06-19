@@ -134,23 +134,9 @@ namespace CmsWeb.Areas.People.Models
 
         public CodeInfo PositionInFamily { get; set; }
 
-        //public CodeInfo Campus { get; set; }
+        public CodeInfo Campus { get; set; }
 
-        public CodeInfo Campus
-        {
-            get
-            {
-                return _campus;
-            }
-            set
-            {
-                _campus = value; // ??????
-            }
-        } private CodeInfo _campus;
-
-
-
-    [DisplayName("Birthday")]
+        [DisplayName("Birthday")]
         [DateEmptyOrValid]
         [BirthdateValid]
         public string DOB { get; set; }

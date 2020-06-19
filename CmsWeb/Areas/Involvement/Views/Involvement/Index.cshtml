@@ -124,7 +124,7 @@
                             {
                                 <li><a href="#ContactsReceived-tab" aria-controls="ContactsReceived-tab" class="ajax" data-toggle="tab">@ViewExtensions2.CurrentDatabase.Setting("UX-CGVisitsTabLabel", "Visits")</a></li>
                             }*@
-                        <li><a href="#ContactsReceived-tab" aria-controls="ContactsReceived-tab" class="ajax" data-toggle="tab"></a></li>
+                        @*<li><a href="#ContactsReceived-tab" aria-controls="ContactsReceived-tab" class="ajax" data-toggle="tab"></a></li>*@
                         @if (Model.ShowSettingsTab)
                         {
                             <li><a href="#Settings-tab" aria-controls="Settings-tab" class="ajax" data-toggle="tab">Settings</a></li>
@@ -187,5 +187,4 @@
     @Fingerprint.Script("/Content/touchpoint/js/org/organization.js")
     @Fingerprint.Script("/Content/touchpoint/js/org/RegSetting.js")
     @Fingerprint.Script("/Content/touchpoint/lib/select2/js/select2.min.js")
-    @Fingerprint.Script("/Content/touchpoint/js/people/person.js")
 }
