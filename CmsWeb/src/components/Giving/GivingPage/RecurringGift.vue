@@ -36,11 +36,11 @@
                     </select>
                 </div>
             </div>
-            <div class="col-sm-12 text-center" v-if="value.frequency" style="margin-top: 16px; font-size: 13px;">
+            <div class="col-sm-12 text-center" v-if="value.frequency" ref="giftText" style="margin-top: 16px; font-size: 13px;">
                 <template v-if="value.frequency == 3">
                     On the
-                    <a data-type="select" :data-value="value.d1" ref="d1"></a> and
-                    <a data-type="select" :data-value="value.d2" ref="d2"></a> of each month starting
+                    <a data-type="select" :data-value="value.d1" ref="d1">{{ getOrdinal(value.d1) }}</a> and
+                    <a data-type="select" :data-value="value.d2" ref="d2">{{ getOrdinal(value.d2) }}</a> of each month starting
                     <a data-type="date" :data-value="value.date" ref="startdate" class="datepicker"></a>{{ givingToday ? '(today)' : '' }}
                 </template>
                 <template v-else>
@@ -103,16 +103,11 @@
         watch: {
             showEndDate: function (show) {
                 let vm = this;
-                $(vm.$refs['startdate']).editable('destroy');
-                $(vm.$refs['enddate']).editable('destroy');
-                $(vm.$refs['d1']).editable('destroy');
-                $(vm.$refs['d2']).editable('destroy');
                 setTimeout(vm.initEditables, 100);
                 if (show) {
                     var year = vm.value.date.slice(0, 4);
                     var nextyear = parseInt(year) + 1;
                     vm.value.enddate = vm.value.date.replace(year, nextyear);
-                    setTimeout($(vm.$refs['enddate']).editable('show'),150);
                 } else {
                     $(vm.$refs['enddate']).editable('destroy');
                     vm.value.enddate = null;
@@ -148,15 +143,13 @@
                     vm.value.d2 = null;
                 }
                 // clear editables
-                $(vm.$refs['startdate']).editable('destroy');
-                $(vm.$refs['enddate']).editable('destroy');
-                $(vm.$refs['d1']).editable('destroy');
-                $(vm.$refs['d2']).editable('destroy');
+                vm.value.frequency = 0;
                 // update frequency
-                vm.value.frequency = parseInt(f);
-                this.$emit('input', this.value);
+                setTimeout(function () {
+                    vm.value.frequency = parseInt(f);
+                }, 100);
                 // init editables
-                setTimeout(vm.initEditables, 100);
+                setTimeout(vm.initEditables, 200);
             },
             initEditables() {
                 let vm = this;
@@ -206,8 +199,8 @@
                         mode: 'inline',
                         type: 'select',
                         showbuttons: false,
-                        source: this.dayOptions,
-                        value: this.value.d1
+                        source: vm.dayOptions,
+                        value: vm.value.d1
                     }).on('save', function (e, params) {
                         vm.value.d1 = params.submitValue;
                         vm.$emit('input', vm.value);
@@ -218,8 +211,8 @@
                         mode: 'inline',
                         type: 'select',
                         showbuttons: false,
-                        source: this.dayOptions,
-                        value: this.value.d2
+                        source: vm.dayOptions,
+                        value: vm.value.d2
                     }).on('save', function (e, params) {
                         vm.value.d2 = params.submitValue;
                         vm.$emit('input', vm.value);
