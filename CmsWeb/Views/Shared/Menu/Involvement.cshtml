@@ -33,9 +33,9 @@
                 @if (recentInvolvements.Any())
                 {
                     <li class="dropdown-header dropdown-sub-header">Recently Viewed</li>
-                    foreach (var o in Util2.MostRecentInvolvements)
+                    foreach (var inv in Util2.MostRecentInvolvements)
                     {
-                        @Helper.LiAnchorLink(o.Name, "/Inv/" + o.Id)
+                        @Helper.LiAnchorLink(inv.Name, "/" + inv.Type + "/" + inv.Id)
                     }
                 }
             </ul>

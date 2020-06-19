@@ -8,7 +8,6 @@ using CmsWeb.Areas.Involvement.Models;
 using CmsWeb.Areas.Org.Models;
 using CmsWeb.Areas.People.Models;
 using CmsWeb.Code;
-//using CmsWeb.Areas.Involvement.Models;
 using CmsWeb.Lifecycle;
 using UtilityExtensions;
 using MeetingModel = CmsWeb.Areas.Involvement.Models.MeetingModel;
@@ -62,14 +61,6 @@ namespace CmsWeb.Areas.Involvement.Controllers
             CodeValueModel cvm = new CodeValueModel();
             m.AllCampuses = cvm.AllCampuses();
             m.CanUserEditCampus = true;
-
-            // JRR EXPERIENTAL
-            //var campus = new CodeInfo
-            //{
-            //    Items
-            //};
-
-
             m.OrgMain.Divisions = GetOrgDivisions(id); 
 
             ViewBag.OrganizationContext = true;

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CmsData.Codes;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
@@ -136,6 +137,7 @@ namespace CmsData
         {
             public int Id { get; set; }
             public string Name { get; set; }
+            public string Type { get; set; }
         }
 
         public static List<MostRecentItem> MostRecentOrgs
@@ -163,11 +165,27 @@ namespace CmsData
             get
             {
                 var mru = Util.GetFromSession<List<MostRecentItem>>(STR_MostRecentInvolvements, null);
+
                 if (mru == null)
                 {
                     mru = (from i in Db.MostRecentItems(Db.UserId)
-                           where i.Type == "inv" || i.Type == "org"
+                           where i.Type == "org"
                            select new MostRecentItem() { Id = i.Id.Value, Name = i.Name }).ToList();
+
+                    foreach (var item in mru)
+                    {
+                        var org = Db.Organizations.Where(x => x.OrganizationId == item.Id).FirstOrDefault();
+
+                        if (org.RegistrationTypeId == RegistrationTypeCode.TicketedEvent)
+                        {
+                            item.Type = "inv";
+                        }
+                        else
+                        {
+                            item.Type = "org";
+                        }
+                    }
+
                     Util.SetValueInSession(STR_MostRecentInvolvements, mru);
                 }
 
