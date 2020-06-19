@@ -4,7 +4,7 @@
             <h1>{{ page.PageName }}</h1>
         </div>
         <div class="panel">
-            <div class="panel-body">
+            <div class="panel-body" v-if="view === 'gifts'">
                 <div v-if="pageTypes.length > 1" class="text-center" style="margin-bottom: 25px;">
                     <div aria-label="Giving Type" class="btn-group give-type text-center" role="group"  style="margin: 0 auto;">
                         <button v-for="type in pageTypes" :key="type.Name" :class="[givingType == type.Name ? 'btn-primary' : '', 'btn-default', 'btn']" @click="updateType(type.Name)">{{ type.Name }}</button>
@@ -12,16 +12,18 @@
                 </div>
                 <div v-if="givingType == 'One Time'">
                     <transition-group name="gift">
-                        <one-time-gift v-for="(gift, index) in gifts" v-model="gifts[index]" :count="gifts.length" :key="index" :funds="unusedFunds" @remove="removeGift(index)"></one-time-gift>
+                        <one-time-gift v-for="(gift, index) in gifts" v-model="gifts[index]" :count="gifts.length" :key="gift.key" :funds="unusedFunds" @remove="removeGift(index)"></one-time-gift>
                     </transition-group>
                 </div>
                 <div v-else-if="givingType == 'Recurring'">
                     <transition-group name="gift">
-                        <recurring-gift v-for="(gift, index) in gifts" v-model="gifts[index]" :count="gifts.length" :key="index" :funds="unusedFunds" :frequencies="recurringFrequencies" @remove="removeGift(index)"></recurring-gift>
+                        <recurring-gift v-for="(gift, index) in gifts" v-model="gifts[index]" :count="gifts.length" :key="gift.key" :funds="unusedFunds" :frequencies="recurringFrequencies" @remove="removeGift(index)"></recurring-gift>
                     </transition-group>
                 </div>
                 <div v-else-if="givingType == 'Pledge'">
-                    Pledge
+                    <transition-group name="gift">
+                        <one-time-gift v-for="(gift, index) in gifts" v-model="gifts[index]" :count="gifts.length" :key="gift.key" :funds="unusedFunds" @remove="removeGift(index)"></one-time-gift>
+                    </transition-group>
                 </div>
                 <div class="row">
                     <div class="col-md-6">
@@ -30,8 +32,18 @@
                         </button>
                     </div>
                     <div class="col-md-6">
-                        <button class="btn-block btn btn-primary">
+                        <button @click="loadView('signin')" class="btn-block btn btn-primary">
                             Next
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="panel-body" v-if="view === 'signin'">
+                Easy login
+                <div class="row">
+                    <div class="col-md-6">
+                        <button @click="loadView('gifts')" class="btn-block btn btn-default">
+                            Back
                         </button>
                     </div>
                 </div>
@@ -50,7 +62,9 @@
                 givingType: "",
                 gifts: [],
                 pageTypes: [],
-                page: {}
+                page: {},
+                view: "gifts",
+                onKey: 0
             };
         },
         computed: {
@@ -71,14 +85,27 @@
             },
             addGift() {
                 this.gifts.push({
+                    key: this.onKey,
                     amount: 0.00,
                     frequency: 0,
                     fund: this.unusedFunds[0],
                     date: this.today
                 });
+                this.onKey++;
             },
             removeGift(index) {
                 this.gifts.splice(index, 1);
+            },
+            loadView(newView) {
+                // setup the new view
+                // todo: also handle routing here?
+                if (this.view === 'gifts') {
+                    // todo: validate gifts? (or maybe during payment flow?)
+                }
+                if (newView === 'signin') {
+                    // todo: if already signed in, move to payment view
+                }
+                this.view = newView;
             },
             getPageTypes: function () {
                 let vm = this;
@@ -133,11 +160,13 @@
             this.getPageTypes();
 
             let gift = {
+                key: this.onKey,
                 amount: 0.00,
                 frequency: 0,
                 fund: {},
                 date: this.today
             };
+            this.onKey++;
             // initialize based on params (or defaults)
             gift.amount = parseFloat(this.amount) || 0;
             gift.fund = this.page.DefaultFund;
