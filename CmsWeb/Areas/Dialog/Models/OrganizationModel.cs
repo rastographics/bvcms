@@ -79,12 +79,6 @@ namespace CmsWeb.Areas.Dialog.Models
         {
             var regTypes = CodeValueModel.ConvertToSelect(cv.RegistrationTypes(), "Id");
 
-            //if (CurrentDatabase != null && CurrentDatabase.Setting("UseTicketed", "true").ToBool())
-            //{
-            //    regTypes.Add(new SelectListItem { Text = "-----NEW-----", Value = "", Disabled = true });
-            //    regTypes.Add(new SelectListItem { Text = "Ticketed Event", Value = RegistrationTypeCode.TicketedEvent.ToString() });
-            //}
-
             return regTypes;
         }
     }

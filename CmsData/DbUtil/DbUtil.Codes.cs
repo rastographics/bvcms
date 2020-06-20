@@ -243,8 +243,12 @@ namespace CmsData.Codes
             yield return new KeyValuePair<int, string>(ChooseVolunteerTimes, "Choose Volunteer Times");
             yield return new KeyValuePair<int, string>(RecordFamilyAttendance, "Record Family Attendance");
             yield return new KeyValuePair<int, string>(SpecialJavascript, "Special Script");
-            yield return new KeyValuePair<int, string>(NewSeparator, "-----NEW-----");
-            yield return new KeyValuePair<int, string>(TicketedEvent, "Ticketed Event");
+
+            if (db != null && db.Setting("UseNewInvolvementCreation", "true").ToBool())
+            {
+                yield return new KeyValuePair<int, string>(NewSeparator, "-----NEW-----");
+                yield return new KeyValuePair<int, string>(TicketedEvent, "Ticketed Event");
+            }
 
             if (Util.IsDebug())
             {
