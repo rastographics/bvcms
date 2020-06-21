@@ -56,7 +56,7 @@
                 }
                 <td>
                     <a href="#" class="templateItem" template="0">
-                        <img src="/PreviewImage/0" class="img-responsive img-circle" width="30" height="30"/>
+                        <img src="/PreviewImage/0" class="img-responsive img-circle" width="30" height="30" />
                     </a>
                 </td>
                 <td>
@@ -128,150 +128,157 @@
                     &nbsp;
                     <a href="Inv/Tag"><i class="fa fa-tag" title="Tag Person"></i></a>&nbsp;
                     <a href="Inv/Edit"><i class="fa fa-edit" title="Edit Person"></i></a>&nbsp;
-                    <a href="Inv/Edit"><i class="fa fa-trash" style="color:#FF0000;" title="Delete Person">
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
-@helper DaysAgo(DateTime dt)
-{
-    if (dt > DateTime.Today)
-    {
-        return;
-    }
-    <span class="smallfont">@DateTime.Today.Subtract(dt).TotalDays.ToInt()</span>
-}
-@helper ShowDateLink(DateTime? dt, string url, int? id, string type, string extra = "")
-{
-    if (dt.HasValue)
-    {
-        <div>
-            <a href="@url/@id@extra" target="contact">@dt.FormatDate2(type)</a>
-            @DaysAgo(dt.Value)
-        </div>
-    }
-}
-@helper ShowDateLink(DateTime? dt, string url, string type)
-{
-    if (dt.HasValue)
-    {
-        <div>
-            <a href="@url" target="contact">@dt.FormatDate2(type)</a>
-            @DaysAgo(dt.Value)
-        </div>
-    }
-}
-@helper ShowDate(DateTime? dt, string type)
-{
-    if (dt.HasValue)
-    {
-        <div>
-            <span>@dt.FormatDate2(type)</span>
-            @DaysAgo(dt.Value)
-        </div>
-    }
-}
-@helper ManageGuestLinks(OrgFilterPerson p)
-{
-    if (p.GroupCode == GroupSelectCode.Guest)
-    {
-        <div>
-            <a href="/Org/Join/@Model.Id/@p.PeopleId" class="joinlink"
-               confirm="Make @p.Name a Member of this Org?">
-                Join Org
-            </a>
-        </div>
-        if (p.MemberType != "Prospect")
-        {
-            <div>
-                <a href="/Org/AddProspect/@Model.Id/@p.PeopleId" class="joinlink"
-                   confirm="Make @p.Name a Prospect of this Org?">
-                    Add as Prospect
-                </a>
-            </div>
-        }
-        if (p.LastAttended.HasValue)
-        {
-            if (p.Hidden == true)
-            {
-                <div>
-                    <a href="/Org/ShowVisitor/@Model.Id/@p.PeopleId/@p.LastAttended.Value.Ticks/Show" class="joinlink"
-                       confirm="Show @p.Name as a Guest for this Org?">
-                        Show
-                    </a>
-                </div>
-            }
-            else
-            {
-                <div>
-                    <a href="/Org/ShowVisitor/@Model.Id/@p.PeopleId/@p.LastAttended.Value.Ticks/Hide" class="joinlink"
-                       confirm="Hide @p.Name as a Guest for this Org until next visit?">
-                        Hide
-                    </a>
-                </div>
-            }
-        }
-    }
-}
 
-@helper ManageProspectLinks(OrgFilterPerson p)
-{
-    if (p.GroupCode == GroupSelectCode.Prospect)
-    {
-        if (Model.ShowSubgroupFilters)
-        {
-            if (p.Hidden == true)
-            {
-                <div>
-                    <a href="/Org/ShowProspect/@Model.Id/@p.PeopleId/Show" class="joinlink"
-                       confirm="Show @p.Name in Prospect List for this Org?">
-                        Show
-                    </a>
-                </div>
+                    @if (p.GroupCode == InvolvementGroupSelectCode.Previous)
+                    {
+                            <a href="/Org/Join/@Model.Id/@p.PeopleId" class="joinlink"
+                               confirm="Re-Join @p.Name to this Org?">
+                                <i class="fa fa-arrow-circle-left" title="Re-join this person to this Organization"></i>
+                            </a>
+                    }
+                    else
+                    {
+                        <a href="Inv/Delete">
+                            <i class="fa fa-trash" style="color:#FF0000;" title="Delete Person"></i>
+                        </a>
+                    }
+                </td>
+                </tr>
             }
-            else
+                </tbody>
+            </table>
+            @helper DaysAgo(DateTime dt)
             {
-                <div>
-                    <a href="/Org/ShowProspect/@Model.Id/@p.PeopleId/Hide" class="joinlink"
-                       confirm="Hide @p.Name on Prospect List for this Org?">
-                        Hide
-                    </a>
-                </div>
+                if (dt > DateTime.Today)
+                {
+                    return;
+                }
+                <span class="smallfont">@DateTime.Today.Subtract(dt).TotalDays.ToInt()</span>
             }
-        }
-        else
-        {
-            <div>
-                <a href="/Org/Join/@Model.Id/@p.PeopleId" class="joinlink"
-                   confirm="Join @p.Name to this Org?">
-                    Join
-                </a>
-            </div>
-        }
-    }
-}
-@helper ManageMemberLinks(OrgFilterPerson p)
-{
-    if (!(new[] { GroupSelectCode.Guest, GroupSelectCode.Previous }).Contains(p.GroupCode))
-    {
-        <div>
-            <a class="membertype" href="/OrgMemberDialog/@p.Group/@Model.Id/@p.PeopleId"> @p.MemberType </a>
-        </div>
-    }
-}
-@helper ManagePrevMemberLinks(OrgFilterPerson p)
-{
-    if (p.GroupCode == GroupSelectCode.Previous)
-    {
-        <div>
-            <a class="membertype" href="/OrgPrevMemberDialog/@Model.Id/@p.PeopleId">Prev @p.MemberType </a>
-        </div>
-        <div class="pad-top">
-            <a href="/Org/Join/@Model.Id/@p.PeopleId" class="joinlink"
-               confirm="Re-Join @p.Name to this Org?">
-                Re-Join Org
-            </a>
-        </div>
-    }
-}
+            @helper ShowDateLink(DateTime? dt, string url, int? id, string type, string extra = "")
+            {
+                if (dt.HasValue)
+                {
+                    <div>
+                        <a href="@url/@id@extra" target="contact">@dt.FormatDate2(type)</a>
+                        @DaysAgo(dt.Value)
+                    </div>
+                }
+            }
+            @helper ShowDateLink(DateTime? dt, string url, string type)
+            {
+                if (dt.HasValue)
+                {
+                    <div>
+                        <a href="@url" target="contact">@dt.FormatDate2(type)</a>
+                        @DaysAgo(dt.Value)
+                    </div>
+                }
+            }
+            @helper ShowDate(DateTime? dt, string type)
+            {
+                if (dt.HasValue)
+                {
+                    <div>
+                        <span>@dt.FormatDate2(type)</span>
+                        @DaysAgo(dt.Value)
+                    </div>
+                }
+            }
+            @helper ManageGuestLinks(OrgFilterPerson p)
+            {
+                if (p.GroupCode == GroupSelectCode.Guest)
+                {
+                    <div>
+                        <a href="/Org/Join/@Model.Id/@p.PeopleId" class="joinlink"
+                           confirm="Make @p.Name a Member of this Org?">
+                            Join Org
+                        </a>
+                    </div>
+                    if (p.MemberType != "Prospect")
+                    {
+                        <div>
+                            <a href="/Org/AddProspect/@Model.Id/@p.PeopleId" class="joinlink"
+                               confirm="Make @p.Name a Prospect of this Org?">
+                                Add as Prospect
+                            </a>
+                        </div>
+                    }
+                    if (p.LastAttended.HasValue)
+                    {
+                        if (p.Hidden == true)
+                        {
+                            <div>
+                                <a href="/Org/ShowVisitor/@Model.Id/@p.PeopleId/@p.LastAttended.Value.Ticks/Show" class="joinlink"
+                                   confirm="Show @p.Name as a Guest for this Org?">
+                                    Show
+                                </a>
+                            </div>
+                        }
+                        else
+                        {
+                            <div>
+                                <a href="/Org/ShowVisitor/@Model.Id/@p.PeopleId/@p.LastAttended.Value.Ticks/Hide" class="joinlink"
+                                   confirm="Hide @p.Name as a Guest for this Org until next visit?">
+                                    Hide
+                                </a>
+                            </div>
+                        }
+                    }
+                }
+            }
+
+            @helper ManageProspectLinks(OrgFilterPerson p)
+            {
+                if (p.GroupCode == GroupSelectCode.Prospect)
+                {
+                    if (Model.ShowSubgroupFilters)
+                    {
+                        if (p.Hidden == true)
+                        {
+                            <div>
+                                <a href="/Org/ShowProspect/@Model.Id/@p.PeopleId/Show" class="joinlink"
+                                   confirm="Show @p.Name in Prospect List for this Org?">
+                                    Show
+                                </a>
+                            </div>
+                        }
+                        else
+                        {
+                            <div>
+                                <a href="/Org/ShowProspect/@Model.Id/@p.PeopleId/Hide" class="joinlink"
+                                   confirm="Hide @p.Name on Prospect List for this Org?">
+                                    Hide
+                                </a>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <div>
+                            <a href="/Org/Join/@Model.Id/@p.PeopleId" class="joinlink"
+                               confirm="Join @p.Name to this Org?">
+                                Join
+                            </a>
+                        </div>
+                    }
+                }
+            }
+            @helper ManageMemberLinks(OrgFilterPerson p)
+            {
+                if (!(new[] { GroupSelectCode.Guest, GroupSelectCode.Previous }).Contains(p.GroupCode))
+                {
+                    <div>
+                        <a class="membertype" href="/OrgMemberDialog/@p.Group/@Model.Id/@p.PeopleId"> @p.MemberType </a>
+                    </div>
+                }
+            }
+            @helper ManagePrevMemberLinks(OrgFilterPerson p)
+            {
+                if (p.GroupCode == InvolvementGroupSelectCode.Previous)
+                {
+                    <div>
+                        <a class="membertype" href="/OrgPrevMemberDialog/@Model.Id/@p.PeopleId">Prev @p.MemberType </a>
+                    </div>
+                }
+            }
