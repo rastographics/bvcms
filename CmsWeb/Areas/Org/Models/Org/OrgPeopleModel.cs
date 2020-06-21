@@ -349,6 +349,7 @@ namespace CmsWeb.Areas.Org.Models
         public bool ShowAddress { get; set; }
         public int? Id { get; set; }
 
+        // TODO: Restore original code here ?????????
         // public string GroupSelect { get; set; }
         public string GroupSelect
         {
