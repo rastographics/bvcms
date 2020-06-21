@@ -1,20 +1,120 @@
-﻿@model CmsWeb.Areas.Org.Models.OrganizationModel
+﻿@using CmsData.Codes
+@model CmsWeb.Areas.Org.Models.OrganizationModel
 <div class="filter well hidden-print" style="margin-top: 15px;">
     <div class="row">
         <div class="col-sm-10">
+
+            @*<a class="btn btn-default" id="clear-filter" href="#">Clear</a>*@
+            <div class="btn-group">
+                <a class="btn btn-default setfilter">
+                    @*Filter@(Html.Raw(Model.IsFiltered ? " <span style='color: red'>(filtered)</span>" : ""))*@
+                </a>
+                <a href="#" data-toggle="dropdown" class="dropdown-toggle"><b class="caret"></b></a>
+                <ul class="dropdown-menu" role="menu" style="font-size:11px;">
+                    <li><a href="#" id="filter-all-people">All</a></li>
+                    <li><a href="#" id="filter-no-people">None</a></li>
+                    <li><hr /></li>
+                    <li><a href="#" id="filter-will-call-tickets">Will Call Tickets</a></li>
+                    <li><a href="#" id="filter-printed">Printed</a></li>
+                    <li>
+                        <table class="table">
+                            <tr>
+                                <td style="white-space:nowrap;"><b>Filter by Sub Group</b></td>
+                                <td style="white-space:nowrap;"><b>How:</b></td>
+                            </tr>
+                            <tr>
+                                <td style="white-space:nowrap;">
+                                    <div class="checkbox">
+                                        <label>
+                                            <input type="checkbox">Free
+                                        </label>
+                                    </div>
+                                </td>
+                                <td style="white-space:nowrap;">
+                                    <div class="checkbox">
+                                        <label>
+                                            <input type="checkbox">Exclude
+                                        </label>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="white-space:nowrap;">
+                                    <div class="checkbox">
+                                        <label>
+                                            <input type="checkbox">Volunteer
+                                        </label>
+                                    </div>
+                                </td>
+                                <td style="white-space:nowrap;">
+                                    <div class="checkbox">
+                                        <label>
+                                            <input type="checkbox">Match All
+                                        </label>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="white-space:nowrap;">
+                                    <div class="checkbox">
+                                        <label>
+                                            <input type="checkbox">Medium
+                                        </label>
+                                    </div>
+                                </td>
+                                <td style="white-space:nowrap;">
+                                    <div class="checkbox">
+                                        <label>
+                                            <input type="checkbox">None Assigned
+                                        </label>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </li>
+                </ul>
+            </div>
+
+
+            @*<button class="btn btn-info dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
+                <ul class="dropdown-menu dropdown-menu-right">
+                    <li>
+                        <a class="setfilter">
+                            Filter@(Html.Raw(Model.IsFiltered ? " <span style='color: red'>(filtered)</span>" : ""))
+                        </a>
+                    </li>
+                </ul>*@
+
+
+            @*<button class="btn btn-info dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
+
+                <ul class="dropdown-menu dropdown-menu-right">
+                    <li><a href="/AddToOrgFromTag/@Model.QueryId" class="longrunop" title="Add Previous Members From Tag"><i class="fa fa-tag"></i>&nbsp;&nbsp;Select Multiple</a></li>
+                </ul>
+
+            *@
+
+
+
+
+
             <a href="Inv/Delete"><i class="fa fa-trash" title="Delete Person" style="color:#FF0000;"></i></a>&nbsp;
             <a href="Inv/Tag"><i class="fa fa-tag" title="Tag Person"></i></a>&nbsp;
             <a href="Inv/Edit"><i class="fa fa-edit" title="Edit Person"></i></a>&nbsp;
             <a href="Inv/Print"><i class="fa fa-print" title="Print Person"></i></a> &nbsp; &nbsp;
             <i class="fa fa-search"></i>
             <input id="searchperson" name="name" type="text" title="Starting letters of First&lt;space>Last or just Last" class="input-normal">
-            <div class="btn-group">
-                <a class="btn btn-default searchadd" href="/SearchAdd2/Dialog/inv/@Model.Id">Add Person</a>
-                <button class="btn btn-info dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
-                <ul class="dropdown-menu">
-                    <li><a href="/AddToOrgFromTag/@Model.QueryId" class="longrunop" title="Add Person From Tag"><i class="fa fa-tag"></i>&nbsp;&nbsp;Add from Tag</a></li>
-                </ul>
-            </div>
+
+            @if (Model.GroupSelect == InvolvementGroupSelectCode.TicketBuyer)
+            {
+                <div class="btn-group" id="inv-add-person">
+                    <a class="btn btn-default searchadd" href="/SearchAdd2/Dialog/inv/@Model.Id">Add Person</a>
+                    <button class="btn btn-info dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
+                    <ul class="dropdown-menu">
+                        <li><a href="/AddToOrgFromTag/@Model.QueryId" class="longrunop" title="Add Person From Tag"><i class="fa fa-tag"></i>&nbsp;&nbsp;Add from Tag</a></li>
+                    </ul>
+                </div>
+            }
         </div>
         <div class="col-sm-2 pull-right">
             <div class="btn-group">
@@ -29,12 +129,12 @@
                 </ul>
             </div>
         </div>
-        <div class="form-group">
-            <div class="btn-group">
-                <a class="btn btn-default setfilter">
-                    Filter@(Html.Raw(Model.IsFiltered ? " <span style='color: red'>(filtered)</span>" : ""))
-                </a>
-            </div>
-        </div>
+        @*<div class="form-group">
+                <div class="btn-group">
+                    <a class="btn btn-default setfilter">
+                        Filter@(Html.Raw(Model.IsFiltered ? " <span style='color: red'>(filtered)</span>" : ""))
+                    </a>
+                </div>
+            </div>*@
     </div>
 </div>

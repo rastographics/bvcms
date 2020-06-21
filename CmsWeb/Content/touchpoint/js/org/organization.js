@@ -209,7 +209,8 @@ $(function () {
             $this.addClass("active");
             $this.next().find("button.dropdown-toggle").show();
             $("li.orgcontext").hide();
-            switch ($this.text()) {
+
+            switch ($this.text().trim()) {
                 case "Members":
                     $("li.current-list").show();
                     break;
