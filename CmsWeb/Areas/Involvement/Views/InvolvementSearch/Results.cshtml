@@ -73,7 +73,7 @@
                 {
                     if (!Model.PublicView)
                     {
-                        Html.RenderPartial("Row", o);
+                        Html.RenderPartial("~/Areas/Involvement/Views/InvolvementSearch/row.cshtml", o);
                     }
                     else
                     {
@@ -81,15 +81,15 @@
                             <td class="text-center">
                                 <a tabindex="0" href="#" data-toggle="popover" data-trigger="focus" data-title="@o.OrganizationName (@o.Id)"
                                    data-content="
-                                   <label>Program Name:</label> @o.ProgramName (@o.ProgramId)<br/>
-                                   <label>Division Name:</label> @o.DivisionName (@o.DivisionId)<br />
-                                   <label>Leader:</label> @o.LeaderName<br/>
-                                   <label>First Meeting:</label> @o.FirstMeetingDate<br/>
-                                   <label>Last Meeting:</label> @o.LastMeetingDate<br />
-                                   <label>Schedule:</label> @o.Schedule<br />
-                                   <label>Location:</label> @o.Location<br />
-                                   <label>Divisions:</label> @o.Divisions<br />
-                                "><i class="fa fa-info-circle"></i></a>
+                                       <label>Program Name:</label> @o.ProgramName (@o.ProgramId)<br/>
+                                       <label>Division Name:</label> @o.DivisionName (@o.DivisionId)<br />
+                                       <label>Leader:</label> @o.LeaderName<br/>
+                                       <label>First Meeting:</label> @o.FirstMeetingDate<br/>
+                                       <label>Last Meeting:</label> @o.LastMeetingDate<br />
+                                       <label>Schedule:</label> @o.Schedule<br />
+                                       <label>Location:</label> @o.Location<br />
+                                       <label>Divisions:</label> @o.Divisions<br />" > 
+                                   <i class="fa fa-info-circle"></i></a>
                             </td>
                             <td><a href="/Inv/@o.Id" target="reg">@o.OrganizationName</a></td>
                             <td>

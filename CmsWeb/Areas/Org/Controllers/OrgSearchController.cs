@@ -74,6 +74,12 @@ namespace CmsWeb.Areas.Search.Controllers
         public ActionResult Results(OrgSearchModel m)
         {
             Util.OrgSearch = JsonConvert.SerializeObject(new OrgSearchInfo(m));
+
+            if (CurrentDatabase.Setting("UseNewInvolvementCreation", "true").ToBool())
+            {
+                return View("~/Areas/Involvement/Views/InvolvementSearch/Results.cshtml", m);
+            }
+
             return View(m);
         }
 
