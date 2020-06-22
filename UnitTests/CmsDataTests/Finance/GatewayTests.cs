@@ -51,6 +51,16 @@ namespace CmsData.Finance.Tests
             };
 
             var givingPaymentModel = new GivingPaymentModel(db);
+
+            var paymentProcess = (from p in db.PaymentProcess where p.ProcessName == "Recurring Giving" select p).FirstOrDefault();
+            var paymentProcessNull = false;
+            if (paymentProcess.GatewayAccountId == null)
+            {
+                paymentProcess.GatewayAccountId = 2;
+                db.SubmitChanges();
+                paymentProcessNull = true;
+            }
+
             givingPaymentModel.CreateMethod(viewModel);
 
             var paymentMethod = (from pm in db.PaymentMethods
@@ -58,6 +68,13 @@ namespace CmsData.Finance.Tests
                                  select pm).FirstOrDefault();
             paymentMethod.Decrypt();
             paymentMethod.NameOnAccount.ShouldBe("Jason Rice");
+
+            if (paymentProcessNull == true)
+            {
+                var paymentProcess2 = (from p in db.PaymentProcess where p.ProcessName == "Recurring Giving" select p).FirstOrDefault();
+                paymentProcess2.GatewayAccountId = null;
+                db.SubmitChanges();
+            }
         }
 
         [Fact]
@@ -80,6 +97,16 @@ namespace CmsData.Finance.Tests
             };
 
             var givingPaymentModel = new GivingPaymentModel(db);
+
+            var paymentProcess = (from p in db.PaymentProcess where p.ProcessName == "Recurring Giving" select p).FirstOrDefault();
+            var paymentProcessNull = false;
+            if (paymentProcess.GatewayAccountId == null)
+            {
+                paymentProcess.GatewayAccountId = 2;
+                db.SubmitChanges();
+                paymentProcessNull = true;
+            }
+
             givingPaymentModel.CreateMethod(viewModel);
 
             var paymentMethod = (from pm in db.PaymentMethods
@@ -87,6 +114,12 @@ namespace CmsData.Finance.Tests
                                  select pm).FirstOrDefault();
             paymentMethod.Decrypt();
             paymentMethod.NameOnAccount.ShouldBe("Jason Rice");
+            if(paymentProcessNull == true)
+            {
+                var paymentProcess2 = (from p in db.PaymentProcess where p.ProcessName == "Recurring Giving" select p).FirstOrDefault();
+                paymentProcess2.GatewayAccountId = null;
+                db.SubmitChanges();
+            }
         }
 
         public override void Dispose()
