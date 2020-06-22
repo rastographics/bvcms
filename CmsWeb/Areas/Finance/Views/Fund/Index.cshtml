@@ -51,6 +51,7 @@
                                 <th><a href="#" class="sortable" data-sortby="Name">Name</a></th>
                                 <th style="width: 200px;"><a href="#" class="sortable" data-sortby="StatusId">Status</a></th>
                                 <th style="width: 208px;"><a href="#" class="sortable" data-sortby="ShowList">Show List</a></th>
+                                <th class="text-center"><a href="#" class="sortable" data-sortby="EndDateFlag">Allow End Date</a></th>
                                 <th class="text-center"><a href="#" class="sortable" data-sortby="PledgeFlag">Pledge</a></th>
                                 <th class="text-center" style="width:156px"><a href="#" class="sortable" data-sortby="NonTaxDed">Non Tax Deductible</a></th>
                                 <th style="width:110px"><a href="#" class="sortable" data-sortby="Created">Date Created</a></th>
@@ -61,18 +62,36 @@
                             @foreach (var item in Model)
                             {
                                 <tr>
-                                    <td style="width: 100px;">@item.FundId</td>
-                                    <td style="width: 300px;"><a id="o@(item.FundId)" class="clickEdit" data-pk="o@(item.FundId)">@(item.OnlineSort.HasValue ? item.OnlineSort.ToString() : "")</a></td>
+                                    <td style="width: 100px;">
+                                        @item.FundId
+                                    </td>
+                                    <td style="width: 300px;">
+                                        <a id="o@(item.FundId)" class="clickEdit" data-pk="o@(item.FundId)">@(item.OnlineSort.HasValue ? item.OnlineSort.ToString() : "")</a>
+                                    </td>
                                     @if (item.FundPledgeFlag)
                                     {
-                                        <td><a href="/FinanceReports/PledgeFulfillments/@item.FundId">@item.FundName</a></td>
+                                        <td>
+                                            <a href="/FinanceReports/PledgeFulfillments/@item.FundId">@item.FundName</a>
+                                        </td>
                                     }
                                     else
                                     {
-                                        <td>@item.FundName</td>
+                                        <td>
+                                            @item.FundName
+                                        </td>
                                     }
-                                    <td style="width: 200px;"><a id="s@(item.FundId)" class="clickSelect" data-value="@(item.FundStatusId)" data-pk="s@(item.FundId)">@(item.FundStatusId == 1 ? "Open" : "Closed")</a></td>
-                                    <td style="width: 200px;"><a id="sl@(item.FundId)" class="clickSelectShowList" data-value="@(item.ShowList)" data-pk="sl@(item.FundId)">@(item.ShowList == 1 ? "Primary" : (item.ShowList == 2 ? "Secondary" : "None"))</a></td>
+                                    <td style="width: 200px;">
+                                        <a id="s@(item.FundId)" class="clickSelect" data-value="@(item.FundStatusId)" data-pk="s@(item.FundId)">@(item.FundStatusId == 1 ? "Open" : "Closed")</a>
+                                    </td>
+                                    <td style="width: 200px;">
+                                        <a id="sl@(item.FundId)" class="clickSelectShowList" data-value="@(item.ShowList)" data-pk="sl@(item.FundId)">@(item.ShowList == 1 ? "Primary" : (item.ShowList == 2 ? "Secondary" : "None"))</a>
+                                    </td>
+                                    <td class="text-center">
+                                        @if (item.EndDateFlag == true)
+                                        {
+                                            <i class="fa fa-check"></i>
+                                        }
+                                    </td>
                                     <td class="text-center">
                                         @if (item.FundPledgeFlag)
                                         {
@@ -85,8 +104,12 @@
                                             <i class="fa fa-check"></i>
                                         }
                                     </td>
-                                    <td>@item.CreatedDate.ToString("d")</td>
-                                    <td><a href="/Fund/Edit/@item.FundId" class="btn btn-sm btn-default"><i class="fa fa-pencil"></i> Edit</a></td>
+                                    <td>
+                                        @item.CreatedDate.ToString("d")
+                                    </td>
+                                    <td>
+                                        <a href="/Fund/Edit/@item.FundId" class="btn btn-sm btn-default"><i class="fa fa-pencil"></i> Edit</a>
+                                    </td>
                                 </tr>
                             }
                         </tbody>
@@ -126,11 +149,11 @@
     <script type="text/javascript">
         $(function () {
             $.fn.editableform.buttons = '<button type="submit" class="btn btn-primary btn-sm editable-submit">' +
-                                            '<i class="fa fa-fw fa-check"></i>' +
-                                        '</button>' +
-                                        '<button type="button" class="btn btn-default btn-sm editable-cancel">' +
-                                            '<i class="fa fa-fw fa-times"></i>' +
-                                        '</button>';
+                '<i class="fa fa-fw fa-check"></i>' +
+                '</button>' +
+                '<button type="button" class="btn btn-default btn-sm editable-cancel">' +
+                '<i class="fa fa-fw fa-times"></i>' +
+                '</button>';
 
             $(".clickEdit").editable({
                 mode: 'inline',
@@ -148,7 +171,7 @@
                 mode: 'inline',
                 type: 'select',
                 url: "/Fund/EditStatus/",
-                source: [{value: 1, text: "Open"}, {value: 2, text: "Closed"}],
+                source: [{ value: 1, text: "Open" }, { value: 2, text: "Closed" }],
                 params: function (params) {
                     var data = {};
                     data['id'] = params.pk;
@@ -177,7 +200,7 @@
                 else
                     window.location = "/Funds?sort=" + $(this).attr('data-sortby');
             });
-            
+
             $("form").submit(function (ev) {
                 ev.preventDefault();
                 $.post("/Fund/Create", { fundid: $("#fundid").val() }, function (ret) {
