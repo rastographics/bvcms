@@ -140,6 +140,7 @@
       <Link>DatabaseCollection.cs</Link>
     </Compile>
     <Compile Include="Areas\Finance\GatewayTests.cs" />
+    <Compile Include="Areas\Finance\ContributionFundTests.cs" />
     <Compile Include="Areas\Finance\Models\BundleModelsTests.cs" />
     <Compile Include="Areas\Finance\Models\PostBundleModelTests.cs" />
     <Compile Include="Areas\Finance\Models\Statements\ContributionStatementsExtractTests.cs" />
