@@ -1,20 +1,12 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using CmsWeb.Models;
+﻿using CmsWeb.Models;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Xunit;
-using CMSWebTests;
 using SharedTestFixtures;
 using CMSWebTests.Support;
 using Shouldly;
-using CmsWeb.Areas.Manage.Models;
-using CmsWeb.Membership;
 using CmsData;
 using CmsData.Codes;
-using System.Data.Linq;
 
 namespace CmsWeb.ModelsTests
 {
