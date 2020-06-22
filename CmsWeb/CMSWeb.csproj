@@ -1326,7 +1326,6 @@
     <Content Include="Content\touchpoint\js\gateway.js" />
     <Content Include="Content\touchpoint\js\checkin.js" />
     <Content Include="Content\touchpoint\js\onlineregister.min.js" />
-    <Content Include="Content\touchpoint\js\search\InvSearch.js" />
     <Content Include="Content\touchpoint\js\sms\ReplyWords.js" />
     <Content Include="Content\touchpoint\js\sms\Received.js" />
     <Content Include="Content\touchpoint\js\sms\Sent.js" />

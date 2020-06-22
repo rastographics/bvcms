@@ -76,30 +76,30 @@
     </div>
 </div>
 @*@Html.Partial("Modals/NewDiv", Model)
-@Html.Partial("Modals/RenameDiv")
-@Html.Partial("Modals/Editor")
-@Html.Partial("Modals/Checkin")
-@Html.Partial("Modals/Rollsheet")
-@Html.Partial("Modals/NewMeetings")
-@Html.Partial("Modals/MeetingsDateRange")
-@Html.Partial("Modals/ReportDate")
-@Html.Partial("Modals/MeetingsMonth")
-@Html.Partial("Modals/Enrollment")
-@Html.Partial("Modals/ExportMessages")*@
+    @Html.Partial("Modals/RenameDiv")
+    @Html.Partial("Modals/Editor")
+    @Html.Partial("Modals/Checkin")
+    @Html.Partial("Modals/Rollsheet")
+    @Html.Partial("Modals/NewMeetings")
+    @Html.Partial("Modals/MeetingsDateRange")
+    @Html.Partial("Modals/ReportDate")
+    @Html.Partial("Modals/MeetingsMonth")
+    @Html.Partial("Modals/Enrollment")
+    @Html.Partial("Modals/ExportMessages")*@
 @section scripts
 {
     @ViewExtensions2.CkEditor()
     @Fingerprint.Script("/Content/touchpoint/lib/bootstrap-editable/js/bootstrap-editable.min.js")
     @Fingerprint.Script("/Content/touchpoint/lib/bootstrap-tabdrop/js/bootstrap-tabdrop.js")
     @Fingerprint.Script("/Content/touchpoint/lib/bootstrap-tabdrop/js/extensions_bootstrap-tabdrop.js")
-    @Fingerprint.Script("/Content/touchpoint/js/search/InvSearch.js")
+    @Fingerprint.Script("/Content/touchpoint/js/search/OrgSearch.js")
 
     @if (User.IsInRole("Edit"))
     {
         <script type="text/javascript">
-      $(function () {
-        $("#results").addClass("edit2");
-      });
+            $(function () {
+                $("#results").addClass("edit2");
+            });
         </script>
     }
 }
