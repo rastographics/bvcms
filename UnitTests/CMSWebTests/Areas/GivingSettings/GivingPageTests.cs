@@ -28,5 +28,12 @@ namespace CmsDataTests.GivingSettings
             MockGivingPage.DeleteGivingPage(db, givingPage);
             MockFunds.DeleteFund(db, contributionFund.FundId);
         }
+
+        [Fact]
+        public void OnlyOneDefaultGivingPage()
+        {
+            var defaultGivingPage = (from g in db.GivingPages where g.DefaultPage == true select g).ToList();
+            defaultGivingPage.Count.ShouldBe(1);
+        }
     }
 }
