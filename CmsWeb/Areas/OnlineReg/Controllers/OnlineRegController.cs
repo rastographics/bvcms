@@ -579,18 +579,18 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             return Content("/Error/");
         }
 
-        //protected override void OnException(ExceptionContext filterContext)
-        //{
-        //    if (filterContext.ExceptionHandled)
-        //    {
-        //        return;
-        //    }
+        protected override void OnException(ExceptionContext filterContext)
+        {
+            if (filterContext.ExceptionHandled)
+            {
+                return;
+            }
 
-        //    ErrorSignal.FromCurrentContext().Raise(filterContext.Exception);
-        //    DbUtil.LogActivity("OnlineReg Error:" + filterContext.Exception.Message);
-        //    filterContext.Result = Message(filterContext.Exception.Message, filterContext.Exception.StackTrace);
-        //    filterContext.ExceptionHandled = true;
-        //}
+            ErrorSignal.FromCurrentContext().Raise(filterContext.Exception);
+            DbUtil.LogActivity("OnlineReg Error:" + filterContext.Exception.Message);
+            filterContext.Result = Message(filterContext.Exception.Message, filterContext.Exception.StackTrace);
+            filterContext.ExceptionHandled = true;
+        }
 
         protected override void Initialize(RequestContext requestContext)
         {
