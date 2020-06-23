@@ -82,6 +82,13 @@ namespace CmsWeb.Areas.People.Models
 
         private void WriteDbImage(ControllerContext context)
         {
+#if DEBUG
+            // speed up local development when no CMSi_ database exists
+            // the try catch takes too long and the DatabaseExists function runs quickly
+            using (var db = CMSDataContext.Create(context.HttpContext))
+                if (!DbUtil.DatabaseExists("CMSi_" + db.Host))
+                    return;
+#endif
             ImageData.Image image = null;
             try
             {
