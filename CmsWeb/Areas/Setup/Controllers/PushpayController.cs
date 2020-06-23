@@ -1,11 +1,11 @@
 ﻿using CmsData;
 using CmsData.Codes;
 using CmsData.Finance;
-using CmsData.Registration;
 using CmsWeb.Areas.OnlineReg.Models;
 using CmsWeb.Common;
 using CmsWeb.Lifecycle;
 using CmsWeb.Models;
+using Elmah;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -308,6 +308,7 @@ namespace CmsWeb.Areas.Setup.Controllers
             }
             catch (Exception ex)
             {
+                ErrorSignal.FromCurrentContext().Raise(ex);
                 ViewBag.Message = "Something went wrong";
                 CurrentDatabase.LogActivity($"Error in pushpay payment process: {ex.Message}");
                 return View("~/Views/Shared/PageError.cshtml");
