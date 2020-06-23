@@ -103,7 +103,34 @@ namespace IntegrationTests.Areas.OnlineReg.Views
 
             var element = Find(css: ".noRecaptcha");
             element.ShouldNotBeNull();
-        }        
+        }
+
+        [Fact]
+        public void Should_Not_Show_Deceased_Person_In_Family_Attendance()
+        {
+            MaximizeWindow();
+
+            username = RandomString();
+            password = RandomString();
+            var user = CreateUser(username, password, roles: new string[] { "Access", "Edit", "Admin" });
+
+            var org = MockOrganizations.CreateOrganization(db, RandomString());
+            org.RegistrationTypeId = RegistrationTypeCode.RecordFamilyAttendance;
+            db.SubmitChanges();
+
+            var family = user.Person.Family;
+
+            var deceasedPerson = CreatePerson(family);
+            deceasedPerson.DeceasedDate = DateTime.Now.AddYears(-10);            
+            db.SubmitChanges();
+
+            Login();
+            Wait(3);
+            Open($"{rootUrl}OnlineReg/{org.OrganizationId}");
+            Wait(3);
+            PageSource.ShouldContain(user.Person.FirstName);
+            PageSource.ShouldNotContain(deceasedPerson.FirstName);
+        }
 
         public override void Dispose()
         {
