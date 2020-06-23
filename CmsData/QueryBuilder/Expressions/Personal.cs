@@ -131,6 +131,5 @@ namespace CmsData
             Expression expr = Expression.Invoke(pred, parm);
             return expr;
         }
-
     }
 }

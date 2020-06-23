@@ -67,9 +67,8 @@ namespace CmsWeb.Areas.People.Controllers
         {
             var person = CurrentDatabase.LoadPersonById(id);
             if (person != null)
-            {
-                
-                    person.IsBusiness = (person.IsBusiness.IsNull() || (bool)!person.IsBusiness) ? true: false;
+            {                
+                person.IsBusiness = (person.IsBusiness.IsNull() || (bool)!person.IsBusiness) ? true: false;
             }
             CurrentDatabase.SubmitChanges();
             DbUtil.LogActivity($"Record type converted {person.Name} ({person.PeopleId}), CurrentRecordType: { ((bool)person.IsBusiness ? "Business" : "Person")} ");            

@@ -314,16 +314,13 @@ namespace CmsData
             {
                 if (this._IsBusiness != value)
                 {
-
                     this.OnIsBusinessChanging(value);
                     this.SendPropertyChanging();
                     this._IsBusiness = value;
                     this.SendPropertyChanged("IsBusiness");
                     this.OnIsBusinessChanged();
                 }
-
             }
-
         }
 
         [Column(Name="BadAddressFlag", UpdateCheck=UpdateCheck.Never, Storage="_BadAddressFlag", DbType="bit")]
