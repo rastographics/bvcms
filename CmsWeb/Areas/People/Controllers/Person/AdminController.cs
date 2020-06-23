@@ -102,11 +102,11 @@ namespace CmsWeb.Areas.People.Controllers
         {
             if (all)
             {
-                UtilityExtensions.Util.ShowAllMeetings = true;
+                Util.ShowAllMeetings = true;
             }
             else
             {
-                UtilityExtensions.Util.ShowAllMeetings = null;
+                Util.ShowAllMeetings = null;
             }
 
             return Redirect("/Person2/" + id);

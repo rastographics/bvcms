@@ -264,7 +264,7 @@ namespace CmsWeb.Models
             switch (m.peoplerecordtype)
             {
                 case 0:
-                    people = people.Where(p => p.IsBusiness == false || p.IsBusiness == null); ;
+                    people = people.Where(p => p.IsBusiness == false || p.IsBusiness == null);
                     break;
                 case 1:
                     people = people.Where(p => p.IsBusiness == true);
@@ -433,7 +433,7 @@ namespace CmsWeb.Models
                 new CodeValueItem {Code = "Person", Value = "Person", Id = 0},
                 new CodeValueItem {Code = "Business/Entity", Value = "Business/Entity", Id = 1},
                 new CodeValueItem {Code = "Both", Value = "Both", Id = 2}
-            }; ;
+            };
             
             return list;
         }
