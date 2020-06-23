@@ -62,6 +62,20 @@ namespace CmsWeb.Areas.People.Controllers
             return Content("/Person2/DeletedPerson");
         }
 
+        [HttpPost, Authorize(Roles = "Admin")]
+        public ActionResult ConvertRecordType(int id)
+        {
+            var person = CurrentDatabase.LoadPersonById(id);
+            if (person != null)
+            {
+                
+                    person.IsBusiness = (person.IsBusiness.IsNull() || (bool)!person.IsBusiness) ? true: false;
+            }
+            CurrentDatabase.SubmitChanges();
+            DbUtil.LogActivity($"Record type converted {person.Name} ({person.PeopleId}), CurrentRecordType: { ((bool)person.IsBusiness ? "Business" : "Person")} ");            
+            return Content("/Person2/" + id);
+        }
+
         [HttpGet]
         public ActionResult DeletedPerson()
         {
@@ -88,11 +102,11 @@ namespace CmsWeb.Areas.People.Controllers
         {
             if (all)
             {
-                Util.ShowAllMeetings = true;
+                UtilityExtensions.Util.ShowAllMeetings = true;
             }
             else
             {
-                Util.ShowAllMeetings = null;
+                UtilityExtensions.Util.ShowAllMeetings = null;
             }
 
             return Redirect("/Person2/" + id);

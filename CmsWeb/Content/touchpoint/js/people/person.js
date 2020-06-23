@@ -95,6 +95,25 @@
         });
     });
 
+    $('body').on('click', '#convertRecordType', function (ev) {
+        ev.preventDefault();
+        var href = $(this).attr("href");
+
+        swal({
+            title: "Are you sure?",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonClass: "btn-danger",
+            confirmButtonText: "Yes, convert it!",
+            closeOnConfirm: false
+        },
+            function () {
+                $.post(href, {}, function (ret) {
+                    window.location = ret;
+                });
+            });
+    });
+
     $('body').on('click', 'a.editaddr', function (ev) {
         ev.preventDefault();
         $("<form class='modal-form validate ajax' />").load($(this).attr("href"), {}, function () {
