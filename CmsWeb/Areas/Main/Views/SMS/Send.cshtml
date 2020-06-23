@@ -1,12 +1,12 @@
 ﻿@using CmsWeb
 @model object
 @{
-    ViewBag.Title = "SMS Messages Sent";
-    ViewBag.PageHeader = "SMS Messages Sent";
     Layout = ViewExtensions2.TouchPointLayout();
 }
 <div class="alert alert-success">
     <p>
-        <strong>Success!</strong> Your SMS messages were sent. <a href="/Email/@Model?subj=@Server.UrlEncode(ViewBag.sTitle)&body=@Server.UrlEncode(ViewBag.sMessage)" style="text-decoration: underline;">Click here</a> to send an e-mail to the same people.<br />
+        <strong>Success!</strong>
+        @ViewBag.Message
+        <a href="/Email/@Model?subj=@Server.UrlEncode(ViewBag.sTitle)&body=@Server.UrlEncode(ViewBag.sMessage)" style="text-decoration: underline;">Click here</a> to send an e-mail to the same people.
     </p>
 </div>

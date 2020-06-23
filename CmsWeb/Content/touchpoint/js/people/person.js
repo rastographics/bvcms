@@ -733,6 +733,13 @@
         });
     });
 
+    $('#sms').on('change',
+        'form.ajax #GroupId',
+        function (event) {
+            event.preventDefault();
+            $.formAjaxClick($(this));
+            return false;
+        });
 });
 
 function AddSelected(ret) {
