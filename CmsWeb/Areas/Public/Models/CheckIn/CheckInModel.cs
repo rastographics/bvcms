@@ -388,7 +388,7 @@ namespace CmsWeb.Models
                     GroupMeetingFlag = false,
                     Location = info.Location,
                     AttendCreditId = acr,
-                    NoAutoAbsents = !db.Setting("AttendanceAutoAbsents")
+                    NoAutoAbsents = !db.Setting("AttendanceAutoAbsents", true)
                 };
                 db.Meetings.InsertOnSubmit(meeting);
                 db.SubmitChanges();

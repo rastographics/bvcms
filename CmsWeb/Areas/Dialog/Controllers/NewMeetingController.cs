@@ -140,7 +140,7 @@ namespace CmsWeb.Areas.Dialog.Controllers
                 Location = organization.Location,
                 MeetingDate = model.MeetingDate,
                 AttendCreditId = model.AttendCredit.Value.ToInt(),
-                NoAutoAbsents = !CurrentDatabase.Setting("AttendanceAutoAbsents")
+                NoAutoAbsents = !CurrentDatabase.Setting("AttendanceAutoAbsents", true)
             };
             CurrentDatabase.Meetings.InsertOnSubmit(mt);
             CurrentDatabase.SubmitChanges();

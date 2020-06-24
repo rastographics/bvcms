@@ -469,7 +469,7 @@ namespace CmsWeb.Areas.Org.Controllers
                     Location = organization.Location,
                     MeetingDate = dt,
                     AttendCreditId = attcred,
-                    NoAutoAbsents = !CurrentDatabase.Setting("AttendanceAutoAbsents")
+                    NoAutoAbsents = !CurrentDatabase.Setting("AttendanceAutoAbsents", true)
                 };
                 CurrentDatabase.Meetings.InsertOnSubmit(newMtg);
                 CurrentDatabase.SubmitChanges();
