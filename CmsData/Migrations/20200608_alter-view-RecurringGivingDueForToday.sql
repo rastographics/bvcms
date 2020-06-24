@@ -8,18 +8,22 @@ with amt as (
 	and f.OnlineSort is not null
 	and not exists(SELECT 1 FROM dbo.Setting s WHERE s.Id = 'RecurringGiving' AND Setting = 'false')
 	group by ra.PeopleId
-), VaultIds as (
-	select PeopleId
-		, VaultId = case 
-				when s.Setting = 'Sage' and PreferredGivingType = 'b' then convert(varchar(50), SageBankGuid)
-				when s.Setting = 'Sage' and PreferredGivingType = 'c' then convert(varchar(50), SageCardGuid)
-				when s.Setting = 'AuthorizeNet' then convert(varchar(50), AuNetCustId)
-				when s.Setting = 'Transnational' and PreferredGivingType = 'b' then convert(varchar(50), TbnBankVaultId)
-				when s.Setting = 'Transnational' and PreferredGivingType = 'c' then convert(varchar(50), TbnCardVaultId)
-				end
-	from dbo.PaymentInfo
-	join dbo.Setting s on s.Id = 'TransactionGateway' and not exists(select null from dbo.Setting where id = 'TemporaryGatway')
-)
+),
+VaultIds as (
+	select pay.PeopleId,
+		case
+			when ga.GatewayId = 2 and PreferredGivingType = 'b' then convert(varchar(50), SageBankGuid)
+			when ga.GatewayId = 2 and PreferredGivingType = 'c' then convert(varchar(50), SageCardGuid)
+			when ga.GatewayId = 3 and PreferredGivingType = 'b' then convert(varchar(50), TbnBankVaultId)
+			when ga.GatewayId = 3 and PreferredGivingType = 'c' then convert(varchar(50), TbnCardVaultId)
+			when ga.GatewayId = 4 then convert(varchar(50), AuNetCustId)
+			when ga.GatewayId = 5 then AcceptivaPayerId
+		end AS VaultId
+	from dbo.PaymentInfo pay
+	join dbo.PaymentProcess pp on pp.ProcessName = 'Recurring Giving' and pay.GatewayAccountId = pp.GatewayAccountId
+	join dbo.GatewayAccount ga on ga.GatewayAccountId = pp.GatewayAccountId
+),
+Managed as (
 select 
 	mg.PeopleId
 	,p.Name2
@@ -37,6 +41,20 @@ and not exists(
 	where t.LoginPeopleId = p.PeopleId 
 	and convert(date, t.TransactionDate) = convert(date, getdate())
 	and t.Approved = 0)
+),
+Scheduled as (
+	select p.PeopleId, p.Name2, sum(sa.Amount) Amt
+	from dbo.ScheduledGift sg
+	join dbo.ScheduledGiftAmount sa on sa.ScheduledGiftId = sg.ScheduledGiftId
+	join dbo.People p on p.PeopleId = sg.PeopleId
+	WHERE sg.IsEnabled = 1 
+	and sg.StartDate >= getdate()
+	and (sg.EndDate IS NULL or sg.EndDate > getdate())
+	and convert(date, sg.NextOccurrence) = convert(date, getdate())
+	group by p.PeopleId, p.Name2
+)
+SELECT * from Managed UNION ALL
+SELECT * from Scheduled
 GO
 
 IF NOT EXISTS(SELECT 1 FROM dbo.SettingMetadata WHERE SettingId = 'RecurringGiving')
