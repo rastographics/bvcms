@@ -69,6 +69,7 @@ namespace CmsData
 
                 var myList = (from m in db.Meetings
                     where m.MeetingDate.Value.Year == (DateTime.Now.Year) &&
+                          m.DidNotMeet == false &&
                           (from d in db.DivOrgs
                               join pd in db.ProgDivs on d.DivId equals pd.DivId
                               where d.OrgId == m.OrganizationId
@@ -83,6 +84,7 @@ namespace CmsData
 
                 var myList1 = (from m in db.Meetings
                     where m.MeetingDate.Value.Year == (DateTime.Now.Year - 1) &&
+                          m.DidNotMeet == false &&
                           (from d in db.DivOrgs
                               join pd in db.ProgDivs on d.DivId equals pd.DivId
                               where d.OrgId == m.OrganizationId
@@ -101,6 +103,7 @@ namespace CmsData
                 {
                     myList = (from m in db.Meetings
                         where m.MeetingDate.Value.Year == (DateTime.Now.Year) &&
+                              m.DidNotMeet == false &&
                               orgIds.Contains(m.OrganizationId)
                         group m by new {m.MeetingDate.Value.Month}
                         into grp
@@ -112,6 +115,7 @@ namespace CmsData
 
                     myList1 = (from m in db.Meetings
                         where m.MeetingDate.Value.Year == (DateTime.Now.Year - 1) &&
+                              m.DidNotMeet == false &&
                               orgIds.Contains(m.OrganizationId)
                         group m by new {m.MeetingDate.Value.Month}
                         into grp

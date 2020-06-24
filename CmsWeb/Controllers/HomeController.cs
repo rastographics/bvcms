@@ -55,7 +55,7 @@ namespace CmsWeb.Controllers
         public ActionResult ShowError(string error, string url)
         {
             ViewData["error"] = Server.UrlDecode(error);
-            ViewData["url"] = url;
+            //ViewData["url"] = url;
             return View();
         }
 

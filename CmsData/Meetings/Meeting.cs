@@ -90,7 +90,7 @@ namespace CmsData
                 return e.IntValue.ToString();
             return e.BitValue.ToString();
         }
-        public static Meeting FetchOrCreateMeeting(CMSDataContext Db, int OrgId, DateTime dt, bool? noautoabsents = null)
+        public static Meeting FetchOrCreateMeeting(CMSDataContext Db, int OrgId, DateTime dt, bool? noautoabsents = null, bool? didNotMeet = false)
         {
             var meeting = (from m in Db.Meetings
                            where m.OrganizationId == OrgId && m.MeetingDate == dt
@@ -110,7 +110,8 @@ namespace CmsData
                     CreatedBy = Db.UserId1,
                     GroupMeetingFlag = false,
                     AttendCreditId = acr ?? 1,
-                    NoAutoAbsents = noautoabsents ?? !Db.Setting("AttendanceAutoAbsents")
+                    NoAutoAbsents = noautoabsents ?? !Db.Setting("AttendanceAutoAbsents"),
+                    DidNotMeet = didNotMeet ?? false
                 };
                 Db.Meetings.InsertOnSubmit(meeting);
                 Db.SubmitChanges();

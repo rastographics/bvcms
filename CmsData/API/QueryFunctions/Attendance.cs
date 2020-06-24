@@ -89,6 +89,7 @@ namespace CmsData
             var dt = Util.Now.AddDays(-days);
             var q = from m in db.Meetings
                     where m.MeetingDate >= dt
+                    where m.DidNotMeet == false
                     where orgid == 0 || m.OrganizationId == orgid
                     where divid == 0 || m.Organization.DivOrgs.Any(t => t.DivId == divid)
                     where progid == 0 || m.Organization.DivOrgs.Any(t => t.Division.ProgDivs.Any(d => d.ProgId == progid))
@@ -104,6 +105,7 @@ namespace CmsData
             var enddt = start.Value.AddHours(hours);
             var q = from m in db.Meetings
                     where m.MeetingDate >= start
+                    where m.DidNotMeet == false
                     where orgid == 0 || m.OrganizationId == orgid
                     where divid == 0 || m.Organization.DivOrgs.Any(t => t.DivId == divid)
                     where progid == 0 || m.Organization.DivOrgs.Any(t => t.Division.ProgDivs.Any(d => d.ProgId == progid))
@@ -116,6 +118,7 @@ namespace CmsData
             var dt = Util.Now.AddDays(-days);
             var q = from m in db.Meetings
                     where m.MeetingDate >= dt
+                    where m.DidNotMeet == false
                     where orgid == 0 || m.OrganizationId == orgid
                     where divid == 0 || m.Organization.DivOrgs.Any(t => t.DivId == divid)
                     where progid == 0 || m.Organization.DivOrgs.Any(t => t.Division.ProgDivs.Any(d => d.ProgId == progid))
@@ -135,6 +138,7 @@ namespace CmsData
             var q = from m in db.Meetings
                     where m.MeetingDate >= start
                     where m.MeetingDate < enddt
+                    where m.DidNotMeet == false
                     where orgid == 0 || m.OrganizationId == orgid
                     where divid == 0 || m.Organization.DivOrgs.Any(t => t.DivId == divid)
                     where progid == 0 || m.Organization.DivOrgs.Any(t => t.Division.ProgDivs.Any(d => d.ProgId == progid))

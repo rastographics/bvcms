@@ -5,6 +5,10 @@
 {
     if (value) { WriteLiteral("checked"); }
 }
+@helper DidNotMeet(bool? value)
+{
+    if (value == true) { WriteLiteral("didnotmeet"); }
+}
 <form class="ajax">
     <div class="row">
         <div class="col-sm-12 text-right">
@@ -36,14 +40,21 @@
                     <tbody>
                         @foreach (var m in Model.ViewList())
                         {
-                            <tr>
+                            <tr class="@DidNotMeet(m.DidNotMeet)">
                                 <td class="@(m.Conflict ? "alert-danger" : "")"><a href="/Meeting/@m.MeetingId">@m.MeetingDate.FormatDate()</a></td>
                                 <td class="@(m.Conflict ? "alert-danger" : "")">@m.MeetingDate.ToString2("t")</td>
+                                @if (m.DidNotMeet == true)
+                                {
+                                <td colspan="5">Did not meet</td>
+                                }
+                                else
+                                {
                                 <td>@m.HeadCount.ToStringNoZero()</td>
                                 <td>@m.NumPresent</td>
                                 <td>@m.NumVisitors</td>
                                 <td>@m.Location</td>
                                 <td>@m.Description</td>
+                                }
                                 <td style="width: 50px;">
                                     @if (User.IsInRole("Attendance") && Model.ShowDeleteMeeting)
                                     {

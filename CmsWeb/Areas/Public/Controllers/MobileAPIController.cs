@@ -1394,7 +1394,10 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
                            //let sc = o.OrgSchedules.FirstOrDefault() // SCHED
                            //join sch in CurrentDatabase.OrgSchedules on o.OrganizationId equals sch.OrganizationId
                        from sch in CurrentDatabase.ViewOrgSchedules2s.Where(s => o.OrganizationId == s.OrganizationId).DefaultIfEmpty()
-                       from mtg in CurrentDatabase.Meetings.Where(m => o.OrganizationId == m.OrganizationId && m.MeetingDate < DateTime.Today.AddDays(1)).OrderByDescending(m => m.MeetingDate).Take(1).DefaultIfEmpty()
+                       from mtg in CurrentDatabase.Meetings.Where(m =>
+                            o.OrganizationId == m.OrganizationId &&
+                            m.DidNotMeet == false &&
+                            m.MeetingDate < DateTime.Today.AddDays(1)).OrderByDescending(m => m.MeetingDate).Take(1).DefaultIfEmpty()
                        orderby sch.SchedDay, sch.SchedTime
                        select new OrganizationInfo
                        {
@@ -1402,7 +1405,7 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
                            name = o.OrganizationName,
                            time = sch.SchedTime,
                            day = sch.SchedDay,
-                           lastMeetting = mtg.MeetingDate
+                           lastMeeting = mtg.MeetingDate
                        };
 
             BaseMessage br = new BaseMessage();

@@ -19,9 +19,9 @@ namespace CmsWeb.MobileAPI
             {
                 datetime = createOrgDateTime(oi.time.Value, oi.day.Value);
             }
-            else if (oi.lastMeetting != null && oi.lastMeetting.Value.Date == DateTime.Now.Date)
+            else if (oi.lastMeeting != null && oi.lastMeeting.Value.Date == DateTime.Now.Date)
             {
-                datetime = oi.lastMeetting;
+                datetime = oi.lastMeeting;
             }
             else
             {
@@ -70,6 +70,6 @@ namespace CmsWeb.MobileAPI
         public string name { get; set; }
         public DateTime? time { get; set; }
         public int? day { get; set; }
-        public DateTime? lastMeetting { get; set; }
+        public DateTime? lastMeeting { get; set; }
     }
 }

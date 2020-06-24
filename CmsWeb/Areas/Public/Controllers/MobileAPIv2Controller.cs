@@ -1582,7 +1582,10 @@ namespace CmsWeb.Areas.Public.Controllers
 
             IQueryable<OrganizationInfo> orgs = from o in q
                                                 from sch in CurrentDatabase.ViewOrgSchedules2s.Where(s => o.OrganizationId == s.OrganizationId).DefaultIfEmpty()
-                                                from mtg in CurrentDatabase.Meetings.Where(m => o.OrganizationId == m.OrganizationId && m.MeetingDate < DateTime.Today.AddDays(1)).OrderByDescending(m => m.MeetingDate).Take(1).DefaultIfEmpty()
+                                                from mtg in CurrentDatabase.Meetings.Where(m =>
+                                                    o.OrganizationId == m.OrganizationId &&
+                                                    m.DidNotMeet == false &&
+                                                    m.MeetingDate < DateTime.Today.AddDays(1)).OrderByDescending(m => m.MeetingDate).Take(1).DefaultIfEmpty()
                                                 orderby sch.SchedDay, sch.SchedTime
                                                 select new OrganizationInfo
                                                 {
@@ -1590,7 +1593,7 @@ namespace CmsWeb.Areas.Public.Controllers
                                                     name = o.OrganizationName,
                                                     time = sch.SchedTime,
                                                     day = sch.SchedDay,
-                                                    lastMeetting = mtg.MeetingDate
+                                                    lastMeeting = mtg.MeetingDate
                                                 };
 
             MobileMessage response = new MobileMessage();

@@ -12,11 +12,11 @@ using UtilityExtensions;
 
 namespace CmsWeb.Areas.Dialog.Controllers
 {
-    public partial class DialogController
+    public partial class NewMeetingController : CMSBaseController
     {
         private readonly IMeetingCategoryService _meetingCategoryService;
 
-        public DialogController(IRequestManager requestManager, IMeetingCategoryService meetingCategoryService) : base(requestManager)
+        public NewMeetingController(IRequestManager requestManager, IMeetingCategoryService meetingCategoryService) : base(requestManager)
         {
             _meetingCategoryService = meetingCategoryService;
         }
@@ -37,7 +37,7 @@ namespace CmsWeb.Areas.Dialog.Controllers
                 MeetingDate = oi.PrevMeetingDate,
                 Schedule = new CodeInfo(0, oi.SchedulesPrev()),
                 AttendCredit = new CodeInfo(defaultAttendCreditId, oi.AttendCreditList()),
-                DescriptionList = useMeetingDescriptionPickList ? new CodeInfo("", MeetingCategorySelectList()) : null,
+                DescriptionList = useMeetingDescriptionPickList ? new CodeInfo("", _meetingCategoryService.MeetingCategorySelectList()) : null,
                 UseMeetingDescriptionPickList = useMeetingDescriptionPickList,
                 OrganizationId = orgid
             };
@@ -45,19 +45,6 @@ namespace CmsWeb.Areas.Dialog.Controllers
             ViewBag.Method = "POST";
             ViewBag.ForRollsheet = false;
             return View("MeetingInfo", m);
-        }
-
-        private SelectList MeetingCategorySelectList()
-        {
-            var list = (from m in _meetingCategoryService.GetMeetingCategories(false).OrderBy(c => c.Description)
-                        select new SelectListItem
-                        {
-                            Value = m.Description,
-                            Text = m.Description
-                        }).ToList();
-            list.Insert(0, new SelectListItem { Text = "(not specified)", Value = "" });
-
-            return new SelectList(list, dataValueField: "Value", dataTextField: "Text");
         }
 
         [HttpGet, Route("ForNewRollsheet/{id:guid}")]

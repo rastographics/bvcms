@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Web.Mvc;
 
 namespace CmsWeb.Services.MeetingCategory
 {
@@ -9,6 +10,6 @@ namespace CmsWeb.Services.MeetingCategory
         CmsData.MeetingCategory GetById(long id);
         CmsData.MeetingCategory AddMeetingCategory(string description);
         CmsData.MeetingCategory CreateOrUpdate(CmsData.MeetingCategory meetingCategory);
-
+        SelectList MeetingCategorySelectList();
     }
 }

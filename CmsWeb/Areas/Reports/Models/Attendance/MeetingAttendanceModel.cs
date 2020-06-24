@@ -289,6 +289,7 @@ namespace CmsWeb.Areas.Reports.Models.Attendance
                                                         where ((m.Description == null && cat.Description == null) || (m.Description == cat.Description))
                                                         where m.MeetingDate >= StartDt
                                                         where m.MeetingDate < EndDt
+                                                        where m.DidNotMeet == false
                                                         select new MeetInfo
                                                         {
                                                             Id = m.MeetingId,

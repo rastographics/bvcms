@@ -37,6 +37,8 @@ namespace CmsData
 
         private bool _GroupMeetingFlag;
 
+        private bool _DidNotMeet;
+
         private string _Description;
 
         private int? _NumOutTown;
@@ -106,6 +108,9 @@ namespace CmsData
 
         partial void OnGroupMeetingFlagChanging(bool value);
         partial void OnGroupMeetingFlagChanged();
+
+        partial void OnDidNotMeetChanging(bool value);
+        partial void OnDidNotMeetChanged();
 
         partial void OnDescriptionChanging(string value);
         partial void OnDescriptionChanged();
@@ -368,6 +373,24 @@ namespace CmsData
                     _GroupMeetingFlag = value;
                     SendPropertyChanged("GroupMeetingFlag");
                     OnGroupMeetingFlagChanged();
+                }
+            }
+        }
+
+        [Column(Name = "DidNotMeet", UpdateCheck = UpdateCheck.Never, Storage = "_DidNotMeet", DbType = "bit NOT NULL")]
+        public bool DidNotMeet
+        {
+            get => _DidNotMeet;
+
+            set
+            {
+                if (_DidNotMeet != value)
+                {
+                    OnDidNotMeetChanging(value);
+                    SendPropertyChanging();
+                    _DidNotMeet = value;
+                    SendPropertyChanged("DidNotMeet");
+                    OnDidNotMeetChanged();
                 }
             }
         }

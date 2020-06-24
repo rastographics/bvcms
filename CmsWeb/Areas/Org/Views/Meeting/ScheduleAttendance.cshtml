@@ -1,17 +1,47 @@
-﻿@{
+﻿@using CmsData
+@{
     ViewBag.Title = "Take Attendance";
     ViewBag.PageHeader = "Take Attendance";
     Layout = ViewExtensions2.TouchPointLayout();
+    var meeting = ViewBag.Meeting as Meeting;
+    var meetingExists = meeting != null;
+    var didNotMeet = meeting?.DidNotMeet == true;
+    var takeAttendanceButton = didNotMeet ? "btn-default" : "btn-primary";
+    var didNotMeetButton = didNotMeet ? "btn-danger" : "btn-default";
+    var didNotMeetEnabled = ViewExtensions2.CurrentDatabase.Setting("UseDidNotMeetOption");
 }
-<div class="box box-responsive">
-    <div class="box-content">
+@helper AreYouSure(bool meetingExists)
+{
+    if (meetingExists)
+    {
+        WriteLiteral("onclick=\"return confirm('This meeting has already been recorded. Are you sure you want to continue?')\"");
+    }
+}
+<div class="box-responsive">
+    <div class="box-content col-md-6 col-md-offset-3">
         <div class="well">
             <div class="row">
-                <div class="col-sm-6">
+                <div class="col-md-12">
                     <form action="/Meeting/ScheduleAttendance" method="post">
-                        @Html.Hidden("orgId", (int) ViewBag.OrgId)
-                        @Html.Hidden("timestamp", (int) ViewBag.timestamp)
-                        <button type="submit" class="btn btn-primary">Take Attendance</button>
+                        @Html.Hidden("orgId", (int)ViewBag.OrgId)
+                        @Html.Hidden("timestamp", (int)ViewBag.timestamp)
+                        <div class="row">
+                            @if (didNotMeetEnabled)
+                            {
+                            <div class="col-sm-6">
+                                <button type="submit" name="TakeAttendance" class="btn btn-lg btn-block @takeAttendanceButton" @AreYouSure(meetingExists && didNotMeet)>Take attendance</button>
+                            </div>
+                            <div class="col-sm-6">
+                                <button type="submit" name="DidNotMeet" value="true" class="btn btn-lg btn-block @didNotMeetButton" @AreYouSure(meetingExists)>Did not meet</button>
+                            </div>
+                            }
+                            else
+                            {
+                            <div class="col-sm-6 col-sm-offset-3">
+                                <button type="submit" name="TakeAttendance" class="btn btn-lg btn-block @takeAttendanceButton">Take attendance</button>
+                            </div>
+                            }
+                        </div>
                     </form>
                 </div>
             </div>

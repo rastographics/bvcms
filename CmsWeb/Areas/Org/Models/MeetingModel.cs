@@ -1,9 +1,11 @@
 using CmsData;
 using CmsData.Classes.RoleChecker;
 using CmsWeb.Areas.Reports.Models;
+using CmsWeb.Code;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using UtilityExtensions;
 
@@ -39,19 +41,11 @@ namespace CmsWeb.Areas.Org.Models
         public bool ShowCurrentMemberType => RoleChecker.HasSetting(SettingName.Meeting_ShowCurrentMemberType, true);
 
         // Added to support a pick list of meeting descriptions
-        public bool UseMeetingDescriptionPickList => CurrentDatabase.Setting("AttendanceUseMeetingCategory", false);
-        public bool ShowDescriptionOnCheckin => CurrentDatabase.Setting("AttendanceShowDescription", false);
-
-        public string DisplayText()
-        {
-            if (!UseMeetingDescriptionPickList)
-            {
-                return meeting.Description;
-            }
-
-            var category = CurrentDatabase.MeetingCategories.FirstOrDefault(x => x.Description == meeting.Description);
-            return category?.Description ?? meeting.Description;
-        }
+        public bool UseMeetingDescriptionPickList => CurrentDatabase.Setting("AttendanceUseMeetingCategory");
+        public bool ShowDescriptionOnCheckin => CurrentDatabase.Setting("AttendanceShowDescription");
+        [DisplayName("Description")]
+        public CodeInfo DescriptionList { get; set; }
+        public string Description => meeting.Description;
 
         public MeetingModel() { }
         public MeetingModel(int id, CMSDataContext db)

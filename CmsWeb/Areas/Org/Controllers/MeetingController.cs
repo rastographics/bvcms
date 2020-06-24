@@ -1,6 +1,7 @@
 using CmsData;
 using CmsData.Codes;
 using CmsWeb.Areas.Org.Models;
+using CmsWeb.Code;
 using CmsWeb.Lifecycle;
 using CmsWeb.Services.MeetingCategory;
 using System;
@@ -586,6 +587,15 @@ namespace CmsWeb.Areas.Org.Controllers
             return View(j);
         }
 
+        [HttpPost]
+        public ActionResult DidNotMeet(int id, bool value)
+        {
+            var meeting = CurrentDatabase.Meetings.Single(m => m.MeetingId == id);
+            meeting.DidNotMeet = value;
+            CurrentDatabase.SubmitChanges();
+            return Json(new { id, value });
+        }
+
         public ActionResult NewExtraValue(int id, string field, string value, bool multiline)
         {
             var m = new MeetingModel(id, CurrentDatabase);
@@ -643,20 +653,44 @@ namespace CmsWeb.Areas.Org.Controllers
         {
             ViewBag.OrgId = orgId;
             ViewBag.Timestamp = timestamp;
+            var meetingDate = DateTimeOffset.FromUnixTimeSeconds(timestamp).DateTime.ToLocalTime();
+            var meeting = CurrentDatabase.Meetings
+                .Where(m => m.OrganizationId == orgId && m.MeetingDate == meetingDate)
+                .FirstOrDefault();
+            ViewBag.Meeting = meeting;
             return View();
         }
 
         [HttpPost]
         [Route("~/Meeting/ScheduleAttendance/")]
-        public ActionResult PostScheduleAttendance(int orgId, int timestamp)
+        public ActionResult PostScheduleAttendance(int orgId, int timestamp, bool? didNotMeet)
         {
             var meetingDate = DateTimeOffset.FromUnixTimeSeconds(timestamp).DateTime.ToLocalTime();
             if ((DateTime.Now - meetingDate).TotalDays >= 7)
             {
                 return RedirectShowError("This meeting has expired");
             }
-            var meeting = Meeting.FetchOrCreateMeeting(CurrentDatabase, orgId, meetingDate, !CurrentDatabase.Setting("AttendanceAutoAbsents"));
-
+            var meeting = Meeting.FetchOrCreateMeeting(CurrentDatabase, orgId, meetingDate, didNotMeet, didNotMeet);
+            if (didNotMeet == true)
+            {
+                if (meeting.DidNotMeet == false)
+                {
+                    meeting.DidNotMeet = true;
+                    meeting.AttendCreditId = null;
+                    CurrentDatabase.SubmitChanges();
+                }
+                ViewBag.OrgId = orgId;
+                ViewBag.Timestamp = timestamp;
+                ViewBag.DidNotMeet = didNotMeet;
+                ViewBag.Meeting = meeting;
+                return View("ScheduleAttendance");
+            }
+            else if (meeting.DidNotMeet)
+            {
+                meeting.DidNotMeet = false;
+                meeting.AttendCreditId = 1;
+                CurrentDatabase.SubmitChanges();
+            }
             return Redirect($"/Meeting/Attendance/{meeting.MeetingId}?currentMembers=true");
         }
 
@@ -676,7 +710,10 @@ namespace CmsWeb.Areas.Org.Controllers
             {
                 return RedirectShowError("no meeting");
             }
-
+            if (m.UseMeetingDescriptionPickList)
+            {
+                m.DescriptionList = new CodeInfo(m.Description, _meetingCategoryService.MeetingCategorySelectList());
+            }
             if (Util2.OrgLeadersOnly
                 && !CurrentDatabase.OrganizationMembers.Any(om =>
                     om.OrganizationId == m.meeting.OrganizationId

@@ -159,16 +159,23 @@
     });
 
     $('#editing').change(function () {
-        if ($(this).is(':checked')) {
-            if (!$("#showregistered").val()) {
-                $.block();
-                $('#showbuttons input:radio[value=all]').click();
-                $.unblock();
-            }
-            $.atckenabled = true;
+        $.atckenabled = $(this).is(':checked');
+        if (!$("#showregistered").val()) {
+            $.block();
+            $('#showbuttons input:radio[value=all]').click();
+            $.unblock();
         }
-        else
-            $.atckenabled = false;
+    });
+
+    $('#didnotmeet').change(function () {
+        var meetingId = $('#meetingid').val();
+        $.post('/Meeting/DidNotMeet/' + meetingId, { value: $(this).is(':checked') }, function (ret) {
+            if (ret.id != meetingId)
+                swal("Error!", ret, "error");
+            else {
+                $('[data-toggle=didnotmeet]')[ret.value ? "addClass" : "removeClass"]('hidden');
+            }
+        });
     });
 
     $('#sortbyname').click(function () {

@@ -1268,6 +1268,7 @@
     <Content Include="Content\img\textarealine.png" />
     <Content Include="Content\touchpoint\css\account.css" />
     <Content Include="Content\touchpoint\css\app.css" />
+    <Content Include="Content\touchpoint\css\attendance.css" />
     <Content Include="Content\touchpoint\css\checkin.css" />
     <Content Include="Content\touchpoint\css\editor.css" />
     <Content Include="Content\touchpoint\css\error.css" />

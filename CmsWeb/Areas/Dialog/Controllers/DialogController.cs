@@ -1,8 +1,6 @@
 ﻿using CmsWeb.Lifecycle;
 using System.Web.Mvc;
-using CmsWeb.Areas.Search.Models;
 using System;
-using System.Linq;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Dialog.Controllers
@@ -10,6 +8,10 @@ namespace CmsWeb.Areas.Dialog.Controllers
     [RouteArea("Dialog", AreaPrefix = "Dialog"), Route("{action}/{id?}")]
     public partial class DialogController : CMSBaseController
     {
+        public DialogController(IRequestManager requestManager) : base(requestManager)
+        {
+        }
+
         public class Options
         {
             public bool useMailFlags { get; set; }

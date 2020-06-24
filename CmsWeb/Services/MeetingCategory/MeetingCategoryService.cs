@@ -3,6 +3,7 @@ using CmsWeb.Lifecycle;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Web.Mvc;
 
 namespace CmsWeb.Services.MeetingCategory
 {
@@ -71,6 +72,19 @@ namespace CmsWeb.Services.MeetingCategory
             _dataContext.SubmitChanges();
 
             return meetingCategory;
+        }
+
+        public SelectList MeetingCategorySelectList()
+        {
+            var list = (from m in GetMeetingCategories(false).OrderBy(c => c.Description)
+                        select new SelectListItem
+                        {
+                            Value = m.Description,
+                            Text = m.Description
+                        }).ToList();
+            list.Insert(0, new SelectListItem { Text = "(not specified)", Value = "" });
+
+            return new SelectList(list, dataValueField: "Value", dataTextField: "Text");
         }
     }
 }

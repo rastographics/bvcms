@@ -115,6 +115,7 @@ namespace CmsWeb.Areas.Org.Models
                          HeadCount = m.HeadCount,
                          NumVisitors = m.NumNewVisit + m.NumRepeatVst + m.NumVstMembers,
                          Description = m.Description,
+                         DidNotMeet = m.DidNotMeet,
                          Conflict = mc
                      };
             return q2;

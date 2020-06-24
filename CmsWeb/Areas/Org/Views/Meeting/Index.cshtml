@@ -8,6 +8,7 @@
     Layout = ViewExtensions2.TouchPointLayout();
     var RegularMeetingHeadCount = Model.RegularMeetingHeadCountSetting();
     var CanEditHeadCount = Model.meeting.GroupMeetingFlag || RegularMeetingHeadCount;
+    var didNotMeetEnabled = ViewExtensions2.CurrentDatabase.Setting("UseDidNotMeetOption");
 }
 @section head
 {
@@ -24,6 +25,10 @@
             min-height: 32px;
         }
     </style>
+}
+@helper HideIf(bool? value)
+{
+    if (value == true) { WriteLiteral("hidden"); }
 }
 <div class="row">
     <div class="col-md-9">
@@ -88,12 +93,18 @@
                                     {
                                         @Model.meeting.Description
                                     }
+                                    @if (didNotMeetEnabled)
+                                    {
+                                    <label class="checkbox-inline pull-right">
+                                        @Html.CheckBox("didnotmeet", Model.meeting.DidNotMeet) Did not meet
+                                    </label>
+                                    }
                                 </dd>
                             </dl>
                         </div>
                     </div>
                 </div>
-                <div class="well">
+                <div class="well @HideIf(Model.meeting.DidNotMeet)" data-toggle="didnotmeet">
                     <div class="row">
                         @if (Model.ShowShowBox)
                         {
@@ -156,7 +167,7 @@
                 }
                 @if ((Model.org.MemberCount ?? 0) < 1000 || Model.showlarge)
                 {
-                    <div class="table-responsive">
+                    <div class="table-responsive @HideIf(Model.meeting.DidNotMeet)" data-toggle="didnotmeet">
                         <table id="attends" class="table table-striped">
                             <thead>
                             <tr>
