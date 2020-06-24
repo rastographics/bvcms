@@ -54,8 +54,8 @@ namespace CmsWeb.Controllers
         [ValidateInput(false)]
         public ActionResult ShowError(string error, string url)
         {
-            ViewData["error"] = Server.UrlDecode(error);
-            //ViewData["url"] = url;
+            ViewData["error"] = error;
+            CurrentDatabase.LogActivity($"{error} - {url}");
             return View();
         }
 
