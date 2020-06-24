@@ -61,7 +61,7 @@ namespace CmsCheckin
         {
             ClearControls();
 
-            name = match;
+            name = match.Replace(" ","-s-");
             var x = this.GetDocument("Checkin2/NameSearch/" + name + "?page=" + page);
 
             var points = 14F;
