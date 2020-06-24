@@ -72,7 +72,7 @@ namespace CmsWeb.Areas.Manage.Models.SmsMessages
                 v => v.Id == GroupIdInt)?.ReplyWords;
             if (json == null)
                 return;
-            Actions = JsonConvert.DeserializeObject<List<SmsReplyWordsActionModel>>(json);
+            Actions = JsonConvert.DeserializeObject<List<SmsReplyWordsActionModel>>(json) ?? new List<SmsReplyWordsActionModel>();
             PopulateMetaData();
         }
 
