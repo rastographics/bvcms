@@ -4,50 +4,71 @@
             <h1>{{ page.PageName }}</h1>
         </div>
         <div class="panel">
-            <div class="panel-body" v-if="view === 'gifts'">
-                <div v-if="pageTypes.length > 1" class="text-center" style="margin-bottom: 25px;">
-                    <div aria-label="Giving Type" class="btn-group give-type text-center" role="group"  style="margin: 0 auto;">
-                        <button v-for="type in pageTypes" :key="type.Name" :class="[givingType == type.Name ? 'btn-primary' : '', 'btn-default', 'btn']" @click="updateType(type.Name)">{{ type.Name }}</button>
+            <transition name="slide-left" mode="out-in">
+                <div class="panel-body" v-if="view === 'gifts'" key="gifts">
+                    <div v-if="pageTypes.length > 1" class="text-center" style="margin-bottom: 25px;">
+                        <div aria-label="Giving Type" class="btn-group give-type text-center" role="group" style="margin: 0 auto;">
+                            <button v-for="type in pageTypes" :key="type.Name" :class="[givingType == type.Name ? 'btn-primary' : '', 'btn-default', 'btn']" @click="updateType(type.Name)">{{ type.Name }}</button>
+                        </div>
                     </div>
+                    <transition name="fade" mode="out-in">
+                        <div v-if="givingType == 'One Time'" key="onetime">
+                            <transition-group name="gift">
+                                <one-time-gift v-for="(gift, index) in gifts" v-model="gifts[index]" :count="gifts.length" :key="gift.key" :funds="unusedFunds" :showValidation="showValidation"  @remove="removeGift(index)"></one-time-gift>
+                            </transition-group>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <button v-if="unusedFunds.length" @click="addGift" class="btn-block btn btn-default">
+                                        <i class="fa fa-plus-circle"></i> Add Gift
+                                    </button>
+                                </div>
+                                <div class="col-md-6">
+                                    <button @click="loadView('signin')" class="btn-block btn btn-primary">
+                                        Next
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div v-else-if="givingType == 'Recurring'" key="recurring">
+                            <transition-group name="gift">
+                                <recurring-gift v-for="(gift, index) in gifts" v-model="gifts[index]" :count="gifts.length" :key="gift.key" :funds="unusedFunds" :showValidation="showValidation" :frequencies="recurringFrequencies" @remove="removeGift(index)"></recurring-gift>
+                            </transition-group>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <button v-if="unusedFunds.length" @click="addGift" class="btn-block btn btn-default">
+                                        <i class="fa fa-plus-circle"></i> Add Gift
+                                    </button>
+                                </div>
+                                <div class="col-md-6">
+                                    <button @click="loadView('signin')" class="btn-block btn btn-primary">
+                                        Next
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div v-else-if="givingType == 'Pledge'" key="pledge">
+                            <transition-group name="gift">
+                                <one-time-gift v-for="(gift, index) in gifts" v-model="gifts[index]" :count="gifts.length" :key="gift.key" :funds="unusedFunds" :showValidation="showValidation" @remove="removeGift(index)"></one-time-gift>
+                            </transition-group>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <button v-if="unusedFunds.length" @click="addGift" class="btn-block btn btn-default">
+                                        <i class="fa fa-plus-circle"></i> Add Gift
+                                    </button>
+                                </div>
+                                <div class="col-md-6">
+                                    <button @click="loadView('signin')" class="btn-block btn btn-primary">
+                                        Next
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </transition>
                 </div>
-                <div v-if="givingType == 'One Time'">
-                    <transition-group name="gift">
-                        <one-time-gift v-for="(gift, index) in gifts" v-model="gifts[index]" :count="gifts.length" :key="gift.key" :funds="unusedFunds" @remove="removeGift(index)"></one-time-gift>
-                    </transition-group>
+                <div class="panel-body" v-else-if="view === 'signin'" key="signin">
+                    <giving-login v-model="identity" @next="loadView('payment')" @back="loadView('gifts')"></giving-login>
                 </div>
-                <div v-else-if="givingType == 'Recurring'">
-                    <transition-group name="gift">
-                        <recurring-gift v-for="(gift, index) in gifts" v-model="gifts[index]" :count="gifts.length" :key="gift.key" :funds="unusedFunds" :frequencies="recurringFrequencies" @remove="removeGift(index)"></recurring-gift>
-                    </transition-group>
-                </div>
-                <div v-else-if="givingType == 'Pledge'">
-                    <transition-group name="gift">
-                        <one-time-gift v-for="(gift, index) in gifts" v-model="gifts[index]" :count="gifts.length" :key="gift.key" :funds="unusedFunds" @remove="removeGift(index)"></one-time-gift>
-                    </transition-group>
-                </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <button v-if="unusedFunds.length" @click="addGift" class="btn-block btn btn-default">
-                            <i class="fa fa-plus-circle"></i> Add Gift
-                        </button>
-                    </div>
-                    <div class="col-md-6">
-                        <button @click="loadView('signin')" class="btn-block btn btn-primary">
-                            Next
-                        </button>
-                    </div>
-                </div>
-            </div>
-            <div class="panel-body" v-if="view === 'signin'">
-                Easy login
-                <div class="row">
-                    <div class="col-md-6">
-                        <button @click="loadView('gifts')" class="btn-block btn btn-default">
-                            Back
-                        </button>
-                    </div>
-                </div>
-            </div>
+            </transition>
         </div>
     </div>
 </template>
@@ -64,7 +85,9 @@
                 pageTypes: [],
                 page: {},
                 view: "gifts",
-                onKey: 0
+                onKey: 0,
+                identity: false,
+                showValidation: false
             };
         },
         computed: {
@@ -100,14 +123,30 @@
                 // setup the new view
                 // todo: also handle routing here?
                 if (this.view === 'gifts') {
-                    // todo: validate gifts? (or maybe during payment flow?)
+                    if (!this.validateGifts()) {
+                        return false;
+                    }
                 }
                 if (newView === 'signin') {
                     // todo: if already signed in, move to payment view
                 }
                 this.view = newView;
             },
-            getPageTypes: function () {
+            validateGifts() {
+                let vm = this;
+                let valid = true;
+                vm.gifts.forEach((gift) => {
+                    if (!gift.amount || gift.amount < 1) {
+                        valid = false;
+                    }
+                    if (vm.givingType == 'Recurring' && !gift.frequency) {
+                        valid = false;
+                    }
+                });
+                vm.showValidation = !valid;
+                return valid;
+            },
+            getPageTypes() {
                 let vm = this;
                 axios
                     .get("/Giving/GetPageTypes")
@@ -120,7 +159,6 @@
                                         vm.pageTypes.push(type);
                                     }
                                 });
-                                vm.givingType = vm.type || vm.pageTypes[0].Name;
                                 vm.getGivingFrequencies();
                             } else {
                                 warning_swal("Warning!", "Something went wrong, try again later");
@@ -142,6 +180,7 @@
                     response => {
                         if (response.status === 200) {
                             vm.recurringFrequencies = response.data;
+                            vm.init();
                         } else {
                             warning_swal("Warning", "Error getting giving frequencies.");
                         }
@@ -153,32 +192,131 @@
                 .catch(function (error) {
                     console.log(error);
                 });
+            },
+            init() {
+                let gift = {
+                    key: this.onKey,
+                    amount: 0.00,
+                    frequency: 0,
+                    fund: {},
+                    date: this.today
+                };
+                this.onKey++;
+                // initialize based on params (or defaults)
+                gift.amount = parseFloat(this.amount) || 0;
+                gift.fund = this.page.DefaultFund;
+                this.page.AvailableFunds.push(this.page.DefaultFund);
+                if (this.fund) {
+                    this.page.AvailableFunds.forEach((fund) => {
+                        if (this.fund == fund.Id) {
+                            gift.fund = fund;
+                        }
+                    });
+                }
+                let type = "";
+                if (this.type) type = this.type.trim().toLowerCase();
+                switch (type) {
+                    case 'onetime':
+                    case 'once':
+                        this.givingType = 'One Time';
+                        break;
+                    case 'pledge':
+                        this.givingType = 'Pledge';
+                        break;
+                    case 'recurring':
+                        this.givingType = 'Recurring';
+                        break;
+                    case 'weekly':
+                        gift.frequency = 1;
+                        this.givingType = 'Recurring';
+                        break;
+                    case 'biweekly':
+                        gift.frequency = 2; 
+                        this.givingType = 'Recurring';
+                        break;
+                    case 'semimonthly':
+                        gift.frequency = 3;
+                        this.givingType = 'Recurring';
+                        break;
+                    case 'monthly':
+                        gift.frequency = 4;
+                        this.givingType = 'Recurring';
+                        break;
+                    case 'quarterly':
+                        gift.frequency = 5;
+                        this.givingType = 'Recurring';
+                        break;
+                    case 'annually':
+                        gift.frequency = 6;
+                        this.givingType = 'Recurring';
+                        break;
+                    default:
+                        this.givingType = this.pageTypes[0].Name;
+                }
+                this.gifts.push(gift);
             }
         },
         mounted() {
             this.page = JSON.parse(this.pageProp);
             this.getPageTypes();
-
-            let gift = {
-                key: this.onKey,
-                amount: 0.00,
-                frequency: 0,
-                fund: {},
-                date: this.today
-            };
-            this.onKey++;
-            // initialize based on params (or defaults)
-            gift.amount = parseFloat(this.amount) || 0;
-            gift.fund = this.page.DefaultFund;
-            this.page.AvailableFunds.push(this.page.DefaultFund);
-            if (this.fund) {
-                this.page.AvailableFunds.forEach((fund) => {
-                    if (this.fund == fund.Id) {
-                        gift.fund = fund;
-                    }
-                });
-            }
-            this.gifts.push(gift);
         }
     };
 </script>
+<style>
+    .fade-enter-active,
+    .fade-leave-active {
+        transition-duration: 0.1s;
+        transition-property: opacity;
+        transition-timing-function: ease;
+    }
+
+    .fade-enter,
+    .fade-leave-active {
+        opacity: 0
+    }
+
+    .gift {
+        transition: all 0.5s;
+    }
+
+    .gift-enter,
+    .gift-leave-to {
+        opacity: 0;
+    }
+
+    .gift-enter {
+        transform: translateY(30%);
+    }
+
+    .gift-leave-to {
+        transform: translateY(30%);
+    }
+
+    .well.gift-leave-to {
+        height: 0px;
+        min-height: 0;
+        padding: 0;
+        margin: 0;
+    }
+    .slide-left-enter-active,
+    .slide-left-leave-active,
+    .slide-right-enter-active,
+    .slide-right-leave-active {
+        transition-duration: 0.5s;
+        transition-property: height, opacity, transform;
+        transition-timing-function: cubic-bezier(0.55, 0, 0.1, 1);
+        overflow: hidden;
+    }
+
+    .slide-left-enter,
+    .slide-right-leave-active {
+        opacity: 0;
+        transform: translate(100%, 0);
+    }
+
+    .slide-left-leave-active,
+    .slide-right-enter {
+        opacity: 0;
+        transform: translate(-100%, 0);
+    }
+</style>

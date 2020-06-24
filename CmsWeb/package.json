@@ -19,6 +19,7 @@
         "@chenfengyuan/vue-number-input": "^1.2.1",
         "axios": "^0.19.2",
         "core-js": "^3.6.4",
+        "v-mask": "^2.2.1",
         "vue": "^2.6.11",
         "vue-currency-input": "^1.18.4",
         "vue-multiselect": "^2.1.6"

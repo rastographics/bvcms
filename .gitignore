@@ -101,8 +101,6 @@ CmsWeb/Content/touchpoint/js/onlineregister.min.js
 /.vscode
 
 #npm output
-CmsWeb/Content/dist/
-CmsWeb/Content/dist/css/
 CmsWeb/Content/dist/css/app.css
 CmsWeb/Content/dist/js/
 CmsWeb/Content/dist/js/app.js
