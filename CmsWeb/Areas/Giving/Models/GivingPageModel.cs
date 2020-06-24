@@ -35,6 +35,7 @@ namespace CmsWeb.Areas.Giving.Models
                                 EditUrl = "/Giving/" + gp.GivingPageId,
                                 Enabled = gp.Enabled,
                                 DefaultPage = (bool)gp.DefaultPage,
+                                MainCampusPageFlag = gp.MainCampusPageFlag,
                                 SkinFile = new ContentFile
                                 {
                                     Id = gp.SkinFile.Id,
@@ -101,6 +102,8 @@ namespace CmsWeb.Areas.Giving.Models
             var defaultPage = false;
             if (givingPageList.Count == 0)
                 defaultPage = true;
+            if (viewModel.MainCampusPageFlag == null)
+                viewModel.MainCampusPageFlag = false;
             var newGivingPage = new GivingPage()
             {
                 PageName = viewModel.PageName,
@@ -126,6 +129,7 @@ namespace CmsWeb.Areas.Giving.Models
             givingPage.ConfirmationEmailOneTimeId = viewModel.ConfirmEmailOneTime?.Id;
             givingPage.ConfirmationEmailRecurringId = viewModel.ConfirmEmailRecurring?.Id;
             givingPage.CampusId = viewModel.CampusId;
+            givingPage.MainCampusPageFlag = viewModel.MainCampusPageFlag;
             givingPage.EntryPointId = viewModel.EntryPoint?.Id;
 
             // update other funds
@@ -195,6 +199,8 @@ namespace CmsWeb.Areas.Giving.Models
         public string DisabledRedirect { get; set; }
         public string TopText { get; set; }
         public string ThankYouText { get; set; }
+        public int? CampusId { get; set; }
+        public bool? MainCampusPageFlag { get; set; }
         public NotifyPerson[] OnlineNotifyPerson { get; set; }
         public ContentFile ConfirmEmailPledge { get; set; }
         public ContentFile ConfirmEmailOneTime { get; set; }

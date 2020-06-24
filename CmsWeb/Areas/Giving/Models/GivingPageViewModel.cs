@@ -21,5 +21,6 @@ namespace CmsWeb.Areas.Giving.Models
         public ContentFile ConfirmEmailRecurring { get; set; }
         public EntryPoint EntryPoint { get; set; }
         public int? CampusId { get; set; }
+        public bool? MainCampusPageFlag { get; set; }
     }
 }
