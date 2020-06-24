@@ -2000,6 +2000,7 @@
     <Content Include="Areas\Org\Views\Org\Registration\RegistrationTypes.cshtml" />
     <Content Include="Views\SpecialLinks\Index.cshtml" />
     <Content Include="Areas\Involvement\Views\Involvement\DisplayTemplates\EditCampusTemplate.cshtml" />
+    <Content Include="Areas\Dialog\Views\OrgMemberDialog\Tabs\Tickets.cshtml" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
