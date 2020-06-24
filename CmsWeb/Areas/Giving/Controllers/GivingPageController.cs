@@ -6,11 +6,12 @@ using CmsWeb.Areas.Giving.Models;
 using CmsData.Codes;
 using CmsData.Classes.Giving;
 using System.Text.RegularExpressions;
+using System.Web.Routing;
 
 namespace CmsWeb.Areas.Giving.Controllers
 {
     [RouteArea("Giving", AreaPrefix = "Give"), Route("{action}/{id?}")]
-    public class GivingPageController : CmsStaffController
+    public class GivingPageController : CMSBaseController
     {
         public GivingPageController(IRequestManager requestManager) : base(requestManager)
         {

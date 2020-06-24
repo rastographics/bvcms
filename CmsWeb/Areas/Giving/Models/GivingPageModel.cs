@@ -32,7 +32,7 @@ namespace CmsWeb.Areas.Giving.Models
                                 PageId = gp.GivingPageId,
                                 PageName = gp.PageName,
                                 PageUrl = gp.PageUrl,
-                                EditUrl = "/Giving/" + gp.GivingPageId,
+                                EditUrl = "/Giving/Manage/" + gp.GivingPageId,
                                 Enabled = gp.Enabled,
                                 SkinFile = new ContentFile
                                 {

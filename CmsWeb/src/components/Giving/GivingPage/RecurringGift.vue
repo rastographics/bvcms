@@ -3,8 +3,9 @@
         <button v-if="count > 1" @click="remove" type="button" class="close" aria-label="Remove"><span aria-hidden="true">&times;</span></button>
         <div class="row">
             <div class="col-sm-12">
-                <div class="form-group">
+                <div :class="{'form-group': true, 'text-center': true, 'has-error': showValidation && !value.amount}">
                     <money-input v-model="value.amount"></money-input>
+                    <small v-if="showValidation && value.amount < 1" class="text-danger">Please enter an amount</small>
                 </div>
             </div>
             <div class="col-sm-12 col-md-8 col-md-offset-2">
@@ -22,18 +23,20 @@
         </div>
         <div class="row" style="margin-bottom: 15px;">
             <div v-if="frequencies.length < 5" class="col-sm-12">
-                <div class="btn-group btn-group-justified" aria-label="Giving Frequency" role="group">
+                <div :class="{'btn-group': true, 'btn-group-justified': true, 'has-error': showValidation && !value.frequency}" aria-label="Giving Frequency" role="group">
                     <div class="btn-group" role="group" v-for="frequency in frequencies" :key="frequency.Id">
                         <button :class="{'btn-primary': value.frequency == frequency.Id, btn: true, 'btn-default': true}" @click="setFrequency(frequency.Id)">{{ frequency.Name }}</button>
                     </div>
                 </div>
+                <small v-if="showValidation && !value.frequency" class="text-danger text-center">Please choose a frequency</small>
             </div>
             <div v-else class="col-sm-12 col-md-8 col-md-offset-2">
-                <div class="form-group">
+                <div :class="{'form-group': true, 'has-error': showValidation && !value.frequency}">
                     <select class="form-control" :value="value.frequency" @input="setFrequency($event.target.value)">
                         <option value="0">Select frequency</option>
                         <option v-for="frequency in frequencies" :key="frequency.Id" :value="frequency.Id">{{ frequency.Name }}</option>
                     </select>
+                    <small v-if="showValidation && !value.frequency" class="text-danger">Please choose a frequency</small>
                 </div>
             </div>
             <div class="col-sm-12 text-center" v-if="value.frequency" ref="giftText" style="margin-top: 16px; font-size: 13px;">
@@ -54,7 +57,7 @@
 </template>
 <script>
     export default {
-        props: ["value", "count", "funds", "frequencies"],
+        props: ["value", "count", "funds", "frequencies", "showValidation"],
         data: function () {
             return {
                 showNote: false,
@@ -233,5 +236,15 @@
         position: absolute;
         top: 17px;
         right: -38px;
+    }
+    .btn-group.has-error .btn {
+        border-top-color: #a94442;
+        border-bottom-color: #a94442;
+    }
+    .btn-group.has-error > .btn-group:first-child:not(:last-child) > .btn:last-child {
+        border-left-color: #a94442;
+    }
+    .btn-group.has-error > .btn-group:last-child:not(:first-child) > .btn:first-child {
+        border-right-color: #a94442;
     }
 </style>
