@@ -31,6 +31,8 @@ namespace CmsData
 
         private bool? _DefaultPage;
 
+        private bool? _MainCampusPageFlag;
+
         private string _DisabledRedirect;
 
         private int? _SkinFileId;
@@ -94,6 +96,9 @@ namespace CmsData
 
         partial void OnDefaultPageChanging(bool? value);
         partial void OnDefaultPageChanged();
+
+        partial void OnMainCampusPageFlagChanging(bool? value);
+        partial void OnMainCampusPageFlagChanged();
 
         partial void OnDisabledRedirectChanging(string value);
         partial void OnDisabledRedirectChanged();
@@ -275,6 +280,24 @@ namespace CmsData
                     _DefaultPage = value;
                     SendPropertyChanged("DefaultPage");
                     OnDefaultPageChanged();
+                }
+            }
+        }
+
+        [Column(Name = "MainCampusPageFlag", UpdateCheck = UpdateCheck.Never, Storage = "_MainCampusPageFlag", DbType = "bit")]
+        public bool? MainCampusPageFlag
+        {
+            get => _MainCampusPageFlag;
+
+            set
+            {
+                if (_MainCampusPageFlag != value)
+                {
+                    OnMainCampusPageFlagChanging(value);
+                    SendPropertyChanging();
+                    _MainCampusPageFlag = value;
+                    SendPropertyChanged("MainCampusPageFlag");
+                    OnMainCampusPageFlagChanged();
                 }
             }
         }

@@ -21,7 +21,8 @@ namespace CmsWeb.Areas.Giving.Controllers
         public ActionResult DefaultPageIndex()
         {
             var givingPage = CurrentDatabase.GivingPages.Where(p => p.DefaultPage == true).SingleOrDefault();
-            return Redirect("/Give/"+ givingPage.PageUrl + "?type=onetime");
+            return Redirect("/Give/" + givingPage.PageUrl);
+            //return Redirect("/Give/"+ givingPage.PageUrl + "?type=onetime");
         }
 
         [HttpGet]

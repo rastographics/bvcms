@@ -271,7 +271,7 @@ This is used on the master organization and will become the dropdown for 'User C
 This will cause the class to go into a 'class filled' state when the number of members reaches this point.
 ";
         private const string RedirectUrlDescription = @"
-This will redirect users to the new giving page.
+Redirects this registration page to the entered URL.
 ";
         private const string AddToSmallGroupScriptDescription = @"
 This is the name of a script in *Special Content > Python Scripts* that will be run when someone is added to a sub-group during a registration.
