@@ -22,7 +22,6 @@ namespace CmsWeb.Areas.Giving.Controllers
         {
             var givingPage = CurrentDatabase.GivingPages.Where(p => p.DefaultPage == true).SingleOrDefault();
             return Redirect("/Give/" + givingPage.PageUrl);
-            //return Redirect("/Give/"+ givingPage.PageUrl + "?type=onetime");
         }
 
         [HttpGet]
@@ -33,8 +32,7 @@ namespace CmsWeb.Areas.Giving.Controllers
             if (givingPage == null)
             {
                 // no giving page at this url
-                // todo: send to default giving page
-                return new HttpNotFoundResult();
+                return Redirect("/Give/");
             }
             else
             {
@@ -47,8 +45,7 @@ namespace CmsWeb.Areas.Giving.Controllers
                     else
                     {
                         // no where to redirect to
-                        // todo: send to default giving page
-                        return new HttpNotFoundResult();
+                        return Redirect("/Give/");
                     }
                 }
             }
