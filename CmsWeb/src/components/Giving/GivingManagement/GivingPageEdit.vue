@@ -36,26 +36,13 @@
                         <div class="col-md-6">
                             <div :class="{'form-group': true, 'has-error': showValidation && !pageTypes.length}">
                                 <label class="control-label">Giving Types <a href="#" data-toggle="popover" data-placement="right" data-trigger="focus" data-title="Giving Type" data-content="The types of giving allowed on this page. You can allow more than one. Be sure to set the cooresponding emails for each type in the 'Email' tab."><i class="fa fa-info-circle"></i></a></label>
-                                <MultiSelect v-model="pageTypes"
-                                             :options="pageTypeList"
-                                             :searchable="true"
-                                             :close-on-select="true"
-                                             :multiple="true"
-                                             :allowEmpty="false"
-                                             trackBy="Id"
-                                             label="Name"></MultiSelect>
+                                <MultiSelect v-model="pageTypes" :options="pageTypeList" :searchable="true" :close-on-select="true" :multiple="true" :allowEmpty="false" trackBy="Id" label="Name"></MultiSelect>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label class="control-label">Page Shell <a href="#" data-toggle="popover" data-placement="right" data-trigger="focus" data-title="Page Shell" data-content="You can theme this giving page by creating an HTML content file with the keyword 'shell' and applying it here."><i class="fa fa-info-circle"></i></a></label>
-                                <MultiSelect v-model="page.SkinFile"
-                                             :options="shellList"
-                                             :searchable="true"
-                                             :close-on-select="true"
-                                             :allowEmpty="true"
-                                             trackBy="Id"
-                                             label="Name"></MultiSelect>
+                                <MultiSelect v-model="page.SkinFile" :options="shellList" :searchable="true" :close-on-select="true" :allowEmpty="true" trackBy="Id" label="Name"></MultiSelect>
                             </div>
                         </div>
                     </div>
@@ -63,25 +50,13 @@
                         <div class="col-md-6">
                             <div :class="{'form-group': true, 'has-error': showValidation && !page.DefaultFund}">
                                 <label class="control-label">Default Fund <a href="#" data-toggle="popover" data-placement="right" data-trigger="focus" data-title="Default Fund" data-content="This is the primary fund that gifts from this page will go to by default."><i class="fa fa-info-circle"></i></a></label>
-                                <MultiSelect v-model="page.DefaultFund"
-                                             :options="fundsList"
-                                             :searchable="true"
-                                             :close-on-select="true"
-                                             :allowEmpty="false"
-                                             trackBy="Id"
-                                             label="Name"></MultiSelect>
+                                <MultiSelect v-model="page.DefaultFund" :options="fundsList" :searchable="true" :close-on-select="true" :allowEmpty="false" trackBy="Id" label="Name"></MultiSelect>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label class="control-label">Fund Options <a href="#" data-toggle="popover" data-placement="right" data-trigger="focus" data-title="Fund Options" data-content="Any funds listed here will be presented as optional alternatives to the default fund for donors to choose to give to."><i class="fa fa-info-circle"></i></a></label>
-                                <MultiSelect v-model="page.AvailableFunds"
-                                             :options="fundsList"
-                                             :searchable="true"
-                                             :close-on-select="true"
-                                             :multiple="true"
-                                             trackBy="Id"
-                                             label="Name"></MultiSelect>
+                                <MultiSelect v-model="page.AvailableFunds" :options="fundsList" :searchable="true" :close-on-select="true" :multiple="true" trackBy="Id" label="Name"></MultiSelect>
                             </div>
                         </div>
                     </div>
@@ -89,18 +64,21 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label class="control-label">Entry Point</label>
-                                <MultiSelect v-model="page.EntryPoint"
-                                             :options="entryPointList"
-                                             :searchable="true"
-                                             :close-on-select="true"
-                                             trackBy="Id"
-                                             label="Name"></MultiSelect>
+                                <MultiSelect v-model="page.EntryPoint" :options="entryPointList" :searchable="true" :close-on-select="true" trackBy="Id" label="Name"></MultiSelect>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label class="control-label">URL Redirect <a href="#" data-toggle="popover" data-placement="right" data-trigger="focus" data-title="URL Redirect" data-content="If you choose to disable this giving page, you can enter a fully qualified URL here for donors to be redirected to if they try to visit this page."><i class="fa fa-info-circle"></i></a></label>
                                 <input type="text" v-model="page.DisabledRedirect" class="form-control" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <label class="control-label" style="width:100%">Main Campus Page <a href="#" data-toggle="popover" data-placement="right" data-trigger="focus" data-title="Main Campus Page" data-content=""><i class="fa fa-info-circle"></i></a></label>
+                                <tp-toggle v-model="page.MainCampusPageFlag"></tp-toggle>
                             </div>
                         </div>
                     </div>
