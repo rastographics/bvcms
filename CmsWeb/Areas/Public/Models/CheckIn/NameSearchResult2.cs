@@ -29,8 +29,8 @@ namespace CmsWeb.Models
                 string first;
                 string last;
                 var q = DbUtil.Db.People.Select(p => p);
-                name = name.Replace("-p-", " ");
-                Util.NameSplit(name, out first, out last);
+                var Name = name.Replace("-s-", " ");
+                Util.NameSplit(Name, out first, out last);
                 if (first.HasValue() || last.HasValue())
                 {
                     q = from p in q
@@ -41,7 +41,7 @@ namespace CmsWeb.Models
                 else
                 {
                     q = from p in q
-                        where p.LastName.Contains(name) || p.FirstName.Contains(name) || p.NickName.Contains(name) || p.MiddleName.Contains(name)
+                        where p.LastName.Contains(Name) || p.FirstName.Contains(Name) || p.NickName.Contains(Name) || p.MiddleName.Contains(Name)
                         select p;
                 }
 
