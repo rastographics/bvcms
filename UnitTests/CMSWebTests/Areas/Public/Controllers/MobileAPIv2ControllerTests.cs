@@ -275,71 +275,71 @@ namespace CmsWeb.Areas.Public.ControllersTests
         [Fact]
         public void QuickSignInTest()
         {
-            //var requestManager = FakeRequestManager.Create();
-            //db = requestManager.CurrentDatabase;
-            //var membershipProvider = new MockCMSMembershipProvider { ValidUser = true };
-            //var roleProvider = new MockCMSRoleProvider();
-            //var build = "2020.2.1";
-            //CMSMembershipProvider.SetCurrentProvider(membershipProvider);
-            //CMSRoleProvider.SetCurrentProvider(roleProvider);
-            //var person = CreatePerson();
-            //person.CellPhone = RandomPhoneNumber();
-            //db.SetSetting("UseMobileQuickSignInCodes", "true");
-            //db.SetSetting("TwilioToken", RandomString());
-            //db.SetSetting("TwilioSid", RandomString());
-            //var group = db.SMSGroups.FirstOrDefault(g => g.SystemFlag == true);
-            //if (group == null)
-            //{
-            //    group = new SMSGroup { SystemFlag = true, Name = "System Group", Description = "" };
-            //    db.SMSGroups.InsertOnSubmit(group);
-            //    db.SubmitChanges();
-            //}
-            //db.SMSNumbers.InsertOnSubmit(new SMSNumber { GroupID = group.Id, Number = RandomPhoneNumber(), LastUpdated = DateTime.Now });
-            //db.SubmitChanges();
-            //string smsBody = "";
-            //TwilioHelper.MockSender = (to, from, body, statusCallback) => {
-            //    smsBody = body;
-            //    return new TwilioMessageResult { Status = "Sent" };
-            //};
-            //var controller = new MobileAPIv2Controller(requestManager);
-            //var message = new MobileMessage
-            //{
-            //    device = (int)MobileMessage.Device.ANDROID,
-            //    instance = RandomString(),
-            //    argString = person.CellPhone,
-            //    build = build,
-            //};
+            var requestManager = FakeRequestManager.Create();
+            db = requestManager.CurrentDatabase;
+            var membershipProvider = new MockCMSMembershipProvider { ValidUser = true };
+            var roleProvider = new MockCMSRoleProvider();
+            var build = "2020.2.1";
+            CMSMembershipProvider.SetCurrentProvider(membershipProvider);
+            CMSRoleProvider.SetCurrentProvider(roleProvider);
+            var person = CreatePerson();
+            person.CellPhone = RandomPhoneNumber();
+            db.SetSetting("UseMobileQuickSignInCodes", "true");
+            db.SetSetting("TwilioToken", RandomString());
+            db.SetSetting("TwilioSid", RandomString());
+            var group = db.SMSGroups.FirstOrDefault(g => g.SystemFlag == true);
+            if (group == null)
+            {
+                group = new SMSGroup { SystemFlag = true, Name = "System Group", Description = "" };
+                db.SMSGroups.InsertOnSubmit(group);
+                db.SubmitChanges();
+            }
+            db.SMSNumbers.InsertOnSubmit(new SMSNumber { GroupID = group.Id, Number = RandomPhoneNumber(), LastUpdated = DateTime.Now });
+            db.SubmitChanges();
+            string smsBody = "";
+            TwilioHelper.MockSender = (to, from, body, statusCallback) => {
+                smsBody = body;
+                return new TwilioMessageResult { Status = "Sent" };
+            };
+            var controller = new MobileAPIv2Controller(requestManager);
+            var message = new MobileMessage
+            {
+                device = (int)MobileMessage.Device.ANDROID,
+                instance = RandomString(),
+                argString = person.CellPhone,
+                build = build,
+            };
 
-            //var data = message.ToString();
-            //var result = controller.QuickSignIn(data) as MobileMessage;
-            //result.ShouldNotBeNull();
-            //result.error.ShouldBe(0);
-            //smsBody.ShouldNotBeEmpty();
+            var data = message.ToString();
+            var result = controller.QuickSignIn(data) as MobileMessage;
+            result.ShouldNotBeNull();
+            result.error.ShouldBe(0);
+            smsBody.ShouldNotBeEmpty();
 
-            //requestManager.CurrentHttpContext.Request.Headers["Authorization"] = "quick " + smsBody.GetDigits().Substring(0, 6);
-            //message = new MobileMessage
-            //{
-            //    device = (int)MobileMessage.Device.ANDROID,
-            //    instance = message.instance,
-            //    build = build,
-            //};
-            //data = message.ToString();
-            //result = controller.QuickSignInUsers(data) as MobileMessage;
-            //result.ShouldNotBeNull();
-            //result.error.ShouldBe(0);
-            //result.count.ShouldBeGreaterThan(0);
-            //result.data.ShouldNotBeEmpty();
-            ////result.data.ShouldBe($"[{{""userID"":0,"peopleID":158,"name":"A0SF6Udv AfxHaTA7","user":"Create User"}}]")
-            //var list = JsonConvert.DeserializeObject<IEnumerable<MobileQuickSignInUser>>(result.data);
-            //var user = list.First();
-            //user.userID.ShouldBe(0);
-            //user.peopleID.ShouldBe(person.PeopleId);
-            //user.name.ShouldBe(person.Name);
-            //user.user.ShouldBe("Create User");
-            //var device = db.MobileAppDevices.SingleOrDefault(m => m.InstanceID == message.instance);
-            //device.ShouldNotBeNull();
-            //device.AppVersion.ShouldBe(build);
-            //Should.Equals(device.DeviceTypeID, MobileMessage.Device.ANDROID);
+            requestManager.CurrentHttpContext.Request.Headers["Authorization"] = "quick " + smsBody.GetDigits().Substring(0, 6);
+            message = new MobileMessage
+            {
+                device = (int)MobileMessage.Device.ANDROID,
+                instance = message.instance,
+                build = build,
+            };
+            data = message.ToString();
+            result = controller.QuickSignInUsers(data) as MobileMessage;
+            result.ShouldNotBeNull();
+            result.error.ShouldBe(0);
+            result.count.ShouldBeGreaterThan(0);
+            result.data.ShouldNotBeEmpty();
+            //result.data.ShouldBe($"[{{""userID"":0,"peopleID":158,"name":"A0SF6Udv AfxHaTA7","user":"Create User"}}]")
+            var list = JsonConvert.DeserializeObject<IEnumerable<MobileQuickSignInUser>>(result.data);
+            var user = list.First();
+            user.userID.ShouldBe(0);
+            user.peopleID.ShouldBe(person.PeopleId);
+            user.name.ShouldBe(person.Name);
+            user.user.ShouldBe("Create User");
+            var device = db.MobileAppDevices.SingleOrDefault(m => m.InstanceID == message.instance);
+            device.ShouldNotBeNull();
+            device.AppVersion.ShouldBe(build);
+            Should.Equals(device.DeviceTypeID, MobileMessage.Device.ANDROID);
         }
 
         [Theory]
