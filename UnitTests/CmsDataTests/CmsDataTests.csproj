@@ -144,6 +144,8 @@
     <Compile Include="Finance\MultipleGatewayUtilsTests.cs" />
     <Compile Include="Generated\CMSDataContextFunctionTests.cs" />
     <Compile Include="Generated\ContextTests.cs" />
+    <Compile Include="Generated\OrganizationTests.cs" />
+    <Compile Include="Generated\PaymentProcessTests.cs" />
     <Compile Include="Generated\ScheduledGiftTests.cs" />
     <Compile Include="Generated\DashboardWidgetsTests.cs" />
     <Compile Include="Organization\OrganizationTests.cs" />

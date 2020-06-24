@@ -80,32 +80,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 return Redirect(m.MissionTripSelfSupportPaylink);
 
             if (m.org.RedirectUrl.HasValue())
-            {
-                if (m.ProcessType == PaymentProcessTypes.RecurringGiving)
-                    return Redirect(m.org.RedirectUrl + "?type=recurring");
-                else if (m.ProcessType == PaymentProcessTypes.OneTimeGiving)
-                    return Redirect(m.org.RedirectUrl + "?type=onetime");
-            }
-            else
-            {
-                var today = DateTime.Now;
-                var cutoffDate = today.AddYears(100);
-                DataTable table = OrganizationColumns(m.org.OrganizationId);
-                DataColumnCollection columns = table.Columns;
-                var useGivingPages = columns.Contains("UseGivingPages");
-                if (cutoffDate < today || useGivingPages == true) // still need to check value of this field, not just whether it exists or not
-                {
-                    if (m.org.RedirectUrl.HasValue())
-                    {
-                        if (m.ProcessType == PaymentProcessTypes.RecurringGiving)
-                            return Redirect(m.org.RedirectUrl + "?type=recurring");
-                        else if (m.ProcessType == PaymentProcessTypes.OneTimeGiving)
-                            return Redirect(m.org.RedirectUrl + "?type=onetime");
-                    }
-                    else
-                        return Redirect("/Give");
-                }
-            }
+                return Redirect(m.org.RedirectUrl);
 
             return RouteRegistration(m, pid, showfamily);
         }
