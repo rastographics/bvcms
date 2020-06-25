@@ -290,7 +290,6 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             return FlowList(m);
         }
 
-
         [HttpPost]
         public ActionResult SubmitNew(int id, OnlineRegModel m)
         {
