@@ -1,18 +1,16 @@
-﻿using System;
-using System.Linq;
-using System.Linq.Dynamic;
-using CmsData;
-using CmsData.Finance;
-using CmsWeb.Areas.Giving.Models;
-using CmsWeb.Areas.Giving.Controllers;
-using SharedTestFixtures;
-using Xunit;
+﻿using SharedTestFixtures;
 using Shouldly;
+using System.Linq;
+using Xunit;
+using CMSWebTests.Support;
+using CmsWeb.Lifecycle;
+using CmsWeb.Membership;
+using CmsWeb.Areas.Giving.Models;
 
-namespace CmsData.Finance.Tests
+namespace CMSWebTests.Areas.Finance
 {
     [Collection(Collections.Database)]
-    public class GatewayTests : DatabaseTestBase
+    public class GatewayTests : ControllerTestBase
     {
         public GatewayTests() : base()
         {
@@ -26,7 +24,6 @@ namespace CmsData.Finance.Tests
         public void AuthCreditCardCreatePaymentMethod()
         {
             var person = CreatePerson();
-            // Add/remove reference to CMSWeb in solution explorer to update metadata
             GivingPaymentViewModel viewModel = new GivingPaymentViewModel()
             {
                 paymentTypeId = 2,
@@ -52,14 +49,7 @@ namespace CmsData.Finance.Tests
 
             var givingPaymentModel = new GivingPaymentModel(db);
 
-            var paymentProcess = (from p in db.PaymentProcess where p.ProcessName == "Recurring Giving" select p).FirstOrDefault();
-            var paymentProcessNull = false;
-            if (paymentProcess.GatewayAccountId == null)
-            {
-                paymentProcess.GatewayAccountId = 2;
-                db.SubmitChanges();
-                paymentProcessNull = true;
-            }
+            var paymentProcessActionTaken = MockPaymentProcess.PaymentProcessNullCheck(db);
 
             givingPaymentModel.CreateMethod(viewModel);
 
@@ -69,11 +59,9 @@ namespace CmsData.Finance.Tests
             paymentMethod.Decrypt();
             paymentMethod.NameOnAccount.ShouldBe("Jason Rice");
 
-            if (paymentProcessNull == true)
+            if (paymentProcessActionTaken == "changed")
             {
-                var paymentProcess2 = (from p in db.PaymentProcess where p.ProcessName == "Recurring Giving" select p).FirstOrDefault();
-                paymentProcess2.GatewayAccountId = null;
-                db.SubmitChanges();
+                MockPaymentProcess.ChangePaymentProcessToNull(db);
             }
         }
 
@@ -81,7 +69,6 @@ namespace CmsData.Finance.Tests
         public void AuthBankCreatePaymentMethod()
         {
             var person = CreatePerson();
-            // Add/remove reference to CMSWeb in solution explorer to update metadata
             GivingPaymentViewModel viewModel = new GivingPaymentViewModel()
             {
                 paymentTypeId = 1,
@@ -98,14 +85,7 @@ namespace CmsData.Finance.Tests
 
             var givingPaymentModel = new GivingPaymentModel(db);
 
-            var paymentProcess = (from p in db.PaymentProcess where p.ProcessName == "Recurring Giving" select p).FirstOrDefault();
-            var paymentProcessNull = false;
-            if (paymentProcess.GatewayAccountId == null)
-            {
-                paymentProcess.GatewayAccountId = 2;
-                db.SubmitChanges();
-                paymentProcessNull = true;
-            }
+            var paymentProcessActionTaken = MockPaymentProcess.PaymentProcessNullCheck(db);
 
             givingPaymentModel.CreateMethod(viewModel);
 
@@ -114,12 +94,25 @@ namespace CmsData.Finance.Tests
                                  select pm).FirstOrDefault();
             paymentMethod.Decrypt();
             paymentMethod.NameOnAccount.ShouldBe("Jason Rice");
-            if(paymentProcessNull == true)
+
+            if (paymentProcessActionTaken == "changed")
             {
-                var paymentProcess2 = (from p in db.PaymentProcess where p.ProcessName == "Recurring Giving" select p).FirstOrDefault();
-                paymentProcess2.GatewayAccountId = null;
-                db.SubmitChanges();
+                MockPaymentProcess.ChangePaymentProcessToNull(db);
             }
+        }
+
+        private IRequestManager SetupRequestManager()
+        {
+            var username = RandomString();
+            var password = RandomString();
+            var user = CreateUser(username, password);
+            var requestManager = FakeRequestManager.Create();
+            var membershipProvider = new MockCMSMembershipProvider { ValidUser = true };
+            var roleProvider = new MockCMSRoleProvider();
+            CMSMembershipProvider.SetCurrentProvider(membershipProvider);
+            CMSRoleProvider.SetCurrentProvider(roleProvider);
+            requestManager.CurrentHttpContext.Request.Headers["Authorization"] = BasicAuthenticationString(username, password);
+            return requestManager;
         }
 
         public override void Dispose()

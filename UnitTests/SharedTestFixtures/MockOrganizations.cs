@@ -9,7 +9,7 @@ namespace SharedTestFixtures
 {
     public class MockOrganizations
     {
-        public static Organization CreateOrganization(CMSDataContext db, string orgName = null, int? campusId = null, int? fromId = null, int? type = null)
+        public static Organization CreateOrganization(CMSDataContext db, string orgName = null, int? campusId = null, int? fromId = null, int? type = null, string redirectUrl = null)
         {
             Organization org = null;
             var newOrg = new Organization();
@@ -30,6 +30,7 @@ namespace SharedTestFixtures
             newOrg.OrganizationStatusId = 30;
             newOrg.DivisionId = org.DivisionId;
             newOrg.CampusId = campusId;
+            newOrg.RedirectUrl = redirectUrl;
 
             db.Organizations.InsertOnSubmit(newOrg);
             db.SubmitChanges();
