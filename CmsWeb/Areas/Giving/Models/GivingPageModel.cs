@@ -34,7 +34,7 @@ namespace CmsWeb.Areas.Giving.Models
                                 PageUrl = gp.PageUrl,
                                 EditUrl = "/Giving/" + gp.GivingPageId,
                                 Enabled = gp.Enabled,
-                                DefaultPage = (bool)gp.DefaultPage,
+                                DefaultPage = gp.DefaultPage,
                                 MainCampusPageFlag = gp.MainCampusPageFlag,
                                 SkinFile = new ContentFile
                                 {
@@ -193,7 +193,7 @@ namespace CmsWeb.Areas.Giving.Models
         public string PageUrl { get; set; }
         public string EditUrl { get; set; }
         public bool Enabled { get; set; }
-        public bool DefaultPage { get; set; }
+        public bool? DefaultPage { get; set; }
         public ContentFile SkinFile { get; set; }
         public int PageType { get; set; }
         public string DisabledRedirect { get; set; }
