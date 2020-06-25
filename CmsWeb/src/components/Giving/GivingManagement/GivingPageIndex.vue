@@ -103,7 +103,7 @@
                 .then(
                     response => {
                         if (response.status === 200) {
-                            if(response.data.GivingPageId !== response.data.oldDefaultPageId && response.data.oldDefaultPageId > 0) {
+                            if(response.data.PageId !== response.data.OldDefaultPageId && response.data.OldDefaultPageId > 0) {
                                 snackbar(response.data.PageName + " has been " + (response.data.DefaultPage ? "set as default page" : "unset as default page"), "success");
                                 this.fetchGivingPages();
                             }
