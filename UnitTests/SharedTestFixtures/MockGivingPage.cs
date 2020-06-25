@@ -6,21 +6,13 @@ namespace SharedTestFixtures
     {
         public static GivingPage CreateGivingPage(CMSDataContext db, string pageName = null, int? fundId = null, int pageTypeId = 7)
         {
-            if (pageName == null)
-            {
-                pageName = DatabaseTestBase.RandomString();
-            }
-            if (fundId == null)
-            {
-                fundId = DatabaseTestBase.RandomNumber();
-            }
             var givingPage = new GivingPage
             {
                 GivingPageId = DatabaseTestBase.RandomNumber(),
-                PageName = pageName,
+                PageName = pageName ?? DatabaseTestBase.RandomString(),
                 PageUrl = DatabaseTestBase.RandomString(),
                 PageType = pageTypeId,
-                FundId = (int)fundId,
+                FundId = fundId ?? DatabaseTestBase.RandomNumber(),
                 Enabled = true,
                 DisabledRedirect = DatabaseTestBase.RandomString()
             };
