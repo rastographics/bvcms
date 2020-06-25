@@ -39,10 +39,15 @@ namespace CmsDataTests.GivingSettings
         {
             var requestManager = SetupRequestManager();
             var controller = new GivingManagementController(requestManager);
-            var newGivingPage = MockGivingPage.CreateGivingPage(db, "Giving Page One", null, 1);
+            var contributionFund = MockFunds.CreateContributionFund(db, null);
+            var newGivingPage = MockGivingPage.CreateGivingPage(db, "Giving Page One", contributionFund.FundId, 1);
+            var givingPageFund = MockGivingPage.CreateGivingPageFund(db, newGivingPage.GivingPageId, contributionFund.FundId);
             controller.SetGivingDefaultPage(true, newGivingPage.GivingPageId);
             var defaultGivingPageList = (from g in db.GivingPages where g.DefaultPage == true select g).ToList();
             defaultGivingPageList.Count.ShouldBe(1);
+            MockGivingPage.DeleteGivingPageFund(db, givingPageFund);
+            MockGivingPage.DeleteGivingPage(db, newGivingPage);
+            MockFunds.DeleteFund(db, contributionFund.FundId);
         }
 
         private IRequestManager SetupRequestManager()
