@@ -25,7 +25,15 @@
                         <div class="col-sm-6 col-md-4 col-lg-4">
                             <div class="box">
                                 <div class="box-title">
-                                    <h5><a href="#" dialogurl="/Twilio/Dialog/@(item.Id)?viewName=GroupDialog" style="text-decoration: underline;">@item.Name</a></h5>
+                                    <h5>
+                                        <a href="#" dialogurl="/Twilio/Dialog/@(item.Id)?viewName=GroupDialog" style="text-decoration: underline;">@item.Name</a>
+                                        @if (item.SystemFlag)
+                                        {
+                                            <span class="small" style="color: indianred;">
+                                                Used for System SMS
+                                            </span>
+                                        }
+                                    </h5>
                                 </div>
                                 <table class="table table-striped">
                                     <tr>
@@ -59,30 +67,30 @@
                                         <td colspan="2">
                                             <table class="table users">
                                                 <thead>
-                                                <tr>
-                                                    <th>Name</th>
-                                                    <th>Receive Notices</th>
-                                                    <th>Remove</th>
-                                                </tr>
+                                                    <tr>
+                                                        <th>Name</th>
+                                                        <th>Receive Notices</th>
+                                                        <th>Remove</th>
+                                                    </tr>
                                                 </thead>
                                                 <tbody>
-                                                @foreach (var person in people)
-                                                {
-                                                    <tr>
-                                                        <td>
-                                                            @person.User.Name
-                                                        </td>
-                                                        <td class="text-center">
-                                                            <input type="checkbox" class="receivenotifications"
-                                                                   data-pid="@person.User.PeopleId"
-                                                                   data-gid="@item.Id"
-                                                                   @(person.ReceiveNotifications == true ? "checked" : "")/>
-                                                        </td>
-                                                        <td class="text-center">
-                                                            <a href="/Twilio/UserRemove/@person.Id"><i class="fa fa-trash"></i></a>
-                                                        </td>
-                                                    </tr>
-                                                }
+                                                    @foreach (var person in people)
+                                                    {
+                                                        <tr>
+                                                            <td>
+                                                                @person.User.Name
+                                                            </td>
+                                                            <td class="text-center">
+                                                                <input type="checkbox" class="receivenotifications"
+                                                                       data-pid="@person.User.PeopleId"
+                                                                       data-gid="@item.Id"
+                                                                       @(person.ReceiveNotifications == true ? "checked" : "") />
+                                                            </td>
+                                                            <td class="text-center">
+                                                                <a href="/Twilio/UserRemove/@person.Id"><i class="fa fa-trash"></i></a>
+                                                            </td>
+                                                        </tr>
+                                                    }
                                                 </tbody>
                                             </table>
                                         </td>
@@ -124,7 +132,7 @@
             });
             $("table.users").on("change",
                 "input.receivenotifications",
-                function(ev) {
+                function (ev) {
                     var q = {
                         "receive": this.checked,
                         "peopleid": $(this).data("pid"),

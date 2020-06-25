@@ -75,7 +75,7 @@ namespace CmsDataTests
                 actual.AmountPledged.ShouldBe(TotalPledgeAmount);
                 actual.Balance.ShouldBe((TotalPledgeAmount) - (TotalAmmountContributions) < 0 ? 0 : (TotalPledgeAmount) - (TotalAmmountContributions));
 
-                MockContributions.DeleteAllFromBundle(db, bundleHeader);      
+                MockContributions.DeleteAllFromBundle(db, bundleHeader);
             }
         }
 
@@ -115,7 +115,7 @@ namespace CmsDataTests
                 var FundIds = $"{FirstContribution.FundId},{SecondContribution.FundId}";
                 var TopGiversResult = db.TopGivers(10, fromDate, toDate, FundIds, null).ToList();
 
-                if(TopGiversResult.Count > 0)
+                if (TopGiversResult.Count > 0)
                 {
                     var TotalAmmountTopGivers = TopGiversResult[0].Amount;
                     TotalAmmountTopGivers.ShouldBe(120);
@@ -154,7 +154,7 @@ namespace CmsDataTests
                     MemberStatusId = MemberStatusCode.Member,
                     PositionInFamilyId = PositionInFamily.PrimaryAdult,
                     MaritalStatusId = MaritalStatusCode.Married,
-                    GenderId = GenderCode.Male                    
+                    GenderId = GenderCode.Male
                 };
 
                 var Wife = new Person
@@ -166,7 +166,7 @@ namespace CmsDataTests
                     MemberStatusId = MemberStatusCode.Member,
                     PositionInFamilyId = PositionInFamily.PrimaryAdult,
                     MaritalStatusId = MaritalStatusCode.Married,
-                    GenderId = GenderCode.Female                    
+                    GenderId = GenderCode.Female
                 };
 
                 var person2 = new Person
@@ -201,11 +201,11 @@ namespace CmsDataTests
                 CompareType op = CompareType.Greater;
 
                 //Both Joint
-                var bothjoint = c.GetContributionList(db, op, fromDate,toDate,null,null,true);
+                var bothjoint = c.GetContributionList(db, op, fromDate, toDate, null, null, true);
                 bothjoint.ToList().Count().ShouldBe(3);
 
                 //Donor Only
-                var donoronly = c.GetContributionList(db, op, fromDate, toDate, null, null, true,false);
+                var donoronly = c.GetContributionList(db, op, fromDate, toDate, null, null, true, false);
                 donoronly.ToList().Count().ShouldBe(2);
 
                 MockContributions.DeleteAllFromBundle(db, bundleHeader);
@@ -234,6 +234,18 @@ namespace CmsDataTests
                 ammount.ShouldBe(120);
 
                 MockContributions.DeleteAllFromBundle(db, bundleHeader);
+            }
+        }
+
+        [Theory]
+        [InlineData("aaa@aaaa@", false)]
+        [InlineData("aaa@aaa.com", true)]
+        public void IsValidEmailTest(string email, bool expected)
+        {
+            using (var db = CMSDataContext.Create(Util.Host))
+            {
+                var isValid = db.IsValidEmail(email);
+                isValid.ShouldBe(expected);
             }
         }
     }
