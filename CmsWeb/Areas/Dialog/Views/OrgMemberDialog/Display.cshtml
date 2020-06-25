@@ -43,22 +43,23 @@
                   </li>
               }
           </ul>
-        <div class="tab-content">
-          @Html.Partial("Tabs/MemberData", Model)
-          <div class="tab-pane" id="membergroups">
-            @Html.Partial("Tabs/Groups", Model)
+          <div class="tab-content">
+              @Html.Partial("Tabs/MemberData", Model)
+              <div class="tab-pane" id="membergroups">
+                  @Html.Partial("Tabs/Groups", Model)
+              </div>
+              @Html.Partial("Tabs/Tickets", Model)
+              @Html.Partial("Tabs/Questions", Model)
+              @Html.Partial("Tabs/Notes", Model)
+              @if (developer)
+              {
+                  <div class="tab-pane" id="memberextrastab"
+                       data-init="Editable"
+                       data-init2="ExtraEditable"
+                       data-link="/OrgMemberDialog/ExtraValues/@Model.OrgId/@Model.PeopleId">
+                  </div>
+              }
           </div>
-          @Html.Partial("Tabs/Questions", Model)
-          @Html.Partial("Tabs/Notes", Model)
-          @if (developer)
-          {
-            <div class="tab-pane" id="memberextrastab"
-                 data-init="Editable"
-                 data-init2="ExtraEditable"
-                 data-link="/OrgMemberDialog/ExtraValues/@Model.OrgId/@Model.PeopleId">
-            </div>
-          }
-        </div>
       </div>
     </div>
     <div class="modal-footer">
