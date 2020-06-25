@@ -20,8 +20,25 @@ namespace CmsWeb.Areas.Giving.Controllers
         [Route("~/Give")]
         public ActionResult DefaultPageIndex()
         {
-            var givingPage = CurrentDatabase.GivingPages.Where(p => p.DefaultPage == true).SingleOrDefault();
-            return Redirect("/Give/" + givingPage.PageUrl);
+            var peopleId = CurrentDatabase.CurrentUser.PeopleId;
+            var person = CurrentDatabase.People.Where(p => p.PeopleId == CurrentDatabase.CurrentUser.PeopleId).SingleOrDefault();
+            if(person.CampusId != null)
+            {
+                foreach(var item in CurrentDatabase.GivingPages)
+                {
+                    if(item.CampusId == person.CampusId && item.MainCampusPageFlag == true)
+                    {
+                        return Redirect("/Give/" + item.PageUrl);
+                    }
+                }
+                var givingPage = CurrentDatabase.GivingPages.Where(p => p.DefaultPage == true).SingleOrDefault();
+                return Redirect("/Give/" + givingPage.PageUrl);
+            }
+            else
+            {
+                var givingPage = CurrentDatabase.GivingPages.Where(p => p.DefaultPage == true).SingleOrDefault();
+                return Redirect("/Give/" + givingPage.PageUrl);
+            }
         }
 
         [HttpGet]
