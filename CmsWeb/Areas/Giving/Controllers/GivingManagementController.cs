@@ -94,24 +94,19 @@ namespace CmsWeb.Areas.Giving.Controllers
         public JsonResult SetGivingDefaultPage(bool value, int PageId)
         {
             var givingPage = (from gp in CurrentDatabase.GivingPages where gp.GivingPageId == PageId select gp).FirstOrDefault();
-            var UpdateStatus = false;
+            var oldDefaultPageId = 0;
             if (value == true)
             {
-                var givingPageList = (from gpList in CurrentDatabase.GivingPages select gpList).ToList();
-                foreach (var item in givingPageList)
+                var oldDefaultPage = (from g in CurrentDatabase.GivingPages where g.DefaultPage == true select g).FirstOrDefault();
+                if (oldDefaultPage != null)
                 {
-                    if (item.DefaultPage == true && item.GivingPageId != givingPage.GivingPageId && value == true)
-                    {
-                        givingPage.DefaultPage = !value;
-                        var CurrentDefaultPage = item.PageName;
-                        return Json(new { givingPage.GivingPageId, givingPage.PageName, givingPage.DefaultPage, UpdateStatus, CurrentDefaultPage });
-                    }
+                    oldDefaultPage.DefaultPage = false;
+                    oldDefaultPageId = oldDefaultPage.GivingPageId;
                 }
             }
             givingPage.DefaultPage = value;
             CurrentDatabase.SubmitChanges();
-            UpdateStatus = true;
-            return Json(new { givingPage.GivingPageId, givingPage.PageName, givingPage.DefaultPage, UpdateStatus });
+            return Json(new { givingPage.GivingPageId, givingPage.PageName, givingPage.DefaultPage, oldDefaultPageId });
         }
 
         [HttpGet]

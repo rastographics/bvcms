@@ -103,11 +103,9 @@
                 .then(
                     response => {
                         if (response.status === 200) {
-                            if(response.data.UpdateStatus === true) {
+                            if(response.data.GivingPageId !== response.data.oldDefaultPageId && response.data.oldDefaultPageId > 0) {
                                 snackbar(response.data.PageName + " has been " + (response.data.DefaultPage ? "set as default page" : "unset as default page"), "success");
-                            } else {
-                                snackbar(response.data.PageName + " cannot be set as default because " + response.data.CurrentDefaultPage + " is the current default page. Only one default page at a time.", "error");
-                                this.click();
+                                this.fetchGivingPages();
                             }
                         } else {
                             snackbar("Error updating giving page status.", "error");
