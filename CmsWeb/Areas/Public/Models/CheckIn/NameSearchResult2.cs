@@ -29,7 +29,7 @@ namespace CmsWeb.Models
                 string first;
                 string last;
                 var q = DbUtil.Db.People.Select(p => p);
-                var Name = name.Replace("-s-", " ");
+                var Name = name.Replace("+", " ");
                 Util.NameSplit(Name, out first, out last);
                 if (first.HasValue() || last.HasValue())
                 {
