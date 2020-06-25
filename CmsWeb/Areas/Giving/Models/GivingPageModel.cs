@@ -184,6 +184,28 @@ namespace CmsWeb.Areas.Giving.Models
             };
             return givingPageItem;
         }
+
+        public GivingPageItem UpdateGivingDefaultPage(bool value, int PageId)
+        {
+            var givingPageItem = new GivingPageItem();
+            var givingPage = (from gp in CurrentDatabase.GivingPages where gp.GivingPageId == PageId select gp).FirstOrDefault();
+            givingPageItem.OldDefaultPageId = 0;
+            if (value == true)
+            {
+                var oldDefaultPage = (from g in CurrentDatabase.GivingPages where g.DefaultPage == true select g).FirstOrDefault();
+                if (oldDefaultPage != null)
+                {
+                    oldDefaultPage.DefaultPage = false;
+                    givingPageItem.OldDefaultPageId = oldDefaultPage.GivingPageId;
+                }
+            }
+            givingPage.DefaultPage = value;
+            CurrentDatabase.SubmitChanges();
+            givingPageItem.PageId = givingPage.GivingPageId;
+            givingPageItem.PageName = givingPage.PageName;
+            givingPageItem.DefaultPage = givingPage.DefaultPage;
+            return givingPageItem;
+        }
     }
 
     public class GivingPageItem
@@ -201,6 +223,7 @@ namespace CmsWeb.Areas.Giving.Models
         public string ThankYouText { get; set; }
         public int? CampusId { get; set; }
         public bool? MainCampusPageFlag { get; set; }
+        public int? OldDefaultPageId { get; set; }
         public NotifyPerson[] OnlineNotifyPerson { get; set; }
         public ContentFile ConfirmEmailPledge { get; set; }
         public ContentFile ConfirmEmailOneTime { get; set; }

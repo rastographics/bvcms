@@ -30,23 +30,19 @@ namespace CmsWeb.Areas.Giving.Controllers
         {
             var model = new GivingPageModel(CurrentDatabase);
             var page = new GivingPageItem();
+
             if (id.ToLower() == "new")
-            {
                 page.PageId = 0;
-            }
             else
-            {
                 page = model.GetGivingPages(id.ToInt()).SingleOrDefault();
-            }
+
             if (page == null)
             {
                 Util.TempError = "Invalid page";
                 return Content("/Error/");
             }
             else
-            {
                 return View(page);
-            }
         }
 
         [HttpGet]
@@ -93,20 +89,9 @@ namespace CmsWeb.Areas.Giving.Controllers
         [HttpPost]
         public JsonResult SetGivingDefaultPage(bool value, int PageId)
         {
-            var givingPage = (from gp in CurrentDatabase.GivingPages where gp.GivingPageId == PageId select gp).FirstOrDefault();
-            var oldDefaultPageId = 0;
-            if (value == true)
-            {
-                var oldDefaultPage = (from g in CurrentDatabase.GivingPages where g.DefaultPage == true select g).FirstOrDefault();
-                if (oldDefaultPage != null)
-                {
-                    oldDefaultPage.DefaultPage = false;
-                    oldDefaultPageId = oldDefaultPage.GivingPageId;
-                }
-            }
-            givingPage.DefaultPage = value;
-            CurrentDatabase.SubmitChanges();
-            return Json(new { givingPage.GivingPageId, givingPage.PageName, givingPage.DefaultPage, oldDefaultPageId });
+            var model = new GivingPageModel(CurrentDatabase);
+            var result = model.UpdateGivingDefaultPage(value, PageId);
+            return Json(result, JsonRequestBehavior.AllowGet);
         }
 
         [HttpGet]
