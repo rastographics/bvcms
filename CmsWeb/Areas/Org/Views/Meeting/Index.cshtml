@@ -2,9 +2,18 @@
 @using UtilityExtensions
 @model CmsWeb.Areas.Org.Models.MeetingModel
 @{
+    var Db = ViewExtensions2.CurrentDatabase;
     ViewBag.Title = "Meeting";
     ViewBag.PageHeader = "Meeting";
-    ViewBag.PageSubHeader = $"<a href=\"/Org/{Model.meeting.OrganizationId}\">{Model.meeting.Organization.OrganizationName}</a>";
+
+    if (Db.Setting("UseNewInvolvementCreation"))
+    {
+        ViewBag.PageSubHeader = $"<a href=\"/Inv/{Model.meeting.OrganizationId}\">{Model.meeting.Organization.OrganizationName}</a>";
+    }
+    else
+    {
+        ViewBag.PageSubHeader = $"<a href=\"/Org/{Model.meeting.OrganizationId}\">{Model.meeting.Organization.OrganizationName}</a>";
+    }
     Layout = ViewExtensions2.TouchPointLayout();
     var RegularMeetingHeadCount = Model.RegularMeetingHeadCountSetting();
     var CanEditHeadCount = Model.meeting.GroupMeetingFlag || RegularMeetingHeadCount;
@@ -17,6 +26,7 @@
             font-weight: normal;
             color: #808080;
         }
+
         dd {
             font-weight: 600;
             padding: 5px;
@@ -101,16 +111,16 @@
                                 <label class="control-label">Show</label>
                                 <div class="form-group" id="showbuttons">
                                     <label class="radio-inline">
-                                        <input type="radio" id="showall" name="show" value="all"/> All
+                                        <input type="radio" id="showall" name="show" value="all" /> All
                                     </label>
                                     <label class="radio-inline">
-                                        <input type="radio" id="showattends" name="show" value="attends" checked="checked"/> Attends
+                                        <input type="radio" id="showattends" name="show" value="attends" checked="checked" /> Attends
                                     </label>
                                     <label class="radio-inline">
-                                        <input type="radio" id="showabsents" name="show" value="absents"/> Absents
+                                        <input type="radio" id="showabsents" name="show" value="absents" /> Absents
                                     </label>
                                     <label class="radio-inline">
-                                        <input type="radio" id="showreg" name="show" value="reg"/> Registered
+                                        <input type="radio" id="showreg" name="show" value="reg" /> Registered
                                     </label>
                                 </div>
                             </div>
@@ -159,58 +169,58 @@
                     <div class="table-responsive">
                         <table id="attends" class="table table-striped">
                             <thead>
-                            <tr>
-                                <th class="text-center">Attended</th>
-                                <th class="showreg" style="display: none">Commitment</th>
-                                <th><a href="#" id="sortbyname">Name</a></th>
-                                @if (Model.ShowCurrentMemberType)
-                                {
-                                    <th>Current Member Type</th>
-                                }
-                                <th>Attend Member Type</th>
-                                @if (Model.ShowAttendType)
-                                {
-                                    <th>Attend Type</th>
-                                }
-                                @if (Model.ShowOtherAttend)
-                                {
-                                    <th>Other Attend</th>
-                                }
-                            </tr>
-                            </thead>
-                            <tbody>
-                            @foreach (var a in Model.Attends())
-                            {
-                                <tr rowtype="@a.Member" @(!a.Member ? "class=info" : "")>
-                                    <td class="text-center">
-                                        <input type="checkbox" pid="@a.PeopleId" @(a.Attended ? "checked=checked" : "") class="atck" onclick="return false" onkeydown="return false"/>
-                                    </td>
-                                    <td class="showreg" style="display: none">
-                                        <span id="c@(Model.meeting.MeetingId)_@(a.PeopleId)" class="clickSelect rgck commitment" data-value="@a.Commitment" data-pk="c@(Model.meeting.MeetingId)_@(a.PeopleId)" data-title="Commitment">@a.Commitment</span>
-                                    </td>
-                                    @if (Model.HyperlinkNames)
-                                    {
-                                        <td class="name @(a.Conflict ? "alert-danger" : "")"><a href="/Person2/@a.PeopleId" title="@Person.AgeDisplay(a.Age, a.PeopleId)">@a.Name</a></td>
-                                    }
-                                    else
-                                    {
-                                        <td class="name @(a.Conflict ? "alert-danger" : "")">@a.Name</td>
-                                    }
+                                <tr>
+                                    <th class="text-center">Attended</th>
+                                    <th class="showreg" style="display: none">Commitment</th>
+                                    <th><a href="#" id="sortbyname">Name</a></th>
                                     @if (Model.ShowCurrentMemberType)
                                     {
-                                        <td>@a.CurrMemberType</td>
+                                        <th>Current Member Type</th>
                                     }
-                                    <td>@a.MemberType</td>
+                                    <th>Attend Member Type</th>
                                     @if (Model.ShowAttendType)
                                     {
-                                        <td>@a.AttendType</td>
+                                        <th>Attend Type</th>
                                     }
                                     @if (Model.ShowOtherAttend)
                                     {
-                                        <td>@a.OtherAttend</td>
+                                        <th>Other Attend</th>
                                     }
                                 </tr>
-                            }
+                            </thead>
+                            <tbody>
+                                @foreach (var a in Model.Attends())
+                                {
+                                    <tr rowtype="@a.Member" @(!a.Member ? "class=info" : "")>
+                                        <td class="text-center">
+                                            <input type="checkbox" pid="@a.PeopleId" @(a.Attended ? "checked=checked" : "") class="atck" onclick="return false" onkeydown="return false" />
+                                        </td>
+                                        <td class="showreg" style="display: none">
+                                            <span id="c@(Model.meeting.MeetingId)_@(a.PeopleId)" class="clickSelect rgck commitment" data-value="@a.Commitment" data-pk="c@(Model.meeting.MeetingId)_@(a.PeopleId)" data-title="Commitment">@a.Commitment</span>
+                                        </td>
+                                        @if (Model.HyperlinkNames)
+                                        {
+                                            <td class="name @(a.Conflict ? "alert-danger" : "")"><a href="/Person2/@a.PeopleId" title="@Person.AgeDisplay(a.Age, a.PeopleId)">@a.Name</a></td>
+                                        }
+                                        else
+                                        {
+                                            <td class="name @(a.Conflict ? "alert-danger" : "")">@a.Name</td>
+                                        }
+                                        @if (Model.ShowCurrentMemberType)
+                                        {
+                                            <td>@a.CurrMemberType</td>
+                                        }
+                                        <td>@a.MemberType</td>
+                                        @if (Model.ShowAttendType)
+                                        {
+                                            <td>@a.AttendType</td>
+                                        }
+                                        @if (Model.ShowOtherAttend)
+                                        {
+                                            <td>@a.OtherAttend</td>
+                                        }
+                                    </tr>
+                                }
                             </tbody>
                         </table>
                     </div>

@@ -1,4 +1,5 @@
 ﻿@using CmsData
+@using CmsData.Codes
 @using CmsData.View
 @model CmsWeb.Areas.Search.Models.OrgSearchModel.OrganizationInfo
 @{
@@ -21,7 +22,16 @@
             <label>Divisions:</label> @o.Divisions<br />
         "><i class="fa fa-info-circle"></i></a>
     </td>
-    <td><a href="/Inv/@o.Id" @targeto>@o.OrganizationName</a></td>
+
+    @if (o.RegTypeId == RegistrationTypeCode.TicketedEvent)
+    {
+        <td><a href="/Inv/@o.Id" @targeto>@o.OrganizationName</a></td>
+    }
+    else
+    {
+        <td><a href="/Org/@o.Id" @targeto>@o.OrganizationName</a></td>
+    }
+
     <td><a href="/Person2/@o.LeaderId" @targetp>@o.LeaderName</a></td>
     <td class="text-right">@o.MemberCount</td>
     @if (o.PrevMemberCount == 0 && o.ProspectCount == 0)
