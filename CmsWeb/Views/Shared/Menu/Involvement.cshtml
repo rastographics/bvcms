@@ -1,6 +1,6 @@
 ﻿@{
     CMSDataContext Db = ViewExtensions2.CurrentDatabase;
-    var recentInvolvements = Util2.MostRecentInvolvements;
+    var recentInvolvements = Util2.MostRecentOrgs;
 }
 <li class="dropdown dropdown-large">
     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
@@ -33,7 +33,7 @@
                 @if (recentInvolvements.Any())
                 {
                     <li class="dropdown-header dropdown-sub-header">Recently Viewed</li>
-                    foreach (var o in Util2.MostRecentInvolvements)
+                    foreach (var o in Util2.MostRecentOrgs)
                     {
                         @Helper.LiAnchorLink(o.Name, "/Inv/" + o.Id)
                     }
