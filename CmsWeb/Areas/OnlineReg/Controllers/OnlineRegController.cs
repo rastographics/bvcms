@@ -348,7 +348,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             var file = Request.Files[0];
             Int32.TryParse(Request["registrantId"], out int registrantId);
             Int32.TryParse(Request["orgId"], out int orgId);
-            var docname = Request["docname"];
+            var docname = Request["docname"].Replace(".","");
             var email = Request["email"];
             var lastName = Request["lastName"];
             var firstName = Request["firstName"];
