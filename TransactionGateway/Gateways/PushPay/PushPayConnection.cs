@@ -113,17 +113,29 @@ namespace TransactionGateway
 
             var postContent = new FormUrlEncodedContent(post);
             var response = await client.PostAsync(_oAuth2TokenEndpoint, postContent);
+            if (response.ReasonPhrase == "BadRequest")
+            {
+
+            }
             var content = await response.Content.ReadAsStringAsync();
 
             // received tokens from authorization server
             var json = JObject.Parse(content);
-            newAccessToken = json["access_token"].ToString();
-            newRefreshToken = json["refresh_token"].ToString();
+            try
+            {
+                newAccessToken = json["access_token"].ToString();
+                newRefreshToken = json["refresh_token"].ToString();
+            }catch (Exception)
+            {
+                db.ActivityLogs("")
+                RaiseError(new Exception("Failed to retrieve access token, response was: " + content));            
+            }     
 
             if (json["refresh_token"] == null || json["access_token"] == null)
             {
                 RaiseError(new Exception("Failed to retrieve access token, error was: " + response.ReasonPhrase));
             }
+
             db.SetSetting("PushPayAccessToken", newAccessToken);
             db.SetSetting("PushPayRefreshToken", newRefreshToken);
             Console.WriteLine("PushPay authenticated!");
