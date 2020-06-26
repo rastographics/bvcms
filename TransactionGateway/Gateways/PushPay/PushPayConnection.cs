@@ -127,7 +127,7 @@ namespace TransactionGateway
                 newRefreshToken = json["refresh_token"].ToString();
             }catch (Exception)
             {
-                db.ActivityLogs("")
+                db.LogActivity($"Failed to retrieve access token, response was: {content}");
                 RaiseError(new Exception("Failed to retrieve access token, response was: " + content));            
             }     
 
