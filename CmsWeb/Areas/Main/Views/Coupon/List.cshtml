@@ -35,7 +35,7 @@
                             </div>
                             <div class="col-lg-6 col-md-6 col-sm-6">
                                 <div class="form-group">
-                                    <label for="regidfilter" class="control-label">Registration Type</label>
+                                    <label for="regidfilter" class="control-label">Involvement Type</label>
                                     <select id="regidfilter" onchange="SetOrgId(this)" class="form-control">
                                         <option on v-for="OnlineReg in OnlineRegs" v-bind:selected="OnlineReg.Selected" v-bind:value="OnlineReg.Value">{{ OnlineReg.Text }}</option>
                                     </select>
