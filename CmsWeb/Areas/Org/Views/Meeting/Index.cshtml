@@ -1,4 +1,5 @@
 ﻿@using CmsData
+@using CmsData.Codes
 @using UtilityExtensions
 @model CmsWeb.Areas.Org.Models.MeetingModel
 @{
@@ -6,7 +7,7 @@
     ViewBag.Title = "Meeting";
     ViewBag.PageHeader = "Meeting";
 
-    if (Db.Setting("UseNewInvolvementCreation"))
+    if (Model.meeting.Organization.RegistrationTypeId == RegistrationTypeCode.TicketedEvent)
     {
         ViewBag.PageSubHeader = $"<a href=\"/Inv/{Model.meeting.OrganizationId}\">{Model.meeting.Organization.OrganizationName}</a>";
     }
