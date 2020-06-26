@@ -113,10 +113,6 @@ namespace TransactionGateway
 
             var postContent = new FormUrlEncodedContent(post);
             var response = await client.PostAsync(_oAuth2TokenEndpoint, postContent);
-            if (response.ReasonPhrase == "BadRequest")
-            {
-
-            }
             var content = await response.Content.ReadAsStringAsync();
 
             // received tokens from authorization server
