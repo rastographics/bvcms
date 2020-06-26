@@ -125,11 +125,13 @@
     <Compile Include="Areas\Main\Views\Email\EmailViewsTests.cs" />
     <Compile Include="Areas\Manage\AccountTests.cs" />
     <Compile Include="Areas\Manage\Views\Batch\RetrieveBatchDataTests.cs" />
+    <Compile Include="Areas\Manage\Views\Transactions\TransactionsViewTest.cs" />
     <Compile Include="Areas\OnlineReg\ManageGivingTests.cs" />
     <Compile Include="Areas\OnlineReg\Views\OnlineRegViewsTests.cs" />
     <Compile Include="Areas\OnlineReg\Models\OnlineRegPerson\EnrollTests.cs" />
     <Compile Include="Areas\OnlineReg\OneTimeGivingTests.cs" />
     <Compile Include="Areas\Org\Views\Org\EditorTemplates\AskCheckboxesTests.cs" />
+    <Compile Include="Areas\Org\Views\Org\OrgSearchTests.cs" />
     <Compile Include="Areas\Org\Views\Org\Registration\RegistrationEditViewsTests.cs" />
     <Compile Include="Areas\Org\Views\Org\SettingsViewsTests.cs" />
     <Compile Include="Areas\Search\Views\Query\EditConditionTests.cs" />

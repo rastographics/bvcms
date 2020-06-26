@@ -130,35 +130,35 @@ namespace CmsData
                 return q;
             }
         }
-        public Condition Parent
-        {
-            get
-            {
-                if (ParentId.HasValue)
-                    return AllConditions[ParentId.Value];
-                return null;
-            }
-        }
+
+        public Condition Parent => ParentId.HasValue ? AllConditions[ParentId.Value] : null;
+
         private FieldClass _FieldInfo;
         public FieldClass FieldInfo
         {
             get
             {
-                if ((_FieldInfo == null || _FieldInfo.Name != ConditionName))
-                    _FieldInfo = FieldClass.Fields[ConditionName];
+                if (_FieldInfo?.Name != ConditionName)
+                {
+                    _FieldInfo = FieldClass.Fields.ContainsKey(ConditionName)
+                        ? FieldClass.Fields[ConditionName] : null;
+                }
                 return _FieldInfo;
             }
         }
+
         public void SetComparisonType(CompareType value)
         {
             Comparison = value.ToString();
             compare = null;
             compare = Compare2;
         }
+
         public void SetQueryType(QueryType value)
         {
             ConditionName = value.ToString();
         }
+
         public CompareType ComparisonType => CompareClass.Convert(Comparison, this);
 
         private CompareClass compare;
@@ -185,6 +185,7 @@ namespace CmsData
                 return compare;
             }
         }
+
         public override string ToString()
         {
             string ret = "null";
@@ -217,6 +218,7 @@ namespace CmsData
             }
             return ret;
         }
+
         internal bool IsScratchPad => AllConditions.Any(vv => vv.Value.Description == Util.ScratchPad2);
         internal void SetIncludeDeceased()
         {
@@ -225,6 +227,7 @@ namespace CmsData
                 c = c.Parent;
             c.includeDeceased = true;
         }
+
         internal void SetParentsOf(CompareType op, bool tf)
         {
             var c = this;
@@ -232,6 +235,7 @@ namespace CmsData
                 c = c.Parent;
             c.ParentsOf = ((tf && op == CompareType.Equal) || (!tf && op == CompareType.NotEqual));
         }
+
         internal void SetFirstPersonSameEmail(CompareType op, bool tf)
         {
             var c = this;
@@ -239,6 +243,7 @@ namespace CmsData
                 c = c.Parent;
             c.FirstPersonSameEmail = ((tf && op == CompareType.Equal) || (!tf && op == CompareType.NotEqual));
         }
+
         internal void SetPlusParentsOf(CompareType op, bool tf)
         {
             var c = this;
@@ -246,12 +251,14 @@ namespace CmsData
                 c = c.Parent;
             c.PlusParentsOf = ((tf && op == CompareType.Equal) || (!tf && op == CompareType.NotEqual));
         }
+
         private bool includeDeceased;
         public bool ParentsOf { get; set; }
         public bool FirstPersonSameEmail { get; set; }
         public bool PlusParentsOf { get; set; }
         public bool FromDirectory { get; set; }
         public bool DisableOnScratchpad;
+
         public Expression<Func<Person, bool>> Predicate(CMSDataContext db)
         {
             db.CopySession();
@@ -274,6 +281,7 @@ namespace CmsData
                 tree = Expression.And(OrgLeadersOnly(db, parameter), tree);
             return Expression.Lambda<Func<Person, bool>>(tree, parameter);
         }
+
         private Expression OrgLeadersOnly(CMSDataContext db, ParameterExpression parm)
         {
             var tag = db.OrgLeadersOnlyTag2();
@@ -281,6 +289,7 @@ namespace CmsData
                 p.Tags.Any(t => t.Id == tag.Id);
             return Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
         }
+
         private Expression ExpressionTree(ParameterExpression parm, CMSDataContext Db)
         {
             if (IsGroup)
@@ -406,6 +415,7 @@ namespace CmsData
             FieldType.CodeStr,
             FieldType.DateField,
         };
+
         private bool IsCode => CodeTypes.Contains(Compare2.FieldType);
 
         private enum Part { Id = 0, Code = 1 }
@@ -415,6 +425,7 @@ namespace CmsData
                 return value.SplitStr(",", 2)[(int)part];
             return value;
         }
+
         internal string CodeIdText
         {
             get
@@ -437,6 +448,7 @@ namespace CmsData
                 return a.Length > 1 ? $"{a[0]}[{a[1]}]" : CodeIdValue;
             }
         }
+
         internal string CodeText
         {
             get
@@ -452,6 +464,7 @@ namespace CmsData
                 return a.Length > 1 ? a[1] : a[0];
             }
         }
+
         internal string CodeValues
         {
             get
@@ -467,6 +480,7 @@ namespace CmsData
                 return a[0];
             }
         }
+
         internal string CodeIds
         {
             get
@@ -495,6 +509,7 @@ namespace CmsData
                return cid;
             }
         }
+
         internal int[] CodeInts
         {
             get
@@ -511,6 +526,7 @@ namespace CmsData
                 return new[] { GetCodeIdValuePart(CodeIdValue, Part.Id).ToInt() };
             }
         }
+
         internal int[] CodeIntIds
         {
             get
@@ -527,6 +543,7 @@ namespace CmsData
                 return new[] { GetCodeIdValuePart(CodeIdValue, Part.Id).ToInt() };
             }
         }
+
         internal string[] CodeStrIds
         {
             get
@@ -540,6 +557,7 @@ namespace CmsData
                 return q.ToArray();
             }
         }
+
         public bool IsFirst => IsGroup && !ParentId.HasValue;
 
         public bool IsGroup => FieldInfo.Type == FieldType.Group;
@@ -564,6 +582,7 @@ namespace CmsData
             }
             return newclause;
         }
+
         private void CopyFrom(Condition from)
         {
             Id = Guid.NewGuid();
@@ -591,6 +610,7 @@ namespace CmsData
             TextValue = from.TextValue;
             TaxNonTax = from.TaxNonTax;
         }
+
         public void DeleteClause()
         {
             var allClauses = AllConditions;
@@ -598,6 +618,7 @@ namespace CmsData
                 c.DeleteClause();
             allClauses.Remove(Id);
         }
+
         public void Reset()
         {
             foreach (var c in Conditions)
@@ -605,6 +626,7 @@ namespace CmsData
             SetQueryType(QueryType.Group);
             SetComparisonType(CompareType.AllTrue);
         }
+
         public static Condition CreateNewGroupClause(string name = null)
         {
             var c = new Condition
@@ -623,12 +645,14 @@ namespace CmsData
         {
             return CreateNewGroupClause(name);
         }
+
         public static Condition CreateAllFalseGroup(string name = null)
         {
             var c = CreateNewGroupClause(name);
             c.Comparison = CompareType.AllFalse.ToString();
             return c;
         }
+
         public void IncrementLastRun()
         {
             if (JustLoadedQuery == null)
@@ -651,12 +675,14 @@ namespace CmsData
             AllConditions.Add(c.Id, c);
             return c;
         }
+
         public int MaxClauseOrder()
         {
             if (!Conditions.Any())
                 return 0;
             return Conditions.Max(qc => qc.Order);
         }
+
         public void ReorderClauses()
         {
             var q = from c in Conditions
@@ -669,6 +695,7 @@ namespace CmsData
                 n += 2;
             }
         }
+
         public Condition AddNewClause()
         {
             var c = new Condition
@@ -684,6 +711,7 @@ namespace CmsData
             AllConditions.Add(c.Id, c);
             return c;
         }
+
         public Condition AddNewClause(QueryType type, CompareType op, object value = null)
         {
             var c = AddNewClause();
@@ -728,24 +756,29 @@ namespace CmsData
             }
             return c;
         }
+
         public bool CanCut
         {
             get { return !IsFirst && (!IsLastNode || Parent.ParentId.HasValue); }
         }
+
         public bool CanRemove
         {
             get { return !IsFirst && !IsLastNode; }
         }
+
         public bool HasGroupBelow
         {
             get { return ParentId.HasValue && Parent.Conditions.Any(gg => gg.IsGroup); }
         }
+
         public class FlagItem
         {
             public string Text { get; set; }
             public int Value { get; set; }
             public string Tag { get; set; }
         }
+
         public static IEnumerable<FlagItem> StatusFlags(CMSDataContext db)
         {
             var q = (from c in db.Queries

@@ -1327,6 +1327,7 @@
     <Content Include="Content\touchpoint\js\sms\ReplyWords.js" />
     <Content Include="Content\touchpoint\js\sms\Received.js" />
     <Content Include="Content\touchpoint\js\sms\Sent.js" />
+    <Content Include="Content\touchpoint\js\speciallinks.js" />
     <Content Include="Content\touchpoint\js\update-add-modal-results.js" />
     <Content Include="Content\touchpoint\js\update-modal-results.js" />
     <Content Include="Content\touchpoint\js\vue-search-add.js" />
@@ -1982,6 +1983,7 @@
     <Content Include="Areas\Involvement\Views\Involvement\Venues\CreateVenue.cshtml" />
     <Content Include="Areas\Involvement\Views\Involvement\Meetings.cshtml" />
     <Content Include="Areas\Involvement\Views\Involvement\MeetingTabs.cshtml" />
+    <Content Include="Views\SpecialLinks\Index.cshtml" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
