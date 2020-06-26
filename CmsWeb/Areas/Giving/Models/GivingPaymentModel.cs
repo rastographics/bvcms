@@ -54,6 +54,15 @@ namespace CmsWeb.Areas.Giving.Models
             var paymentMethod = new PaymentMethod();
             var cardValidation = new Message();
             var bankValidation = new Message();
+            int currentPeopleId = 0;
+            if (viewModel.incomingPeopleId == null)
+            {
+                currentPeopleId = (int)CurrentDatabase.UserPeopleId;
+            }
+            else
+            {
+                currentPeopleId = (int)viewModel.incomingPeopleId;
+            }
 
             if (viewModel.testing == true)
             {
@@ -62,7 +71,7 @@ namespace CmsWeb.Areas.Giving.Models
                     case 1: // bank
                         paymentMethod = new PaymentMethod
                         {
-                            PeopleId = (int)CurrentDatabase.UserPeopleId,
+                            PeopleId = currentPeopleId,
                             PaymentMethodTypeId = (int)viewModel.paymentTypeId,
                             IsDefault = viewModel.isDefault,
                             Name = viewModel.name,
@@ -74,7 +83,7 @@ namespace CmsWeb.Areas.Giving.Models
                     case 2: // Visa
                         paymentMethod = new PaymentMethod
                         {
-                            PeopleId = (int)CurrentDatabase.UserPeopleId,
+                            PeopleId = currentPeopleId,
                             PaymentMethodTypeId = (int)viewModel.paymentTypeId,
                             IsDefault = viewModel.isDefault,
                             Name = viewModel.name,
@@ -88,7 +97,7 @@ namespace CmsWeb.Areas.Giving.Models
                     case 3: // Mastercard
                         paymentMethod = new PaymentMethod
                         {
-                            PeopleId = (int)CurrentDatabase.UserPeopleId,
+                            PeopleId = currentPeopleId,
                             PaymentMethodTypeId = (int)viewModel.paymentTypeId,
                             IsDefault = viewModel.isDefault,
                             Name = viewModel.name,
@@ -102,7 +111,7 @@ namespace CmsWeb.Areas.Giving.Models
                     case 4: // Amex
                         paymentMethod = new PaymentMethod
                         {
-                            PeopleId = (int)CurrentDatabase.UserPeopleId,
+                            PeopleId = currentPeopleId,
                             PaymentMethodTypeId = (int)viewModel.paymentTypeId,
                             IsDefault = viewModel.isDefault,
                             Name = viewModel.name,
@@ -116,7 +125,7 @@ namespace CmsWeb.Areas.Giving.Models
                     case 5: // Discover
                         paymentMethod = new PaymentMethod
                         {
-                            PeopleId = (int)CurrentDatabase.UserPeopleId,
+                            PeopleId = currentPeopleId,
                             PaymentMethodTypeId = (int)viewModel.paymentTypeId,
                             IsDefault = viewModel.isDefault,
                             Name = viewModel.name,
@@ -140,7 +149,7 @@ namespace CmsWeb.Areas.Giving.Models
                     case 1: // bank
                         paymentMethod = new PaymentMethod
                         {
-                            PeopleId = (int)CurrentDatabase.UserPeopleId,
+                            PeopleId = currentPeopleId,
                             PaymentMethodTypeId = (int)viewModel.paymentTypeId,
                             IsDefault = viewModel.isDefault,
                             Name = viewModel.name,
@@ -155,7 +164,7 @@ namespace CmsWeb.Areas.Giving.Models
                     case 2: // Visa
                         paymentMethod = new PaymentMethod
                         {
-                            PeopleId = (int)CurrentDatabase.UserPeopleId,
+                            PeopleId = currentPeopleId,
                             PaymentMethodTypeId = (int)viewModel.paymentTypeId,
                             IsDefault = viewModel.isDefault,
                             Name = viewModel.name,
@@ -172,7 +181,7 @@ namespace CmsWeb.Areas.Giving.Models
                     case 3: // Mastercard
                         paymentMethod = new PaymentMethod
                         {
-                            PeopleId = (int)CurrentDatabase.UserPeopleId,
+                            PeopleId = currentPeopleId,
                             PaymentMethodTypeId = (int)viewModel.paymentTypeId,
                             IsDefault = viewModel.isDefault,
                             Name = viewModel.name,
@@ -189,7 +198,7 @@ namespace CmsWeb.Areas.Giving.Models
                     case 4: // Amex
                         paymentMethod = new PaymentMethod
                         {
-                            PeopleId = (int)CurrentDatabase.UserPeopleId,
+                            PeopleId = currentPeopleId,
                             PaymentMethodTypeId = (int)viewModel.paymentTypeId,
                             IsDefault = viewModel.isDefault,
                             Name = viewModel.name,
@@ -206,7 +215,7 @@ namespace CmsWeb.Areas.Giving.Models
                     case 5: // Discover
                         paymentMethod = new PaymentMethod
                         {
-                            PeopleId = (int)CurrentDatabase.UserPeopleId,
+                            PeopleId = currentPeopleId,
                             PaymentMethodTypeId = (int)viewModel.paymentTypeId,
                             IsDefault = viewModel.isDefault,
                             Name = viewModel.name,
@@ -240,7 +249,7 @@ namespace CmsWeb.Areas.Giving.Models
             {
                 var expires = HelperMethods.FormatExpirationDate(Convert.ToInt32(viewModel.expiresMonth), Convert.ToInt32(viewModel.expiresYear));
                 var dollarAmt = 1;
-                var transactionResponse = gateway.AuthCreditCard((int)CurrentDatabase.UserPeopleId, dollarAmt, viewModel.cardNumber, expires, "Recurring Giving Auth", 0, viewModel.cvv, string.Empty, viewModel.firstName, viewModel.lastName, viewModel.address, viewModel.address2, viewModel.city, viewModel.state, viewModel.country, viewModel.zip, viewModel.phone);
+                var transactionResponse = gateway.AuthCreditCard(currentPeopleId, dollarAmt, viewModel.cardNumber, expires, "Recurring Giving Auth", 0, viewModel.cvv, string.Empty, viewModel.firstName, viewModel.lastName, viewModel.address, viewModel.address2, viewModel.city, viewModel.state, viewModel.country, viewModel.zip, viewModel.phone);
                 if (transactionResponse.Approved == false)
                     return Message.createErrorReturn("Card authorization failed.", Message.API_ERROR_PAYMENT_METHOD_AUTHORIZATION_FAILED);
                 else
