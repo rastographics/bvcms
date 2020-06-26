@@ -1,4 +1,5 @@
 ﻿using CmsData;
+using CmsWeb.Areas.Public.Models.CheckInAPIv2;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +13,15 @@ namespace SharedTestFixtures
         public static Campu CreateCampus(CMSDataContext db, string code = null, string description = null, bool? hardwired = null)
         {
             int? campusId = null;
-            campusId = db.Campus.OrderByDescending(c => c.Id).FirstOrDefault().Id + 1;
+            var currentCampus = db.Campus.OrderByDescending(c => c.Id).FirstOrDefault();
+            if(currentCampus == null)
+            {
+                campusId = 1;
+            }
+            else
+            {
+                campusId = currentCampus.Id;
+            }
             //try
             //{
             //    campusId = db.Campus.Max(c => c.Id) + 1;
