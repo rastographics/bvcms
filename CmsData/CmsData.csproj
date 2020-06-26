@@ -826,7 +826,6 @@
     <Compile Include="SmsReplacments\SpecialLinkReplacement.cs" />
     <Compile Include="SmsReplacments\TextReplacements.cs" />
     <Content Include="App_Readme\Elmah.txt" />
-    <Content Include="Migrations\00000000_sql_migrations_table.sql" />
     <Compile Include="Organization\OrgFilter.cs" />
     <Compile Include="Organization\OrgPerson.cs" />
     <Compile Include="Organization\OrgSchedule.cs" />
