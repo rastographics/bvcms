@@ -75,6 +75,12 @@ namespace CmsData
 
         private DateTime? _ResetPasswordExpires;
 
+        private string _Code;
+
+        private DateTime _CodeExpires;
+
+        private string _CodeEmail;
+
         private EntitySet<Coupon> _Coupons;
 
         private EntitySet<MobileAppDevice> _MobileAppDevices;
@@ -190,6 +196,15 @@ namespace CmsData
 
         partial void OnResetPasswordExpiresChanging(DateTime? value);
         partial void OnResetPasswordExpiresChanged();
+
+        partial void OnCodeChanging(string value);
+        partial void OnCodeChanged();
+
+        partial void OnCodeExpiresChanging(DateTime value);
+        partial void OnCodeExpiresChanged();
+
+        partial void OnCodeEmailChanging(string value);
+        partial void OnCodeEmailChanged();
 
         #endregion
 
@@ -778,6 +793,69 @@ namespace CmsData
                     OnResetPasswordExpiresChanged();
                 }
             }
+        }
+
+        [Column(Name = "code", UpdateCheck = UpdateCheck.Never, Storage = "_Code", DbType = "varchar(64) NOT NULL")]
+        public string Code
+        {
+            get { return this._Code; }
+
+            set
+            {
+                if (this._Code != value)
+                {
+
+                    this.OnCodeChanging(value);
+                    this.SendPropertyChanging();
+                    this._Code = value;
+                    this.SendPropertyChanged("Code");
+                    this.OnCodeChanged();
+                }
+
+            }
+
+        }
+
+        [Column(Name = "codeExpires", UpdateCheck = UpdateCheck.Never, Storage = "_CodeExpires", DbType = "datetime NOT NULL")]
+        public DateTime CodeExpires
+        {
+            get { return this._CodeExpires; }
+
+            set
+            {
+                if (this._CodeExpires != value)
+                {
+
+                    this.OnCodeExpiresChanging(value);
+                    this.SendPropertyChanging();
+                    this._CodeExpires = value;
+                    this.SendPropertyChanged("CodeExpires");
+                    this.OnCodeExpiresChanged();
+                }
+
+            }
+
+        }
+
+        [Column(Name = "codeEmail", UpdateCheck = UpdateCheck.Never, Storage = "_CodeEmail", DbType = "varchar(255) NOT NULL")]
+        public string CodeEmail
+        {
+            get { return this._CodeEmail; }
+
+            set
+            {
+                if (this._CodeEmail != value)
+                {
+
+                    this.OnCodeEmailChanging(value);
+                    this.SendPropertyChanging();
+                    this._CodeEmail = value;
+                    this.SendPropertyChanged("CodeEmail");
+                    this.OnCodeEmailChanged();
+                }
+
+            }
+
         }
 
         #endregion

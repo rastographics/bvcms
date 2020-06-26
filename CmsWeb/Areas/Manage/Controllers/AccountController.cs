@@ -1,4 +1,5 @@
 using CmsData;
+using CmsData.Classes.Twilio;
 using CmsWeb.Areas.Manage.Models;
 using CmsWeb.Lifecycle;
 using CmsWeb.Membership;
@@ -9,10 +10,12 @@ using ImageData;
 using net.openstack.Core.Domain;
 using net.openstack.Providers.Rackspace;
 using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Net.Mail;
 using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Configuration;
@@ -27,7 +30,7 @@ namespace CmsWeb.Areas.Manage.Controllers
     public class AccountController : CmsControllerNoHttps
     {
         internal const string LogonPageShellSettingKey = "UX-LoginPageShell";
-        internal const string MFAUserId = "MFAUserId"; 
+        internal const string MFAUserId = "MFAUserId";
 
         public AccountController(IRequestManager requestManager) : base(requestManager)
         {
@@ -431,7 +434,7 @@ namespace CmsWeb.Areas.Manage.Controllers
                     ViewBag.Message = "Incorrect password for " + user.Username;
                 }
             }
-            
+
             return View();
         }
 
@@ -783,5 +786,143 @@ namespace CmsWeb.Areas.Manage.Controllers
 
             return ModelState.IsValid;
         }
+
+        [MyRequireHttps]
+        public ActionResult Identity()
+        {
+            bool SMSReady = false;
+            var systemSMSGroup = TwilioHelper.GetSystemSMSGroup(CurrentDatabase);
+            if (TwilioHelper.IsConfigured(CurrentDatabase) && systemSMSGroup?.Count > 0)
+            {
+                SMSReady = true;
+            }
+            return Json(new
+            {
+                User = CurrentDatabase.CurrentUser,
+                SMSReady = SMSReady
+            }, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost, MyRequireHttps]
+        public ActionResult SendEasyLoginCode(string search)
+        {
+            // find user by phone or email, send a code
+            // returns fail (no results), success (sent), or multiple results
+            bool useMobileMessages = CurrentDatabase.Setting("UseMobileMessages");
+            var result = new AccountResult
+            {
+                Status = "error",
+                Message = ""
+            };
+
+            string email = search?.Trim();
+            string phone = "";
+            if (!email.HasValue() || !email.Contains("@"))
+            {
+                phone = email.GetDigits();
+            }
+            else if (!Util.ValidEmail(email))
+            {
+                // return invalid email
+                result.Message = "Invalid email";
+                return Json(result);
+            }
+
+            List<Person> matches = CurrentDatabase.People.Where(
+                p => p.EmailAddress == email || p.EmailAddress2 == email ||
+                    (p.CellPhone.Length > 0 && p.CellPhone == phone)
+                ).ToList();
+
+            if (matches.Count == 0)
+            {
+                // return no person found
+                result.Message = "No person found";
+                return Json(result);
+            }
+            else if (matches.Count > 1)
+            {
+                // return list of people found
+                result.Message = matches.ToString();
+                return Json(result);
+            }
+
+            // matched on one person
+            Person person = matches[0];
+            User user;
+            
+            if (person.Users.Any())
+            {
+                user = person.Users.First();
+            }
+            else
+            {
+                // create user
+                user = MembershipService.CreateUser(CurrentDatabase, person.PeopleId);
+                CurrentDatabase.SubmitChanges();
+            }
+
+            // todo: check if user needs 2fa and return error to handle it client side
+
+            // create code
+            var code = AccountModel.createQuickSignInCode();
+            user.Code = AccountModel.createHash($"{code}");
+            user.CodeExpires = DateTime.Now.AddMinutes(15);
+            user.CodeEmail = email;
+            CurrentDatabase.SubmitChanges();
+            
+            // send code
+            var church = CurrentDatabase.Setting("NameOfChurch", CurrentDatabase.Host);
+            if (phone.HasValue())
+            {
+                var systemSMSGroup = TwilioHelper.GetSystemSMSGroup(CurrentDatabase);
+                if (TwilioHelper.IsConfigured(CurrentDatabase) && systemSMSGroup?.Count > 0)
+                {
+                    var index = new Random().Next(0, systemSMSGroup.Count);
+                    var fromNumber = systemSMSGroup[index];
+                    var message = CurrentDatabase.Setting("MobileQuickSignInCodeSMS", "{code} is your one-time sign in code for {church}");
+                    message = message.Replace("{code}", code).Replace("{church}", church);
+                    if (!TwilioHelper.SendSMS(CurrentDatabase, phone, fromNumber, message))
+                    {
+                        CurrentDatabase.LogActivity($"SMS send failed to {phone} from {fromNumber.Number}");
+                        result.Message = "Error sending SMS";
+                        return Json(result);
+                    }
+                    else
+                    {
+                        result.Status = "success";
+                        result.Message = "SMS sent";
+                        return Json(result);
+                    }
+                }
+                else
+                {
+                    // twilio not configured
+                    result.Message = "Error sending SMS (Configuration error)";
+                    return Json(result);
+                }
+            }
+            else
+            {
+                List<MailAddress> mailAddresses = new List<MailAddress>();
+                mailAddresses.Add(new MailAddress(email));
+
+                var message = @"<h3>Here's your one-time mobile sign in code for {church}:</h3><h4 style=""text-align:center;font-family:monospace"">{code}</h4>";
+                var body = CurrentDatabase.ContentHtml("MobileQuickSignInCodeEmailBody", message);
+
+                body = body.Replace("{code}", code).Replace("{church}", church);
+
+                CurrentDatabase.SendEmail(new MailAddress(DbUtil.AdminMail, DbUtil.AdminMailName), CurrentDatabase.Setting("MobileQuickSignInCodeSubject", "Mobile Sign In Code"), body, mailAddresses);
+                // success! email sent
+                result.Status = "success";
+                result.Message = "Email sent";
+                return Json(result);
+            }
+        }
+
+        public class AccountResult {
+            public string Status { get; set; }
+            public string Message { get; set; }
+        }
     }
+
 }
