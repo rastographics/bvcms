@@ -33,6 +33,7 @@ namespace CmsWeb.Areas.Giving.Models
         public string phone { get; set; }
         public string transactionTypeId { get; set; }
         public string emailAddress { get; set; }
+        public int? incomingPeopleId { get; set; }
         public bool testing { get; set; }
 
         public Guid scheduledGiftId { get; set; }
