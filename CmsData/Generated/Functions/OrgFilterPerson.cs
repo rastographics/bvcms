@@ -91,6 +91,13 @@ namespace CmsData.View
 
         private int? _TaskDelegatedId;
 
+        // TODO: Add the following to the table
+        private int? _NumberOfTickets;
+
+        private DateTime? _PurchaseDate;
+
+        private int? _CustomerTicketStatus;
+
         public OrgFilterPerson()
         {
         }
@@ -668,5 +675,58 @@ namespace CmsData.View
                 }
             }
         }
+
+        // TODO: Add the following columns to the database table
+        public int? NumberOfTickets
+        {
+            get => _NumberOfTickets;
+
+            set
+            {
+                if (_NumberOfTickets != value)
+                {
+                    _NumberOfTickets = value;
+                }
+            }
+        }
+
+        public DateTime? PurchaseDate
+        {
+            get => _PurchaseDate;
+
+            set
+            {
+                if (_PurchaseDate != value)
+                {
+                    _PurchaseDate = value;
+                }
+            }
+        }
+
+        public int? CustomerTicketStatus
+        {
+            get => _CustomerTicketStatus;
+
+            set
+            {
+                if (_CustomerTicketStatus != value)
+                {
+                    _CustomerTicketStatus = value;
+                }
+            }
+        }
+
+
     }
+
+    public enum CustomerTicketStatusEnum
+    {
+        NoAction = 0,
+        PrintedByCustomer = 1,
+        WillCallPrintedByChurch = 2,
+        WillCallNotPrintedByChurch = 3,
+
+
+    }
+
 }

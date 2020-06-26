@@ -143,7 +143,14 @@ namespace CmsWeb.Code
                     if (track)
                         model.UpdateValue(changes, m.Name, viewmodelvalue);
                     else
+                    {
+                        if (m.Name == "GroupSelect") // ????????????
+                        {
+
+                        }
+
                         m.SetValue(model, viewmodelvalue, null);
+                    }
 
                 else if (viewmodelvalue is string)
                     if (track)
@@ -153,9 +160,9 @@ namespace CmsWeb.Code
 
                 else // Handle any other type mismatches like int = Nullable<int> or vice-versa
                     if (track)
-                        model.UpdateValue(changes, m.Name, viewmodelvalue);
-                    else
-                        m.SetPropertyFromText(model, (viewmodelvalue ?? "").ToString());
+                    model.UpdateValue(changes, m.Name, viewmodelvalue);
+                else
+                    m.SetPropertyFromText(model, (viewmodelvalue ?? "").ToString());
             }
             return changes;
         }
