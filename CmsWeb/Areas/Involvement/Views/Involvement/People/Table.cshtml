@@ -1,0 +1,277 @@
+﻿@using CmsData
+@using CmsData.Codes
+@using CmsData.View
+@using UtilityExtensions
+@model CmsWeb.Areas.Involvement.Models.InvolvementPeopleModel
+@{
+    var target = Util2.TargetLinkPeople ? "target='people'" : "";
+}
+<table class="table table-striped">
+    <thead>
+        <tr>
+            @if (!Model.OrgLeaderAddDrop)
+            {
+                <th style="width: 20px;">@Model.SortLink("Ck")</th>
+            }
+            @if (Model.MultiSelect)
+            {
+                <th>@Model.SortLink("Tab")</th>
+            }
+            <th>
+
+            </th>
+            <th>
+                @Model.SortLink("Name")
+            </th>
+            <th>
+                @Model.SortLink("Member Type")
+            </th>
+            <th>
+                @Model.SortLink("Church")<br />
+                @if (Model.ShowBirthday)
+                {
+                    <text>@Model.SortLink("Age") - @Model.SortLink("Bday")</text>
+                }
+            </th>
+            <th>Communication</th>
+            <th>@Model.SortLink("# of Tickets")</th>
+            <th>Purchase Date</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var p in Model.ViewList())
+        {
+            var hastag = p.HasTag ?? false;
+            <tr class="@(p.IsDeceased == true ? "danger" : "")">
+                @if (!Model.OrgLeaderAddDrop)
+                {
+                    <td style="width: 20px;">
+                        <input type="checkbox" class="omck" value="@p.PeopleId" @(p.IsChecked == true ? "checked=checked" : "") />
+                    </td>
+                }
+                @if (Model.MultiSelect)
+                {
+                    <td>@p.Tab</td>
+                }
+                <td>
+                    <a href="#" class="templateItem" template="0">
+                        <img src="/PreviewImage/0" class="img-responsive img-circle" width="30" height="30"/>
+                    </a>
+                </td>
+                <td>
+                    @if (Model.DisablePeopleLink)
+                    {
+                        <text>@p.Name</text>
+                    }
+                    else
+                    {
+                        <a href="/Person2/@p.PeopleId" class="target" @target>@p.Name</a>
+                    }
+
+                    @if (Model.NameLinks != null && p.PeopleId.HasValue && Model.NameLinks.ContainsKey(p.PeopleId.Value))
+                    {
+                        <div>
+                            @Html.Raw(Model.NameLinks[p.PeopleId.Value])
+                        </div>
+                    }
+
+                    @if (Model.ShowAddress)
+                    {
+                        @p.AddressBlock
+                    }
+                </td>
+                <td>
+                    @ManageMemberLinks(p)
+                    @ManagePrevMemberLinks(p)
+                    @ManageGuestLinks(p)
+                    @ManageProspectLinks(p)
+                </td>
+                <td>
+                    @p.MemberStatus<br />
+                    @if (Model.ShowBirthday)
+                    {
+                        var age = Person.AgeDisplay(p.Age, p.PeopleId).ToString();
+                        var bday = p.BirthDate;
+                        var dash = age.HasValue() && bday.HasValue() ? "-" : "";
+                        <text>@age @dash @bday</text>
+                    }
+                </td>
+                <td>
+                    @foreach (var ph in p.Phones)
+                    {
+                        @ph
+                        <br />
+                    }
+                    <a href="mailto:@p.EmailAddress">@p.EmailAddress</a>
+                </td>
+                <td>
+                    <text>@p.NumberOfTickets</text>
+                </td>
+                <td>
+                    <text>@p.PurchaseDate</text>
+                </td>
+                <td>
+                    @if (p.CustomerTicketStatus == (int)CustomerTicketStatusEnum.PrintedByCustomer)
+                    {
+                        <a href="Inv/Print"><i class="fa fa-print" style="color:#008000;"></i></a>
+                    }
+                    else if (p.CustomerTicketStatus == (int)CustomerTicketStatusEnum.WillCallPrintedByChurch)
+                    {
+                        <a href="Inv/Print"><i class="fa fa-print" style="color:#FF0000;"></i></a>
+                    }
+                    else
+                    {
+                        <a href="Inv/Print"><i class="fa fa-print"></i></a>
+                    }
+
+                    &nbsp;
+                    <a href="Inv/Tag"><i class="fa fa-tag"></i></a>&nbsp;
+                    <a href="Inv/Edit"><i class="fa fa-edit"></i></a>&nbsp;
+                    <a href="Inv/Edit"><i class="fa fa-trash">
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+@helper DaysAgo(DateTime dt)
+{
+    if (dt > DateTime.Today)
+    {
+        return;
+    }
+    <span class="smallfont">@DateTime.Today.Subtract(dt).TotalDays.ToInt()</span>
+}
+@helper ShowDateLink(DateTime? dt, string url, int? id, string type, string extra = "")
+{
+    if (dt.HasValue)
+    {
+        <div>
+            <a href="@url/@id@extra" target="contact">@dt.FormatDate2(type)</a>
+            @DaysAgo(dt.Value)
+        </div>
+    }
+}
+@helper ShowDateLink(DateTime? dt, string url, string type)
+{
+    if (dt.HasValue)
+    {
+        <div>
+            <a href="@url" target="contact">@dt.FormatDate2(type)</a>
+            @DaysAgo(dt.Value)
+        </div>
+    }
+}
+@helper ShowDate(DateTime? dt, string type)
+{
+    if (dt.HasValue)
+    {
+        <div>
+            <span>@dt.FormatDate2(type)</span>
+            @DaysAgo(dt.Value)
+        </div>
+    }
+}
+@helper ManageGuestLinks(OrgFilterPerson p)
+{
+    if (p.GroupCode == GroupSelectCode.Guest)
+    {
+        <div>
+            <a href="/Org/Join/@Model.Id/@p.PeopleId" class="joinlink"
+               confirm="Make @p.Name a Member of this Org?">
+                Join Org
+            </a>
+        </div>
+        if (p.MemberType != "Prospect")
+        {
+            <div>
+                <a href="/Org/AddProspect/@Model.Id/@p.PeopleId" class="joinlink"
+                   confirm="Make @p.Name a Prospect of this Org?">
+                    Add as Prospect
+                </a>
+            </div>
+        }
+        if (p.LastAttended.HasValue)
+        {
+            if (p.Hidden == true)
+            {
+                <div>
+                    <a href="/Org/ShowVisitor/@Model.Id/@p.PeopleId/@p.LastAttended.Value.Ticks/Show" class="joinlink"
+                       confirm="Show @p.Name as a Guest for this Org?">
+                        Show
+                    </a>
+                </div>
+            }
+            else
+            {
+                <div>
+                    <a href="/Org/ShowVisitor/@Model.Id/@p.PeopleId/@p.LastAttended.Value.Ticks/Hide" class="joinlink"
+                       confirm="Hide @p.Name as a Guest for this Org until next visit?">
+                        Hide
+                    </a>
+                </div>
+            }
+        }
+    }
+}
+
+@helper ManageProspectLinks(OrgFilterPerson p)
+{
+    if (p.GroupCode == GroupSelectCode.Prospect)
+    {
+        if (Model.ShowSubgroupFilters)
+        {
+            if (p.Hidden == true)
+            {
+                <div>
+                    <a href="/Org/ShowProspect/@Model.Id/@p.PeopleId/Show" class="joinlink"
+                       confirm="Show @p.Name in Prospect List for this Org?">
+                        Show
+                    </a>
+                </div>
+            }
+            else
+            {
+                <div>
+                    <a href="/Org/ShowProspect/@Model.Id/@p.PeopleId/Hide" class="joinlink"
+                       confirm="Hide @p.Name on Prospect List for this Org?">
+                        Hide
+                    </a>
+                </div>
+            }
+        }
+        else
+        {
+            <div>
+                <a href="/Org/Join/@Model.Id/@p.PeopleId" class="joinlink"
+                   confirm="Join @p.Name to this Org?">
+                    Join
+                </a>
+            </div>
+        }
+    }
+}
+@helper ManageMemberLinks(OrgFilterPerson p)
+{
+    if (!(new[] { GroupSelectCode.Guest, GroupSelectCode.Previous }).Contains(p.GroupCode))
+    {
+        <div>
+            <a class="membertype" href="/OrgMemberDialog/@p.Group/@Model.Id/@p.PeopleId"> @p.MemberType </a>
+        </div>
+    }
+}
+@helper ManagePrevMemberLinks(OrgFilterPerson p)
+{
+    if (p.GroupCode == GroupSelectCode.Previous)
+    {
+        <div>
+            <a class="membertype" href="/OrgPrevMemberDialog/@Model.Id/@p.PeopleId">Prev @p.MemberType </a>
+        </div>
+        <div class="pad-top">
+            <a href="/Org/Join/@Model.Id/@p.PeopleId" class="joinlink"
+               confirm="Re-Join @p.Name to this Org?">
+                Re-Join Org
+            </a>
+        </div>
+    }
+}

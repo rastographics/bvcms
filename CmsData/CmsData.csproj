@@ -826,7 +826,6 @@
     <Compile Include="SmsReplacments\SpecialLinkReplacement.cs" />
     <Compile Include="SmsReplacments\TextReplacements.cs" />
     <Content Include="App_Readme\Elmah.txt" />
-    <Content Include="Migrations\00000000_sql_migrations_table.sql" />
     <Compile Include="Organization\OrgFilter.cs" />
     <Compile Include="Organization\OrgPerson.cs" />
     <Compile Include="Organization\OrgSchedule.cs" />
@@ -1208,6 +1207,8 @@
     <Content Include="Migrations\20200331_alter_GetTotalContributionsDonor2_func.sql" />
     <Content Include="Migrations\20200511_alter_PledgesSummary_func.sql" />
     <Content Include="Migrations\20200603_alter_IsValidEmail_function.sql" />
+    <Content Include="Migrations\20200618_alter_documents_tables.sql" />
+    <Content Include="Migrations\20200626_Update_FundStatusId_0_To_2.sql" />
     <Content Include="QueryBuilder\CompareMap.xml">
       <SubType>Designer</SubType>
     </Content>
