@@ -125,6 +125,7 @@ namespace CmsWeb.Areas.Giving.Models
         public const int API_ERROR_SCHEDULED_GIFT_TYPE_ID_NOT_FOUND = 121;
         public const int API_ERROR_SCHEDULED_GIFT_START_DATE_NOT_FOUND = 122;
         public const int API_ERROR_SCHEDULED_GIFT_FUND_ID_NOT_FOUND = 123;
+        public const int API_ERROR_SCHEDULED_GIFT__PEOPLE_ID_NOT_FOUND = 124;
 
         public const int API_ERROR_SCHEDULED_GIFT_AMOUNT_NOT_FOUND = 130;
 
