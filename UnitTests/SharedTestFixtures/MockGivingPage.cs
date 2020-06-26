@@ -12,7 +12,7 @@ namespace SharedTestFixtures
                 PageName = pageName ?? DatabaseTestBase.RandomString(),
                 PageUrl = DatabaseTestBase.RandomString(),
                 PageType = pageTypeId,
-                FundId = fundId ?? DatabaseTestBase.RandomNumber(),
+                FundId = fundId,
                 Enabled = true,
                 DisabledRedirect = DatabaseTestBase.RandomString()
             };

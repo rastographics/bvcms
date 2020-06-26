@@ -12,14 +12,15 @@ namespace SharedTestFixtures
         public static Campu CreateCampus(CMSDataContext db, string code = null, string description = null, bool? hardwired = null)
         {
             int? campusId = null;
-            try
-            {
-                campusId = db.Campus.Max(c => c.Id) + 1;
-            }
-            catch
-            {
-                campusId = 1;
-            }
+            campusId = db.Campus.OrderByDescending(c => c.Id).FirstOrDefault().Id + 1;
+            //try
+            //{
+            //    campusId = db.Campus.Max(c => c.Id) + 1;
+            //}
+            //catch
+            //{
+            //    campusId = 1;
+            //}
             var campus = new Campu()
             {
                 Id = (int)campusId,
