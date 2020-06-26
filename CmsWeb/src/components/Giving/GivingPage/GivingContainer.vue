@@ -1,11 +1,17 @@
 ﻿<template>
     <div>
-        <div class="page-header text-center">
+        <div class="page-header text-center" style="margin-bottom:0;">
             <h1>{{ page.PageName }}</h1>
         </div>
         <div class="panel">
-            <transition name="slide-left" mode="out-in">
+            <transition :name="slideDirection" mode="out-in">
                 <div class="panel-body" v-if="view === 'gifts'" key="gifts">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <button v-if="!identity.User" @click="loadView('signin', true)" class="btn btn-link pull-right"><i class="fa fa-user"></i> Sign In</button>
+                            <button v-else class="btn btn-link pull-right"><i class="fa fa-user"></i> {{ identity.User.Name }}</button>
+                        </div>
+                    </div>
                     <div v-if="pageTypes.length > 1" class="text-center" style="margin-bottom: 25px;">
                         <div aria-label="Giving Type" class="btn-group give-type text-center" role="group" style="margin: 0 auto;">
                             <button v-for="type in pageTypes" :key="type.Name" :class="[givingType == type.Name ? 'btn-primary' : '', 'btn-default', 'btn']" @click="updateType(type.Name)">{{ type.Name }}</button>
@@ -14,7 +20,7 @@
                     <transition name="fade" mode="out-in">
                         <div v-if="givingType == 'One Time'" key="onetime">
                             <transition-group name="gift">
-                                <one-time-gift v-for="(gift, index) in gifts" v-model="gifts[index]" :count="gifts.length" :key="gift.key" :funds="unusedFunds" :showValidation="showValidation"  @remove="removeGift(index)"></one-time-gift>
+                                <one-time-gift v-for="(gift, index) in gifts" v-model="gifts[index]" :count="gifts.length" :key="gift.key" :funds="unusedFunds" :showValidation="showValidation" @remove="removeGift(index)"></one-time-gift>
                             </transition-group>
                             <div class="row">
                                 <div class="col-md-6">
@@ -87,7 +93,8 @@
                 view: "gifts",
                 onKey: 0,
                 identity: false,
-                showValidation: false
+                showValidation: false,
+                slideDirection: 'slide-left'
             };
         },
         computed: {
@@ -119,11 +126,15 @@
             removeGift(index) {
                 this.gifts.splice(index, 1);
             },
-            loadView(newView) {
+            loadView(newView, skipValidation = false) {
                 // setup the new view
+                this.slideDirection = 'slide-left';
+                if (this.view === 'signin' && newView === 'gifts')  {
+                    this.slideDirection = 'slide-right';
+                }
                 // todo: also handle routing here?
                 if (this.view === 'gifts') {
-                    if (!this.validateGifts()) {
+                    if (!skipValidation && !this.validateGifts()) {
                         return false;
                     }
                 }
@@ -145,6 +156,27 @@
                 });
                 vm.showValidation = !valid;
                 return valid;
+            },
+            getIdentity() {
+                let vm = this;
+                axios
+                    .get("/Account/Identity")
+                    .then(
+                        response => {
+                            if (response.status === 200) {
+                                vm.identity = response.data;
+                            } else {
+                                warning_swal("Warning!", "Something went wrong, try again later");
+                            }
+                        },
+                        err => {
+                            console.log(err);
+                            error_swal("Fatal Error!", "We are working to fix it");
+                        }
+                    )
+                    .catch(function (error) {
+                        console.log(error);
+                    });
             },
             getPageTypes() {
                 let vm = this;
@@ -258,6 +290,7 @@
         },
         mounted() {
             this.page = JSON.parse(this.pageProp);
+            this.getIdentity();
             this.getPageTypes();
         }
     };

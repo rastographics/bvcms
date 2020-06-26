@@ -2926,6 +2926,9 @@
     <Content Include="Views\Shared\Giving.cshtml" />
     <Content Include="src\components\Giving\GivingPage\RecurringGift.vue" />
     <Content Include="src\components\Giving\GivingPage\FundPicker.vue" />
+    <Content Include="src\components\Common\ContentTransition.vue" />
+    <Content Include="src\components\Common\Login.vue" />
+    <Content Include="src\components\Giving\GivingPage\GivingLogin.vue" />
     <None Include="Web.staging.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
