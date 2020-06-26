@@ -120,8 +120,8 @@
     <Compile Include="Areas\Finance\Views\Bundle\EditTests.cs" />
     <Compile Include="Areas\General\GeneralTests.cs" />
     <Compile Include="Areas\General\QueryControllerTests.cs" />
-    <Compile Include="Areas\Involvement\Views\Involvement\AdminMenuTests.cs" />
     <Compile Include="Areas\Involvement\Views\Navigation\DbSettingsTests.cs" />
+    <Compile Include="Areas\Involvement\Views\Involvement\AdminMenuTests.cs" />
     <Compile Include="Areas\Main\Views\Email\EmailViewsTests.cs" />
     <Compile Include="Areas\Manage\AccountTests.cs" />
     <Compile Include="Areas\Manage\Views\Batch\RetrieveBatchDataTests.cs" />
