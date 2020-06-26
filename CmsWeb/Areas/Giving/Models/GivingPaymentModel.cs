@@ -66,6 +66,7 @@ namespace CmsWeb.Areas.Giving.Models
             var cardValidation = new Message();
             var bankValidation = new Message();
             int currentPeopleId = 0;
+            // this is for testing purposes
             if (viewModel.incomingPeopleId == null)
             {
                 currentPeopleId = (int)CurrentDatabase.UserPeopleId;
