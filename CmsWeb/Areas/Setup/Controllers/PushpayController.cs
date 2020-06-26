@@ -126,7 +126,7 @@ namespace CmsWeb.Areas.Setup.Controllers
             if (!string.IsNullOrEmpty(sr)&&!string.IsNullOrEmpty(paymentToken))
             {
                 var state = sr.Split('_')[1];
-                redirectUrl = $"https://{state}.tpsdb.work/Pushpay/ProcessPayment?paymentToken={paymentToken}&sr={sr}";
+                redirectUrl = $"https://{state}.{Configuration.Current.OrgBaseDomain}/Pushpay/ProcessPayment?paymentToken={paymentToken}&sr={sr}";
             }
 #endif
             return Redirect(redirectUrl);
