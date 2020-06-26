@@ -40,6 +40,18 @@ namespace CmsWeb.Areas.Manage.Controllers
         }
 
         [HttpPost]
+        public ContentResult EmailSent(SmsSentMessagesModel m)
+        {
+            var guid = m.ToolBarSend();
+            return Content($"/Email/{guid}");
+        }
+        [HttpPost]
+        public ContentResult TextSent(SmsSentMessagesModel m)
+        {
+            var guid = m.ToolBarSend();
+            return Content($"/SMS/Options/{guid}");
+        }
+        [HttpPost]
         public ContentResult TagSentDialog(SmsSentMessagesModel m)
         {
             var q = m.Recipients();
@@ -50,18 +62,13 @@ namespace CmsWeb.Areas.Manage.Controllers
         [HttpPost]
         public ContentResult TagSent(string tagname, bool? cleartagfirst, SmsSentMessagesModel m)
         {
-            var workingTag = CurrentDatabase.FetchOrCreateTag(
-                Util2.GetValidTagName(tagname),
-                CurrentDatabase.UserPeopleId,
-                DbUtil.TagTypeId_Personal);
-            var shouldEmptyTag = cleartagfirst ?? false;
-            if (shouldEmptyTag)
-            {
-                CurrentDatabase.ClearTag(workingTag);
-            }
-            m.TagAll(workingTag);
-            Util2.CurrentTag = workingTag.Name;
+            m.TagAll(tagname, cleartagfirst);
             return Content("Added to Tag");
+        }
+        [HttpPost]
+        public EpplusResult ExportSent(SmsSentMessagesModel m)
+        {
+            return m.ExportSent();
         }
 
         [HttpPost]
@@ -104,6 +111,23 @@ namespace CmsWeb.Areas.Manage.Controllers
         {
             m.TagAll(tagname, cleartagfirst);
             return Content("Added to Tag");
+        }
+        [HttpPost]
+        public EpplusResult ExportReceived(SmsReceivedMessagesModel m)
+        {
+            return m.ExportReceived();
+        }
+        [HttpPost]
+        public ContentResult EmailReceived(SmsReceivedMessagesModel m)
+        {
+            var guid = m.ToolBarSend();
+            return Content($"/Email/{guid}");
+        }
+        [HttpPost]
+        public ContentResult TextReceived(SmsReceivedMessagesModel m)
+        {
+            var guid = m.ToolBarSend();
+            return Content($"/SMS/Options/{guid}");
         }
 
         [HttpPost]

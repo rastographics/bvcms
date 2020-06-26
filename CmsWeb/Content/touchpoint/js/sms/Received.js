@@ -63,6 +63,31 @@
             ev.preventDefault();
             var sentid = $(this).data("sentid");
             FilterReplySent('#' + sentid);
+        }).on("click",
+        "a.sendemail",
+        function(ev) {
+            ev.preventDefault();
+            var q = $("#receivedform").serialize();
+            $.post("/SmsMessages/EmailReceived", q,
+                function (ret) {
+                    window.location = ret;
+                });
+        }).on("click",
+        "a.sendtext",
+        function(ev) {
+            ev.preventDefault();
+            var q = $("#receivedform").serialize();
+            $.post("/SmsMessages/TextReceived", q,
+                function (ret) {
+                    window.location = ret;
+                });
+        }).on("click",
+        "a.export",
+        function (ev) {
+            ev.preventDefault();
+            var f = $('#receivedform');
+            f.attr("action", "/SmsMessages/ExportReceived");
+            f.submit();
         });
 
     $('#SendReplyForm').on('click', '#sendmessage',
