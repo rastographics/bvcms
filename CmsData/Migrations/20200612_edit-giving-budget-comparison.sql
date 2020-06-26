@@ -29,7 +29,15 @@ set Body = '<div class="box">
         var data = {{{results}}};
         var budget = {{{annualbudget}}};
         var givingTotalYTD = 0;
-        var weekMultiplier = weekOfYear[1] - chosenWeekOfYear[1];
+        if(newDate.getFullYear() < today.getFullYear()) {
+            if(newDate.getFullYear() === (today.getFullYear() - 1)){
+                var numWeeksLeftLastYear = 52 - chosenWeekOfYear[1];
+                var weekMultiplier = currentWeekOfYear[1] + numWeeksLeftLastYear;
+            }
+        }
+        else if (newDate.getFullYear() === today.getFullYear()) {
+            var weekMultiplier = currentWeekOfYear[1] - chosenWeekOfYear[1];
+        }
         var budgetYTD = ((budget/52)*weekMultiplier);
         var sevenDayaAgo = new Date();
         sevenDayaAgo.setDate(sevenDayaAgo.getDate() - 7);
@@ -52,21 +60,21 @@ set Body = '<div class="box">
         let p1 = document.createElement("p");
         p1.innerHTML = "Total Given YTD: " + myCurrencyFormatter.format(givingTotalYTD);
         p1.className = "text-center";
-        p1.style = "margin:0px;";
+        p1.style = "margin:0px;text-align:right;font-size:13px;";
         document.querySelector(''#{{WidgetId}}-section .chartSummary'').appendChild(p1);
         
         let p2 = document.createElement("p");
         p2.innerHTML = "Budget YTD: " + myCurrencyFormatter.format(budgetYTD);
         p2.className = "text-center";
-        p2.style = "margin:0px;";
+        p2.style = "margin:0px;text-align:right;font-size:13px;";
         document.querySelector(''#{{WidgetId}}-section .chartSummary'').appendChild(p2);
         
         let p3 = document.createElement("p");
         p3.innerHTML = "Over/Under YTD: " + myCurrencyFormatter.format(overUnderYTD);
         if(overUnderYTD < 0){
-            p3.style = "color:red;margin:0px;";
+            p3.style = "color:red;margin:0px;text-align:right;font-size:13px;";
         } else{
-            p3.style = "margin:0px;";
+            p3.style = "margin:0px;text-align:right;font-size:13px;";
         }
         p3.className = "text-center";
         document.querySelector(''#{{WidgetId}}-section .chartSummary'').appendChild(p3);
@@ -74,13 +82,13 @@ set Body = '<div class="box">
         let p4 = document.createElement("p");
         p4.innerHTML = "Weekly Average YTD: " + myCurrencyFormatter.format(weeklyAverageYTD);
         p4.className = "text-center";
-        p4.style = "margin:0px;";
+        p4.style = "margin:0px;text-align:right;font-size:13px;";
         document.querySelector(''#{{WidgetId}}-section .chartSummary'').appendChild(p4);
         
         let p5 = document.createElement("p");
         p5.innerHTML = "Last 7 Days: " + myCurrencyFormatter.format(givingLastSevenDays);
         p5.className = "text-center";
-        p5.style = "margin:0px;";
+        p5.style = "margin:0px;text-align:right;font-size:13px;";
         document.querySelector(''#{{WidgetId}}-section .chartSummary'').appendChild(p5);
         
         var YTDgiving = Math.round(givingTotalYTD);
