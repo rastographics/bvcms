@@ -35,13 +35,10 @@ namespace CmsWeb.Areas.Giving.Models
         public string emailAddress { get; set; }
         public int? incomingPeopleId { get; set; }
         public bool testing { get; set; }
-
-
         public Guid scheduledGiftId { get; set; }
         public int? scheduleTypeId { get; set; }
         public DateTime? start { get; set; }
         public DateTime? end { get; set; }
-
         public Guid scheduledGiftAmountId { get; set; }
         public int? fundId { get; set; }
         public decimal? amount { get; set; }
