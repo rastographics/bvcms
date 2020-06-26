@@ -1,10 +1,9 @@
-using CmsData;
+﻿using CmsData;
 using CmsData.Classes.RoleChecker;
 using CmsData.Codes;
 using CmsData.View;
 using CmsWeb.Code;
 using CmsWeb.Constants;
-using CmsWeb.Membership.Extensions;
 using CmsWeb.Models;
 using System;
 using System.Collections.Generic;
@@ -15,21 +14,21 @@ using System.Web;
 using System.Web.Mvc;
 using UtilityExtensions;
 
-namespace CmsWeb.Areas.Org.Models
+namespace CmsWeb.Areas.Involvement.Models
 {
-    public class OrgPeopleModel : PagedTableModel<OrgFilterPerson, OrgFilterPerson>, IDbBinder
+    public class InvolvementPeopleModel : PagedTableModel<OrgFilterPerson, OrgFilterPerson>, IDbBinder
     {
         internal CMSDataContext Db => CurrentDatabase;
         public Guid QueryId { get; set; }
         public User User => CurrentDatabase.CurrentUser;
 
         [Obsolete(Errors.ModelBindingConstructorError, true)]
-        public OrgPeopleModel()
+        public InvolvementPeopleModel()
         {
             Init();
         }
 
-        public OrgPeopleModel(CMSDataContext db) : base(db)
+        public InvolvementPeopleModel(CMSDataContext db) : base(db)
         {
             Init();
         }
@@ -69,7 +68,7 @@ namespace CmsWeb.Areas.Org.Models
             filter.LastUpdated = DateTime.Now;
             Db.SubmitChanges();
             var q = from p in Db.OrgFilterPeople(QueryId, ShowMinistryInfo)
-                                            select p;
+                    select p;
             return q;
         }
 
@@ -348,23 +347,7 @@ namespace CmsWeb.Areas.Org.Models
 
         public bool ShowAddress { get; set; }
         public int? Id { get; set; }
-
-        // public string GroupSelect { get; set; }
-        public string GroupSelect
-        {
-            get
-            {
-                return _groupselect; // ????
-            }
-            set
-            {
-                _groupselect = value;
-            }
-        } string _groupselect;
-
-
-
-
+        public string GroupSelect { get; set; }
         public string NameFilter { get; set; }
         public string SgFilter { get; set; }
         public bool ShowHidden { get; set; }

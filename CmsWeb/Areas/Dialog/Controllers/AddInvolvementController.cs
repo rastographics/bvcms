@@ -1,4 +1,4 @@
-using CmsData;
+﻿using CmsData;
 using CmsData.Registration;
 using CmsWeb.Areas.Dialog.Models;
 using CmsWeb.Lifecycle;
@@ -8,14 +8,14 @@ using UtilityExtensions;
 namespace CmsWeb.Areas.Dialog.Controllers
 {
     [Authorize(Roles = "Edit")]
-    [RouteArea("Dialog", AreaPrefix = "AddOrganization")]
-    public class AddOrganizationController : CmsStaffController
+    [RouteArea("Dialog", AreaPrefix = "AddInvolvement")]
+    public class AddInvolvementController : CmsStaffController
     {
-        public AddOrganizationController(IRequestManager requestManager) : base(requestManager)
+        public AddInvolvementController(IRequestManager requestManager) : base(requestManager)
         {
         }
 
-        [Route("~/AddOrganization")]
+        [Route("~/AddInvolvement")]
         public ActionResult Index(bool displayCopySettings = false)
         {
             var m = new NewOrganizationModel(CurrentDatabase, CurrentDatabase.CurrentSessionOrgId, displayCopySettings);
@@ -23,16 +23,6 @@ namespace CmsWeb.Areas.Dialog.Controllers
             m.org.Location = "";
             return View(m);
         }
-
-        //[Route("~/AddInvolvement")]
-        //public ActionResult AddInvolvement(bool displayCopySettings = false)
-        //{
-        //    var m = new NewOrganizationModel(CurrentDatabase, CurrentDatabase.CurrentSessionOrgId, displayCopySettings);
-        //    m.org.OrganizationName = "";
-        //    m.org.Location = "";
-        //    return View(m); //  ("/AddInvolvement/index.cshtml", m);
-        //}
-
 
         [HttpPost, Route("Submit/{id:int}")]
         public ActionResult Submit(int id, NewOrganizationModel m)
@@ -49,18 +39,18 @@ namespace CmsWeb.Areas.Dialog.Controllers
 
             if (!m.org.OrganizationName.HasValue())
             {
-                m.org.OrganizationName = $"New organization needs a name ({Util.UserFullName})";
+                m.org.OrganizationName = $"New Involvement needs a name ({Util.UserFullName})";
             }
 
             m.org.OrganizationStatusId = 30;
-            m.org.DivisionId = org.DivisionId;        
+            m.org.DivisionId = org.DivisionId;
 
             CurrentDatabase.Organizations.InsertOnSubmit(m.org);
             CurrentDatabase.SubmitChanges();
             foreach (var div in org.DivOrgs)
             {
                 m.org.DivOrgs.Add(new DivOrg { Organization = m.org, DivId = div.DivId });
-            }            
+            }
 
             if (m.copysettings)
             {

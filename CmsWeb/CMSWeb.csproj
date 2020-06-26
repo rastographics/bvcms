@@ -412,6 +412,7 @@
     <Compile Include="Areas\Coordinator\Models\PostTargetInfo.cs" />
     <Compile Include="Areas\Coordinator\CoordinatorAreaRegistration.cs" />
     <Compile Include="Areas\Coordinator\Models\SubgroupModel.cs" />
+    <Compile Include="Areas\Dialog\Controllers\AddInvolvementController.cs" />
     <Compile Include="Areas\Dialog\Controllers\AddResourceController.cs" />
     <Compile Include="Areas\Dialog\Controllers\AddOrganizationController.cs" />
     <Compile Include="Areas\Dialog\Controllers\AddAttendeesFromTagController.cs" />
@@ -562,11 +563,19 @@
     <Compile Include="Areas\Finance\Models\TotalsByFundRange.cs" />
     <Compile Include="Areas\Finance\Models\TotalsByFundAgeRangeModel.cs" />
     <Compile Include="Areas\Involvement\Controllers\InvolvementSearchController.cs" />
+    <Compile Include="Areas\Involvement\Controllers\Involvement\InvolvementPeople.cs" />
+    <Compile Include="Areas\Involvement\Controllers\MeetingController.cs" />
     <Compile Include="Areas\Involvement\InvolvementAreaRegistration.cs" />
+    <Compile Include="Areas\Involvement\Controllers\Involvement\InvolvementController.cs" />
+    <Compile Include="Areas\Involvement\Models\InvolvementMain.cs" />
+    <Compile Include="Areas\Involvement\Models\InvolvementModel.cs" />
+    <Compile Include="Areas\Involvement\Models\InvolvementPeopleModel.cs" />
+    <Compile Include="Areas\Involvement\Models\InvolvementVenuesModel.cs" />
+    <Compile Include="Areas\Involvement\Models\MeetingInfo.cs" />
+    <Compile Include="Areas\Involvement\Models\MeetingsModel.cs" />
     <Compile Include="Areas\Main\Models\Other\CouponResponseModel.cs" />
     <Compile Include="Areas\Manage\Controllers\ActivityController.cs" />
     <Compile Include="Areas\Manage\Controllers\BatchMoveAndDelete.cs" />
-    <Compile Include="Areas\Manage\Controllers\InvolvementController.cs" />
     <Compile Include="Areas\Manage\Models\SmsMessages\ReceivedDetailViewModel.cs" />
     <Compile Include="Areas\Manage\Models\SmsMessages\ReplyModel.cs" />
     <Compile Include="Areas\Manage\Controllers\UploadAddressesController.cs" />
@@ -1266,6 +1275,7 @@
     <Content Include="Content\font-awesome-4.0.3\fonts\fontawesome-webfont.svg" />
     <Content Include="Content\images\check.png" />
     <Content Include="Content\img\textarealine.png" />
+    <Content Include="Content\Site.css" />
     <Content Include="Content\touchpoint\css\account.css" />
     <Content Include="Content\touchpoint\css\app.css" />
     <Content Include="Content\touchpoint\css\checkin.css" />
@@ -1962,6 +1972,19 @@
     <Content Include="Areas\People\Views\Person\Communications\Sms.cshtml" />
     <Content Include="Views\SpecialLinks\Index.cshtml" />
     <Content Include="Areas\Involvement\Views\web.config" />
+    <Content Include="Areas\Involvement\Views\Involvement\People\FilterPeople.cshtml" />
+    <Content Include="Areas\Involvement\Views\Involvement\People\GroupButtons.cshtml" />
+    <Content Include="Areas\Involvement\Views\Involvement\People\Table.cshtml" />
+    <Content Include="Areas\Involvement\Views\Involvement\People.cshtml" />
+    <Content Include="Areas\Involvement\Views\web.config" />
+    <Content Include="Areas\Dialog\Views\AddInvolvement\index.cshtml" />
+    <Content Include="Areas\Involvement\Views\InvolvementSearch\Index.cshtml" />
+    <Content Include="Areas\Involvement\Views\Involvement\Index.cshtml" />
+    <Content Include="Areas\Involvement\Views\Involvement\People\Hidden.cshtml" />
+    <Content Include="Areas\Involvement\Views\Involvement\Venues\Venues.cshtml" />
+    <Content Include="Areas\Involvement\Views\Involvement\Venues\CreateVenue.cshtml" />
+    <Content Include="Areas\Involvement\Views\Involvement\Meetings.cshtml" />
+    <Content Include="Areas\Involvement\Views\Involvement\MeetingTabs.cshtml" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
@@ -3482,8 +3505,6 @@
     <Folder Include="Areas\CheckIn\Views\Shared\" />
     <Folder Include="Areas\Dialog\Views\Shared\" />
     <Folder Include="Areas\Figures\Views\Shared\" />
-    <Folder Include="Areas\Involvement\Models\" />
-    <Folder Include="Areas\Involvement\Views\InvolvementSearch\" />
     <Folder Include="Areas\Involvement\Views\Shared\" />
     <Folder Include="Areas\Main\Views\Shared\" />
     <Folder Include="Areas\Manage\Views\Shared\" />
