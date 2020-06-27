@@ -1986,6 +1986,21 @@
     <Content Include="package-lock.json" />
     <None Include="package-lock.json" />
     <Content Include="Content\dist\js\app.js.map" />
+    <Content Include="Areas\Involvement\Views\Involvement\People\FilterPeople.cshtml" />
+    <Content Include="Areas\Involvement\Views\Involvement\People\GroupButtons.cshtml" />
+    <Content Include="Areas\Involvement\Views\Involvement\People\Table.cshtml" />
+    <Content Include="Areas\Involvement\Views\Involvement\People.cshtml" />
+    <Content Include="Areas\Involvement\Views\web.config" />
+    <Content Include="Areas\Dialog\Views\AddInvolvement\index.cshtml" />
+    <Content Include="Areas\Involvement\Views\InvolvementSearch\Index.cshtml" />
+    <Content Include="Areas\Involvement\Views\Involvement\Index.cshtml" />
+    <Content Include="Areas\Involvement\Views\Involvement\People\Hidden.cshtml" />
+    <Content Include="Areas\Involvement\Views\Involvement\Venues\Venues.cshtml" />
+    <Content Include="Areas\Involvement\Views\Involvement\Meetings.cshtml" />
+    <Content Include="Areas\Involvement\Views\Involvement\MeetingTabs.cshtml" />
+    <Content Include="Views\SpecialLinks\Index.cshtml" />
+    <Content Include="Areas\Dialog\Views\AddInvolvement\index.cshtml" />
+    <Content Include="Areas\Involvement\Views\Involvement\Venues\CreateVenue.cshtml" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
