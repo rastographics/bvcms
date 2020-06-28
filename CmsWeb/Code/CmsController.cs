@@ -97,7 +97,7 @@ namespace CmsWeb
         protected override void HandleUnknownAction(string actionName)
         {
             //base.HandleUnknownAction(actionName);
-            throw new HttpException(404, "404");
+            //throw new HttpException(404, "404");
         }
 
         protected override void OnActionExecuting(ActionExecutingContext filterContext)

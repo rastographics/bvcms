@@ -66,7 +66,7 @@ namespace CmsWeb.Code
                 var modelvalue = m.GetValue(model, null);
 
                 if (vm.HasAttribute<PhoneNumberAttribute>())
-                    if(vm.HasAttribute<RemoveNA>())
+                    if (vm.HasAttribute<RemoveNA>())
                         vm.SetPropertyFromText(viewmodel, ((string)modelvalue).Disallow("na").FmtFone());
                     else
                         vm.SetPropertyFromText(viewmodel, ((string)modelvalue).FmtFone());
@@ -74,7 +74,7 @@ namespace CmsWeb.Code
                 else if (vm.HasAttribute<RemoveNA>())
                     vm.SetPropertyFromText(viewmodel, ((string)modelvalue).Disallow("na"));
 
-                    // if they are the same type, then straight copy
+                // if they are the same type, then straight copy
 
                 else if (m.PropertyType == vm.PropertyType)
                     vm.SetValue(viewmodel, modelvalue, null);
@@ -111,8 +111,8 @@ namespace CmsWeb.Code
                 // get the viewmodel value we are going to copy
                 var viewmodelvalue = vm.GetValue(viewmodel, null);
 
-                var track = (Attribute.IsDefined(vm, typeof (TrackChangesAttribute))
-                            || viewmodel.GetType().IsDefined(typeof (TrackChangesAttribute), false))
+                var track = (Attribute.IsDefined(vm, typeof(TrackChangesAttribute))
+                            || viewmodel.GetType().IsDefined(typeof(TrackChangesAttribute), false))
                             && !Attribute.IsDefined(vm, typeof(NoTrackAttribute));
 
                 if (viewmodelvalue is IModelViewModelObject)
@@ -144,11 +144,6 @@ namespace CmsWeb.Code
                         model.UpdateValue(changes, m.Name, viewmodelvalue);
                     else
                     {
-                        if (m.Name == "GroupSelect") // ????????????
-                        {
-
-                        }
-
                         m.SetValue(model, viewmodelvalue, null);
                     }
 

@@ -49,7 +49,7 @@
                 {
                 <a tabindex="0" href="#" data-toggle="popover" data-placement="bottom" data-trigger="focus" data-title="Programs & Divisions" data-content="Use this link to manage the divisions this organization belongs to. A dialog box will pop up."><i class="fa fa-info-circle"></i></a>@:&nbsp;
                 <label for="name" class="control-label">Programs & Divisions</label>
-                <a id="divisionlist" href="/SearchDivisions/@Model.Id" data-refresh="/Org/DivisionList/@Model.Id">@Html.Partial("Other/DivisionList", Model.Divisions)</a>
+                <a id="divisionlist" href="/SearchDivisions/@Model.Id" data-refresh="/Org/DivisionList/@Model.Id">@Html.Partial("~/Areas/Org/Views/Org/Other/DivisionList.cshtml", Model.Divisions)</a>
                 }
                 else
                 {

@@ -14,7 +14,7 @@
     var financedataentry = User.IsInRole("FinanceDataEntry");
     var financeviewonly = User.IsInRole("FinanceViewOnly");
     var checkin = User.IsInRole("Checkin");
-    var venueBuilder = User.IsInRole("VenueBuilder");
+    var venueBuilder = true; // User.IsInRole("VenueBuilder");
     const bool financetrue = true;
     const bool financefalse = false;
     var deposititems = PythonScriptModel.CustomDepositImportMenuItems(Db);
@@ -184,7 +184,7 @@ if ((finance || managetrans || financeadmin) && ViewExtensions2.CurrentDatabase.
 {
         @Helper.LiAnchorLink("Retrieve Batch Data", "/Batch/RetrieveBatchData")
 }
-if (admin || finance || design)
+if (admin || finance || design || venueBuilder)
 {
         <li class="dropdown-header dropdown-sub-header">Setup</li>
 }

@@ -1,6 +1,7 @@
 ﻿using CmsData;
 using CmsData.Codes;
 using CmsWeb.Areas.Involvement.Models;
+using CmsWeb.Areas.Org.Models;
 using CmsWeb.Lifecycle;
 using System;
 using System.Collections.Generic;
@@ -14,7 +15,8 @@ namespace CmsWeb.Areas.Involvement.Controllers
     public partial class InvolvementController : CmsStaffController
     {
         [HttpPost]
-        public ActionResult People(InvolvementPeopleModel m)
+        //public ActionResult People(InvolvementPeopleModel m)
+        public ActionResult People(OrganizationModel m)
         {
             //if (m.FilterIndividuals)
             //{
@@ -30,6 +32,7 @@ namespace CmsWeb.Areas.Involvement.Controllers
 
             //ViewBag.OrgMemberContext = true;
             //ViewBag.orgname = Util.ActiveOrganization;
+
             return PartialView(m);
         }
     }

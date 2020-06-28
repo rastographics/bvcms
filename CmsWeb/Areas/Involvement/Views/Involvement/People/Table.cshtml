@@ -2,7 +2,7 @@
 @using CmsData.Codes
 @using CmsData.View
 @using UtilityExtensions
-@model CmsWeb.Areas.Involvement.Models.InvolvementPeopleModel
+@model CmsWeb.Areas.Org.Models.OrganizationModel
 @{
     var target = Util2.TargetLinkPeople ? "target='people'" : "";
 }
@@ -56,7 +56,7 @@
                 }
                 <td>
                     <a href="#" class="templateItem" template="0">
-                        <img src="/PreviewImage/0" class="img-responsive img-circle" width="30" height="30"/>
+                        <img src="/PreviewImage/0" class="img-responsive img-circle" width="30" height="30" />
                     </a>
                 </td>
                 <td>
@@ -118,17 +118,34 @@
                     }
                     else if (p.CustomerTicketStatus == (int)CustomerTicketStatusEnum.WillCallPrintedByChurch)
                     {
-                        <a href="Inv/Print"><i class="fa fa-print" style="color:#FF0000;"></i></a>
+                        <a href="Inv/Print"><i class="fa fa-print" style="color:#FF0000;" title="Print Person"></i></a>
                     }
                     else
                     {
-                        <a href="Inv/Print"><i class="fa fa-print"></i></a>
+                        <a href="Inv/Print"><i class="fa fa-print" title="Print Person"></i></a>
                     }
 
                     &nbsp;
-                    <a href="Inv/Tag"><i class="fa fa-tag"></i></a>&nbsp;
-                    <a href="Inv/Edit"><i class="fa fa-edit"></i></a>&nbsp;
-                    <a href="Inv/Edit"><i class="fa fa-trash">
+                    <a href="Inv/Tag"><i class="fa fa-tag" title="Tag Person"></i></a>&nbsp;
+
+                    @if (!(new[] { GroupSelectCode.Guest, GroupSelectCode.Previous }).Contains(p.GroupCode))
+                    {
+                        <a class="membertype" href="/OrgMemberDialog/@p.Group/@Model.Id/@p.PeopleId"><i class="fa fa-edit" title="Member Dialog Box"></i></a>
+                    }
+
+                    @if (p.GroupCode == InvolvementGroupSelectCode.Previous)
+                    {
+                        <a href="/Org/Join/@Model.Id/@p.PeopleId" class="joinlink"
+                           confirm="Re-Join @p.Name to this Org?">
+                            <i class="fa fa-arrow-circle-left" title="Re-join this person to this Organization"></i>
+                        </a>
+                    }
+                    else
+                    {
+                        <a href="Inv/Delete">
+                            <i class="fa fa-trash" style="color:#FF0000;" title="Delete Person"></i>
+                        </a>
+                    }
                 </td>
             </tr>
         }
@@ -256,22 +273,16 @@
     if (!(new[] { GroupSelectCode.Guest, GroupSelectCode.Previous }).Contains(p.GroupCode))
     {
         <div>
-            <a class="membertype" href="/OrgMemberDialog/@p.Group/@Model.Id/@p.PeopleId"> @p.MemberType </a>
+            @p.MemberType
         </div>
     }
 }
 @helper ManagePrevMemberLinks(OrgFilterPerson p)
 {
-    if (p.GroupCode == GroupSelectCode.Previous)
+    if (p.GroupCode == InvolvementGroupSelectCode.Previous)
     {
         <div>
             <a class="membertype" href="/OrgPrevMemberDialog/@Model.Id/@p.PeopleId">Prev @p.MemberType </a>
-        </div>
-        <div class="pad-top">
-            <a href="/Org/Join/@Model.Id/@p.PeopleId" class="joinlink"
-               confirm="Re-Join @p.Name to this Org?">
-                Re-Join Org
-            </a>
         </div>
     }
 }

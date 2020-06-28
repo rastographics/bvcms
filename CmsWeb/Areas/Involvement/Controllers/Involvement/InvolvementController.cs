@@ -1,11 +1,16 @@
-﻿using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Web.Mvc;
 using CmsData;
+using CmsData.View;
 using CmsWeb.Areas.Involvement.Models;
 using CmsWeb.Areas.Org.Models;
+using CmsWeb.Areas.People.Models;
+using CmsWeb.Code;
 using CmsWeb.Lifecycle;
 using UtilityExtensions;
-using MeetingsModel = CmsWeb.Areas.Involvement.Models.MeetingsModel;
+using MeetingModel = CmsWeb.Areas.Involvement.Models.MeetingModel;
 
 namespace CmsWeb.Areas.Involvement.Controllers
 {
@@ -30,13 +35,13 @@ namespace CmsWeb.Areas.Involvement.Controllers
                 return Redirect($"/Org/{id}");
             }
 
-            var m = InvolvementModel.Create(CurrentDatabase, CurrentUser);
-            m.InvolvementId = id;
+            var m = OrganizationModel.Create(CurrentDatabase, CurrentUser);
+            m.OrgId = id;
             if (peopleid.HasValue)
                 m.NameFilter = peopleid.ToString();
 
             if (m.Org == null)
-                return Content("organization not found");
+                return Content("Involvement not found");
 
             if (Util2.OrgLeadersOnly)
             {
@@ -53,14 +58,20 @@ namespace CmsWeb.Areas.Involvement.Controllers
                     return NotAllowed("no privilege to view ", m.Org.OrganizationName);
 
             DbUtil.LogOrgActivity($"Viewing Org({m.Org.OrganizationName})", id, m.Org.OrganizationName);
-
-            // m.OrgMain.Divisions = GetOrgDivisions(id); TODO: Where to define this?
+            CodeValueModel cvm = new CodeValueModel();
+            m.AllCampuses = cvm.AllCampuses();
+            m.CanUserEditCampus = true;
+            m.OrgMain.Divisions = GetOrgDivisions(id); 
 
             ViewBag.OrganizationContext = true;
             ViewBag.orgname = m.Org.FullName;
             ViewBag.model = m;
             ViewBag.selectmode = 0;
-            //InitExportToolbar(m);
+
+            var pm = new PersonModel(id, CurrentDatabase);
+            m.PersonModel = pm;
+
+            InitExportToolbar(m);
             Util.ActiveOrganization = m.Org.OrganizationName;
             return View(m);
         }
@@ -108,74 +119,97 @@ namespace CmsWeb.Areas.Involvement.Controllers
         }
 
         [HttpPost]
-        public ActionResult Meetings(MeetingsModel m)
+        public ActionResult Meetings(InvolvementMeetingsModel m)
         {
+
             DbUtil.LogActivity($"Viewing Meetings for orgId={m.Id}", orgid: m.Id);
-            return PartialView(m);
+            return PartialView("InvolvementMeetings", m);
         }
 
         [HttpPost]
         public ActionResult Settings(int id)
         {
+            //throw new NotImplementedException();
             var m = OrganizationModel.Create(CurrentDatabase, CurrentUser);
             m.OrgId = id;
-            return PartialView(m);
+            return PartialView("InvolvementSettings", m);
         }
 
         [HttpPost]
         public ActionResult Registrations(int id)
         {
+            //throw new NotImplementedException();
             var m = OrganizationModel.Create(CurrentDatabase, CurrentUser);
             m.OrgId = id;
-            return PartialView(m);
+            return PartialView("InvolvementRegistrations", m);
         }
 
         [HttpPost]
         public ActionResult ContactsReceived(int id)
         {
-            var m = new ContactsReceivedModel(CurrentDatabase)
-            {
-                OrganizationId = id
-            };
+            throw new NotImplementedException();
+            //var m = new ContactsReceivedModel(CurrentDatabase)
+            //{
+            //    OrganizationId = id
+            //};
 
-            return PartialView("Contacts", m);
+            //return PartialView("Contacts", m);
         }
 
         [HttpPost]
         public ActionResult CommunityGroup(int id)
         {
-            var m = OrganizationModel.Create(CurrentDatabase, CurrentUser);
-            m.OrgId = id;
-            return PartialView(m);
+            throw new NotImplementedException();
+            //var m = OrganizationModel.Create(CurrentDatabase, CurrentUser);
+            //m.OrgId = id;
+            //return PartialView(m);
         }
 
         [HttpPost]
         public ActionResult AddContactReceived(int id)
         {
-            var o = CurrentDatabase.LoadOrganizationById(id);
-            DbUtil.LogPersonActivity($"Adding contact to organization: {o.FullName}", id, o.FullName);
-            var c = new Contact
-            {
-                CreatedDate = Util.Now,
-                CreatedBy = CurrentDatabase.UserId1,
-                ContactDate = Util.Now.Date,
-                OrganizationId = o.OrganizationId
-            };
+            throw new NotImplementedException();
+            //var o = CurrentDatabase.LoadOrganizationById(id);
+            //DbUtil.LogPersonActivity($"Adding contact to organization: {o.FullName}", id, o.FullName);
+            //var c = new Contact
+            //{
+            //    CreatedDate = Util.Now,
+            //    CreatedBy = CurrentDatabase.UserId1,
+            //    ContactDate = Util.Now.Date,
+            //    OrganizationId = o.OrganizationId
+            //};
 
-            CurrentDatabase.Contacts.InsertOnSubmit(c);
-            CurrentDatabase.SubmitChanges();
+            //CurrentDatabase.Contacts.InsertOnSubmit(c);
+            //CurrentDatabase.SubmitChanges();
 
-            c.contactsMakers.Add(new Contactor { PeopleId = CurrentDatabase.UserPeopleId.Value });
-            CurrentDatabase.SubmitChanges();
+            //c.contactsMakers.Add(new Contactor { PeopleId = CurrentDatabase.UserPeopleId.Value });
+            //CurrentDatabase.SubmitChanges();
 
-            var defaultRole = CurrentDatabase.Setting("Contacts-DefaultRole", null);
-            if (!string.IsNullOrEmpty(defaultRole) && CurrentDatabase.Roles.Any(x => x.RoleName == defaultRole))
-            {
-                Util.TempSetRole = defaultRole;
-            }
+            //var defaultRole = CurrentDatabase.Setting("Contacts-DefaultRole", null);
+            //if (!string.IsNullOrEmpty(defaultRole) && CurrentDatabase.Roles.Any(x => x.RoleName == defaultRole))
+            //{
+            //    Util.TempSetRole = defaultRole;
+            //}
 
-            Util.TempContactEdit = true;
-            return Content($"/Contact2/{c.ContactId}");
+            //Util.TempContactEdit = true;
+            //return Content($"/Contact2/{c.ContactId}");
+        }
+
+        private IEnumerable<SearchDivision> GetOrgDivisions(int? id)
+        {
+            var q = from d in CurrentDatabase.SearchDivisions(id, null)
+                    where d.IsChecked == true
+                    orderby d.IsMain descending, d.IsChecked descending, d.Program, d.Division
+                    select d;
+            return q.AsEnumerable();
+        }
+
+        [HttpPost]
+        public ActionResult PostData(int pk, string name, string value)
+        {
+            var org = CurrentDatabase.LoadOrganizationById(pk);
+            org.UpdateCampus(CurrentDatabase, value.ToInt());
+            return new EmptyResult();
         }
     }
 }

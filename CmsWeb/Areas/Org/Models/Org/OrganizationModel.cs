@@ -2,6 +2,7 @@ using CmsData;
 using CmsData.Classes.RoleChecker;
 using CmsData.Codes;
 using CmsData.View;
+using CmsWeb.Areas.People.Models;
 using CmsWeb.Code;
 using CmsWeb.Constants;
 using System;
@@ -42,6 +43,15 @@ namespace CmsWeb.Areas.Org.Models
         }
 
         public OrgMain OrgMain { get; set; }
+
+        public PersonModel PersonModel { get; set; }
+
+        public CodeInfo Campus { get; set; }
+
+        public IEnumerable<CodeValueItem> AllCampuses { get; set; }
+
+        public bool CanUserEditCampus { get; set; }
+
 
         private SettingsGeneralModel settingsGeneralModel;
         public SettingsGeneralModel SettingsGeneralModel

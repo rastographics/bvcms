@@ -141,6 +141,14 @@ namespace CmsWeb.Areas.Org.Models.Org
                     else
                     {
                         field.Label = e.Attribute("label")?.Value ?? field.Field;
+
+                        if (field.Label == "Online Registration")
+                        {
+                            if (DbUtil.Db.Setting("UseNewInvolvementCreation", "true").ToBool())
+                            {
+                                field.Label = "Involvement Type";
+                            }
+                        }
                     }
 
                     bool dropdown;

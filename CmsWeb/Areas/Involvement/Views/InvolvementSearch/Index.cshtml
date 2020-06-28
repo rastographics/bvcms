@@ -6,7 +6,7 @@
 @{
     Layout = ViewExtensions2.TouchPointLayout();
     ViewBag.Title = "Involvement Search / Manage";
-    ViewBag.PageHeader = "Organization Search / Manage";
+    ViewBag.PageHeader = "Involvement Search / Manage";
 }
 @section head{
     @Fingerprint.Css("/Content/touchpoint/lib/bootstrap-editable/css/bootstrap-editable.css")
@@ -28,7 +28,7 @@
                                 <div class="form-group">
                                     @if (field.Field == "TypeId")
                                     {
-                                        <a tabindex="0" href="#" data-toggle="popover" data-placement="bottom" data-trigger="focus" data-title="Organization Type" data-content="At the top of the list are pseudo org types. The are actually attributes of an organization. These are followed by specific Org Types you have created and assigned to organizations."><i class="fa fa-info-circle"></i></a><text>&nbsp;</text>
+                                        <a tabindex="0" href="#" data-toggle="popover" data-placement="bottom" data-trigger="focus" data-title="Involvement Type" data-content="At the top of the list are pseudo org types. The are actually attributes of an organization. These are followed by specific Org Types you have created and assigned to organizations."><i class="fa fa-info-circle"></i></a><text>&nbsp;</text>
                                     }
                                     <label for="@field.Field" class="control-label">@field.Label</label>
                                     @Html.DropDownList(field.Field, @field.SelectList, new { @class = field.FieldClass })
@@ -75,17 +75,17 @@
         </form>
     </div>
 </div>
-@Html.Partial("Modals/NewDiv", Model)
-@Html.Partial("Modals/RenameDiv")
-@Html.Partial("Modals/Editor")
-@Html.Partial("Modals/Checkin")
-@Html.Partial("Modals/Rollsheet")
-@Html.Partial("Modals/NewMeetings")
-@Html.Partial("Modals/MeetingsDateRange")
-@Html.Partial("Modals/ReportDate")
-@Html.Partial("Modals/MeetingsMonth")
-@Html.Partial("Modals/Enrollment")
-@Html.Partial("Modals/ExportMessages")
+@*@Html.Partial("Modals/NewDiv", Model)
+    @Html.Partial("Modals/RenameDiv")
+    @Html.Partial("Modals/Editor")
+    @Html.Partial("Modals/Checkin")
+    @Html.Partial("Modals/Rollsheet")
+    @Html.Partial("Modals/NewMeetings")
+    @Html.Partial("Modals/MeetingsDateRange")
+    @Html.Partial("Modals/ReportDate")
+    @Html.Partial("Modals/MeetingsMonth")
+    @Html.Partial("Modals/Enrollment")
+    @Html.Partial("Modals/ExportMessages")*@
 @section scripts
 {
     @ViewExtensions2.CkEditor()
@@ -97,9 +97,9 @@
     @if (User.IsInRole("Edit"))
     {
         <script type="text/javascript">
-      $(function () {
-        $("#results").addClass("edit2");
-      });
+            $(function () {
+                $("#results").addClass("edit2");
+            });
         </script>
     }
 }

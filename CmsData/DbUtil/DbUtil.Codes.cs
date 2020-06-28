@@ -227,16 +227,11 @@ namespace CmsData.Codes
         public const int RecordFamilyAttendance = 18;
         public const int RegisterLinkMaster = 20;
         public const int TicketedEvent = 22;
+        public const int NewSeparator = 9999;
 
         public static IEnumerable<KeyValuePair<int, string>> GetCodePairs(CMSDataContext db = null)
         {
             yield return new KeyValuePair<int, string>(None, "No Online Registration");
-
-            if (db != null && db.Setting("UseTicketed", "true").ToBool())
-            {
-                yield return new KeyValuePair<int, string>(TicketedEvent, "Ticketed Event");
-            }
-
             yield return new KeyValuePair<int, string>(JoinOrganization, "Join Organization");
             yield return new KeyValuePair<int, string>(UserSelects, "User Selects Organization");
             yield return new KeyValuePair<int, string>(ComputeOrgByAge, "Compute Org By Birthday");
@@ -248,6 +243,12 @@ namespace CmsData.Codes
             yield return new KeyValuePair<int, string>(ChooseVolunteerTimes, "Choose Volunteer Times");
             yield return new KeyValuePair<int, string>(RecordFamilyAttendance, "Record Family Attendance");
             yield return new KeyValuePair<int, string>(SpecialJavascript, "Special Script");
+
+            if (db != null && db.Setting("UseNewInvolvementCreation", "true").ToBool())
+            {
+                yield return new KeyValuePair<int, string>(NewSeparator, "-----NEW-----");
+                yield return new KeyValuePair<int, string>(TicketedEvent, "Ticketed Event");
+            }
 
             if (Util.IsDebug())
             {
@@ -359,7 +360,13 @@ namespace CmsData.Codes
         public const string Prospect = "40";
         public const string Previous = "50";
         public const string Guest = "60";
-        public const string TicketBuyer = "70";
+
+    }
+
+    public class InvolvementGroupSelectCode
+    {
+        public const string TicketBuyer = "10";
+        public const string Previous = "50";
     }
 
     public class InvolvementMeetingTabCode
