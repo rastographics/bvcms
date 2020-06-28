@@ -5,13 +5,12 @@ using System.Web.Mvc;
 using CmsData;
 using CmsData.View;
 using CmsWeb.Areas.Involvement.Models;
-using CmsWeb.Areas.Involvement.Models.Involvement.Venues;
+using CmsWeb.Areas.Involvement.Models.Venues;
 using CmsWeb.Areas.Org.Models;
 using CmsWeb.Areas.People.Models;
 using CmsWeb.Code;
 using CmsWeb.Lifecycle;
 using UtilityExtensions;
-using RestSharp;
 using SeatsioDotNet.Subaccounts;
 using SeatsioDotNet.Util;
 using SeatsioDotNet.Events;
@@ -69,6 +68,28 @@ namespace CmsWeb.Areas.Involvement.Controllers.Involvement
             }
 
             return View(charts);
+        }
+
+        [HttpGet, Route("~/CreateVenue")]
+        public ActionResult CreateVenue()
+        {
+            ChartModel model = new ChartModel
+            {
+                Key = ""
+            };
+
+            return View(model);
+        }
+
+        [HttpGet, Route("~/ChartDesigner")]
+        public ActionResult ChartDesigner(string key)
+        {
+            ChartModel model = new ChartModel
+            {
+                Key = key
+            };
+
+            return View("CreateVenue", model);
         }
     }
 }

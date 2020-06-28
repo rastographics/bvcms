@@ -4,7 +4,7 @@ using System.Linq;
 using System.Web;
 using SeatsioDotNet.Events;
 
-namespace CmsWeb.Areas.Involvement.Models.Involvement.Venues
+namespace CmsWeb.Areas.Involvement.Models.Venues
 {
     public class ChartModel
     {

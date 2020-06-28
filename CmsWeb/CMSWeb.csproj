@@ -219,7 +219,8 @@
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="RestSharp, Version=106.6.9.0, Culture=neutral, PublicKeyToken=598062e77f915f75, processorArchitecture=MSIL">
-      <HintPath>..\packages\RestSharp.106.6.9\lib\net452\RestSharp.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\seats.io\seatsio-dotnet-master\SeatsioDotNet.Web\lib\RestSharp.dll</HintPath>
     </Reference>
     <Reference Include="SeatsioDotNet, Version=70.7.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\SeatsioDotNet.70.7.0\lib\net452\SeatsioDotNet.dll</HintPath>
@@ -583,8 +584,8 @@
     <Compile Include="Areas\Involvement\Models\InvolvementMain.cs" />
     <Compile Include="Areas\Involvement\Models\InvolvementModel.cs" />
     <Compile Include="Areas\Involvement\Models\InvolvementPeopleModel.cs" />
-    <Compile Include="Areas\Involvement\Models\Involvement\Venues\ChartModel.cs" />
-    <Compile Include="Areas\Involvement\Models\Involvement\Venues\InvolvementVenuesModel.cs" />
+    <Compile Include="Areas\Involvement\Models\Venues\ChartModel.cs" />
+    <Compile Include="Areas\Involvement\Models\Venues\InvolvementVenuesModel.cs" />
     <Compile Include="Areas\Involvement\Models\Involvement\InvolvementMeetingsModel.cs" />
     <Compile Include="Areas\Involvement\Models\MeetingInfo.cs" />
     <Compile Include="Areas\Involvement\Models\MeetingModel.cs" />
@@ -1994,12 +1995,10 @@
     <Content Include="Areas\Involvement\Views\InvolvementSearch\Index.cshtml" />
     <Content Include="Areas\Involvement\Views\Involvement\Index.cshtml" />
     <Content Include="Areas\Involvement\Views\Involvement\People\Hidden.cshtml" />
-    <Content Include="Areas\Involvement\Views\Involvement\Venues\Venues.cshtml" />
     <Content Include="Areas\Involvement\Views\Involvement\Meetings.cshtml" />
     <Content Include="Areas\Involvement\Views\Involvement\MeetingTabs.cshtml" />
     <Content Include="Views\SpecialLinks\Index.cshtml" />
     <Content Include="Areas\Dialog\Views\AddInvolvement\index.cshtml" />
-    <Content Include="Areas\Involvement\Views\Involvement\Venues\CreateVenue.cshtml" />
     <Content Include="Areas\Involvement\Views\Venues\Index.cshtml" />
     <Content Include="Areas\Involvement\Views\Venues\CreateVenue.cshtml" />
     <Content Include="Areas\Involvement\Views\InvolvementMeeting\Index.cshtml" />
@@ -2021,6 +2020,7 @@
     <Content Include="Areas\Involvement\Views\Involvement\DisplayTemplates\EditCampusTemplate.cshtml" />
     <Content Include="Areas\Dialog\Views\OrgMemberDialog\Tabs\Tickets.cshtml" />
     <Content Include="Areas\Involvement\Views\Venues\ListVenues.cshtml" />
+    <Content Include="Areas\Involvement\Views\Venues\VenuesMenu.cshtml" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>

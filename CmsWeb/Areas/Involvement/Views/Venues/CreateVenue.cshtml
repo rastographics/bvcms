@@ -1,60 +1,31 @@
-﻿CreateVenue.cshtml - placeholder
+﻿@model CmsWeb.Areas.Involvement.Models.Venues.ChartModel
 
-@*@model SeatsioDotNet.Web.Models.ChartModel
-<!DOCTYPE html>
-<html>
-<head>
-    <meta name="viewport" content="width=device-width" />
-    <title>Create</title>
-    <style>
-        input,
-        select {
-            max-width: 800px;
-        }
 
-        textarea {
-            max-width: 800px;
-            max-height: 800px;
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        @using (Html.BeginForm())
-        {<div class="panel panel-default">
-                <div class="panel-heading">
-                    <h4>Create a Venue</h4>
-                </div>
-                <div class="panel-body">
-                    @if (TempData["Message"] != null)
-                    {
-                        @TempData["Message"]
-                    }
+@{
+    Layout = ViewExtensions2.TouchPointLayout();
+    ViewBag.Title = "CreateVenue";
+}
+@Html.Partial("VenuesMenu")
+<br/>
 
-                    <div class="row">
-                        Venue Name
-                        @Html.TextBoxFor(m => m.Name, new { @class = "form-control" })
-                    </div>
-                    <br />
-                    @*<div class="row">
-                            Another Field here
-                            @Html.TextBoxFor(m => m.Field, new { @class = "form-control" })
-                        </div>
-                        <br />
-                        <div class="row">
-                            Another Field here
-                            @Html.TextBoxFor(m => m.Field, new { @class = "form-control" })
-                        </div>
-                    <div class="row">
-                        <div class="col-xs-12 col-sm-6 col-sm-6 col-lg-4">
-                            <input id="Submit1" class="btn btn-success" type="submit" value="submit" />
-                        </div>
-                    </div>
-                </div>
-            </div>
-        }
-    </div>
-</body>
+<div id="chartDesigner" style="width: 1400px; height: 700px;"></div>
+<script src="https://cdn.seatsio.net/chart.js"></script>
+@*SEATING CHART DESIGNER
+    <br />
+    secret key: cf8a6c45-cc68-44f8-938e-14d8d27004c1
+    <br />
+    workspace key: 80e61a21-6a93-4af8-9b75-64f41e37eb51
+    <br />
+    This page works with the parameters below.  It displays the designer. If
+    the chartKey is commented out, it displays the "New chart" page (without sections and with sections options).  With the chartKey below,
+    it displays the designer.
+    <br />*@
+<script>
+    new seatsio.SeatingChartDesigner({
+        divId: 'chartDesigner',
+        secretKey: 'cf8a6c45-cc68-44f8-938e-14d8d27004c1',
+        chartKey: '@Model.Key'
+    }).render();
+</script>
 
-</html>*@
 
