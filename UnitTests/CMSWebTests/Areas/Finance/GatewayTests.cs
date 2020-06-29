@@ -46,12 +46,15 @@ namespace CMSWebTests.Areas.Finance
                 incomingPeopleId = person.PeopleId,
                 testing = true
             };
+            var requestManager = FakeRequestManager.Create();
+            var controller = new CmsWeb.Areas.Giving.Controllers.GivingPaymentController(requestManager);
 
-            var givingPaymentModel = new GivingPaymentModel(db);
+            //var givingPaymentModel = new GivingPaymentModel(db);
 
             var paymentProcessActionTaken = MockPaymentProcess.PaymentProcessNullCheck(db);
 
-            givingPaymentModel.CreateMethod(viewModel);
+            //givingPaymentModel.CreateMethod(viewModel);
+            controller.MethodsCreate(viewModel);
 
             var paymentMethod = (from pm in db.PaymentMethods
                                  where pm.PeopleId == person.PeopleId
@@ -82,12 +85,15 @@ namespace CMSWebTests.Areas.Finance
                 incomingPeopleId = person.PeopleId,
                 testing = true
             };
+            var requestManager = FakeRequestManager.Create();
+            var controller = new CmsWeb.Areas.Giving.Controllers.GivingPaymentController(requestManager);
 
-            var givingPaymentModel = new GivingPaymentModel(db);
+            //var givingPaymentModel = new GivingPaymentModel(db);
 
             var paymentProcessActionTaken = MockPaymentProcess.PaymentProcessNullCheck(db);
 
-            givingPaymentModel.CreateMethod(viewModel);
+            controller.MethodsCreate(viewModel);
+            //givingPaymentModel.CreateMethod(viewModel);
 
             var paymentMethod = (from pm in db.PaymentMethods
                                  where pm.PeopleId == person.PeopleId
