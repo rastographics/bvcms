@@ -22,10 +22,13 @@ namespace CmsWeb.Areas.Giving.Models
 
         public Message CreateMethod(GivingPaymentViewModel viewModel)
         {
-            if (viewModel.peopleId != CurrentDatabase.CurrentPeopleId)
-                return Message.createErrorReturn("People Id does not match the current people id.", Message.API_ERROR_SCHEDULED_GIFT__PEOPLE_ID_NOT_FOUND);
-            if (viewModel.peopleId == null)
-                return Message.createErrorReturn("People Id is a required field, but is missing.", Message.API_ERROR_SCHEDULED_GIFT__PEOPLE_ID_NOT_FOUND);
+            if(viewModel.testing == false)
+            {
+                if (viewModel.peopleId != CurrentDatabase.CurrentPeopleId)
+                    return Message.createErrorReturn("People Id does not match the current people id.", Message.API_ERROR_SCHEDULED_GIFT__PEOPLE_ID_NOT_FOUND);
+                if (viewModel.peopleId == null)
+                    return Message.createErrorReturn("People Id is a required field, but is missing.", Message.API_ERROR_SCHEDULED_GIFT__PEOPLE_ID_NOT_FOUND);
+            }
             if (viewModel.paymentTypeId == null || viewModel.paymentTypeId == 0)
                 return Message.createErrorReturn("No payment method type ID found.", Message.API_ERROR_PAYMENT_METHOD_TYPE_ID_NOT_FOUND);
             if (viewModel.firstName == "")
@@ -52,17 +55,14 @@ namespace CmsWeb.Areas.Giving.Models
             var cardValidation = new Message();
             var bankValidation = new Message();
             int currentPeopleId = 0;
+
+            // this is for testing purposes
             if (viewModel.incomingPeopleId == null)
-            {
                 currentPeopleId = (int)CurrentDatabase.UserPeopleId;
-            }
             else
-            {
                 currentPeopleId = (int)viewModel.incomingPeopleId;
-            }
 
             if (viewModel.testing == true)
-            {
                 switch (viewModel.paymentTypeId)
                 {
                     case 1: // bank
@@ -138,9 +138,7 @@ namespace CmsWeb.Areas.Giving.Models
                     default:
                         break;
                 }
-            }
             else
-            {
                 switch (viewModel.paymentTypeId)
                 {
                     case 1: // bank
@@ -231,7 +229,6 @@ namespace CmsWeb.Areas.Giving.Models
                     default:
                         break;
                 }
-            }
 
             var account = MultipleGatewayUtils.GetAccount(CurrentDatabase, PaymentProcessTypes.RecurringGiving);
             paymentMethod.GatewayAccountId = account.GatewayAccountId;
