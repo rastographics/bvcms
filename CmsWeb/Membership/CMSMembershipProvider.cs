@@ -50,6 +50,7 @@ namespace CmsWeb.Membership
         private int newPasswordLength = 8;
 
         private MachineKeySection machineKey;
+        protected virtual string GetValidationKey() => machineKey?.ValidationKey;
 
         CMSDataContext CurrentDatabase => CMSDataContext.Create(HttpContextFactory.Current);
 
@@ -206,7 +207,7 @@ namespace CmsWeb.Membership
                 }
 
                 var user = db.Users.Single(u => u.Username == username);
-                user.Password = EncodePassword(newPwd, PasswordFormat, machineKey.ValidationKey);
+                user.Password = EncodePassword(newPwd, PasswordFormat, GetValidationKey());
                 user.MustChangePassword = false;
                 user.LastPasswordChangedDate = Util.Now;
                 ApiSessionModel.DeleteSession(db, user);
@@ -285,9 +286,9 @@ namespace CmsWeb.Membership
                         PeopleId = pid,
                         Username = username,
                         //EmailAddress = email,
-                        Password = EncodePassword(password, PasswordFormat, machineKey.ValidationKey),
+                        Password = EncodePassword(password, PasswordFormat, GetValidationKey()),
                         PasswordQuestion = passwordQuestion,
-                        PasswordAnswer = EncodePassword(passwordAnswer, PasswordFormat, machineKey.ValidationKey),
+                        PasswordAnswer = EncodePassword(passwordAnswer, PasswordFormat, GetValidationKey()),
                         IsApproved = isApproved,
                         Comment = "",
                         CreationDate = createDate,
@@ -332,7 +333,7 @@ namespace CmsWeb.Membership
             var u = GetUser(username, false);
             if (u == null)
             {
-                return MakeNewUser(username, EncodePassword(password, PasswordFormat, machineKey.ValidationKey), email, isApproved, PeopleId);
+                return MakeNewUser(username, EncodePassword(password, PasswordFormat, GetValidationKey()), email, isApproved, PeopleId);
             }
 
             return null;
@@ -599,7 +600,7 @@ namespace CmsWeb.Membership
                     throw new MembershipPasswordException("Incorrect password answer.");
                 }
 
-                user.Password = EncodePassword(newPassword, PasswordFormat, machineKey.ValidationKey);
+                user.Password = EncodePassword(newPassword, PasswordFormat, GetValidationKey());
                 user.LastPasswordChangedDate = Util.Now;
                 ApiSessionModel.DeleteSession(db, user);
                 db.SubmitChanges();
@@ -731,7 +732,7 @@ namespace CmsWeb.Membership
                     pass2 = UnEncodePassword(dbpassword);
                     break;
                 case MembershipPasswordFormat.Hashed:
-                    pass1 = EncodePassword(password, PasswordFormat, machineKey.ValidationKey);
+                    pass1 = EncodePassword(password, PasswordFormat, GetValidationKey());
                     break;
                 default:
                     break;
