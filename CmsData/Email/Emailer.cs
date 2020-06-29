@@ -948,7 +948,7 @@ namespace CmsData
                 if (Util.SmtpDebug)
                 {
                     SMTPClient.DeliveryMethod = SmtpDeliveryMethod.SpecifiedPickupDirectory;
-                    SMTPClient.PickupDirectoryLocation = Util.SmtpDebugDirectory;
+                    SMTPClient.PickupDirectoryLocation = ConfigurationManager.AppSettings["smtpdebugdirectory"] ?? @"C:\email";
                     SMTPClient.Host = "localhost";
                 }
             }
