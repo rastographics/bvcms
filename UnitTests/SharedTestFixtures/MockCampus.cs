@@ -15,21 +15,10 @@ namespace SharedTestFixtures
             int? campusId = null;
             var currentCampus = db.Campus.OrderByDescending(c => c.Id).FirstOrDefault();
             if(currentCampus == null)
-            {
                 campusId = 1;
-            }
             else
-            {
                 campusId = currentCampus.Id;
-            }
-            //try
-            //{
-            //    campusId = db.Campus.Max(c => c.Id) + 1;
-            //}
-            //catch
-            //{
-            //    campusId = 1;
-            //}
+
             var campus = new Campu()
             {
                 Id = (int)campusId,

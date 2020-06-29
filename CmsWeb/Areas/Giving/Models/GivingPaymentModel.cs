@@ -14,10 +14,12 @@ namespace CmsWeb.Areas.Giving.Models
     {
         [Obsolete(Errors.ModelBindingConstructorError, true)]
         public GivingPaymentModel() { }
+
         public GivingPaymentModel(CMSDataContext db)
         {
             CurrentDatabase = db;
         }
+
         public CMSDataContext CurrentDatabase { get; set; }
 
         public Message CreateMethod(GivingPaymentViewModel viewModel)
