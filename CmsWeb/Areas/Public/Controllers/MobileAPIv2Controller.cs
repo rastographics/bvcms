@@ -258,7 +258,10 @@ namespace CmsWeb.Areas.Public.Controllers
             MobileMessage response = new MobileMessage();
             MobileAppDevice device = authentication.getDevice();
 
-            if (!CurrentDatabase.People.Any(p => (p.EmailAddress == device.CodeEmail || p.EmailAddress2 == device.CodeEmail) && p.PeopleId == message.argInt))
+            if (!CurrentDatabase.People.Any(p => (p.PeopleId == message.argInt &&
+                p.EmailAddress == device.CodeEmail ||
+                p.EmailAddress2 == device.CodeEmail ||
+                p.CellPhone == device.CodeEmail)))
             {
                 return response;
             }
