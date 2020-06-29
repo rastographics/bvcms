@@ -22,45 +22,31 @@ namespace CmsWeb.Areas.Giving.Models
 
         public Message CreateMethod(GivingPaymentViewModel viewModel)
         {
+            if (viewModel.peopleId != CurrentDatabase.CurrentPeopleId)
+                return Message.createErrorReturn("People Id does not match the current people id.", Message.API_ERROR_SCHEDULED_GIFT__PEOPLE_ID_NOT_FOUND);
+            if (viewModel.peopleId == null)
+                return Message.createErrorReturn("People Id is a required field, but is missing.", Message.API_ERROR_SCHEDULED_GIFT__PEOPLE_ID_NOT_FOUND);
             if (viewModel.paymentTypeId == null || viewModel.paymentTypeId == 0)
-            {
-                return Models.Message.createErrorReturn("No payment method type ID found.", Models.Message.API_ERROR_PAYMENT_METHOD_TYPE_ID_NOT_FOUND);
-            }
+                return Message.createErrorReturn("No payment method type ID found.", Message.API_ERROR_PAYMENT_METHOD_TYPE_ID_NOT_FOUND);
             if (viewModel.firstName == "")
-            {
-                return Models.Message.createErrorReturn("First name required.", Models.Message.API_ERROR_PAYMENT_METHOD_REQUIRED_FIELD_EMPTY);
-            }
+                return Message.createErrorReturn("First name required.", Message.API_ERROR_PAYMENT_METHOD_REQUIRED_FIELD_EMPTY);
             if (viewModel.lastName == "")
-            {
-                return Models.Message.createErrorReturn("First name required.", Models.Message.API_ERROR_PAYMENT_METHOD_REQUIRED_FIELD_EMPTY);
-            }
+                return Message.createErrorReturn("First name required.", Message.API_ERROR_PAYMENT_METHOD_REQUIRED_FIELD_EMPTY);
             if (viewModel.paymentTypeId != 1)
             {
                 if (viewModel.address == "")
-                {
-                    return Models.Message.createErrorReturn("Address required.", Models.Message.API_ERROR_PAYMENT_METHOD_REQUIRED_FIELD_EMPTY);
-                }
+                    return Message.createErrorReturn("Address required.", Message.API_ERROR_PAYMENT_METHOD_REQUIRED_FIELD_EMPTY);
                 if (viewModel.city == "")
-                {
-                    return Models.Message.createErrorReturn("City required.", Models.Message.API_ERROR_PAYMENT_METHOD_REQUIRED_FIELD_EMPTY);
-                }
+                    return Message.createErrorReturn("City required.", Message.API_ERROR_PAYMENT_METHOD_REQUIRED_FIELD_EMPTY);
                 if (viewModel.state == "")
-                {
-                    return Models.Message.createErrorReturn("State required.", Models.Message.API_ERROR_PAYMENT_METHOD_REQUIRED_FIELD_EMPTY);
-                }
+                    return Message.createErrorReturn("State required.", Message.API_ERROR_PAYMENT_METHOD_REQUIRED_FIELD_EMPTY);
                 if (viewModel.country == "")
-                {
-                    return Models.Message.createErrorReturn("Country required.", Models.Message.API_ERROR_PAYMENT_METHOD_REQUIRED_FIELD_EMPTY);
-                }
+                    return Message.createErrorReturn("Country required.", Message.API_ERROR_PAYMENT_METHOD_REQUIRED_FIELD_EMPTY);
                 if (viewModel.zip == "")
-                {
-                    return Models.Message.createErrorReturn("Zip required.", Models.Message.API_ERROR_PAYMENT_METHOD_REQUIRED_FIELD_EMPTY);
-                }
+                    return Message.createErrorReturn("Zip required.", Message.API_ERROR_PAYMENT_METHOD_REQUIRED_FIELD_EMPTY);
             }
             if (viewModel.transactionTypeId == "")
-            {
-                return Models.Message.createErrorReturn("Transaction Type ID required.", Models.Message.API_ERROR_PAYMENT_METHOD_REQUIRED_FIELD_EMPTY);
-            }
+                return Message.createErrorReturn("Transaction Type ID required.", Message.API_ERROR_PAYMENT_METHOD_REQUIRED_FIELD_EMPTY);
 
             var paymentMethod = new PaymentMethod();
             var cardValidation = new Message();
@@ -171,9 +157,7 @@ namespace CmsWeb.Areas.Giving.Models
                         };
                         bankValidation = PaymentValidator.ValidateBankAccountInfo(viewModel.bankAccount, viewModel.bankRouting);
                         if (bankValidation.error != 0)
-                        {
-                            return Models.Message.createErrorReturn(bankValidation.data, bankValidation.error);
-                        }
+                            return Message.createErrorReturn(bankValidation.data, bankValidation.error);
                         break;
                     case 2: // Visa
                         paymentMethod = new PaymentMethod
@@ -190,9 +174,7 @@ namespace CmsWeb.Areas.Giving.Models
                         };
                         cardValidation = PaymentValidator.ValidateCreditCardInfo(viewModel.cardNumber, viewModel.cvv, viewModel.expiresMonth, viewModel.expiresYear);
                         if (cardValidation.error != 0)
-                        {
-                            return Models.Message.createErrorReturn(cardValidation.data, cardValidation.error);
-                        }
+                            return Message.createErrorReturn(cardValidation.data, cardValidation.error);
                         break;
                     case 3: // Mastercard
                         paymentMethod = new PaymentMethod
@@ -209,9 +191,7 @@ namespace CmsWeb.Areas.Giving.Models
                         };
                         cardValidation = PaymentValidator.ValidateCreditCardInfo(viewModel.cardNumber, viewModel.cvv, viewModel.expiresMonth, viewModel.expiresYear);
                         if (cardValidation.error != 0)
-                        {
-                            return Models.Message.createErrorReturn(cardValidation.data, cardValidation.error);
-                        }
+                            return Message.createErrorReturn(cardValidation.data, cardValidation.error);
                         break;
                     case 4: // Amex
                         paymentMethod = new PaymentMethod
@@ -228,9 +208,7 @@ namespace CmsWeb.Areas.Giving.Models
                         };
                         cardValidation = PaymentValidator.ValidateCreditCardInfo(viewModel.cardNumber, viewModel.cvv, viewModel.expiresMonth, viewModel.expiresYear);
                         if (cardValidation.error != 0)
-                        {
-                            return Models.Message.createErrorReturn(cardValidation.data, cardValidation.error);
-                        }
+                            return Message.createErrorReturn(cardValidation.data, cardValidation.error);
                         break;
                     case 5: // Discover
                         paymentMethod = new PaymentMethod
@@ -247,9 +225,7 @@ namespace CmsWeb.Areas.Giving.Models
                         };
                         cardValidation = PaymentValidator.ValidateCreditCardInfo(viewModel.cardNumber, viewModel.cvv, viewModel.expiresMonth, viewModel.expiresYear);
                         if (cardValidation.error != 0)
-                        {
-                            return Models.Message.createErrorReturn(cardValidation.data, cardValidation.error);
-                        }
+                            return Message.createErrorReturn(cardValidation.data, cardValidation.error);
                         break;
                     case 99: // Other
                         break;
@@ -273,9 +249,7 @@ namespace CmsWeb.Areas.Giving.Models
                 var dollarAmt = 1;
                 var transactionResponse = gateway.AuthCreditCard(currentPeopleId, dollarAmt, viewModel.cardNumber, expires, "Recurring Giving Auth", 0, viewModel.cvv, string.Empty, viewModel.firstName, viewModel.lastName, viewModel.address, viewModel.address2, viewModel.city, viewModel.state, viewModel.country, viewModel.zip, viewModel.phone);
                 if (transactionResponse.Approved == false)
-                {
-                    return Models.Message.createErrorReturn("Card authorization failed.", Models.Message.API_ERROR_PAYMENT_METHOD_AUTHORIZATION_FAILED);
-                }
+                    return Message.createErrorReturn("Card authorization failed.", Message.API_ERROR_PAYMENT_METHOD_AUTHORIZATION_FAILED);
                 else
                 {
                     gateway.VoidCreditCardTransaction(transactionResponse.TransactionId);
@@ -284,77 +258,65 @@ namespace CmsWeb.Areas.Giving.Models
                 }
             }
             else
-            {
-                return Models.Message.createErrorReturn("Payment method type not supported.", Models.Message.API_ERROR_PAYMENT_METHOD_AUTHORIZATION_FAILED);
-            }
+                return Message.createErrorReturn("Payment method type not supported.", Message.API_ERROR_PAYMENT_METHOD_AUTHORIZATION_FAILED);
 
             paymentMethod.Encrypt();
             CurrentDatabase.PaymentMethods.InsertOnSubmit(paymentMethod);
             CurrentDatabase.SubmitChanges();
-            return Models.Message.successMessage("Payment method created.", Models.Message.API_ERROR_NONE);
+            return Message.successMessage("Payment method created.", Message.API_ERROR_NONE);
         }
 
-        public Message DeleteMethod(Guid? paymentMethodId = null)
+        public Message DeleteMethod(Guid? paymentMethodId = null, int? peopleId = null)
         {
+            if (peopleId != CurrentDatabase.CurrentPeopleId)
+                return Message.createErrorReturn("People Id does not match the current people id.", Message.API_ERROR_SCHEDULED_GIFT__PEOPLE_ID_NOT_FOUND);
+            if (peopleId == null)
+                return Message.createErrorReturn("People Id is a required field, but is missing.", Message.API_ERROR_SCHEDULED_GIFT__PEOPLE_ID_NOT_FOUND);
             if (paymentMethodId == null)
-            {
-                return Models.Message.createErrorReturn("No payment method ID.", Models.Message.API_ERROR_PAYMENT_METHOD_NOT_FOUND);
-            }
+                return Message.createErrorReturn("No payment method ID.", Message.API_ERROR_PAYMENT_METHOD_NOT_FOUND);
+
             var paymentMethod = CurrentDatabase.PaymentMethods.Where(p => p.PaymentMethodId == paymentMethodId).FirstOrDefault();
             if(paymentMethod == null)
-            {
-                return Models.Message.createErrorReturn("Payment method not found.", Models.Message.API_ERROR_PAYMENT_METHOD_NOT_FOUND);
-            }
+                return Message.createErrorReturn("Payment method not found.", Message.API_ERROR_PAYMENT_METHOD_NOT_FOUND);
+
             var scheduledGiftList = CurrentDatabase.ScheduledGifts.Where(x => x.PaymentMethodId == paymentMethod.PaymentMethodId).ToList();
             if (scheduledGiftList.Count > 0)
-            {
-                return Models.Message.createErrorReturn("Please remove this payment method from all scheduled giving first.", Models.Message.API_ERROR_PAYMENT_METHOD_IN_USE);
-            }
+                return Message.createErrorReturn("Please remove this payment method from all scheduled giving first.", Message.API_ERROR_PAYMENT_METHOD_IN_USE);
             else
             {
                 CurrentDatabase.PaymentMethods.DeleteOnSubmit(paymentMethod);
                 CurrentDatabase.SubmitChanges();
-                return Models.Message.successMessage("Payment method deleted.", Models.Message.API_ERROR_NONE);
+                return Message.successMessage("Payment method deleted.", Message.API_ERROR_NONE);
             }
         }
 
         public Message CreateSchedule(GivingPaymentViewModel viewModel)
         {
+            if (viewModel.peopleId != CurrentDatabase.CurrentPeopleId)
+                return Message.createErrorReturn("People Id does not match the current people id.", Message.API_ERROR_SCHEDULED_GIFT__PEOPLE_ID_NOT_FOUND);
+            if (viewModel.peopleId == null)
+                return Message.createErrorReturn("People Id is a required field, but is missing.", Message.API_ERROR_SCHEDULED_GIFT__PEOPLE_ID_NOT_FOUND);
             if (viewModel.scheduleTypeId == null || viewModel.scheduleTypeId == 0)
-            {
-                return Models.Message.createErrorReturn("No scheduled gift type ID found.", Models.Message.API_ERROR_SCHEDULED_GIFT_TYPE_ID_NOT_FOUND);
-            }
+                return Message.createErrorReturn("No scheduled gift type ID found.", Message.API_ERROR_SCHEDULED_GIFT_TYPE_ID_NOT_FOUND);
             if (viewModel.start == null)
-            {
-                return Models.Message.createErrorReturn("No scheduled gift start date found.", Models.Message.API_ERROR_SCHEDULED_GIFT_START_DATE_NOT_FOUND);
-            }
+                return Message.createErrorReturn("No scheduled gift start date found.", Message.API_ERROR_SCHEDULED_GIFT_START_DATE_NOT_FOUND);
             if (viewModel.amount == null || viewModel.amount == 0 || viewModel.amount < 0)
-            {
-                return Models.Message.createErrorReturn("Contribution amount is null or a negative number.", Models.Message.API_ERROR_SCHEDULED_GIFT_AMOUNT_NOT_FOUND);
-            }
+                return Message.createErrorReturn("Contribution amount is null or a negative number.", Message.API_ERROR_SCHEDULED_GIFT_AMOUNT_NOT_FOUND);
             if (viewModel.paymentMethodId == null)
-            {
-                return Models.Message.createErrorReturn("No payment method ID.", Models.Message.API_ERROR_PAYMENT_METHOD_NOT_FOUND);
-            }
+                return Message.createErrorReturn("No payment method ID.", Message.API_ERROR_PAYMENT_METHOD_NOT_FOUND);
             else
             {
                 var paymentMethod = CurrentDatabase.PaymentMethods.Where(x => x.PaymentMethodId == viewModel.paymentMethodId).FirstOrDefault();
                 if (paymentMethod == null)
-                {
-                    return Models.Message.createErrorReturn("Payment method not found.", Models.Message.API_ERROR_PAYMENT_METHOD_NOT_FOUND);
-                }
+                    return Message.createErrorReturn("Payment method not found.", Message.API_ERROR_PAYMENT_METHOD_NOT_FOUND);
             }
             if (viewModel.fundId == null || viewModel.fundId == 0)
-            {
-                return Models.Message.createErrorReturn("No fund ID found for scheduled gift.", Models.Message.API_ERROR_SCHEDULED_GIFT_FUND_ID_NOT_FOUND);
-            }
+                return Message.createErrorReturn("No fund ID found for scheduled gift.", Message.API_ERROR_SCHEDULED_GIFT_FUND_ID_NOT_FOUND);
             else
             {
                 var contributionFund = CurrentDatabase.ContributionFunds.Where(x => x.FundId == viewModel.fundId).FirstOrDefault();
                 if (contributionFund == null)
-                {
-                    return Models.Message.createErrorReturn("Contribution fund not found.", Models.Message.API_ERROR_SCHEDULED_GIFT_FUND_ID_NOT_FOUND);
-                }
+                    return Message.createErrorReturn("Contribution fund not found.", Message.API_ERROR_SCHEDULED_GIFT_FUND_ID_NOT_FOUND);
             }
 
             var scheduledGift = new ScheduledGift()
@@ -374,7 +336,7 @@ namespace CmsWeb.Areas.Giving.Models
             catch (Exception e)
             {
                 ErrorSignal.FromCurrentContext().Raise(e);
-                return Models.Message.createErrorReturn("Could not create scheduled gift, database exception.", Models.Message.API_ERROR_Database_Exception);
+                return Message.createErrorReturn("Could not create scheduled gift, database exception.", Message.API_ERROR_Database_Exception);
             }
             var scheduledGiftAmount = new ScheduledGiftAmount()
             {
@@ -390,7 +352,7 @@ namespace CmsWeb.Areas.Giving.Models
             catch (Exception e)
             {
                 ErrorSignal.FromCurrentContext().Raise(e);
-                return Models.Message.createErrorReturn("Could not create scheduled gift amount, database exception.", Models.Message.API_ERROR_Database_Exception);
+                return Message.createErrorReturn("Could not create scheduled gift amount, database exception.", Message.API_ERROR_Database_Exception);
             }
             var givingPaymentScheduleItems = new GivingPaymentScheduleItems()
             {
@@ -410,56 +372,44 @@ namespace CmsWeb.Areas.Giving.Models
 
         public Message UpdateSchedule(GivingPaymentViewModel viewModel)
         {
+            if (viewModel.peopleId != CurrentDatabase.CurrentPeopleId)
+                return Message.createErrorReturn("People Id does not match the current people id.", Message.API_ERROR_SCHEDULED_GIFT__PEOPLE_ID_NOT_FOUND);
+            if (viewModel.peopleId == null)
+                return Message.createErrorReturn("People Id is a required field, but is missing.", Message.API_ERROR_SCHEDULED_GIFT__PEOPLE_ID_NOT_FOUND);
             if (viewModel.scheduledGiftId == null)
-            {
-                return Models.Message.createErrorReturn("No scheduled gift ID.", Models.Message.API_ERROR_SCHEDULED_GIFT_NOT_FOUND);
-            }
+                return Message.createErrorReturn("No scheduled gift ID.", Message.API_ERROR_SCHEDULED_GIFT_NOT_FOUND);
             if (viewModel.scheduleTypeId == null || viewModel.scheduleTypeId == 0)
-            {
-                return Models.Message.createErrorReturn("No scheduled gift type ID found.", Models.Message.API_ERROR_SCHEDULED_GIFT_TYPE_ID_NOT_FOUND);
-            }
+                return Message.createErrorReturn("No scheduled gift type ID found.", Message.API_ERROR_SCHEDULED_GIFT_TYPE_ID_NOT_FOUND);
             if (viewModel.start == null)
-            {
-                return Models.Message.createErrorReturn("No scheduled gift start date found.", Models.Message.API_ERROR_SCHEDULED_GIFT_START_DATE_NOT_FOUND);
-            }
+                return Message.createErrorReturn("No scheduled gift start date found.", Message.API_ERROR_SCHEDULED_GIFT_START_DATE_NOT_FOUND);
             if (viewModel.amount == null || viewModel.amount == 0 || viewModel.amount < 0)
-            {
-                return Models.Message.createErrorReturn("Contribution amount is null or a negative number.", Models.Message.API_ERROR_SCHEDULED_GIFT_AMOUNT_NOT_FOUND);
-            }
+                return Message.createErrorReturn("Contribution amount is null or a negative number.", Message.API_ERROR_SCHEDULED_GIFT_AMOUNT_NOT_FOUND);
+
             var scheduledGift = CurrentDatabase.ScheduledGifts.Where(s => s.ScheduledGiftId == viewModel.scheduledGiftId).FirstOrDefault();
             if (scheduledGift == null)
-            {
-                return Models.Message.createErrorReturn("Scheduled gift not found.", Models.Message.API_ERROR_SCHEDULED_GIFT_NOT_FOUND);
-            }
+                return Message.createErrorReturn("Scheduled gift not found.", Message.API_ERROR_SCHEDULED_GIFT_NOT_FOUND);
+
             var scheduledGiftAmount = CurrentDatabase.ScheduledGiftAmounts.Where(sa => sa.ScheduledGiftId == scheduledGift.ScheduledGiftId).FirstOrDefault();
             if (scheduledGiftAmount == null)
-            {
-                return Models.Message.createErrorReturn("Scheduled gift amount not found.", Models.Message.API_ERROR_SCHEDULED_GIFT_AMOUNT_NOT_FOUND);
-            }
+                return Message.createErrorReturn("Scheduled gift amount not found.", Message.API_ERROR_SCHEDULED_GIFT_AMOUNT_NOT_FOUND);
             if (viewModel.paymentMethodId == null)
-            {
-                return Models.Message.createErrorReturn("No payment method ID.", Models.Message.API_ERROR_PAYMENT_METHOD_NOT_FOUND);
-            }
+                return Message.createErrorReturn("No payment method ID.", Message.API_ERROR_PAYMENT_METHOD_NOT_FOUND);
             else
             {
                 var paymentMethod = CurrentDatabase.PaymentMethods.Where(x => x.PaymentMethodId == viewModel.paymentMethodId).FirstOrDefault();
                 if (paymentMethod == null)
-                {
-                    return Models.Message.createErrorReturn("Payment method not found.", Models.Message.API_ERROR_PAYMENT_METHOD_NOT_FOUND);
-                }
+                    return Message.createErrorReturn("Payment method not found.", Message.API_ERROR_PAYMENT_METHOD_NOT_FOUND);
             }
+
             if (viewModel.fundId == null || viewModel.fundId == 0)
-            {
-                return Models.Message.createErrorReturn("No fund ID found for scheduled gift.", Models.Message.API_ERROR_SCHEDULED_GIFT_FUND_ID_NOT_FOUND);
-            }
+                return Message.createErrorReturn("No fund ID found for scheduled gift.", Message.API_ERROR_SCHEDULED_GIFT_FUND_ID_NOT_FOUND);
             else
             {
                 var contributionFund = CurrentDatabase.ContributionFunds.Where(x => x.FundId == viewModel.fundId).FirstOrDefault();
                 if (contributionFund == null)
-                {
-                    return Models.Message.createErrorReturn("Contribution fund not found.", Models.Message.API_ERROR_SCHEDULED_GIFT_FUND_ID_NOT_FOUND);
-                }
+                    return Message.createErrorReturn("Contribution fund not found.", Message.API_ERROR_SCHEDULED_GIFT_FUND_ID_NOT_FOUND);
             }
+
             var newScheduledGiftAmount = new ScheduledGiftAmount();
             var updateScheduledGift = false;
 
@@ -521,28 +471,29 @@ namespace CmsWeb.Areas.Giving.Models
                 catch (Exception e)
                 {
                     ErrorSignal.FromCurrentContext().Raise(e);
-                    return Models.Message.successMessage("Could not update scheduled gift, database exception.", Models.Message.API_ERROR_Database_Exception);
+                    return Message.successMessage("Could not update scheduled gift, database exception.", Message.API_ERROR_Database_Exception);
                 }
             }
-            return Models.Message.successMessage("No changes made.", Models.Message.API_ERROR_NONE);
+            return Message.successMessage("No changes made.", Message.API_ERROR_NONE);
         }
 
-        public Message DeleteSchedule(Guid? scheduledGiftId)
+        public Message DeleteSchedule(Guid? scheduledGiftId, int? peopleId = null)
         {
+            if (peopleId != CurrentDatabase.CurrentPeopleId)
+                return Message.createErrorReturn("People Id does not match the current people id.", Message.API_ERROR_SCHEDULED_GIFT__PEOPLE_ID_NOT_FOUND);
+            if (peopleId == null)
+                return Message.createErrorReturn("People Id is a required field, but is missing.", Message.API_ERROR_SCHEDULED_GIFT__PEOPLE_ID_NOT_FOUND);
             if (scheduledGiftId == null)
-            {
-                return Models.Message.createErrorReturn("No scheduled gift ID.", Models.Message.API_ERROR_SCHEDULED_GIFT_NOT_FOUND);
-            }
+                return Message.createErrorReturn("No scheduled gift ID.", Message.API_ERROR_SCHEDULED_GIFT_NOT_FOUND);
+
             var scheduledGift = CurrentDatabase.ScheduledGifts.Where(s => s.ScheduledGiftId == scheduledGiftId).FirstOrDefault();
             if(scheduledGift == null)
-            {
-                return Models.Message.createErrorReturn("Scheduled gift not found.", Models.Message.API_ERROR_SCHEDULED_GIFT_NOT_FOUND);
-            }
+                return Message.createErrorReturn("Scheduled gift not found.", Message.API_ERROR_SCHEDULED_GIFT_NOT_FOUND);
+
             var scheduledGiftAmount = CurrentDatabase.ScheduledGiftAmounts.Where(sa => sa.ScheduledGiftId == scheduledGift.ScheduledGiftId).FirstOrDefault();
             if(scheduledGiftAmount == null)
-            {
-                return Models.Message.createErrorReturn("Scheduled gift amount not found.", Models.Message.API_ERROR_SCHEDULED_GIFT_AMOUNT_NOT_FOUND);
-            }
+                return Message.createErrorReturn("Scheduled gift amount not found.", Message.API_ERROR_SCHEDULED_GIFT_AMOUNT_NOT_FOUND);
+
             try
             {
                 CurrentDatabase.ScheduledGiftAmounts.DeleteOnSubmit(scheduledGiftAmount);
@@ -552,7 +503,7 @@ namespace CmsWeb.Areas.Giving.Models
             catch (Exception e)
             {
                 ErrorSignal.FromCurrentContext().Raise(e);
-                return Models.Message.createErrorReturn("Could not delete scheduled gift, database exception.", Models.Message.API_ERROR_Database_Exception);
+                return Message.createErrorReturn("Could not delete scheduled gift, database exception.", Message.API_ERROR_Database_Exception);
             }
 
             var scheduledGiftList = (from sg in CurrentDatabase.ScheduledGifts
