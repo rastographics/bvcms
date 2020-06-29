@@ -1,6 +1,7 @@
 ﻿@model CmsWeb.Areas.Dialog.Models.OrgMemberModel
 @{
-  var developer = User.IsInRole("Developer");
+    var developer = User.IsInRole("Developer");
+    var Db = ViewExtensions2.CurrentDatabase;
 }
 <div class="modal-dialog">
   <div class="modal-content">
@@ -16,42 +17,49 @@
     </div>
     <div class="modal-body">
       <div class="tabbable group">
-        <ul class="nav nav-tabs">
-          <li class="active">
-            <a href="#memberdata" data-toggle="tab">Member Data</a>
-          </li>
-          <li>
-            <a href="#membergroups" data-toggle="tab">Groups</a>
-          </li>
-          <li>
-            <a href="#regquestions" data-toggle="tab">Questions</a>
-          </li>
-          <li>
-            <a href="#membernotes" data-toggle="tab">Notes</a>
-          </li>
-          @if (developer)
-          {
-            <li>
-              <a href="#memberextrastab" data-toggle="tab" class="tabajax">Extra Values</a>
-            </li>
-          }
-        </ul>
-        <div class="tab-content">
-          @Html.Partial("Tabs/MemberData", Model)
-          <div class="tab-pane" id="membergroups">
-            @Html.Partial("Tabs/Groups", Model)
+          <ul class="nav nav-tabs">
+              <li class="active">
+                  <a href="#memberdata" data-toggle="tab">Member Data</a>
+              </li>
+              @if (Db.Setting("UseNewInvolvementCreation"))
+              {
+                  <li>
+                      <a href="#membertickets" data-toggle="tab">Tickets</a>
+                  </li>
+              }
+              <li>
+                  <a href="#membergroups" data-toggle="tab">Groups</a>
+              </li>
+              <li>
+                  <a href="#regquestions" data-toggle="tab">Questions</a>
+              </li>
+              <li>
+                  <a href="#membernotes" data-toggle="tab">Notes</a>
+              </li>
+              @if (developer)
+              {
+                  <li>
+                      <a href="#memberextrastab" data-toggle="tab" class="tabajax">Extra Values</a>
+                  </li>
+              }
+          </ul>
+          <div class="tab-content">
+              @Html.Partial("Tabs/MemberData", Model)
+              <div class="tab-pane" id="membergroups">
+                  @Html.Partial("Tabs/Groups", Model)
+              </div>
+              @Html.Partial("Tabs/Tickets", Model)
+              @Html.Partial("Tabs/Questions", Model)
+              @Html.Partial("Tabs/Notes", Model)
+              @if (developer)
+              {
+                  <div class="tab-pane" id="memberextrastab"
+                       data-init="Editable"
+                       data-init2="ExtraEditable"
+                       data-link="/OrgMemberDialog/ExtraValues/@Model.OrgId/@Model.PeopleId">
+                  </div>
+              }
           </div>
-          @Html.Partial("Tabs/Questions", Model)
-          @Html.Partial("Tabs/Notes", Model)
-          @if (developer)
-          {
-            <div class="tab-pane" id="memberextrastab"
-                 data-init="Editable"
-                 data-init2="ExtraEditable"
-                 data-link="/OrgMemberDialog/ExtraValues/@Model.OrgId/@Model.PeopleId">
-            </div>
-          }
-        </div>
       </div>
     </div>
     <div class="modal-footer">

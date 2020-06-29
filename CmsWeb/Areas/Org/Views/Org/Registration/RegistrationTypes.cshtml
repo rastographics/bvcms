@@ -1,0 +1,5 @@
+﻿@using CmsData
+@model CmsWeb.Areas.Dialog.Models.NewOrganizationModel
+<div>
+    @Html.DropDownList("org.RegistrationTypeId", Model.RegistrationTypeList(), new { @class = "form-control" })
+</div>

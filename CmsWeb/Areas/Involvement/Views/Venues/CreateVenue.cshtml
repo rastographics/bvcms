@@ -1,0 +1,31 @@
+﻿@model CmsWeb.Areas.Involvement.Models.Venues.ChartModel
+
+
+@{
+    Layout = ViewExtensions2.TouchPointLayout();
+    ViewBag.Title = "CreateVenue";
+}
+@Html.Partial("VenuesMenu")
+<br/>
+
+<div id="chartDesigner" style="width: 1400px; height: 700px;"></div>
+<script src="https://cdn.seatsio.net/chart.js"></script>
+@*SEATING CHART DESIGNER
+    <br />
+    secret key: cf8a6c45-cc68-44f8-938e-14d8d27004c1
+    <br />
+    workspace key: 80e61a21-6a93-4af8-9b75-64f41e37eb51
+    <br />
+    This page works with the parameters below.  It displays the designer. If
+    the chartKey is commented out, it displays the "New chart" page (without sections and with sections options).  With the chartKey below,
+    it displays the designer.
+    <br />*@
+<script>
+    new seatsio.SeatingChartDesigner({
+        divId: 'chartDesigner',
+        secretKey: '@Model.SecretKey',
+        chartKey: '@Model.Key'
+    }).render();
+</script>
+
+

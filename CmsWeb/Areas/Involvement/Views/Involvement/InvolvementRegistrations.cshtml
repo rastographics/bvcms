@@ -1,0 +1,27 @@
+﻿@model CmsWeb.Areas.Org.Models.OrganizationModel
+<ul class="nav nav-pills subnav hidden-xs" data-tabparent="Registrations-tab">
+    <li id="Reg-tab" class="active"><a href="#Registration" data-toggle="tab" class="ajax">Registration</a></li>
+    <li id="Fees-tab"><a href="#Fees" data-toggle="tab" class="ajax">Fees</a></li>
+    <li id="Questions-tab"><a href="#Questions" data-toggle="tab" class="ajax">Questions</a></li>
+    <li id="Messages-tab"><a href="#Messages" data-toggle="tab" class="ajax">Messages</a></li>
+</ul>
+<select class="form-control visible-xs-block nav-select-pills" id="Registrations-select">
+    <option value="#Registration">Registration</option>
+    <option value="#Fees">Fees</option>
+    <option value="#Questions">Questions</option>
+    <option value="#Messages">Messages</option>
+</select>
+<div class="tab-content" style="border: none;">
+    <div class="tab-pane settings active" id="Registration" data-link="/Org/Registration">
+        @Html.Partial("Registration/Registration", Model.SettingsRegistrationModel)
+    </div>
+    <div class="tab-pane settings" id="Fees" data-link="/Org/Fees">
+        @Helper.HiddenId("Id", Model.Id)
+    </div>
+    <div class="tab-pane settings" id="Questions" data-link="/Org/Questions">
+        @Helper.HiddenId("Id", Model.Id)
+    </div>
+    <div class="tab-pane settings no0" id="Messages" data-link="/Org/Messages">
+        @Helper.HiddenId("Id", Model.Id)
+    </div>
+</div>

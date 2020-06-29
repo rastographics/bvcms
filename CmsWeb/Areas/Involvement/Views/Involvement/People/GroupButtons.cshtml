@@ -1,37 +1,36 @@
 ﻿@using CmsData.Codes
-@model CmsWeb.Areas.Involvement.Models.InvolvementPeopleModel
+@model CmsWeb.Areas.Org.Models.OrganizationModel
 <div class="btn-group">
-    <a class="btn btn-default" tabindex="0" href="#" data-toggle="popover" data-container="body" data-placement="bottom" data-trigger="focus" data-title="Group Buttons" data-content="@Model.GroupHelp"><i class="fa fa-info-circle"></i></a>
-    @GroupButton(GroupSelectCode.TicketBuyer, "Ticket Buyers")
-    <span id="totalcount" class="badge">@Model.Count().ToString("N0")</span>
-    &nbsp;
+    <span class="badge">@Model.Count().ToString("N0")</span>
+
+    @GroupButton(InvolvementGroupSelectCode.TicketBuyer, "Ticket Buyers")
 </div>
 @if (!Model.HidePreviousButton)
 {
-    @GroupButton(GroupSelectCode.Previous, "Previous")
-    <span id="totalcount" class="badge">@Model.Count().ToString("N0")</span>
+    @GroupButton(InvolvementGroupSelectCode.Previous, "Previous")
 }
 
 @helper GroupButton(string group, string name)
 {
-    if (!Model.GroupNeedsMenu(group))
+<div class="btn-group">
+    @switch (group)
     {
-        <button class="btn btn-default grp @Model.GroupActive(group)" value="@group">@name</button>
-        return;
+        case InvolvementGroupSelectCode.TicketBuyer:
+            <button class="btn btn-default grp @Model.GroupActive(group)" value="@group">
+                @name &nbsp;
+            </button>
+
+            break;
+        case InvolvementGroupSelectCode.Previous:
+            <button class="btn btn-default grp @Model.GroupActive(group)" value="@group">
+                @name &nbsp;
+            </button>
+            <button class="btn btn-info dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
+
+            <ul class="dropdown-menu dropdown-menu-right">
+                <li><a id="multigroup" href="#" class="grp2 @Model.MultiSelectActive">Select Multiple</a>
+            </ul>
+            break;
     }
-    var showdrop = Model.Showdrop(group);
-    <div class="btn-group">
-        <button class="btn btn-default grp @Model.GroupActive(group)" value="@group">@name</button>
-        <button class="btn btn-info dropdown-toggle @(showdrop ? "" : "hide")" data-toggle="dropdown"><span class="caret"></span></button>
-        @switch (showdrop ? group : "")
-        {
-            case GroupSelectCode.TicketBuyer:
-                break;
-            case GroupSelectCode.Previous:
-                <ul class="dropdown-menu dropdown-menu-right">
-                    <li><a href="/AddToOrgFromTag/@Model.QueryId" class="longrunop" title="Add Previous Members From Tag"><i class="fa fa-tag"></i>&nbsp;&nbsp;Select Multiple</a></li>
-                </ul>
-                break;
-        }
-    </div>
+</div>
 }

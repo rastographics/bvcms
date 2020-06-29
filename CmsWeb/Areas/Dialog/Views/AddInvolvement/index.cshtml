@@ -10,22 +10,26 @@
             <div class="modal-body">
                 <div class="row">
                     <div class="col-sm-6">
-                        <div class="form-group">
+                        <p class="form-group">
                             <label for="org_OrganizationName" class="control-label">Name</label>
                             @Html.TextBox("org.OrganizationName", Model.org.OrganizationName, new { @class = "form-control" })
-                        </div>
-                    </div>
-                    <div class="col-sm-6">
-                        <div class="form-group">
+                        <p>
                             <label for="inv_InvolvementTypeId" class="control-label">Involvement Type</label>
-                            @Html.DropDownList("inv.InvolvementTypeId", Model.RegistrationTypeList(), new { @class = "form-control" })
-                        </div>
-                    </div>
-                    <div class="col-sm-6">
-                        <div class="form-group">
+
+
+
+
+                            @*@Html.DropDownList("inv.InvolvementTypeId", Model.RegistrationTypeList(), new { @class = "form-control" })*@
+                            @Html.Partial("~/Areas/Org/Views/Org/Registration/RegistrationTypes.cshtml", Model)
+
+
+
+
+                        </p>
+                        <p>
                             <label for="inv_CampusId" class="control-label">Campus</label>
                             @Html.DropDownList("org.CampusId", Model.CampusList(), new { @class = "form-control" })
-                        </div>
+                        </p>
                     </div>
                 </div>
                 <div class="col-sm-12">

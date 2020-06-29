@@ -52,6 +52,7 @@ namespace CmsWeb.Areas.Org.Controllers
             ViewBag.model = m;
             ViewBag.selectmode = 0;
             InitExportToolbar(m);
+            ViewBag.OrganizationName = m.Org.OrganizationName;
             Util.ActiveOrganization = m.Org.OrganizationName;
             return View(m);
         }

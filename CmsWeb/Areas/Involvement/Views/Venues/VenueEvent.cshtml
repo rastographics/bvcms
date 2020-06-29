@@ -1,0 +1,18 @@
+﻿@model CmsWeb.Areas.Involvement.Models.Venues.ChartModel
+
+
+@{
+    Layout = ViewExtensions2.TouchPointLayout();
+    ViewBag.Title = "MultiLevel Pricing";
+}
+@Html.Partial("VenuesMenu")
+<br />
+<div id="chart"></div>
+<script src="https://cdn.seatsio.net/chart.js"></script>
+<script>
+    new seatsio.SeatingChart({
+        divId: 'chart',
+        workspaceKey: 'publicDemoKey',
+        event: '@Model.VenueSize'
+    }).render();
+</script>

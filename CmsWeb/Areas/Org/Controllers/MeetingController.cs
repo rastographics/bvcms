@@ -576,13 +576,6 @@ namespace CmsWeb.Areas.Org.Controllers
                         SmallGroup = i.SmallGroup,
                         Name = i.Name
                     };
-            //            var list = new List<ttt>();
-            //            foreach (var i in j)
-            //            {
-            //                list.Add(new ttt { label = "SmallGroup", name = $"{i.Key} ({i.g.Count()})"});
-            //                foreach (var name in i.g)
-            //                    list.Add(new ttt { label = "", name = name });
-            //            }
             return View(j);
         }
 

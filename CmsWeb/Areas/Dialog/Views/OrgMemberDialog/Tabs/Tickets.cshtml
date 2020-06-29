@@ -1,0 +1,185 @@
+﻿@model CmsWeb.Areas.Dialog.Models.OrgMemberModel
+<div id="membertickets" class="tab-pane">
+    <table class="table table-condensed">
+        <thead>
+            <tr>
+                <th>
+
+                </th>
+                <th>
+                    Section
+                    @*@Model.SortLink("Section")*@
+                </th>
+                <th>
+                    Row
+                    @*@Model.SortLink("Row")*@
+                </th>
+                <th>
+                    Seat
+                    @*@Model.SortLink("Seat")*@
+                </th>
+                <th>
+                    Price
+                    @*@Model.SortLink("Church")*@
+                </th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>1</td>
+                <td>Sec C</td>
+                <td>Row F</td>
+                <td>Seat A</td>
+                <td>$7.50</td>
+                <td>
+                    <a href="#"><i class="fa fa-print" style="color:#008000;"></i></a> &nbsp;
+                    <a href="#"><i class="fa fa-trash" style="color:#000000;"></i></a> &nbsp;
+                </td>
+            </tr>
+
+            @*@foreach (var p in Model.ViewList())
+                {
+                    var hastag = p.HasTag ?? false;
+                    <tr class="@(p.IsDeceased == true ? "danger" : "")">
+                        @if (!Model.OrgLeaderAddDrop)
+                        {
+                            <td style="width: 20px;">
+                                <input type="checkbox" class="omck" value="@p.PeopleId" @(p.IsChecked == true ? "checked=checked" : "") />
+                            </td>
+                        }
+                        @if (Model.MultiSelect)
+                        {
+                            <td>@p.Tab</td>
+                        }
+                        <td>
+                            <a href="#" class="templateItem" template="0">
+                                <img src="/PreviewImage/0" class="img-responsive img-circle" width="30" height="30" />
+                            </a>
+                        </td>
+                        <td>
+                            @if (Model.DisablePeopleLink)
+                            {
+                                <text>@p.Name</text>
+                            }
+                            else
+                            {
+                                <a href="/Person2/@p.PeopleId" class="target" @target>@p.Name</a>
+                            }
+
+                            @if (Model.NameLinks != null && p.PeopleId.HasValue && Model.NameLinks.ContainsKey(p.PeopleId.Value))
+                            {
+                                <div>
+                                    @Html.Raw(Model.NameLinks[p.PeopleId.Value])
+                                </div>
+                            }
+
+                            @if (Model.ShowAddress)
+                            {
+                                @p.AddressBlock
+                            }
+                        </td>
+                        <td>
+                            @ManageMemberLinks(p)
+                            @ManagePrevMemberLinks(p)
+                            @ManageGuestLinks(p)
+                            @ManageProspectLinks(p)
+                        </td>
+                        <td>
+                            @p.MemberStatus<br />
+                            @if (Model.ShowBirthday)
+                            {
+                                var age = Person.AgeDisplay(p.Age, p.PeopleId).ToString();
+                                var bday = p.BirthDate;
+                                var dash = age.HasValue() && bday.HasValue() ? "-" : "";
+                                <text>@age @dash @bday</text>
+                            }
+                        </td>
+                        <td>
+                            @foreach (var ph in p.Phones)
+                            {
+                                @ph
+                                <br />
+                            }
+                            <a href="mailto:@p.EmailAddress">@p.EmailAddress</a>
+                        </td>
+                        <td>
+                            <text>@p.NumberOfTickets</text>
+                        </td>
+                        <td>
+                            <text>@p.PurchaseDate</text>
+                        </td>
+                        <td>
+                            @if (p.CustomerTicketStatus == (int)CustomerTicketStatusEnum.PrintedByCustomer)
+                            {
+                                <a href="Inv/Print"><i class="fa fa-print" style="color:#008000;"></i></a>
+                            }
+                            else if (p.CustomerTicketStatus == (int)CustomerTicketStatusEnum.WillCallPrintedByChurch)
+                            {
+                                <a href="Inv/Print"><i class="fa fa-print" style="color:#FF0000;" title="Print Person"></i></a>
+                            }
+                            else
+                            {
+                                <a href="Inv/Print"><i class="fa fa-print" title="Print Person"></i></a>
+                            }
+
+                            &nbsp;
+                            <a href="Inv/Tag"><i class="fa fa-tag" title="Tag Person"></i></a>&nbsp;
+
+                            @if (!(new[] { GroupSelectCode.Guest, GroupSelectCode.Previous }).Contains(p.GroupCode))
+                            {
+                                <a class="membertype" href="/OrgMemberDialog/@p.Group/@Model.Id/@p.PeopleId"><i class="fa fa-edit" title="Member Dialog Box"></i></a>
+                            }
+
+                            @if (p.GroupCode == InvolvementGroupSelectCode.Previous)
+                            {
+                                <a href="/Org/Join/@Model.Id/@p.PeopleId" class="joinlink"
+                                   confirm="Re-Join @p.Name to this Org?">
+                                    <i class="fa fa-arrow-circle-left" title="Re-join this person to this Organization"></i>
+                                </a>
+                            }
+                            else
+                            {
+                                <a href="Inv/Delete">
+                                    <i class="fa fa-trash" style="color:#FF0000;" title="Delete Person"></i>
+                                </a>
+                            }
+                        </td>
+                    </tr>
+                }*@
+        </tbody>
+    </table>
+    <div class="row">
+        <div class="pull-left">
+
+
+            <div class="btn-group">
+                <button class="btn btn-success dropdown-toggle" data-toggle="dropdown">View Transactions <span class="caret"></span></button>
+                <ul class="dropdown-menu">
+                    <li>
+                        <a href="/OrgMemberDialog/AddTransaction" class="ajax"><i class="fa fa-plus-circle"></i>&nbsp;&nbsp;Add Tickets</a>
+                    </li>
+                </ul>
+            </div>
+
+
+
+
+            @*<a href="/OrgMemberDialog/ShowDrop" class="btn btn-default ajax">View Transactions</a>*@
+        </div>
+    </div>
+    <div class="row">
+        <div class="pull-right">
+            @*@if ((managetransactions || admin || missiongiving) && (member || sender))
+                {*@
+            @*<div class="btn-group">*@
+            <a href="/OrgMemberDialog/ShowDrop" class="btn btn-success ajax">Add Tickets</a>
+            <a href="/OrgMemberDialog/Move" class="btn btn-warning ajax">Print All</a>
+            <a href="/OrgMemberDialog/ShowDrop" class="btn btn-danger ajax">Cancel All</a>
+            @*</div>*@
+            @*}*@
+
+        </div>
+    </div>
+</div>
+<br /><br />

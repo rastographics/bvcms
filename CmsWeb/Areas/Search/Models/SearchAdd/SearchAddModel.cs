@@ -223,6 +223,7 @@ namespace CmsWeb.Areas.Search.Models
                     case "relatedfamily":
                         return AddRelatedFamilys(iid, OriginCode.NewFamilyMember);
                     case "org":
+                    case "inv":
                         return AddOrgMembers(iid, OriginCode.Enrollment);
                     case "pending":
                         return AddOrgMembers(iid, OriginCode.Enrollment, pending: true);

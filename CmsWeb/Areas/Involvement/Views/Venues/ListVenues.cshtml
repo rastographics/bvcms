@@ -1,0 +1,56 @@
+﻿@model IEnumerable<CmsWeb.Areas.Involvement.Models.Venues.ChartModel>
+
+
+@{
+    Layout = ViewExtensions2.TouchPointLayout();
+    ViewBag.Title = "Venue";
+}
+
+@Html.Partial("VenuesMenu")
+<br/>
+<h2>List of Venues</h2>
+
+<table class="table table-striped">
+    <tr>
+        <th width="80">
+            @Html.DisplayNameFor(model => model.Id)
+        </th>
+        <th width="400">
+            @Html.DisplayNameFor(model => model.Key)
+        </th>
+        <th width="200">
+            @Html.DisplayNameFor(model => model.Name)
+        </th>
+        <th width="120">
+            @Html.DisplayNameFor(model => model.Status)
+        </th>
+        <th></th>
+    </tr>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                <text>@item.Id</text>
+            </td>
+            <td>
+                <text>@item.Key</text>
+            </td>
+            <td>
+                <text>@item.Name</text>
+            </td>
+            <td>
+                <text>@item.Status</text>
+            </td>
+
+            <td>
+                @Html.ActionLink("Details", "ChartDetails", "Venues", new { @key = item.Key }, new { @class = "btn btn-default" }) &nbsp;
+                @Html.ActionLink("Edit", "EditChart", "Venues", new { @id = item.Id }, new { @class = "btn btn-default" }) &nbsp;
+                @Html.ActionLink("Designer", "ChartDesigner", "Venues", new { @key = item.Key }, new { @class = "btn btn-default" }) &nbsp;
+                @Html.ActionLink("Delete", "DeleteChart", "Venues", new { @id = item.Id }, new { @class = "btn btn-default" })
+            </td>
+        </tr>
+    }
+
+</table>
+<br /><br />
+<a href="Index">Dashboard</a>

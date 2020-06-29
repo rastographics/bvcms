@@ -767,5 +767,29 @@ namespace CmsData
 
             MemberTags.Add(new MemberTag() { Name = sg });
         }
+
+        private List<ChangeDetail> psbDefault;
+
+        public void UpdateValue(string field, object value)
+        {
+            if (psbDefault == null)
+            {
+                psbDefault = new List<ChangeDetail>();
+            }
+
+            this.UpdateValue(psbDefault, field, value);
+        }
+
+        public void UpdateCampus(CMSDataContext db, object value)
+        {
+            var campusid = value.ToInt2();
+            if (campusid == 0)
+            {
+                campusid = null;
+            }
+
+            this.UpdateValue("CampusId", campusid);
+            db.SubmitChanges();
+        }
     }
 }

@@ -198,6 +198,28 @@ $(function () {
         return false;
     });
 
+
+
+    //$('body').on('click', '#showaddress', function (ev) {
+    //    ev.preventDefault();
+    //    $(this).toggleClass("active");
+    //    $("#ShowAddress").val($(this).hasClass("active"));
+    //    $.RebindMemberGrids();
+    //    return false;
+    //});
+
+    // JRR EXPERIMENTAL ????????????
+
+    //$('body').on('click', '#chkAddress', function (ev) {
+    //    ev.preventDefault();
+    //    $(this).toggleClass("active");
+    //    $("#ShowAddress").val($(this).hasClass("active"));
+    //    $.RebindMemberGrids();
+    //    return false;
+    //});
+
+
+
     $('body').on('click', '#groupSelector button.grp', function (event) {
         event.preventDefault();
         var $this = $(this);
@@ -209,7 +231,8 @@ $(function () {
             $this.addClass("active");
             $this.next().find("button.dropdown-toggle").show();
             $("li.orgcontext").hide();
-            switch ($this.text()) {
+
+            switch ($this.text().trim()) {
                 case "Members":
                     $("li.current-list").show();
                     break;
@@ -222,6 +245,7 @@ $(function () {
         $("#groupSelector button.grp.active").each(function () {
             $a += $(this).val();
         });
+
         if ($a === "") {
             $this.toggleClass("active");
             return false;
@@ -608,6 +632,10 @@ $(function () {
     });
 
     $('body').on('click', '#Future', function () {
+        $.formAjaxClick($(this));
+    });
+
+    $('body').on('click', '#Past', function () {
         $.formAjaxClick($(this));
     });
 
@@ -1057,6 +1085,13 @@ $(function () {
     if (window.collapseOrgSection === true) {
         $('#org-main-section').collapse('hide');
     }
+
+    $('#Campus').editable({
+        source: "/Person2/Campuses",
+        type: "select",
+        url: "/Involvement/PostData",
+        name: "campus"
+    });
 });
 
 $.RebindMemberGrids = function() {
@@ -1144,5 +1179,5 @@ function SaveFee() {
         error: function (err) {
             console.log(err);
         }
-    });   
+    });
 }
