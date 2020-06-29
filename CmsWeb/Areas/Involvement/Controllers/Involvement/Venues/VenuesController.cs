@@ -35,7 +35,33 @@ namespace CmsWeb.Areas.Involvement.Controllers.Involvement
         [HttpGet, Route("~/Venues")]
         public ActionResult Index()
         {
-            return View();
+            Client = new SeatsioClient(SecretKey, WorkspaceKey, BaseUrl);
+            List<ChartModel> charts = new List<ChartModel>();
+
+            var chartsFromAPI = Client.Charts.ListAll(expandEvents: true).ToList();
+
+            foreach (var ch in chartsFromAPI)
+            {
+                var chart = new ChartModel
+                {
+                    Id = ch.Id,
+                    Key = ch.Key,
+                    Name = ch.Name,
+                    Status = ch.Status,
+                    PublishedVersionThumbnailUrl = ch.PublishedVersionThumbnailUrl
+                };
+
+                chart.Events = new List<Event>();
+
+                foreach (var ev in ch.Events)
+                {
+                    chart.Events.Add(ev);
+                }
+
+                charts.Add(chart);
+            }
+
+            return View(charts);
         }
 
         [HttpGet, Route("~/ListVenues")]
@@ -94,35 +120,12 @@ namespace CmsWeb.Areas.Involvement.Controllers.Involvement
             return View("CreateVenue", model);
         }
 
-        [HttpGet, Route("~/MultilevelPricing")]
-        public ActionResult MultilevelPricing()
+        [HttpGet, Route("~/DeleteChart")]
+        public ActionResult DeleteChart(string key)
         {
-            return View();
+            // TODO: add logic to delete here
+
+            return View("Index");
         }
-
-        [HttpGet, Route("~/SmallVenueEvent")]
-        public ActionResult SmallVenueEvent()
-        {
-            ChartModel model = new ChartModel
-            {
-                VenueSize = "smallTheatreEvent",
-                SecretKey = SecretKey
-            };
-
-            return View("VenueEvent", model);
-        }
-
-        [HttpGet, Route("~/LargeVenueEvent")]
-        public ActionResult LargeVenueEvent()
-        {
-            ChartModel model = new ChartModel
-            {
-                VenueSize = "largeTheatreEvent",
-                SecretKey = SecretKey
-            };
-
-            return View("VenueEvent", model);
-        }
-
     }
 }
