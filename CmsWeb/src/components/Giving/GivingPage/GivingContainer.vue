@@ -8,8 +8,8 @@
                 <div class="panel-body" v-if="view === 'gifts'" key="gifts">
                     <div class="row">
                         <div class="col-sm-12">
-                            <button v-if="!identity.User" @click="loadView('signin', true)" class="btn btn-link pull-right"><i class="fa fa-user"></i> Sign In</button>
-                            <button v-else class="btn btn-link pull-right"><i class="fa fa-user"></i> {{ identity.User.Name }}</button>
+                            <button v-if="!identity.PeopleId" @click="loadView('signin', true)" class="btn btn-link pull-right"><i class="fa fa-user"></i> Sign In</button>
+                            <button v-else class="btn btn-link pull-right"><i class="fa fa-user"></i> {{ identity.Name }}</button>
                         </div>
                     </div>
                     <div v-if="pageTypes.length > 1" class="text-center" style="margin-bottom: 25px;">
@@ -138,8 +138,15 @@
                         return false;
                     }
                 }
+                if (newView === 'payment') {
+                    this.getIdentity();
+                    newView = 'gifts';
+                }
                 if (newView === 'signin') {
-                    // todo: if already signed in, move to payment view
+                    if (this.identity.PeopleId) {
+                        // if already logged in, move to payment
+                        newView = 'payment';
+                    }
                 }
                 this.view = newView;
             },

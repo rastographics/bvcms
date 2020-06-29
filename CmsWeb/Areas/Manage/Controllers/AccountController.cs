@@ -798,9 +798,83 @@ namespace CmsWeb.Areas.Manage.Controllers
             }
             return Json(new
             {
-                User = CurrentDatabase.CurrentUser,
-                SMSReady = SMSReady
+                CurrentDatabase.CurrentUserPerson?.PeopleId,
+                Name = CurrentDatabase.CurrentUserPerson?.FirstName + " " + CurrentDatabase.CurrentUserPerson?.LastName,
+                SMSReady
             }, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost, MyRequireHttps]
+        public ActionResult EasyLogin(string search, string code)
+        {
+            var result = new AccountResult
+            {
+                Status = "error",
+                Message = ""
+            };
+
+            string email = search?.Trim();
+            string phone = "";
+            if (!email.HasValue() || !email.Contains("@"))
+            {
+                phone = email.GetDigits();
+            }
+            else if (!Util.ValidEmail(email))
+            {
+                // return invalid email
+                result.Message = "Invalid email";
+                return Json(result);
+            }
+
+            List<Person> matches = CurrentDatabase.People.Where(
+                p => p.EmailAddress == email || p.EmailAddress2 == email ||
+                    (p.CellPhone.Length > 0 && p.CellPhone == phone)
+                ).ToList();
+
+            if (matches.Count == 0)
+            {
+                // return no person found
+                result.Message = "No person found";
+                return Json(result);
+            }
+            else if (matches.Count > 1)
+            {
+                // return list of people found
+                result.Message = matches.ToString();
+                return Json(result);
+            }
+
+            // matched on one person
+            Person person = matches[0];
+            User user;
+
+            if (person.Users.Any())
+            {
+                user = person.Users.First();
+            }
+            else
+            {
+                // create user
+                user = MembershipService.CreateUser(CurrentDatabase, person.PeopleId);
+                CurrentDatabase.SubmitChanges();
+            }
+
+
+            string hash = AccountModel.createHash($"{code}");
+            var attempt = CurrentDatabase.Users.FirstOrDefault(u => u.Username == user.Username && u.Code == hash);
+            if (attempt != null && DateTime.Now < attempt.CodeExpires)
+            {
+                AccountModel.FinishLogin(attempt.Username, CurrentDatabase, CurrentImageDatabase);
+            }
+            else
+            {
+                // invalid code
+                result.Message = "Invalid code";
+                return Json(result);
+            }
+            result.Status = "success";
+            result.Message = "Logged In";
+            return Json(result);
         }
 
         [HttpPost, MyRequireHttps]
@@ -861,7 +935,12 @@ namespace CmsWeb.Areas.Manage.Controllers
                 CurrentDatabase.SubmitChanges();
             }
 
-            // todo: check if user needs 2fa and return error to handle it client side
+            // if user needs 2fa return error and redirect client side
+            if (user.MFAEnabled)
+            {
+                result.Message = "Needs 2FA";
+                return Json(result);
+            }
 
             // create code
             var code = AccountModel.createQuickSignInCode();
