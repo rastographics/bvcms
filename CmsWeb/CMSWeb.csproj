@@ -589,6 +589,7 @@
     <Compile Include="Areas\Involvement\Models\Involvement\InvolvementMeetingsModel.cs" />
     <Compile Include="Areas\Involvement\Models\MeetingInfo.cs" />
     <Compile Include="Areas\Involvement\Models\MeetingModel.cs" />
+    <Compile Include="Areas\Involvement\Models\Venues\VenuesModelBase.cs" />
     <Compile Include="Areas\Main\Models\Other\CouponResponseModel.cs" />
     <Compile Include="Areas\Manage\Controllers\ActivityController.cs" />
     <Compile Include="Areas\Manage\Controllers\BatchMoveAndDelete.cs" />
@@ -2021,6 +2022,8 @@
     <Content Include="Areas\Dialog\Views\OrgMemberDialog\Tabs\Tickets.cshtml" />
     <Content Include="Areas\Involvement\Views\Venues\ListVenues.cshtml" />
     <Content Include="Areas\Involvement\Views\Venues\VenuesMenu.cshtml" />
+    <Content Include="Areas\Involvement\Views\Venues\MultiLevelPricing.cshtml" />
+    <Content Include="Areas\Involvement\Views\Venues\VenueEvent.cshtml" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>

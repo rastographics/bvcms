@@ -75,7 +75,8 @@ namespace CmsWeb.Areas.Involvement.Controllers.Involvement
         {
             ChartModel model = new ChartModel
             {
-                Key = ""
+                Key = "",
+                SecretKey = SecretKey
             };
 
             return View(model);
@@ -86,10 +87,42 @@ namespace CmsWeb.Areas.Involvement.Controllers.Involvement
         {
             ChartModel model = new ChartModel
             {
-                Key = key
+                Key = key,
+                SecretKey = SecretKey
             };
 
             return View("CreateVenue", model);
         }
+
+        [HttpGet, Route("~/MultilevelPricing")]
+        public ActionResult MultilevelPricing()
+        {
+            return View();
+        }
+
+        [HttpGet, Route("~/SmallVenueEvent")]
+        public ActionResult SmallVenueEvent()
+        {
+            ChartModel model = new ChartModel
+            {
+                VenueSize = "smallTheatreEvent",
+                SecretKey = SecretKey
+            };
+
+            return View("VenueEvent", model);
+        }
+
+        [HttpGet, Route("~/LargeVenueEvent")]
+        public ActionResult LargeVenueEvent()
+        {
+            ChartModel model = new ChartModel
+            {
+                VenueSize = "largeTheatreEvent",
+                SecretKey = SecretKey
+            };
+
+            return View("VenueEvent", model);
+        }
+
     }
 }
