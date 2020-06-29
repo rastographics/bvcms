@@ -104,9 +104,9 @@
                     response => {
                         if (response.status === 200) {
                             if(response.data.PageId !== response.data.OldDefaultPageId && response.data.OldDefaultPageId > 0) {
-                                snackbar(response.data.PageName + " has been " + (response.data.DefaultPage ? "set as default page" : "unset as default page"), "success");
                                 this.fetchGivingPages();
                             }
+                            snackbar(response.data.PageName + " has been " + (response.data.DefaultPage ? "set as default page" : "unset as default page"), "success");
                         } else {
                             snackbar("Error updating giving page status.", "error");
                             this.fetchGivingPages();
