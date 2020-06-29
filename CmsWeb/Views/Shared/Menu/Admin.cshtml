@@ -14,6 +14,7 @@
     var financedataentry = User.IsInRole("FinanceDataEntry");
     var financeviewonly = User.IsInRole("FinanceViewOnly");
     var checkin = User.IsInRole("Checkin");
+    var venueBuilder = User.IsInRole("VenueBuilder");
     const bool financetrue = true;
     const bool financefalse = false;
     var deposititems = PythonScriptModel.CustomDepositImportMenuItems(Db);
@@ -73,7 +74,7 @@
                 </li>
                 <li class="col-sm-4">
                     <ul>
-                        @AdminList1(admin, design, managetrans, edit, manageemails, financetrue, developer, financeadmin)
+                        @AdminList1(admin, design, managetrans, edit, manageemails, financetrue, developer, financeadmin, venueBuilder)
                     </ul>
                 </li>
             </ul>
@@ -110,7 +111,7 @@
                     </li>
                     <li class="col-sm-4">
                         <ul>
-                            @AdminList1(admin, design, managetrans, edit, manageemails, financefalse, developer, financeadmin)
+                            @AdminList1(admin, design, managetrans, edit, manageemails, financefalse, developer, financeadmin, venueBuilder)
                         </ul>
                     </li>
                 </ul>
@@ -151,29 +152,29 @@
                 </li>
                 <li class="col-sm-6">
                     <ul>
-                        @AdminList1(admin, design, managetrans, edit, manageemails, financefalse, developer, financeadmin)
+                        @AdminList1(admin, design, managetrans, edit, manageemails, financefalse, developer, financeadmin, venueBuilder)
                     </ul>
                 </li>
             </ul>
         }
     </li>
 }
-@helper AdminList1(bool admin, bool design, bool managetrans, bool edit, bool manageemails, bool finance, bool developer, bool financeadmin)
+@helper AdminList1(bool admin, bool design, bool managetrans, bool edit, bool manageemails, bool finance, bool developer, bool financeadmin, bool venueBuilder)
 {
-    CMSDataContext Db = ViewExtensions2.CurrentDatabase;
-    if (admin || finance || managetrans)
-    {
+CMSDataContext Db = ViewExtensions2.CurrentDatabase;
+if (admin || finance || managetrans)
+{
         <li class="dropdown-header dropdown-sub-header">Batch Actions</li>
-    }
-    if (admin)
-    {
+}
+if (admin)
+{
         @Helper.LiAnchorLink("Find Duplicates", "/Duplicates/Find")
         @Helper.LiAnchorLink("Tag People Ids", "/Batch/TagPeopleIds")
         @Helper.LiAnchorLink("Update Fields from a Tag/Query", "/Batch/UpdateFields")
         @Helper.LiAnchorLink("Update Organizations", "/Batch/UpdateOrg")
         @Helper.LiAnchorLink("Update Status Flags", "/Batch/UpdateStatusFlags")
-        if (User.IsInRole("developer"))
-        {
+    if (User.IsInRole("developer"))
+    {
             @Helper.LiAnchorLink("Upload Addresses", "/Batch/UploadAddresses")
             <li>
                 <a href="/ValidateAddress" class="longrunop">Validate Address for a Tag/Query</a>
@@ -181,16 +182,16 @@
             <li>
                 <a href="/Batch/OtherDeveloperActions">Other Developer Actions</a>
             </li>
-        }
     }
-    if ((finance || managetrans || financeadmin) && ViewExtensions2.CurrentDatabase.Setting("ShowSyncBatchDatesOption"))
-    {
+}
+if ((finance || managetrans || financeadmin) && ViewExtensions2.CurrentDatabase.Setting("ShowSyncBatchDatesOption"))
+{
         @Helper.LiAnchorLink("Retrieve Batch Data", "/Batch/RetrieveBatchData")
-    }
-    if (admin || finance || design)
-    {
+}
+if (admin || finance || design)
+{
         <li class="dropdown-header dropdown-sub-header">Setup</li>
-    }
+}
     @Helper.LiAnchorLink("Homepage Widgets", "/HomeWidgets/", admin)
     @Helper.LiAnchorLink("Lookup Codes", "/Lookups/", admin || finance)
     @Helper.LiAnchorLink("Payment Gateways", "/Gateway/", admin)
@@ -199,6 +200,7 @@
     @Helper.LiAnchorLink("Settings", "/Settings/", admin)
     @Helper.LiAnchorLink("Special Content", "/Display/", admin || design)
     @Helper.LiAnchorLink("Twilio", "/Twilio/", admin)
+    @Helper.LiAnchorLink("Venues", "/Venues/", venueBuilder)
     @Helper.LiAnchorLink("Zip Codes", "/MetroZips/", admin)
 
     if (admin)

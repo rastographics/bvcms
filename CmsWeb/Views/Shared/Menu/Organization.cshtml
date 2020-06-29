@@ -18,6 +18,7 @@
                 {
                     <li>@Helper.JQueryIdLink("Add New Organization", "addorg")</li>
                 }
+
                 @if (User.IsInRole("Checkin") && Db.Setting("EnableCheckinCoordinator"))
                 {
                     <li>@Helper.LiAnchorLink("Check-In Coordinator", "/CheckInCoordinator")</li>

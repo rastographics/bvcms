@@ -30,6 +30,30 @@ $(function () {
 
         });
     });
+
+    $('#addinv').click(function (e)
+    {
+        e.preventDefault();
+        var url = '/AddInvolvement';
+        if ($('#OrganizationId').length > 0)
+        {
+            url = url + '?displayCopySettings=true';
+        }
+
+        $("<div />").load(url, {}, function ()
+        {
+            var div = $(this);
+            var dialog = div.find("#new-org-modal");
+            $('#empty-dialog').html(dialog);
+            $('#empty-dialog').modal("show");
+            dialog.on('hidden', function ()
+            {
+                div.remove();
+                dialog.remove();
+            });
+
+        });
+    });
     
     $('body').on('click', 'a.searchadd', function (ev) {
         ev.preventDefault();
