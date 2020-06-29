@@ -141,9 +141,43 @@ namespace CmsWeb.Areas.Manage.Controllers
 
             return RedirectEdit(content);
         }
+
+        private Content Clone(Content existing)
+        {
+            var content = new Content()
+            {
+                Name = existing.Name + " Copy",
+                Title = existing.Title,
+                Body = existing.Body,
+                TypeID = existing.TypeID,
+                RoleID = existing.RoleID,
+            };
+            return content;
+        }
+        [HttpPost]
+        [ValidateInput(false)]
+        public ActionResult SaveUnlayerTemplateCopy(int saveid, string name, int roleid, string title, string body, string unlayerDesign)
+        {
+            var existing = SaveUnlayerTemplateCommon(saveid, name, roleid, title, body, unlayerDesign);
+            var content = Clone(existing);
+            SaveThumbnail(body, content);
+            CurrentDatabase.Contents.InsertOnSubmit(content);
+            CurrentDatabase.SubmitChanges();
+            return Redirect($"/Display/ContentEdit/{content.Id}");
+        }
         [HttpPost]
         [ValidateInput(false)]
         public ActionResult SaveUnlayerTemplate(int? saveid, string name, int roleid, string title, string body, string unlayerDesign)
+        {
+            var content = SaveUnlayerTemplateCommon(saveid, name, roleid, title, body, unlayerDesign);
+
+            ViewBag.templateID = content.Id;
+            var templatedraft = content.TypeID == ContentTypeCode.TypeUnlayerTemplate ? "emailTemplates" : "savedDrafts";
+            return Redirect($"/Display/#tab_{templatedraft}");
+        }
+
+        private Content SaveUnlayerTemplateCommon(int? saveid, string name, int roleid, string title, string body,
+            string unlayerDesign)
         {
             Content content = null;
 
@@ -168,11 +202,32 @@ namespace CmsWeb.Areas.Manage.Controllers
             content.Title = title;
             content.RoleID = roleid;
             content.Name = name.HasValue() ? name : content.Name;
+            content.DateCreated = DateTime.Now;
+            content.CreatedBy = Util.UserName;
 
-            var bodytemplate = new { design = unlayerDesign, rawHtml = GetBody(body) };
+            var bodytemplate = new {design = unlayerDesign, rawHtml = GetBody(body)};
             content.Body = JsonConvert.SerializeObject(bodytemplate);
 
-            if (content.TypeID == ContentTypeCode.TypeUnlayerTemplate)
+            SaveThumbnail(body, content);
+
+            if (!saveid.HasValue || saveid == 0)
+            {
+                CurrentDatabase.Contents.InsertOnSubmit(content);
+            }
+
+            CurrentDatabase.SubmitChanges();
+            return content;
+        }
+
+        private void SaveThumbnail(string body, Content content)
+        {
+#if DEBUG
+            if (!DbUtil.DatabaseExists("CMSi_" + CurrentDatabase.Host))
+            {
+                return;
+            }
+#endif
+            if (ContentTypeCode.IsTemplate(content.TypeID))
             {
                 try
                 {
@@ -183,8 +238,6 @@ namespace CmsWeb.Areas.Manage.Controllers
                         content.ThumbID = ImageData.Image.NewImageFromBits(captureWebPageBytes, CurrentImageDatabase).Id;
                     }
 
-                    content.DateCreated = DateTime.Now;
-                    content.CreatedBy = Util.UserName;
                 }
                 catch (Exception ex)
                 {
@@ -192,19 +245,8 @@ namespace CmsWeb.Areas.Manage.Controllers
                     errorLog.Log(new Error(ex));
                 }
             }
-
-            if (!saveid.HasValue || saveid == 0)
-            {
-                CurrentDatabase.Contents.InsertOnSubmit(content);
-            }
-
-            CurrentDatabase.SubmitChanges();
-
-            ViewBag.templateID = content.Id;
-
-            var templatedraft = content.TypeID == ContentTypeCode.TypeUnlayerTemplate ? "emailTemplates" : "savedDrafts";
-            return Redirect($"/Display/#tab_{templatedraft}");
         }
+
         private string GetBody(string body)
         {
             if (body == null)
@@ -225,39 +267,20 @@ namespace CmsWeb.Areas.Manage.Controllers
         }
 
         [HttpPost]
+        public ActionResult ContentUpdateCopy(int id, string name, string title, string body, bool? snippet, int? roleid, string contentKeyWords, string stayaftersave = null)
+        {
+            // This method only applies to TypeEmailTemplate
+            var existing = ContentUpdateCommon(id, name, title, body, snippet, roleid, contentKeyWords);
+            var content = Clone(existing);
+            SaveThumbnail(body, content);
+            CurrentDatabase.Contents.InsertOnSubmit(content);
+            CurrentDatabase.SubmitChanges();
+            return Redirect($"/Display/ContentEdit/{content.Id}");
+        }
+        [HttpPost]
         public ActionResult ContentUpdate(int id, string name, string title, string body, bool? snippet, int? roleid, string contentKeyWords, string stayaftersave = null)
         {
-            var content = CurrentDatabase.Contents.SingleOrDefault(c => c.Id == id);
-            content.Name = name;
-            content.Title = string.IsNullOrWhiteSpace(title) ? name : title;
-            content.Body = body?.Trim();
-            content.RemoveGrammarly();
-            content.RoleID = roleid ?? 0;
-            content.Snippet = snippet;
-            content.SetKeyWords(CurrentDatabase, contentKeyWords.SplitStr(",").Select(vv => vv.Trim()).ToArray());
-
-            if (content.TypeID == ContentTypeCode.TypeEmailTemplate)
-            {
-                try
-                {
-                    var captureWebPageBytes = CaptureWebPageBytes(body, 100, 150);
-                    var ii = CurrentImageDatabase.UpdateImageFromBits(content.ThumbID, captureWebPageBytes);
-                    if (ii == null)
-                    {
-                        content.ThumbID = ImageData.Image.NewImageFromBits(captureWebPageBytes, CurrentImageDatabase).Id;
-                    }
-
-                    content.DateCreated = DateTime.Now;
-                    content.CreatedBy = Util.UserName;
-                }
-                catch (Exception ex)
-                {
-                    var errorLog = ErrorLog.GetDefault(null);
-                    errorLog.Log(new Error(ex));
-                }
-            }
-
-            CurrentDatabase.SubmitChanges();
+            var content = ContentUpdateCommon(id, name, title, body, snippet, roleid, contentKeyWords);
 
             if (string.Compare(content.Name, "CustomReportsMenu", StringComparison.OrdinalIgnoreCase) == 0)
             {
@@ -269,7 +292,8 @@ namespace CmsWeb.Areas.Manage.Controllers
                 {
                     if (ex is System.Xml.XmlException)
                     {
-                        return Content(Util.EndShowMessage(ex.Message, "javascript: history.go(-1)", "There is invalid XML in this document. Go Back to Repair"));
+                        return Content(Util.EndShowMessage(ex.Message, "javascript: history.go(-1)",
+                            "There is invalid XML in this document. Go Back to Repair"));
                     }
                 }
             }
@@ -283,7 +307,8 @@ namespace CmsWeb.Areas.Manage.Controllers
                 {
                     if (ex.Message.Contains("XML parsing", ignoreCase: true))
                     {
-                        return Content(Util.EndShowMessage(ex.InnerException?.Message, "javascript: history.go(-1)", "There is invalid XML in this document. Go Back to Repair"));
+                        return Content(Util.EndShowMessage(ex.InnerException?.Message, "javascript: history.go(-1)",
+                            "There is invalid XML in this document. Go Back to Repair"));
                     }
                 }
             }
@@ -297,18 +322,38 @@ namespace CmsWeb.Areas.Manage.Controllers
                 {
                     if (ex.InnerException is System.Xml.XmlException)
                     {
-                        return Content(Util.EndShowMessage(ex.InnerException.Message, "javascript: history.go(-1)", "There is invalid XML in this document. Go Back to Repair"));
+                        return Content(Util.EndShowMessage(ex.InnerException.Message, "javascript: history.go(-1)",
+                            "There is invalid XML in this document. Go Back to Repair"));
                     }
                 }
             }
 
             if (stayaftersave == "true")
             {
-                return RedirectToAction("ContentEdit", new { id, snippet });
+                return RedirectToAction("ContentEdit", new {id = id, snippet = snippet });
             }
 
             var url = GetIndexTabUrl(content);
             return Redirect(url);
+        }
+
+        private Content ContentUpdateCommon(int id, string name, string title, string body, bool? snippet, int? roleid,
+            string contentKeyWords)
+        {
+            var content = CurrentDatabase.Contents.SingleOrDefault(c => c.Id == id);
+            content.Name = name;
+            content.Title = string.IsNullOrWhiteSpace(title) ? name : title;
+            content.Body = body?.Trim();
+            content.RoleID = roleid ?? 0;
+            content.Snippet = snippet;
+            content.DateCreated = DateTime.Now;
+            content.CreatedBy = Util.UserName;
+            content.SetKeyWords(CurrentDatabase, contentKeyWords.SplitStr(",").Select(vv => vv.Trim()).ToArray());
+
+            content.RemoveGrammarly();
+            SaveThumbnail(body, content);
+            CurrentDatabase.SubmitChanges();
+            return content;
         }
 
         public ActionResult ContentDelete(int id)
