@@ -36,7 +36,6 @@ namespace CmsWeb.Areas.Giving.Models
         public int? incomingPeopleId { get; set; }
         public bool testing { get; set; }
 
-
         public Guid scheduledGiftId { get; set; }
         public int? scheduleTypeId { get; set; }
         public DateTime? start { get; set; }
