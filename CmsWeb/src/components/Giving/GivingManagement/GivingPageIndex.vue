@@ -15,6 +15,7 @@
                             <th>Default Fund</th>
                             <th>Public Url</th>
                             <th class="text-center">Enabled</th>
+                            <th class="text-center">Default</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -34,6 +35,9 @@
                             </td>
                             <td class="text-center">
                                 <tp-toggle v-model="page.Enabled" @input="toggleEnabled(page.PageId, page.Enabled)"></tp-toggle>
+                            </td>
+                            <td class="text-center">
+                                <tp-toggle v-model="page.DefaultPage" @input="toggleDefault(page.PageId, page.DefaultPage)"></tp-toggle>
                             </td>
                         </tr>
                     </tbody>
@@ -80,6 +84,29 @@
                     response => {
                         if (response.status === 200) {
                             snackbar(response.data.PageName + " has been " + (response.data.Enabled ? "enabled" : "disabled"), "success");
+                        } else {
+                            snackbar("Error updating giving page status.", "error");
+                            this.fetchGivingPages();
+                        }
+                    }
+                )
+                .catch(error => {
+                    snackbar("Error updating giving page status.", "error");
+                    this.fetchGivingPages();
+                });
+            },
+            toggleDefault(id, value) {
+                axios.post("/Giving/SetGivingDefaultPage", {
+                    value: value,
+                    PageId: id
+                })
+                .then(
+                    response => {
+                        if (response.status === 200) {
+                            if(response.data.PageId !== response.data.OldDefaultPageId && response.data.OldDefaultPageId > 0) {
+                                snackbar(response.data.PageName + " has been " + (response.data.DefaultPage ? "set as default page" : "unset as default page"), "success");
+                                this.fetchGivingPages();
+                            }
                         } else {
                             snackbar("Error updating giving page status.", "error");
                             this.fetchGivingPages();

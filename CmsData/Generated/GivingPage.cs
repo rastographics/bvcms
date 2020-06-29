@@ -29,6 +29,10 @@ namespace CmsData
 
         private bool _Enabled;
 
+        private bool? _DefaultPage;
+
+        private bool? _MainCampusPageFlag;
+
         private string _DisabledRedirect;
 
         private int? _SkinFileId;
@@ -89,6 +93,12 @@ namespace CmsData
 
         partial void OnEnabledChanging(bool value);
         partial void OnEnabledChanged();
+
+        partial void OnDefaultPageChanging(bool? value);
+        partial void OnDefaultPageChanged();
+
+        partial void OnMainCampusPageFlagChanging(bool? value);
+        partial void OnMainCampusPageFlagChanged();
 
         partial void OnDisabledRedirectChanging(string value);
         partial void OnDisabledRedirectChanged();
@@ -252,6 +262,42 @@ namespace CmsData
                     _Enabled = value;
                     SendPropertyChanged("Enabled");
                     OnEnabledChanged();
+                }
+            }
+        }
+
+        [Column(Name = "DefaultPage", UpdateCheck = UpdateCheck.Never, Storage = "_DefaultPage", DbType = "bit")]
+        public bool? DefaultPage
+        {
+            get => _DefaultPage;
+
+            set
+            {
+                if (_DefaultPage != value)
+                {
+                    OnDefaultPageChanging(value);
+                    SendPropertyChanging();
+                    _DefaultPage = value;
+                    SendPropertyChanged("DefaultPage");
+                    OnDefaultPageChanged();
+                }
+            }
+        }
+
+        [Column(Name = "MainCampusPageFlag", UpdateCheck = UpdateCheck.Never, Storage = "_MainCampusPageFlag", DbType = "bit")]
+        public bool? MainCampusPageFlag
+        {
+            get => _MainCampusPageFlag;
+
+            set
+            {
+                if (_MainCampusPageFlag != value)
+                {
+                    OnMainCampusPageFlagChanging(value);
+                    SendPropertyChanging();
+                    _MainCampusPageFlag = value;
+                    SendPropertyChanged("MainCampusPageFlag");
+                    OnMainCampusPageFlagChanged();
                 }
             }
         }

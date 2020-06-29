@@ -78,6 +78,7 @@
     </Reference>
     <Reference Include="System.Web" />
     <Reference Include="System.Web.ApplicationServices" />
+    <Reference Include="System.Web.Mvc, Version=5.2.7.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -104,6 +105,7 @@
     <Compile Include="FinanceTestBase.cs" />
     <Compile Include="FinanceTestUtils.cs" />
     <Compile Include="MockAppSettings.cs" />
+    <Compile Include="MockCampus.cs" />
     <Compile Include="MockCMSMembershipProvider.cs" />
     <Compile Include="MockCMSRoleProvider.cs" />
     <Compile Include="MockContent.cs" />
@@ -113,6 +115,7 @@
     <Compile Include="MockGivingPage.cs" />
     <Compile Include="MockHttpContext.cs" />
     <Compile Include="MockOrganizations.cs" />
+    <Compile Include="MockPaymentProcess.cs" />
     <Compile Include="MockPeople.cs" />
     <Compile Include="MockSettings.cs" />
     <Compile Include="FamilyUtils.cs" />

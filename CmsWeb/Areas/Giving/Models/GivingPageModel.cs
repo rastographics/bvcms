@@ -34,6 +34,8 @@ namespace CmsWeb.Areas.Giving.Models
                                 PageUrl = gp.PageUrl,
                                 EditUrl = "/Giving/" + gp.GivingPageId,
                                 Enabled = gp.Enabled,
+                                DefaultPage = gp.DefaultPage,
+                                MainCampusPageFlag = gp.MainCampusPageFlag,
                                 SkinFile = new ContentFile
                                 {
                                     Id = gp.SkinFile.Id,
@@ -96,10 +98,17 @@ namespace CmsWeb.Areas.Giving.Models
         
         public GivingPageItem Create(GivingPageViewModel viewModel)
         {
+            var givingPageList = (from gpList in CurrentDatabase.GivingPages select gpList).ToList();
+            var defaultPage = false;
+            if (givingPageList.Count == 0)
+                defaultPage = true;
+            if (viewModel.MainCampusPageFlag == null)
+                viewModel.MainCampusPageFlag = false;
             var newGivingPage = new GivingPage()
             {
                 PageName = viewModel.PageName,
-                PageUrl = viewModel.PageUrl
+                PageUrl = viewModel.PageUrl,
+                DefaultPage = defaultPage
             };
             CurrentDatabase.GivingPages.InsertOnSubmit(newGivingPage);
             CurrentDatabase.SubmitChanges();
@@ -120,6 +129,7 @@ namespace CmsWeb.Areas.Giving.Models
             givingPage.ConfirmationEmailOneTimeId = viewModel.ConfirmEmailOneTime?.Id;
             givingPage.ConfirmationEmailRecurringId = viewModel.ConfirmEmailRecurring?.Id;
             givingPage.CampusId = viewModel.CampusId;
+            givingPage.MainCampusPageFlag = viewModel.MainCampusPageFlag;
             givingPage.EntryPointId = viewModel.EntryPoint?.Id;
 
             // update other funds
@@ -174,6 +184,28 @@ namespace CmsWeb.Areas.Giving.Models
             };
             return givingPageItem;
         }
+
+        public GivingPageItem UpdateGivingDefaultPage(bool value, int PageId)
+        {
+            var givingPageItem = new GivingPageItem();
+            var givingPage = (from gp in CurrentDatabase.GivingPages where gp.GivingPageId == PageId select gp).FirstOrDefault();
+            givingPageItem.OldDefaultPageId = 0;
+            if (value == true)
+            {
+                var oldDefaultPage = (from g in CurrentDatabase.GivingPages where g.DefaultPage == true select g).FirstOrDefault();
+                if (oldDefaultPage != null)
+                {
+                    oldDefaultPage.DefaultPage = false;
+                    givingPageItem.OldDefaultPageId = oldDefaultPage.GivingPageId;
+                }
+            }
+            givingPage.DefaultPage = value;
+            CurrentDatabase.SubmitChanges();
+            givingPageItem.PageId = givingPage.GivingPageId;
+            givingPageItem.PageName = givingPage.PageName;
+            givingPageItem.DefaultPage = givingPage.DefaultPage;
+            return givingPageItem;
+        }
     }
 
     public class GivingPageItem
@@ -183,11 +215,15 @@ namespace CmsWeb.Areas.Giving.Models
         public string PageUrl { get; set; }
         public string EditUrl { get; set; }
         public bool Enabled { get; set; }
+        public bool? DefaultPage { get; set; }
         public ContentFile SkinFile { get; set; }
         public int PageType { get; set; }
         public string DisabledRedirect { get; set; }
         public string TopText { get; set; }
         public string ThankYouText { get; set; }
+        public int? CampusId { get; set; }
+        public bool? MainCampusPageFlag { get; set; }
+        public int? OldDefaultPageId { get; set; }
         public NotifyPerson[] OnlineNotifyPerson { get; set; }
         public ContentFile ConfirmEmailPledge { get; set; }
         public ContentFile ConfirmEmailOneTime { get; set; }

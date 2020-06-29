@@ -151,6 +151,9 @@ namespace CmsWeb.Areas.Org.Models
         [Org, Display(Name = "Max Limit", Description = LimitDescription)]
         public int? Limit { get; set; }
 
+        [Org, Display(Name = "Redirect Url", Description = RedirectUrlDescription)]
+        public string RedirectUrl { get; set; }
+
         [Org, Display(Name = "AddToSmallGroup Script Name", Description = AddToSmallGroupScriptDescription)]
         public string AddToSmallGroupScript { get; set; }
 
@@ -266,6 +269,9 @@ This is used on the master organization and will become the dropdown for 'User C
 ";
         private const string LimitDescription = @"
 This will cause the class to go into a 'class filled' state when the number of members reaches this point.
+";
+        private const string RedirectUrlDescription = @"
+Redirects this registration page to the entered URL.
 ";
         private const string AddToSmallGroupScriptDescription = @"
 This is the name of a script in *Special Content > Python Scripts* that will be run when someone is added to a sub-group during a registration.

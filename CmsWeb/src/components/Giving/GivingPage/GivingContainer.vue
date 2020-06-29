@@ -1,4 +1,4 @@
-﻿<template>
+<template>
     <div>
         <div class="page-header text-center">
             <h1>{{ page.PageName }}</h1>

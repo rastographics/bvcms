@@ -17,6 +17,31 @@ namespace CmsWeb.Areas.Giving.Controllers
         }
 
         [HttpGet]
+        [Route("~/Give")]
+        public ActionResult DefaultPageIndex()
+        {
+            var peopleId = CurrentDatabase.CurrentUser.PeopleId;
+            var person = CurrentDatabase.People.Where(p => p.PeopleId == CurrentDatabase.CurrentUser.PeopleId).SingleOrDefault();
+            if(person.CampusId != null)
+            {
+                foreach(var item in CurrentDatabase.GivingPages)
+                {
+                    if(item.CampusId == person.CampusId && item.MainCampusPageFlag == true)
+                    {
+                        return Redirect("/Give/" + item.PageUrl);
+                    }
+                }
+                var givingPage = CurrentDatabase.GivingPages.Where(p => p.DefaultPage == true).SingleOrDefault();
+                return Redirect("/Give/" + givingPage.PageUrl);
+            }
+            else
+            {
+                var givingPage = CurrentDatabase.GivingPages.Where(p => p.DefaultPage == true).SingleOrDefault();
+                return Redirect("/Give/" + givingPage.PageUrl);
+            }
+        }
+
+        [HttpGet]
         [Route("~/Give/{id}")]
         public ActionResult Index(string id, string type = null, int fund = 0, string amount = null)
         {
@@ -24,8 +49,7 @@ namespace CmsWeb.Areas.Giving.Controllers
             if (givingPage == null)
             {
                 // no giving page at this url
-                // todo: send to default giving page
-                return new HttpNotFoundResult();
+                return Redirect("/Give/");
             }
             else
             {
@@ -38,8 +62,7 @@ namespace CmsWeb.Areas.Giving.Controllers
                     else
                     {
                         // no where to redirect to
-                        // todo: send to default giving page
-                        return new HttpNotFoundResult();
+                        return Redirect("/Give/");
                     }
                 }
             }

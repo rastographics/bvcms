@@ -8,8 +8,10 @@ using CmsWeb.Membership;
 using CmsWeb.Models;
 using Elmah;
 using ImageData;
+using MoreLinq;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -36,26 +38,20 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             var isMissionTrip = (m.org?.IsMissionTrip).GetValueOrDefault();
 
             if (isMissionTrip)
-            {
                 m.ProcessType = PaymentProcessTypes.OnlineRegistration;
-            }
             else
-            {
                 AssignPaymentProcessType(ref m);
-            }
 
             if (pledgeFund != null)            
                 m.pledgeFundId = pledgeFund.Value;            
 
             SetHeaders(m);
 
-            int? GatewayId = MultipleGatewayUtils.GatewayId(CurrentDatabase, m.ProcessType);
+            var GatewayId = MultipleGatewayUtils.GatewayId(CurrentDatabase, m.ProcessType);
             var gatewayRequired = (m.PayAmount() > 0 || m.ProcessType == PaymentProcessTypes.OneTimeGiving || m.ProcessType == PaymentProcessTypes.RecurringGiving);
 
             if (GatewayId.IsNull() && gatewayRequired)
-            {
                 return View("OnePageGiving/NotConfigured");
-            }
 
             if ((int)GatewayTypes.Pushpay == GatewayId && string.IsNullOrEmpty(MultipleGatewayUtils.Setting(CurrentDatabase, "PushpayMerchant", "", (int)m.ProcessType)))
             {
@@ -66,30 +62,32 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 
             if (m.ManageGiving())
             {
-                RequestManager.SessionProvider.Add($"Campus-{m.Orgid}",
-                    m.Campus = Request.QueryString["campus"]);
+                RequestManager.SessionProvider.Add($"Campus-{m.Orgid}", m.Campus = Request.QueryString["campus"]);
                 m.DefaultFunds = Util.DefaultFunds = Request.QueryString["funds"];
             }
 
             if (isMissionTrip)
             {
                 if (gsid != null || goerid != null)
-                {
                     m.PrepareMissionTrip(gsid, goerid);
-                }
             }
 
             var pid = m.CheckRegisterLink(registertag);
             if (m.NotActive())
-            {
                 return View("OnePageGiving/NotActive", m);
-            }
+
             if (m.MissionTripSelfSupportPaylink.HasValue() && m.GoerId > 0)
-            {
                 return Redirect(m.MissionTripSelfSupportPaylink);
-            }
+
+            if (m.org.RedirectUrl.HasValue())
+                return Redirect(m.org.RedirectUrl);
 
             return RouteRegistration(m, pid, showfamily);
+        }
+
+        public DataTable OrganizationColumns(int organizationId)
+        {
+            return (from o in CurrentDatabase.Organizations where o.OrganizationId == organizationId select o).Take(1).ToDataTable();
         }
 
         private void AssignPaymentProcessType(ref OnlineRegModel m)
@@ -291,7 +289,6 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             p.Found = false;
             return FlowList(m);
         }
-
 
         [HttpPost]
         public ActionResult SubmitNew(int id, OnlineRegModel m)

@@ -1,18 +1,16 @@
-﻿using System;
-using System.Linq;
-using System.Linq.Dynamic;
-using CmsData;
-using CmsData.Finance;
-using CmsWeb.Areas.Giving.Models;
-using CmsWeb.Areas.Giving.Controllers;
-using SharedTestFixtures;
-using Xunit;
+﻿using SharedTestFixtures;
 using Shouldly;
+using System.Linq;
+using Xunit;
+using CMSWebTests.Support;
+using CmsWeb.Lifecycle;
+using CmsWeb.Membership;
+using CmsWeb.Areas.Giving.Models;
 
-namespace CmsData.Finance.Tests
+namespace CMSWebTests.Areas.Finance
 {
     [Collection(Collections.Database)]
-    public class GatewayTests : DatabaseTestBase
+    public class GatewayTests : ControllerTestBase
     {
         public GatewayTests() : base()
         {
@@ -26,7 +24,6 @@ namespace CmsData.Finance.Tests
         public void AuthCreditCardCreatePaymentMethod()
         {
             var person = CreatePerson();
-            // Add/remove reference to CMSWeb in solution explorer to update metadata
             GivingPaymentViewModel viewModel = new GivingPaymentViewModel()
             {
                 paymentTypeId = 2,
@@ -50,21 +47,25 @@ namespace CmsData.Finance.Tests
                 testing = true
             };
 
-            var givingPaymentModel = new GivingPaymentModel(db);
-            givingPaymentModel.CreateMethod(viewModel);
+            var requestManager = FakeRequestManager.Create();
+            var controller = new CmsWeb.Areas.Giving.Controllers.GivingPaymentController(requestManager);
+            var paymentProcessActionTaken = MockPaymentProcess.PaymentProcessNullCheck(db);
+            controller.MethodsCreate(viewModel);
 
             var paymentMethod = (from pm in db.PaymentMethods
                                  where pm.PeopleId == person.PeopleId
                                  select pm).FirstOrDefault();
             paymentMethod.Decrypt();
             paymentMethod.NameOnAccount.ShouldBe("Jason Rice");
+
+            if (paymentProcessActionTaken == "changed")
+                MockPaymentProcess.ChangePaymentProcessToNull(db);
         }
 
         [Fact]
         public void AuthBankCreatePaymentMethod()
         {
             var person = CreatePerson();
-            // Add/remove reference to CMSWeb in solution explorer to update metadata
             GivingPaymentViewModel viewModel = new GivingPaymentViewModel()
             {
                 paymentTypeId = 1,
@@ -79,14 +80,33 @@ namespace CmsData.Finance.Tests
                 testing = true
             };
 
-            var givingPaymentModel = new GivingPaymentModel(db);
-            givingPaymentModel.CreateMethod(viewModel);
+            var requestManager = FakeRequestManager.Create();
+            var controller = new CmsWeb.Areas.Giving.Controllers.GivingPaymentController(requestManager);
+            var paymentProcessActionTaken = MockPaymentProcess.PaymentProcessNullCheck(db);
+            controller.MethodsCreate(viewModel);
 
             var paymentMethod = (from pm in db.PaymentMethods
                                  where pm.PeopleId == person.PeopleId
                                  select pm).FirstOrDefault();
             paymentMethod.Decrypt();
             paymentMethod.NameOnAccount.ShouldBe("Jason Rice");
+
+            if (paymentProcessActionTaken == "changed")
+                MockPaymentProcess.ChangePaymentProcessToNull(db);
+        }
+
+        private IRequestManager SetupRequestManager()
+        {
+            var username = RandomString();
+            var password = RandomString();
+            var user = CreateUser(username, password);
+            var requestManager = FakeRequestManager.Create();
+            var membershipProvider = new MockCMSMembershipProvider { ValidUser = true };
+            var roleProvider = new MockCMSRoleProvider();
+            CMSMembershipProvider.SetCurrentProvider(membershipProvider);
+            CMSRoleProvider.SetCurrentProvider(roleProvider);
+            requestManager.CurrentHttpContext.Request.Headers["Authorization"] = BasicAuthenticationString(username, password);
+            return requestManager;
         }
 
         public override void Dispose()

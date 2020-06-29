@@ -6,7 +6,6 @@ using CmsWeb.Areas.Giving.Models;
 using CmsData.Codes;
 using CmsData.Classes.Giving;
 using System.Text.RegularExpressions;
-using System;
 using MoreLinq;
 
 namespace CmsWeb.Areas.Giving.Controllers
@@ -31,23 +30,19 @@ namespace CmsWeb.Areas.Giving.Controllers
         {
             var model = new GivingPageModel(CurrentDatabase);
             var page = new GivingPageItem();
+
             if (id.ToLower() == "new")
-            {
                 page.PageId = 0;
-            }
             else
-            {
                 page = model.GetGivingPages(id.ToInt()).SingleOrDefault();
-            }
+
             if (page == null)
             {
                 Util.TempError = "Invalid page";
                 return Content("/Error/");
             }
             else
-            {
                 return View(page);
-            }
         }
 
         [HttpGet]
@@ -89,6 +84,14 @@ namespace CmsWeb.Areas.Giving.Controllers
             givingPage.Enabled = value;
             CurrentDatabase.SubmitChanges();
             return Json(new { givingPage.GivingPageId, givingPage.PageName, givingPage.Enabled });
+        }
+
+        [HttpPost]
+        public JsonResult SetGivingDefaultPage(bool value, int PageId)
+        {
+            var model = new GivingPageModel(CurrentDatabase);
+            var result = model.UpdateGivingDefaultPage(value, PageId);
+            return Json(result, JsonRequestBehavior.AllowGet);
         }
 
         [HttpGet]

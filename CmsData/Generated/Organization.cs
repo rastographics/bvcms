@@ -79,6 +79,8 @@ namespace CmsData
 
         private int? _Limit;
 
+        private string _RedirectUrl;
+
         private int? _GenderId;
 
         private string _Description;
@@ -346,6 +348,9 @@ namespace CmsData
 
         partial void OnLimitChanging(int? value);
         partial void OnLimitChanged();
+
+        partial void OnRedirectUrlChanging(string value);
+        partial void OnRedirectUrlChanged();
 
         partial void OnGenderIdChanging(int? value);
         partial void OnGenderIdChanged();
@@ -1205,6 +1210,24 @@ namespace CmsData
                     _Limit = value;
                     SendPropertyChanged("Limit");
                     OnLimitChanged();
+                }
+            }
+        }
+
+        [Column(Name = "RedirectUrl", UpdateCheck = UpdateCheck.Never, Storage = "_RedirectUrl", DbType = "nvarchar(max)")]
+        public string RedirectUrl
+        {
+            get => _RedirectUrl;
+
+            set
+            {
+                if (_RedirectUrl != value)
+                {
+                    OnRedirectUrlChanging(value);
+                    SendPropertyChanging();
+                    _RedirectUrl = value;
+                    SendPropertyChanged("RedirectUrl");
+                    OnRedirectUrlChanged();
                 }
             }
         }
