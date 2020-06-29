@@ -46,7 +46,8 @@ namespace CMSWebTests.Areas.Finance
                 incomingPeopleId = person.PeopleId,
                 testing = true
             };
-            var requestManager = FakeRequestManager.Create();
+
+            var requestManager = SetupRequestManager();
             var controller = new CmsWeb.Areas.Giving.Controllers.GivingPaymentController(requestManager);
             var paymentProcessActionTaken = MockPaymentProcess.PaymentProcessNullCheck(db);
             controller.MethodsCreate(viewModel);
@@ -78,7 +79,7 @@ namespace CMSWebTests.Areas.Finance
                 incomingPeopleId = person.PeopleId,
                 testing = true
             };
-            var requestManager = FakeRequestManager.Create();
+            var requestManager = SetupRequestManager();
             var controller = new CmsWeb.Areas.Giving.Controllers.GivingPaymentController(requestManager);
             var paymentProcessActionTaken = MockPaymentProcess.PaymentProcessNullCheck(db);
             controller.MethodsCreate(viewModel);
