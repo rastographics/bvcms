@@ -66,9 +66,7 @@ namespace CmsWeb.Areas.Giving.Controllers
         {
             var givingPage = (from gp in CurrentDatabase.GivingPages where gp.GivingPageId == viewModel.PageId select gp).FirstOrDefault();
             if(givingPage == null)
-            {
                 return new HttpNotFoundResult();
-            }
             else
             {
                 var model = new GivingPageModel(CurrentDatabase);
@@ -99,13 +97,10 @@ namespace CmsWeb.Areas.Giving.Controllers
         {
             bool result = false;
             Regex regex = new Regex("^([a-z0-9-])+$");
-            if (regex.IsMatch(url) && url.Length > 1 && CurrentDatabase.GivingPages.Where(p => p.PageUrl == url).Count() == 0) {
+            if (regex.IsMatch(url) && url.Length > 1 && CurrentDatabase.GivingPages.Where(p => p.PageUrl == url).Count() == 0)
                 result = true;
-            }
-            return Json(new
-            {
-               result
-            }, JsonRequestBehavior.AllowGet);
+
+            return Json(new {result}, JsonRequestBehavior.AllowGet);
         }
 
         [HttpGet]
@@ -127,21 +122,13 @@ namespace CmsWeb.Areas.Giving.Controllers
         {
             var givingFrequencyList = (from t in CurrentDatabase.ScheduledGiftTypes orderby t.Id select new { Id = t.Id, Name = t.Description }).ToList();
             if (!CurrentDatabase.Setting("UseQuarterlyRecurring"))
-            {
                 givingFrequencyList = givingFrequencyList.Where(f => f.Name != "Quarterly").ToList();
-            }
             if (!CurrentDatabase.Setting("UseAnnualRecurring"))
-            {
                 givingFrequencyList = givingFrequencyList.Where(f => f.Name != "Annually").ToList();
-            }
             if (CurrentDatabase.Setting("HideBiWeeklyRecurring"))
-            {
                 givingFrequencyList = givingFrequencyList.Where(f => f.Name != "Biweekly").ToList();
-            }
             if (CurrentDatabase.Setting("HideSemiMonthlyRecurring"))
-            {
                 givingFrequencyList = givingFrequencyList.Where(f => f.Name != "Semi-monthly").ToList();
-            }
             return Json(givingFrequencyList, JsonRequestBehavior.AllowGet);
         }
 
