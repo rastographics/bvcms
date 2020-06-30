@@ -78,7 +78,7 @@ namespace CmsData
             }
         }
 
-        [Column(Name = "DocumentName", UpdateCheck = UpdateCheck.Never, Storage = "_DocumentName", DbType = "nvarchar(max)")]
+        [Column(Name = "DocumentName", UpdateCheck = UpdateCheck.Never, Storage = "_DocumentName", DbType = "nvarchar(100)")]
         public string DocumentName
         {
             get => _DocumentName;

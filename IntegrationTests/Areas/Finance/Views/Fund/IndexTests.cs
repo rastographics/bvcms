@@ -4,6 +4,10 @@ using System.Drawing;
 using Xunit;
 using SharedTestFixtures;
 using OpenQA.Selenium.Support.UI;
+using TransactionGateway.ApiModels;
+using CmsData.View;
+using CmsData;
+using System;
 
 namespace IntegrationTests.Areas.Finance.Views.Fund
 {
@@ -39,6 +43,36 @@ namespace IntegrationTests.Areas.Finance.Views.Fund
             Wait(2);
             var showList1 = Find(css: "#sl1").GetAttribute("innerHTML");
             showList1.ShouldBe("Primary");
+        }
+
+        [Fact]
+        public void Should_Show_Closed_Funds()
+        {
+            var fund = new ContributionFund
+            {
+                FundId = RandomNumber(500, 1000),
+                CreatedBy = 1,
+                CreatedDate = DateTime.Now,
+                FundName = RandomString(),
+                FundStatusId = 2,
+                FundTypeId = 1,
+                FundPledgeFlag = false
+            };
+            db.ContributionFunds.InsertOnSubmit(fund);
+            db.SubmitChanges();
+
+            username = RandomString();
+            password = RandomString();
+            var user = CreateUser(username, password, roles: new string[] { "Access", "Edit", "Admin", "Finance" });
+            Login();
+
+            Open($"{rootUrl}Funds/");
+
+            Find(xpath: "//a[contains(@href, '/Funds?status=2')]").Click();
+            PageSource.ShouldContain(fund.FundName);
+
+            db.ContributionFunds.DeleteOnSubmit(fund);
+            db.SubmitChanges();
         }
     }
 }
