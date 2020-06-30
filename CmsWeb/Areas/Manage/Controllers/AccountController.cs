@@ -792,7 +792,7 @@ namespace CmsWeb.Areas.Manage.Controllers
         {
             bool SMSReady = false;
             var systemSMSGroup = TwilioHelper.GetSystemSMSGroup(CurrentDatabase);
-            if (TwilioHelper.IsConfigured(CurrentDatabase) && systemSMSGroup?.Count > 0)
+            if (CurrentDatabase.Setting("UseMobileQuickSignInCodes") && TwilioHelper.IsConfigured(CurrentDatabase) && systemSMSGroup?.Count > 0)
             {
                 SMSReady = true;
             }
@@ -936,7 +936,7 @@ namespace CmsWeb.Areas.Manage.Controllers
             }
 
             // if user needs 2fa return error and redirect client side
-            if (user.MFAEnabled)
+            if (MembershipService.ShouldPromptForTwoFactorAuthentication(user, CurrentDatabase, Request))
             {
                 result.Message = "Needs 2FA";
                 return Json(result);

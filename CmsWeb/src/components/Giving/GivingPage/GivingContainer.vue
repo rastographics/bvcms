@@ -72,7 +72,7 @@
                     </transition>
                 </div>
                 <div class="panel-body" v-else-if="view === 'signin'" key="signin">
-                    <giving-login v-model="identity" @next="loadView('payment')" @back="loadView('gifts')"></giving-login>
+                    <giving-login v-model="identity" :SMSReady="identity.SMSReady" @next="loadView('payment')" @back="loadView('gifts')"></giving-login>
                 </div>
             </transition>
         </div>
@@ -305,7 +305,7 @@
 <style>
     .fade-enter-active,
     .fade-leave-active {
-        transition-duration: 0.1s;
+        transition-duration: 0.25s;
         transition-property: opacity;
         transition-timing-function: ease;
     }
