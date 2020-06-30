@@ -54,7 +54,7 @@
                     </div>
                 </form>
             </div>
-            <button @click="loadView('phone')" class="btn btn-link">Sign in with phone number</button>
+            <button v-if="SMSReady" @click="loadView('phone')" class="btn btn-link">Sign in with phone number</button>
         </div>
         <div v-if="view == 'code'" class="text-center" key="code">
             <div class="well code-entry">
@@ -62,12 +62,12 @@
                 <p>Check your messages for a secure one-time code.</p>
                 <form @submit.prevent="attemptLogin">
                     <div class="form-inline text-left" style="margin-bottom: 20px;">
-                        <input type="number" min="0" max="9" class="form-control code-input" ref="code1" v-model="code1" @keyup="$refs.code2.focus()" autofocus="autofocus"/>
-                        <input type="number" min="0" max="9" class="form-control code-input" ref="code2" v-model="code2" @keyup="$refs.code3.focus()" />
-                        <input type="number" min="0" max="9" class="form-control code-input" ref="code3" v-model="code3" @keyup="$refs.code4.focus()" />
-                        <input type="number" min="0" max="9" class="form-control code-input" ref="code4" v-model="code4" @keyup="$refs.code5.focus()" />
-                        <input type="number" min="0" max="9" class="form-control code-input" ref="code5" v-model="code5" @keyup="$refs.code6.focus()" />
-                        <input type="number" min="0" max="9" class="form-control code-input" ref="code6" v-model="code6" @keyup="$refs.next.focus()" />
+                        <input type="number" min="0" max="9" class="form-control code-input" ref="code1" v-model="code1" @paste="pasteCode" @keyup="$refs.code2.focus()" autofocus />
+                        <input type="number" min="0" max="9" class="form-control code-input" ref="code2" v-model="code2" @paste="pasteCode" @keyup="$refs.code3.focus()" />
+                        <input type="number" min="0" max="9" class="form-control code-input" ref="code3" v-model="code3" @paste="pasteCode" @keyup="$refs.code4.focus()" />
+                        <input type="number" min="0" max="9" class="form-control code-input" ref="code4" v-model="code4" @paste="pasteCode" @keyup="$refs.code5.focus()" />
+                        <input type="number" min="0" max="9" class="form-control code-input" ref="code5" v-model="code5" @paste="pasteCode" @keyup="$refs.code6.focus()" />
+                        <input type="number" min="0" max="9" class="form-control code-input" ref="code6" v-model="code6" @paste="pasteCode" @keyup="$refs.next.focus()" />
                     </div>
                     <div class="row text-left">
                         <div class="col-md-8 col-md-offset-2">
@@ -90,10 +90,12 @@
         <div v-if="view == 'notfound'" class="text-center" key="notfound">
             <div class="well">
                 <h3>We couldn't find you</h3>
-                <p>Try another phone number, <a href="#" @click="loadView('email')">try an email</a> or <a href="#" @click="loadView('signup')">create an account</a>.</p>
-                <div class="row text-left">
+                <p v-if="method == 'phone'">Try another phone number, <a href="#" @click="loadView('email')">try an email</a> or <a href="#" @click="loadView('signup')">create an account</a>.</p>
+                <p v-else-if="SMSReady">Try another email, <a href="#" @click="loadView('phone')">try a phone number</a> or <a href="#" @click="loadView('signup')">create an account</a>.</p>
+                <p v-else>Try another email or <a href="#" @click="loadView('signup')">create an account</a>.</p>
+                <div v-if="method == 'phone'" class="row text-left">
                     <div class="col-md-8 col-md-offset-2">
-                        <form @submit.prevent="phoneSearch">
+                        <form v-if="method == 'phone'" @submit.prevent="phoneSearch">
                             <div :class="{'form-group': true, 'has-error': showValidation && phone.length < 10}">
                                 <input type="tel" class="form-control" v-mask="'(###) ###-####'" v-model="phone" placeholder="(000) 000-0000" autofocus />
                                 <small v-if="showValidation && phone.length < 10" class="text-danger">Please enter your phone number</small>
@@ -111,9 +113,31 @@
                         </form>
                     </div>
                 </div>
+                <form v-else @submit.prevent="emailSearch">
+                    <div class="row text-left">
+                        <div class="col-md-6 col-md-offset-3">
+                            <div :class="{'form-group': true, 'has-error': showValidation && email.length < 6}">
+                                <input type="email" class="form-control" v-model="email" placeholder="you@gmail.com" autofocus />
+                                <small v-if="showValidation && email.length < 6" class="text-danger">Please enter your email</small>
+                            </div>
+                        </div>
+                        <div class="col-md-8 col-md-offset-2">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <button @click="$emit('back')" class="btn-block btn btn-default" tabindex="-1">
+                                        Back
+                                    </button>
+                                </div>
+                                <div class="col-md-6">
+                                    <input type="submit" class="btn-block btn btn-primary" value="Next" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
             </div>
             <button @click="loadView('signup')" class="btn btn-link">Create account</button>
-            <button @click="loadView('email')" class="btn btn-link">Sign in with email address</button>
+            <button v-if="method == 'phone'" @click="loadView('email')" class="btn btn-link">Sign in with email address</button>
         </div>
     </transition>
 </template>
@@ -121,19 +145,20 @@
     import axios from "axios";
 
     export default {
-        props: ["value"],
+        props: ["value", "SMSReady"],
         data: function () {
             return {
-                view: "phone",
+                view: this.SMSReady ? "phone" : "email",
+                showValidation: false,
+                method: "",
                 phone: "",
                 email: "",
-                showValidation: false,
                 code1: "",
                 code2: "",
                 code3: "",
                 code4: "",
                 code5: "",
-                code6: "",
+                code6: ""
             };
         },
         methods: {
@@ -142,6 +167,9 @@
                 if (['phone', 'email', 'notfound'].includes(newView)) {
                     this.phone = "";
                     this.email = "";
+                }
+                if (newView == 'phone' && !this.SMSReady) {
+                    newView = 'email';
                 }
                 if (newView == 'code') {
                     this.code1 = "";
@@ -162,6 +190,7 @@
                 if (this.phone.length < 10) {
                     this.showValidation = true;
                 } else {
+                    this.method = "phone";
                     this.sendCode(this.phone);
                 }
             },
@@ -169,11 +198,26 @@
                 if (this.email.length < 6) {
                     this.showValidation = true;
                 } else {
+                    this.method = "email";
                     this.sendCode(this.email);
                 }
             },
+            pasteCode(ev) {
+                var code = (ev.clipboardData || window.clipboardData).getData('text');
+                if (code) code = code.trim();
+                if ($.isNumeric(code) && code.length == 6) {
+                    this.code1 = code[0];
+                    this.code2 = code[1];
+                    this.code3 = code[2];
+                    this.code4 = code[3];
+                    this.code5 = code[4];
+                    this.code6 = code[5];
+                    this.$refs.next.focus();
+                }
+                return false;   // prevent default
+            },
             resendCode() {
-                alert('resend code');
+                this.sendCode(method == "phone" ? this.phone : this.email);
             },
             sendCode(search) {
                 let vm = this;
