@@ -106,12 +106,53 @@ namespace IntegrationTests.Areas.OnlineReg.Views
         }
 
         [Fact]
+        public void Should_Show_Error_Message_For_Ask_Tickets()
+        {
+            MaximizeWindow();
+
+            username = RandomString();
+            password = RandomString();
+            string roleName = "role_" + RandomString();
+            var user = CreateUser(username, password, roles: new string[] { "Access", "Edit", "Admin" });
+            FinanceTestUtils.CreateMockPaymentProcessor(db, PaymentProcessTypes.OnlineRegistration, GatewayTypes.Transnational);
+            Login();
+
+            OrgId = CreateOrgWithFee();
+
+            Open($"{rootUrl}Org/{OrgId}#tab-Registrations-tab");
+
+            Find(xpath: "//li[@id='Questions-tab']/a").Click();
+            Wait(2);
+            Find(xpath: "(//a[contains(text(),'Edit')])[10]").Click();
+            Wait(2);
+            Find(xpath: "//a[contains(text(),'Add Question')]").Click();
+            Wait(1);
+            Find(xpath: "//a[@type='AskTickets']").Click();
+            Wait(2);
+            Find(xpath: "//a[contains(text(),'Done')]").Click();
+            Wait(2);
+            Find(xpath: "//button[contains(.,'Yes, Add Questions')]").Click();
+            Wait(1);
+            Find(xpath: "//a[@onclick='saveQuestion();']").Click();
+            Wait(2);
+
+            Open($"{rootUrl}OnlineReg/{OrgId}");
+
+            Find(id: "List_0__ntickets").SendKeys("two");
+
+            Find(id: "otheredit").Click();
+            Wait(1);
+
+            PageSource.ShouldContain("Please enter a positive numeric value");
+        }
+        [Fact]
         public void Should_Not_Show_Deceased_Person_In_Family_Attendance()
         {
             MaximizeWindow();
 
             username = RandomString();
             password = RandomString();
+
             var user = CreateUser(username, password, roles: new string[] { "Access", "Edit", "Admin" });
 
             var org = MockOrganizations.CreateOrganization(db, RandomString());
