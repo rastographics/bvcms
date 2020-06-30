@@ -461,7 +461,6 @@ namespace CmsWeb.Areas.OnlineReg.Models
                     let om =
                         p.OrganizationMembers.SingleOrDefault(mm => mm.PeopleId == p.PeopleId && mm.OrganizationId == orgid)
                     let forceattend = p.PeopleId == PeopleId
-                    where p.IsDeceased == false
                     orderby p.PositionInFamilyId, p.GenderId, p.Age descending
                     select new FamilyAttendInfo()
                     {

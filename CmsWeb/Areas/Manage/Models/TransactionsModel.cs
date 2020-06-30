@@ -199,20 +199,15 @@ namespace CmsWeb.Models
                         where t.TransactionId == name || t.OriginalId == nameid || t.Id == nameid
                         select t;
                 }
-                else if (first.HasValue() || last.HasValue())
-                {
-                    _transactions = from t in _transactions
-                                    where
-                                    (t.Last.StartsWith(last) && t.First.StartsWith(first)) ||
-                                    (t.TransactionId == name || t.OriginalId == nameid || t.Id == nameid)
-                                    select t;
-                }
                 else
                 {
                     _transactions = from t in _transactions
                                     where
-                                    (t.Last.Contains(name) || t.First.Contains(name)) ||
-                                    (t.TransactionId == name || t.OriginalId == nameid || t.Id == nameid)
+                                        (
+                                            (t.Last.StartsWith(last) || t.Last.StartsWith(name))
+                                            && (!hasfirst || t.First.StartsWith(first) || t.Last.StartsWith(name))
+                                            )
+                                        || t.TransactionId == name || t.OriginalId == nameid || t.Id == nameid
                                     select t;
                 }
             }

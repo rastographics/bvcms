@@ -173,8 +173,6 @@ namespace CmsWeb.Areas.OnlineReg.Models
         public bool? paydeposit { get; set; }
         public string request { get; set; }
         public string grade { get; set; }
-
-        [Range(0, int.MaxValue, ErrorMessage = "Please enter a possitive numeric value")]
         public int? ntickets { get; set; }
 
         public string gradeoption { get; set; }
