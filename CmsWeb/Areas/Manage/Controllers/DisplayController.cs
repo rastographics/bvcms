@@ -237,7 +237,6 @@ namespace CmsWeb.Areas.Manage.Controllers
                     {
                         content.ThumbID = ImageData.Image.NewImageFromBits(captureWebPageBytes, CurrentImageDatabase).Id;
                     }
-
                 }
                 catch (Exception ex)
                 {

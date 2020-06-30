@@ -263,7 +263,7 @@
         $("#body").val($('#email-body').contents().find('#templateBody').html());
         $.addTemplateClass();
     });
-    $("#SaveTemplateCopyButton").click(function (ev) {
+    $("#SaveTemplateCopyButton").click(function () {
         $.clearTemplateClass();
         $("#UnlayerDesign").val($('#email-body').contents().find('#templateDesign').val());
         $("#body").val($('#email-body').contents().find('#templateBody').html());
