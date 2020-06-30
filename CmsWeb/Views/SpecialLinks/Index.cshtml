@@ -87,3 +87,47 @@
         </div>
     </div>
 </div>
+<div class="modal fade" id="upload-file-modal">
+    <div class="modal-dialog" style="margin-top: 60px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Upload File</h4>
+            </div>
+            <div class="modal-body">
+                <form method="post" enctype="multipart/form-data">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="well">
+                                <label for="doc" class="control-label">Select file to upload</label>
+                                <div class="form-inline">
+                                    <div class="input-group">
+                                        <input type="file" name="doc" class="form-control" />
+                                    </div>
+                                    <div class="input-group">
+                                        <a href="/AddResource/UploadFile" class="upload-file btn btn-primary">Submit</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                <div id="urlresult" class="row form-group">
+                    <div class="col-sm-12">
+                        <label>Copy and paste this into the link URL field:</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" name="fileurl" style="cursor:text;" readonly />
+                            <span class="input-group-btn">
+                                <button class="btn btn-primary done-upload-link-modal" type="button">Copy and Close</button>
+                            </span>
+                        </div>
+                        <div id="uploaderror" class="alert alert-error hide"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <input type="button" value="Cancel" class="btn btn-default close-special-links-modal" />
+            </div>
+        </div>
+    </div>
+</div>
