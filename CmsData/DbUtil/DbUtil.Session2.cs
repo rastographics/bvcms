@@ -171,7 +171,7 @@ namespace CmsData
             return !setting.HasValue() ? defaultValue : setting.ToLower() == "true";
         }
 
-        public void SetSetting(string name, string value, bool system = false)
+        public void SetSetting(string name, string value)
         {
             name = name.Trim();
             var list = HttpRuntime.Cache[Host + "Setting"] as Dictionary<string, string>;
@@ -189,13 +189,12 @@ namespace CmsData
             var setting = Settings.SingleOrDefault(c => c.Id == name);
             if (setting == null)
             {
-                setting = new Setting { Id = name, SettingX = value, System = system };
+                setting = new Setting { Id = name, SettingX = value };
                 Settings.InsertOnSubmit(setting);
             }
             else
             {
                 setting.SettingX = value;
-                setting.System = system;
             }
         }
 
