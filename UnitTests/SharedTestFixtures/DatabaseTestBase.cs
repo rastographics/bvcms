@@ -5,7 +5,6 @@ using ImageData;
 using System;
 using System.IO;
 using System.Linq;
-using System.Threading;
 using System.Xml;
 
 namespace SharedTestFixtures
@@ -216,11 +215,6 @@ namespace SharedTestFixtures
                 s += rndchars.Substring(randomizer.Next(0, rndchars.Length), 1);
             }
             return s;
-        }
-
-        protected static string RandomEmailAddress()
-        {
-            return RandomString() + "@example.com";
         }
 
         protected static string RandomPhoneNumber()

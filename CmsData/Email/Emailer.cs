@@ -15,7 +15,6 @@ using Elmah;
 using HtmlAgilityPack;
 using SendGrid;
 using SendGrid.Helpers.Mail;
-using CmsData.Email;
 
 namespace CmsData
 {
@@ -929,30 +928,24 @@ namespace CmsData
                         htmlView.LinkedResources.Add(a);
                 msg.AlternateViews.Add(htmlView);
 
-                using (var smtp = Smtp())
-                {
-                    smtp.Send(msg);
-                }
+                var smtp = Smtp();
+                smtp.Send(msg);
             }
             return fromDomain;
         }
 
-        public IEmailClient SMTPClient { get; set; }
-        public IEmailClient Smtp()
+        public SmtpClient Smtp()
         {
-            if (SMTPClient == null)
+            var smtp = new SmtpClient();
+            if (ConfigurationManager.AppSettings["requiresSsl"] == "true")
+                smtp.EnableSsl = true;
+            if (Util.SmtpDebug)
             {
-                SMTPClient = new DefaultSmtpClient();
-                if (ConfigurationManager.AppSettings["requiresSsl"] == "true")
-                    SMTPClient.EnableSsl = true;
-                if (Util.SmtpDebug)
-                {
-                    SMTPClient.DeliveryMethod = SmtpDeliveryMethod.SpecifiedPickupDirectory;
-                    SMTPClient.PickupDirectoryLocation = Util.SmtpDebugDirectory;
-                    SMTPClient.Host = "localhost";
-                }
+                smtp.DeliveryMethod = SmtpDeliveryMethod.SpecifiedPickupDirectory;
+                smtp.PickupDirectoryLocation = @"c:\email";
+                smtp.Host = "localhost";
             }
-            return SMTPClient;
+            return smtp;
         }
 
         private static string CcMessage(List<MailAddress> cc)

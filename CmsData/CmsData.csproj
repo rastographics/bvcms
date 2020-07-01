@@ -366,8 +366,6 @@
     <Compile Include="Classes\Twilio\TwilioMessageResult.cs" />
     <Compile Include="DbUtil\DbUtil.CurrentOrg.cs" />
     <Compile Include="Classes\ModelViewModel.cs" />
-    <Compile Include="Email\DefaultSmtpClient.cs" />
-    <Compile Include="Email\IEmailClient.cs" />
     <Compile Include="Email\ReplacementCodes\Links\UnlayerLink.cs" />
     <Compile Include="Email\ReplacementCodes\Links\DropFromOrgTag.cs" />
     <Compile Include="Email\ReplacementCodes\Replacements\Debug.cs" />

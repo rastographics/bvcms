@@ -264,9 +264,9 @@ namespace CmsWeb.Areas.Public.Models.MobileAPIv2
                     return Error.USER_NOT_FOUND;
                 }
 
-                if (user.Person.EmailAddress.NotEqual(device.CodeEmail) &&
-                    user.Person.EmailAddress2.NotEqual(device.CodeEmail) &&
-                    user.Person.CellPhone.NotEqual(device.CodeEmail))
+                if (user.Person.EmailAddress != device.CodeEmail &&
+                    user.Person.EmailAddress2 != device.CodeEmail &&
+                    user.Person.CellPhone != device.CodeEmail)
                 {
                     user = null;
 
