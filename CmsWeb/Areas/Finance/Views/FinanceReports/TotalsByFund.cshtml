@@ -110,15 +110,18 @@
                                     <i class="fa fa-cloud-download"></i> Other Reports <span class="caret"></span>
                                 </button>
                                 <ul class="dropdown-menu" role="menu">
-                                    <li>
-                                        <a href="#" id="exportdonordetails">Export Donor Details</a>
-                                    </li>
-                                    <li>
-                                        <a href="#" id="exportdonorfundtotals">Export Donor Fund Totals</a>
-                                    </li>
-                                    <li>
-                                        <a href="#" id="exportdonortotals">Export Donor Totals</a>
-                                    </li>
+                                    @if (User.IsInRole("Finance") || User.IsInRole("FinanceAdmin"))
+                                    {
+                                        <li>
+                                            <a href="#" id="exportdonordetails">Export Donor Details</a>
+                                        </li>
+                                        <li>
+                                            <a href="#" id="exportdonorfundtotals">Export Donor Fund Totals</a>
+                                        </li>
+                                        <li>
+                                            <a href="#" id="exportdonortotals">Export Donor Totals</a>
+                                        </li>
+                                    }
                                     <li id="gl-divider" class="divider" style="display: none;"></li>
                                     <li>
                                         <a href="#" id="ledgerincome">Export Ledger Income</a>
