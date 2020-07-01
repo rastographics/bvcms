@@ -192,6 +192,8 @@ namespace TransactionGateway
         {
             bool fundExist = false;
             var pushpayOrganizations = await _pushpay.GetOrganizations();
+            if (pushpayOrganizations == null)
+                _db.LogActivity($"Organizations not found in Pushpay");
             foreach (var item in pushpayOrganizations)
             {
                 var key = item.Key;
@@ -200,6 +202,8 @@ namespace TransactionGateway
                 if (fundExist)
                     break;
             }
+            if (!fundExist)            
+                _db.LogActivity($"Fund not found in Pushpay with name: {fundName}");
             return fundExist;
         }
 

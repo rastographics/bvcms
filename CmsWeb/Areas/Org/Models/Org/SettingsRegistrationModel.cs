@@ -250,7 +250,7 @@ It will also remove an organization from the available org dropdown.
 ";
         private const string RegistrationClosedDescription = @"
 You should use this when you need to manually end your registration.
-This is the preferred way instead of changing the Registration Type.
+This is the preferred way instead of changing the Involvement Type.
 ";
         private const string RegStartDescription = @"
 Your registration will become **available** on this date and time *(Central Time Zone)*
