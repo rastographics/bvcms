@@ -24,6 +24,16 @@ namespace CmsWeb.Areas.Dialog.Controllers
             return View(m);
         }
 
+        //[Route("~/AddInvolvement")]
+        //public ActionResult AddInvolvement(bool displayCopySettings = false)
+        //{
+        //    var m = new NewOrganizationModel(CurrentDatabase, CurrentDatabase.CurrentSessionOrgId, displayCopySettings);
+        //    m.org.OrganizationName = "";
+        //    m.org.Location = "";
+        //    return View(m); //  ("/AddInvolvement/index.cshtml", m);
+        //}
+
+
         [HttpPost, Route("Submit/{id:int}")]
         public ActionResult Submit(int id, NewOrganizationModel m)
         {

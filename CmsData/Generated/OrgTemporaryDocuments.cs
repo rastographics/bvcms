@@ -83,7 +83,7 @@ namespace CmsData
             }
         }
 
-        [Column(Name = "DocumentName", UpdateCheck = UpdateCheck.Never, Storage = "_DocumentName", DbType = "nvarchar(100)")]
+        [Column(Name = "DocumentName", UpdateCheck = UpdateCheck.Never, Storage = "_DocumentName", DbType = "nvarchar(max)")]
         public string DocumentName
         {
             get => _DocumentName;
@@ -101,7 +101,7 @@ namespace CmsData
             }
         }
 
-        [Column(Name = "LastName", UpdateCheck = UpdateCheck.Never, Storage = "_LastName", DbType = "nvarchar(100)")]
+        [Column(Name = "LastName", UpdateCheck = UpdateCheck.Never, Storage = "_LastName", DbType = "nvarchar(max)")]
         public string LastName
         {
             get => _LastName;
@@ -119,7 +119,7 @@ namespace CmsData
             }
         }
 
-        [Column(Name = "FirstName", UpdateCheck = UpdateCheck.Never, Storage = "_FirstName", DbType = "nvarchar(100)")]
+        [Column(Name = "FirstName", UpdateCheck = UpdateCheck.Never, Storage = "_FirstName", DbType = "nvarchar(max)")]
         public string FirstName
         {
             get => _FirstName;
@@ -137,7 +137,7 @@ namespace CmsData
             }
         }
 
-        [Column(Name = "EmailAddress", UpdateCheck = UpdateCheck.Never, Storage = "_EmailAddress", DbType = "nvarchar(100)")]
+        [Column(Name = "EmailAddress", UpdateCheck = UpdateCheck.Never, Storage = "_EmailAddress", DbType = "nvarchar(max)")]
         public string EmailAddress
         {
             get => _EmailAddress;

@@ -1,0 +1,38 @@
+﻿@model CmsWeb.Areas.Involvement.Models.InvolvementPeopleModel
+<form class="ajax" data-init="popovers">
+    @Html.Partial("People/Hidden", Model)
+    <div class="row">
+        <div class="col-sm-12">
+            <div id="groupSelector" class="btn-group">
+                @Html.Partial("People/GroupButtons", Model)
+                @if (Model.ShowOptions)
+                {
+                    @*@Html.Partial("People/GroupOptions", Model)*@
+                }
+            </div>
+        </div>
+    </div>
+    @if (!Model.ShowSubgroupFilters)
+    {
+        <div style="display: none">
+            @Html.Partial("People/FilterPeople", Model)
+        </div>
+        <br />
+    }
+    else
+    {
+        @Html.Partial("People/FilterPeople", Model)
+        <br />
+    }
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="table-responsive">
+                @Html.Partial("People/Table")
+            </div>
+            @Html.Partial("PagerTop", Model)
+            @Html.Partial("PagerBottom", Model)
+            @Html.Partial("PagerHidden", Model)
+        </div>
+    </div>
+    <br /><br /><br /><br />
+</form>

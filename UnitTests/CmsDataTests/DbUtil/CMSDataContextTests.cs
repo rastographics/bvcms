@@ -245,6 +245,31 @@ namespace CmsData.Tests
             ids.ShouldNotContain(personNotInOrg.PeopleId);
         }
 
+        //[Fact]
+        //public void UseTicketedDbSetting_Enabled_Should_Return_TicketedEvent()
+        //{
+        //    var db = CMSDataContext.Create(DatabaseFixture.Host);
+        //    db.ExecuteCommand("DELETE FROM Setting where id = 'UseTicketed'");
+        //    db.ExecuteCommand("INSERT INTO Setting VALUES('UseTicketed', 'true', NULL)");
+        //    var codes = RegistrationTypeCode.GetCodePairs(db);
+
+        //    var ticketEventCode = codes.Where(x => x.Key.Equals(RegistrationTypeCode.TicketedEvent)).ToList();
+        //    ticketEventCode.Count.ShouldBeEquivalentTo(1);
+        //}
+
+        [Fact]
+        public void UseTicketedDbSetting_Disabled_Should_Not_Return_TicketedEvent()
+        {
+            var db = CMSDataContext.Create(DatabaseFixture.Host);
+            db.ExecuteCommand("DELETE FROM Setting where id = 'UseTicketed'");
+            db.ExecuteCommand("INSERT INTO Setting VALUES('UseTicketed', 'false', NULL)");
+
+            var codes = RegistrationTypeCode.GetCodePairs(db);
+
+            var ticketEventCode = codes.Where(x => x.Key.Equals(RegistrationTypeCode.TicketedEvent)).ToList();
+            ticketEventCode.Count.ShouldBeEquivalentTo(0);
+        }
+
         [Fact]
         public void NextSecurityCodeTest()
         {
@@ -258,6 +283,54 @@ namespace CmsData.Tests
             var code2 = db.NextSecurityCode().Single();
 
             code1.Code.ShouldNotBe(code2.Code);
+        }
+
+        [Theory]
+        [InlineData("docname")]
+        [InlineData("Release Form - Each person in your group needs to register and upload form separately. This is a demo with a long string.")]
+        public void Should_Save_Document_Name(string docName)
+        {
+            var doc = new OrgMemberDocument
+            {
+                DocumentName = docName,
+                ImageId = 0,
+                PeopleId = 1,
+                OrganizationId = 1,
+                CreatedDate = DateTime.Now
+            };
+
+            db.OrgMemberDocuments.InsertOnSubmit(doc);
+            db.SubmitChanges();
+
+            doc.DocumentName.ShouldBe(docName);
+
+            db.OrgMemberDocuments.DeleteOnSubmit(doc);
+            db.SubmitChanges();
+        }
+
+        [Theory]
+        [InlineData("docname")]
+        [InlineData("Release Form - Each person in your group needs to register and upload form separately. This is a demo with a long string.")]
+        public void Should_Save_Temporary_Document_Name(string docName)
+        {
+            var doc = new OrgTemporaryDocuments
+            {
+                DocumentName = docName,
+                ImageId = 0,
+                LastName = RandomString(),
+                FirstName = RandomString(),
+                EmailAddress = RandomString(),
+                OrganizationId = 1,
+                CreatedDate = DateTime.Now
+            };
+
+            db.OrgTemporaryDocuments.InsertOnSubmit(doc);
+            db.SubmitChanges();
+
+            doc.DocumentName.ShouldBe(docName);
+
+            db.OrgTemporaryDocuments.DeleteOnSubmit(doc);
+            db.SubmitChanges();
         }
     }
 }
