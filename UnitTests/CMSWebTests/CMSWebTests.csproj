@@ -143,6 +143,7 @@
     <Compile Include="Areas\Finance\Models\PostBundleModelTests.cs" />
     <Compile Include="Areas\Finance\Models\Statements\ContributionStatementsExtractTests.cs" />
     <Compile Include="Areas\Main\Controllers\EmailControllerTests.cs" />
+    <Compile Include="Areas\Manage\Controllers\DisplayControllerTests.cs" />
     <Compile Include="Areas\Manage\Models\Involvement\InvolvementTabModelTests.cs" />
     <Compile Include="Areas\Manage\Models\AccountModelTests.cs" />
     <Compile Include="Areas\Manage\Models\TransactionsModelTest.cs" />

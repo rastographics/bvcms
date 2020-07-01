@@ -222,7 +222,7 @@ namespace CmsWeb.Areas.Manage.Controllers
                 return RedirectToAction("ContentEdit", new {id = id, snippet = snippet });
             }
 
-            var url = m.GetIndexTabUrl(content);
+            var url = m.GetIndexTabUrl(Url.Action("Index"), content);
             return Redirect(url);
         }
         public ActionResult ContentDelete(int id)
@@ -231,7 +231,7 @@ namespace CmsWeb.Areas.Manage.Controllers
             var content = CurrentDatabase.ContentFromID(id);
             CurrentDatabase.ExecuteCommand("DELETE FROM dbo.ContentKeywords WHERE Id = {0}", id);
             CurrentDatabase.ExecuteCommand("DELETE FROM dbo.Content WHERE Id = {0}", id);
-            var url = m.GetIndexTabUrl(content);
+            var url = m.GetIndexTabUrl(Url.Action("Index"), content);
             return Redirect(url);
         }
 
@@ -331,6 +331,6 @@ namespace CmsWeb.Areas.Manage.Controllers
             return View();
         }
 
-        private DisplayModel GetDisplayModel() => new DisplayModel(CurrentDatabase, CurrentImageDatabase);
+        public DisplayModel GetDisplayModel() => new DisplayModel(CurrentDatabase, CurrentImageDatabase);
     }
 }

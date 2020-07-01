@@ -253,9 +253,8 @@ namespace CmsWeb.Areas.Manage.Models
             return null;
         }
 
-        public string GetIndexTabUrl(Content content)
+        public string GetIndexTabUrl(string url, Content content)
         {
-            var url = Url.Action("Index");
             switch (content.TypeID)
             {
                 case ContentTypeCode.TypeHtml:
