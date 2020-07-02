@@ -10,19 +10,8 @@
             </div>
             <div class="col-sm-12 col-md-8 col-md-offset-2">
                 <fund-picker :value="value" :funds="funds"></fund-picker>
-                <a v-if="showNote == false" @click="showNote = true" class="notelink" style="cursor:pointer;"><i class="fa fa-plus-circle"></i> Note</a>
             </div>
         </div>
-        <transition name="gift">
-            <div class="row" v-if="showNote" style="margin-bottom: 15px;">
-                <div class="col-sm-12 col-md-8 col-md-offset-2">
-                    <div class="form-group">
-                        <label class="control-label">Note (optional)</label>
-                        <input class="form-control" type="text" v-model="value.note" />
-                    </div>
-                </div>
-            </div>
-        </transition>
         <div class="row" style="margin-bottom: 15px;">
             <div v-if="frequencies.length < 5" class="col-sm-12">
                 <div :class="{'btn-group': true, 'btn-group-justified': true, 'has-error': showValidation && !value.frequency}" aria-label="Giving Frequency" role="group">
@@ -62,7 +51,6 @@
         props: ["value", "count", "funds", "frequencies", "showValidation"],
         data: function () {
             return {
-                showNote: false,
                 showEndDate: false
             }
         },
@@ -233,11 +221,6 @@
 <style scoped>
     .btn-group .btn {
         padding: 8px 0px;
-    }
-    .notelink {
-        position: absolute;
-        top: 17px;
-        right: -38px;
     }
     .btn-group.has-error .btn {
         border-top-color: #a94442;

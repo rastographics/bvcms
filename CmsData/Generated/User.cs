@@ -77,7 +77,7 @@ namespace CmsData
 
         private string _Code;
 
-        private DateTime _CodeExpires;
+        private DateTime? _CodeExpires;
 
         private string _CodeEmail;
 
@@ -200,7 +200,7 @@ namespace CmsData
         partial void OnCodeChanging(string value);
         partial void OnCodeChanged();
 
-        partial void OnCodeExpiresChanging(DateTime value);
+        partial void OnCodeExpiresChanging(DateTime? value);
         partial void OnCodeExpiresChanged();
 
         partial void OnCodeEmailChanging(string value);
@@ -795,7 +795,7 @@ namespace CmsData
             }
         }
 
-        [Column(Name = "code", UpdateCheck = UpdateCheck.Never, Storage = "_Code", DbType = "varchar(64) NOT NULL")]
+        [Column(Name = "code", UpdateCheck = UpdateCheck.Never, Storage = "_Code", DbType = "varchar(64)")]
         public string Code
         {
             get { return this._Code; }
@@ -816,8 +816,8 @@ namespace CmsData
 
         }
 
-        [Column(Name = "codeExpires", UpdateCheck = UpdateCheck.Never, Storage = "_CodeExpires", DbType = "datetime NOT NULL")]
-        public DateTime CodeExpires
+        [Column(Name = "codeExpires", UpdateCheck = UpdateCheck.Never, Storage = "_CodeExpires", DbType = "datetime")]
+        public DateTime? CodeExpires
         {
             get { return this._CodeExpires; }
 
@@ -837,7 +837,7 @@ namespace CmsData
 
         }
 
-        [Column(Name = "codeEmail", UpdateCheck = UpdateCheck.Never, Storage = "_CodeEmail", DbType = "varchar(255) NOT NULL")]
+        [Column(Name = "codeEmail", UpdateCheck = UpdateCheck.Never, Storage = "_CodeEmail", DbType = "varchar(255)")]
         public string CodeEmail
         {
             get { return this._CodeEmail; }
