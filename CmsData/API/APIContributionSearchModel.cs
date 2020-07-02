@@ -33,6 +33,7 @@ namespace CmsData.API
         public int Online { get; set; }
         public int PushPay { get; set; }
         public bool FilterByActiveTag { get; set; }
+        public bool FilterByNotesEnabled { get; set; }
         public string FundSet { get; set; }
         public bool IncludePledges { get; set; }
 
@@ -390,6 +391,13 @@ namespace CmsData.API
                 var tagid = db.TagCurrent().Id;
                 contributions = from c in contributions
                                 where db.TagPeople.Any(vv => vv.PeopleId == c.PeopleId && vv.Id == tagid)
+                                select c;
+            }
+
+            if (model.FilterByNotesEnabled)
+            {
+                contributions = from c in contributions
+                                where c.Notes != null || c.Notes.Length > 0
                                 select c;
             }
 
