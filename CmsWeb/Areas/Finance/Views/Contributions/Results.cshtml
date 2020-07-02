@@ -38,56 +38,58 @@
                     }
                     <th>Check #</th>
                     <th>Notes</th>
+                    <th>Custom Note</th>
                     <th colspan="2">Actions</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach (var c in Model.ContributionsList())
                 {
-                    <tr>
-                        <td title="@c.ContributionId">
-                            @if (!c.Recorded)
-                            {
-                                <span style="color:red">@c.Status</span>
-                            }
-                            else
-                            {
-                                @c.Status
-                            }
-                        </td>
-                        <td><a href="/Contributions/@c.PeopleId">@c.Name</a></td>
-                        <td>@c.ContributionDate.ToShortDateString()</td>
-                        <td class="text-right"><a href="/Bundle/@c.BundleId">@c.ContributionAmount.ToString("N2")</a></td>
-                        <td>
-                            @if (c.ReturnedReversed)
-                            {
-                                <span style="color:red">@c.ContributionType</span>
-                            }
-                            else
-                            {
-                                @c.ContributionType
-                            }
-                        </td>
-                        <td>@c.Fund</td>
-                        @if (ContributionsCampusColumn)
+                <tr>
+                    <td title="@c.ContributionId">
+                        @if (!c.Recorded)
                         {
-                            <td>@c.CampusCode</td>
+                            <span style="color:red">@c.Status</span>
                         }
-                        <td>@c.CheckNo</td>
-                        <td>@c.Description</td>
-                        <td class="action">
-                            @if (Model.SearchInfo.PeopleId.HasValue && c.CanReturnReverse)
-                            {
-                                <a class="returnit btn btn-default btn-sm" href="/Contributions/Return/@c.ContributionId">Return</a>
-                            }    
-                        </td>
-                        <td class="action">
-                            @if (Model.SearchInfo.PeopleId.HasValue && c.CanReturnReverse)
-                            {
-                                <a class="reverseit btn btn-default btn-sm" href="/Contributions/Reverse/@c.ContributionId">Reverse</a>
-                            }  
-                        </td>
-                    </tr>
+                        else
+                        {
+                            @c.Status
+                        }
+                    </td>
+                    <td><a href="/Contributions/@c.PeopleId">@c.Name</a></td>
+                    <td>@c.ContributionDate.ToShortDateString()</td>
+                    <td class="text-right"><a href="/Bundle/@c.BundleId">@c.ContributionAmount.ToString("N2")</a></td>
+                    <td>
+                        @if (c.ReturnedReversed)
+                        {
+                            <span style="color:red">@c.ContributionType</span>
+                        }
+                        else
+                        {
+                            @c.ContributionType
+                        }
+                    </td>
+                    <td>@c.Fund</td>
+                    @if (ContributionsCampusColumn)
+                    {
+                        <td>@c.CampusCode</td>
+                    }
+                    <td>@c.CheckNo</td>
+                    <td>@c.Description</td>
+                    <td>@c.Notes</td>
+                    <td class="action">
+                        @if (Model.SearchInfo.PeopleId.HasValue && c.CanReturnReverse)
+                        {
+                            <a class="returnit btn btn-default btn-sm" href="/Contributions/Return/@c.ContributionId">Return</a>
+                        }
+                    </td>
+                    <td class="action">
+                        @if (Model.SearchInfo.PeopleId.HasValue && c.CanReturnReverse)
+                        {
+                            <a class="reverseit btn btn-default btn-sm" href="/Contributions/Reverse/@c.ContributionId">Reverse</a>
+                        }
+                    </td>
+                </tr>
                 }
             </tbody>
         </table>

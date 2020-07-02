@@ -134,6 +134,7 @@ namespace CmsData.API
                          Pledge = c.PledgeFlag ?? false,
                          PeopleId = c.PeopleId ?? 0,
                          Description = c.ContributionDesc,
+                         Notes = c.Notes,
                          CheckNo = c.CheckNo,
                          FamilyId = c.Person.FamilyId,
                          MemberStatus = c.Person.MemberStatus.Description,
