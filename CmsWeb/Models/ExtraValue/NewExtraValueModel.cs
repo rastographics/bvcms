@@ -22,13 +22,15 @@ namespace CmsWeb.Models.ExtraValues
         public int Id2 { get; set; }
         public Guid QueryId { get; set; }
         public string ExtraValueTable { get; set; }
-        public string ExtraValueLocation { get; set; }
+        public CodeInfo ExtraValueLocation { get; set; }
+        public string OriginalExtraValueLocation { get; set; }
         public bool ClearOldValuesFirst { get; set; }
 
         public CMSDataContext CurrentDatabase { get; set; }
 
         [DisplayName("Name"), Required]
         public string ExtraValueName { get; set; }
+        public string OriginalName { get; set; }
 
         [DisplayName("Type")]
         public CodeInfo ExtraValueType { get; set; }
@@ -161,7 +163,7 @@ namespace CmsWeb.Models.ExtraValues
             AdhocExtraValueType = new CodeInfo("Text", "AdhocExtraValueType");
             QueryId = id;
             ExtraValueTable = "People";
-            ExtraValueLocation = "Adhoc";
+            ExtraValueLocation = new CodeInfo("AdHoc", "ExtraValueLocation");
         }
 
         public NewExtraValueModel(CMSDataContext db, int id, string table, string location)
@@ -171,7 +173,7 @@ namespace CmsWeb.Models.ExtraValues
             AdhocExtraValueType = new CodeInfo("Text", "AdhocExtraValueType");
             Id = id;
             ExtraValueTable = table;
-            ExtraValueLocation = location;
+            ExtraValueLocation = new CodeInfo(location, "ExtraValueLocation");
         }
 
         public NewExtraValueModel(CMSDataContext db, int id, string table, string name, string location)
@@ -182,7 +184,7 @@ namespace CmsWeb.Models.ExtraValues
             Id = id;
             ExtraValueName = name;
             ExtraValueTable = table;
-            ExtraValueLocation = location;
+            ExtraValueLocation = new CodeInfo(location, "ExtraValueLocation");
             VisibilityRoles = f.VisibilityRoles;
             EditableRoles = f.EditableRoles;
             ExtraValueLink = HttpUtility.HtmlDecode(f.Link);
@@ -206,7 +208,7 @@ namespace CmsWeb.Models.ExtraValues
             Id = id;
             Id2 = id2;
             ExtraValueTable = table;
-            ExtraValueLocation = location;
+            ExtraValueLocation = new CodeInfo(location, "ExtraValueLocation");
         }
 
         public NewExtraValueModel(CMSDataContext db, string table, string name)
@@ -239,7 +241,7 @@ namespace CmsWeb.Models.ExtraValues
             }
 
             const string nameAlreadyExistsAsADifferentType = "{0} already exists as a different type";
-            string type = ExtraValueLocation == "Adhoc" ? AdhocExtraValueType.Value : ExtraValueType.Value;
+            string type = ExtraValueLocation.Value == "Adhoc" ? AdhocExtraValueType.Value : ExtraValueType.Value;
             if (type == "Text2")
             {
                 type = "Text";
@@ -389,7 +391,7 @@ Option 2
                 ExtraValueName = ExtraValueName.Replace('/', '-');
             }
 
-            var fields = Views.GetStandardExtraValues(CurrentDatabase, ExtraValueTable, false, ExtraValueLocation);
+            var fields = Views.GetStandardExtraValues(CurrentDatabase, ExtraValueTable, false, ExtraValueLocation.Value);
             var existing = fields.SingleOrDefault(ff => ff.Name == ExtraValueName);
             if (existing != null)
             {
@@ -407,7 +409,7 @@ Option 2
                 Codes = ConvertToCodes(),
                 Link = HttpUtility.HtmlEncode(ExtraValueLink)
             };
-            var i = Views.GetViewsView(CurrentDatabase, ExtraValueTable, ExtraValueLocation);
+            var i = Views.GetViewsView(CurrentDatabase, ExtraValueTable, ExtraValueLocation.Value);
             i.view.Values.Add(v);
             i.views.Save(CurrentDatabase);
             return null;
@@ -748,7 +750,7 @@ and PeopleId in (select PeopleId from TagPerson where Id = @id)
             }
             v.Type = ev.Type;
             v.Codes = codes?.Select(x => new CmsData.Classes.ExtraValues.Code { Text = x }).ToList();
-            var i = Views.GetViewsView(CurrentDatabase, ExtraValueTable, ExtraValueLocation);
+            var i = Views.GetViewsView(CurrentDatabase, ExtraValueTable, ExtraValueLocation.Value);
             i.view.Values.Add(v);
             i.views.Save(CurrentDatabase);
             DbUtil.LogActivity($"EV{ExtraValueTable} ConvertToStandard {name}");
@@ -774,7 +776,7 @@ and PeopleId in (select PeopleId from TagPerson where Id = @id)
             v.Name = prefix;
             v.Type = "Bits";
             v.Codes = allbits.Select(x => new CmsData.Classes.ExtraValues.Code { Text = x }).ToList();
-            var view = Views.GetViewsView(CurrentDatabase, ExtraValueTable, ExtraValueLocation);
+            var view = Views.GetViewsView(CurrentDatabase, ExtraValueTable, ExtraValueLocation.Value);
             view.view.Values.Add(v);
             view.views.Save(CurrentDatabase);
             DbUtil.LogActivity($"EV{ExtraValueTable} ConvertToStandard {name}");

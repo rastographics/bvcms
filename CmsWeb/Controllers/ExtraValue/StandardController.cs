@@ -2,7 +2,11 @@ using CmsData.ExtraValue;
 using CmsWeb.Models.ExtraValues;
 using System;
 using System.Collections.Generic;
+using System.Extensions;
+using System.Linq;
 using System.Web.Mvc;
+using CmsData;
+using UtilityExtensions;
 
 namespace CmsWeb.Controllers
 {
@@ -25,13 +29,27 @@ namespace CmsWeb.Controllers
         [HttpPost, Route("ExtraValue/SaveEditedStandard")]
         public ActionResult SaveEditedStandard(NewExtraValueModel m)
         {
-            var i = Views.GetViewsViewValue(CurrentDatabase, m.ExtraValueTable, m.ExtraValueName, m.ExtraValueLocation);
+            var i = Views.GetViewsViewValue(CurrentDatabase, m.ExtraValueTable, m.OriginalName, m.OriginalExtraValueLocation);
+            if (!m.OriginalName.Equal(m.ExtraValueName))
+            {
+                var model = new ExtraInfoPeople(CurrentDatabase);
+                model.RenameAll(m.OriginalName, m.ExtraValueName);
+                i.value.Name = m.ExtraValueName;
+            }
             i.value.VisibilityRoles = m.VisibilityRoles;
             i.value.EditableRoles = m.EditableRoles;
             i.value.Codes = m.ConvertToCodes();
             i.value.Link = Server.HtmlEncode(m.ExtraValueLink);
+            if (!m.OriginalExtraValueLocation.Equal(m.ExtraValueLocation.Value))
+            {
+                var newvalue = i.value.Clone();
+                var n = i.view.Values.FindIndex(vv => vv.Name == i.value.Name);
+                i.view.Values.RemoveAt(n);
+                var movetoview = i.views.List.Find(vv => vv.Location == m.ExtraValueLocation.Value);
+                movetoview.Values.Add(newvalue);
+            }
             i.views.Save(CurrentDatabase);
-            return View("ListStandard", new ExtraValueModel(CurrentDatabase, m.Id, m.ExtraValueTable, m.ExtraValueLocation));
+            return View("ListStandard", new ExtraValueModel(CurrentDatabase, m.Id, m.ExtraValueTable, m.ExtraValueLocation.Value));
         }
 
         [HttpPost, Route("ExtraValue/ListStandard/{table}/{location}/{id:int}")]

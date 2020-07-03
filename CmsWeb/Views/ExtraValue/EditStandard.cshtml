@@ -17,12 +17,13 @@
             }
             @Html.HiddenFor(m => m.ExtraValueTable)
             @Html.HiddenFor(m => m.Id)
-            @Html.HiddenFor(m => m.ExtraValueLocation)
-            @Html.HiddenFor(m => m.ExtraValueName)
             @Html.HiddenFor(m => m.ExtraValueType.Name)
             @Html.HiddenFor(m => m.ExtraValueType.Value)
             @Html.DisplayFor(m => m.ExtraValueType)
-            @Html.DisplayFor(m => m.ExtraValueName)
+            @Html.EditorFor(m => m.ExtraValueLocation)
+            @Html.EditorFor(m => m.ExtraValueName)
+            <input type="hidden" name="OriginalExtraValueLocation" value="@Model.ExtraValueLocation.Value" />
+            <input type="hidden" name="OriginalName" value="@Model.ExtraValueName" />
             <div class="form-group">
                 <label for="VisibilityRolesList" class="control-label">Limit to Roles</label>
                 <div class="controls">
@@ -52,7 +53,7 @@
             }
         </div>
         <div class="modal-footer">
-            <a href="/ExtraValue/ListStandard/@Model.ExtraValueTable/@Model.ExtraValueLocation/@Model.Id" class="ajax btn btn-default">Cancel</a>
+            <a href="/ExtraValue/ListStandard/@Model.ExtraValueTable/@Model.ExtraValueLocation.Value/@Model.Id" class="ajax btn btn-default">Cancel</a>
             <a href="/ExtraValue/SaveEditedStandard" class="save btn btn-primary ajax validate" data-callback="EditStandardExtraValueDialogCallback">Save</a>
         </div>
     </div>

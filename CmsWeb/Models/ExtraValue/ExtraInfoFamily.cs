@@ -10,6 +10,7 @@ namespace CmsWeb.Models.ExtraValues
 {
     public class ExtraInfoFamily : ExtraInfo
     {
+        public ExtraInfoFamily(CMSDataContext db) :base(db) { }
         public override string QueryUrl
         {
             get
@@ -32,11 +33,11 @@ namespace CmsWeb.Models.ExtraValues
 
         public override IEnumerable<ExtraInfo> CodeSummary()
         {
-            var NameTypes = Views.GetViewableNameTypes(DbUtil.Db, "Family", nocache: true);
+            var NameTypes = Views.GetViewableNameTypes(CurrentDatabase, "Family", nocache: true);
             var standardtypes = new CodeValueModel().ExtraValueTypeCodes();
             var adhoctypes = new CodeValueModel().AdhocExtraValueTypeCodes();
 
-            var qcodevalues = (from e in DbUtil.Db.FamilyExtras
+            var qcodevalues = (from e in CurrentDatabase.FamilyExtras
                                where e.Type == "Bit" || e.Type == "Code"
                                group e by new
                                {
@@ -54,7 +55,7 @@ namespace CmsWeb.Models.ExtraValues
                                 ? adhoctypes.SingleOrDefault(ee => ee.Code == type)
                                 : standardtypes.SingleOrDefault(ee => ee.Code == type)
                          let typedisplay = typobj == null ? "unknown" : typobj.Value
-                         select new ExtraInfoFamily
+                         select new ExtraInfoFamily(CurrentDatabase)
                          {
                              Field = i.key.Field,
                              Value = i.key.val,
@@ -65,7 +66,7 @@ namespace CmsWeb.Models.ExtraValues
                              CanView = sv == null || sv.CanView
                          };
 
-            var qdatavalues = (from e in DbUtil.Db.FamilyExtras
+            var qdatavalues = (from e in CurrentDatabase.FamilyExtras
                                where !(e.Type == "Bit" || e.Type == "Code")
                                where e.Type != "CodeText"
                                group e by new
@@ -82,7 +83,7 @@ namespace CmsWeb.Models.ExtraValues
                           let typedisplay = sv == null
                                 ? adhoctypes.SingleOrDefault(ee => ee.Code == type)
                                 : standardtypes.SingleOrDefault(ee => ee.Code == type)
-                          select new ExtraInfoFamily
+                          select new ExtraInfoFamily(CurrentDatabase)
                           {
                               Field = i.key.Field,
                               Value = "(multiple)",
@@ -97,7 +98,7 @@ namespace CmsWeb.Models.ExtraValues
         }
         public override string DeleteAll(string type, string field, string value)
         {
-            var ev = DbUtil.Db.FamilyExtras.FirstOrDefault(ee => ee.Field == field);
+            var ev = CurrentDatabase.FamilyExtras.FirstOrDefault(ee => ee.Field == field);
             if (ev == null)
             {
                 return "error: no field";
@@ -106,23 +107,23 @@ namespace CmsWeb.Models.ExtraValues
             switch (type.ToLower())
             {
                 case "code":
-                    DbUtil.Db.ExecuteCommand("delete FamilyExtra where field = {0} and StrValue = {1}", field, value);
+                    CurrentDatabase.ExecuteCommand("delete FamilyExtra where field = {0} and StrValue = {1}", field, value);
                     break;
                 case "bit":
-                    DbUtil.Db.ExecuteCommand("delete FamilyExtra where field = {0} and BitValue = {1}", field, value);
+                    CurrentDatabase.ExecuteCommand("delete FamilyExtra where field = {0} and BitValue = {1}", field, value);
                     break;
                 case "int":
-                    DbUtil.Db.ExecuteCommand("delete FamilyExtra where field = {0} and IntValue is not null", field);
+                    CurrentDatabase.ExecuteCommand("delete FamilyExtra where field = {0} and IntValue is not null", field);
                     break;
                 case "date":
-                    DbUtil.Db.ExecuteCommand("delete FamilyExtra where field = {0} and DateValue is not null", field);
+                    CurrentDatabase.ExecuteCommand("delete FamilyExtra where field = {0} and DateValue is not null", field);
                     break;
                 case "text":
-                    DbUtil.Db.ExecuteCommand("delete FamilyExtra where field = {0} and Data is not null", field);
+                    CurrentDatabase.ExecuteCommand("delete FamilyExtra where field = {0} and Data is not null", field);
                     break;
                 case "?":
                 case "none":
-                    DbUtil.Db.ExecuteCommand(
+                    CurrentDatabase.ExecuteCommand(
                         "delete FamilyExtra where field = {0} and data is null and datevalue is null and intvalue is null",
                         field);
                     break;
@@ -133,7 +134,7 @@ namespace CmsWeb.Models.ExtraValues
 
         public override void RenameAll(string field, string newname)
         {
-            DbUtil.Db.ExecuteCommand("update FamilyExtra set field = {0} where field = {1}", newname, field);
+            CurrentDatabase.ExecuteCommand("update FamilyExtra set field = {0} where field = {1}", newname, field);
             DbUtil.LogActivity($"EVFamily RenameAll {field}>{newname}");
         }
     }

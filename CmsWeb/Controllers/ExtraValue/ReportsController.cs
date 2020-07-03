@@ -2,6 +2,7 @@ using System;
 using System.Web.Mvc;
 using CmsData;
 using CmsData.Codes;
+using CmsWeb.Areas.Reports.Controllers;
 using CmsWeb.Models.ExtraValues;
 
 namespace CmsWeb.Controllers
@@ -14,7 +15,8 @@ namespace CmsWeb.Controllers
             if (Util2.OrgLeadersOnly)
                 return Redirect("/Home");
 
-            var m = ExtraInfo.CodeSummary(table);
+
+            var m = ExtraInfo.GetExtraInfo(CurrentDatabase, table).CodeSummary();
             var c = CurrentDatabase.Content("StandardExtraValues2", "<Views />", ContentTypeCode.TypeText);
             ViewBag.EvSpecId = c.Id;
             return View("Reports/Summary", m);
@@ -23,14 +25,14 @@ namespace CmsWeb.Controllers
         [HttpPost, Route("ExtraValue/RenameAll/{table}")]
         public ActionResult RenameAll(string table, string field, string newname )
         {
-            ExtraInfo.RenameAll(table, field, newname);
+            ExtraInfo.GetExtraInfo(CurrentDatabase, table).RenameAll(field, newname);
             return Content(newname);
         }
 
         [HttpPost, Route("ExtraValue/DeleteAll/{table}/{type}")]
         public ActionResult DeleteAll(string table, string type, string field, string value)
         {
-            var ret = ExtraInfo.DeleteAll(table, type, field, value);
+            var ret = ExtraInfo.GetExtraInfo(CurrentDatabase, table).DeleteAll(type, field, value);
             return Content(ret);
         }
 
