@@ -1734,6 +1734,7 @@
     <Content Include="Content\touchpoint\lib\jquery-multi-select\css\multi-select.css" />
     <Content Include="Content\touchpoint\lib\jquery-scrollintoview\js\jquery.scrollintoview.js" />
     <Content Include="Content\touchpoint\lib\jquery-sortable-min.js" />
+    <Content Include="Content\touchpoint\lib\jquery-sortable.js" />
     <Content Include="Content\touchpoint\lib\jquery-ui-custom\css\images\ui-bg_flat_0_aaaaaa_40x100.png" />
     <Content Include="Content\touchpoint\lib\jquery-ui-custom\css\images\ui-bg_flat_75_ffffff_40x100.png" />
     <Content Include="Content\touchpoint\lib\jquery-ui-custom\css\images\ui-bg_glass_55_fbf9ee_1x400.png" />
@@ -1759,6 +1760,7 @@
     <Content Include="Content\touchpoint\lib\select2\css\select2.png" />
     <Content Include="Content\touchpoint\lib\select2\css\select2x2.png" />
     <Content Include="Content\touchpoint\lib\select2\js\select2.min.js" />
+    <Content Include="Content\touchpoint\lib\Sortable.js" />
     <Content Include="Content\touchpoint\lib\twitter-typeahead\js\typeahead.js" />
     <Content Include="Content\InstallPyScriptProject.py" />
     <Content Include="Content\xml.xsl" />

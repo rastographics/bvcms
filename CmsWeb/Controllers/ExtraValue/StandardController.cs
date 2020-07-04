@@ -99,10 +99,10 @@ namespace CmsWeb.Controllers
         }
 
         [HttpPost, Route("ExtraValue/ApplyOrder/{table}/{location}")]
-        public ActionResult ApplyOrder(string table, string location, Dictionary<string, int> orders)
+        public ActionResult ApplyOrder(string table, string location, List<string> names)
         {
             var m = new ExtraValueModel(CurrentDatabase, table, location);
-            m.ApplyOrder(orders);
+            m.ApplyOrder(names);
             m = new ExtraValueModel(CurrentDatabase, table, location);
             return View("ListStandard", m);
         }
