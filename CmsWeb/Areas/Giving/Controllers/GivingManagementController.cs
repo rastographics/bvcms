@@ -6,46 +6,51 @@ using CmsWeb.Areas.Giving.Models;
 using CmsData.Codes;
 using CmsData.Classes.Giving;
 using System.Text.RegularExpressions;
+using System;
 using MoreLinq;
 
 namespace CmsWeb.Areas.Giving.Controllers
 {
-    [Authorize(Roles = "Admin,Finance,FinanceViewOnly")]
-    [RouteArea("Giving", AreaPrefix = "Giving"), Route("{action}/{id?}")]
-    public class GivingManagementController : GivingPaymentController
+    [RouteArea("Giving", AreaPrefix = "Giving"), Route("{action=index}/{id?}")]
+    public class GivingManagementController : CMSBaseController
     {
         public GivingManagementController(IRequestManager requestManager) : base(requestManager)
         {
         }
-
-        [HttpGet]
-        [Route("~/Giving")]
+        
+        [Authorize(Roles = "Admin,Finance,FinanceViewOnly")]
         public ActionResult Index()
         {
             return View();
         }
 
-        [Route("~/Giving/{id}")]
+        [Authorize(Roles = "Admin,Finance,FinanceViewOnly")]
         public ActionResult Manage(string id)
         {
             var model = new GivingPageModel(CurrentDatabase);
             var page = new GivingPageItem();
-
-            if (id.ToLower() == "new")
-                page.PageId = 0;
-            else
+            try
+            {
                 page = model.GetGivingPages(id.ToInt()).SingleOrDefault();
-
-            if (page == null)
+            }
+            catch
             {
                 Util.TempError = "Invalid page";
                 return Content("/Error/");
             }
-            else
-                return View(page);
+            return View(page);
         }
 
-        [HttpGet]
+        [Authorize(Roles = "Admin,Finance,FinanceViewOnly")]
+        public ActionResult New()
+        {
+            var model = new GivingPageModel(CurrentDatabase);
+            var page = new GivingPageItem();
+            page.PageId = 0;
+            return View("Manage", page);
+        }
+        
+        [Authorize(Roles = "Admin,Finance,FinanceViewOnly")]
         public JsonResult List()
         {
             var model = new GivingPageModel(CurrentDatabase);
@@ -53,6 +58,7 @@ namespace CmsWeb.Areas.Giving.Controllers
             return Json(givingPageList, JsonRequestBehavior.AllowGet);
         }
 
+        [Authorize(Roles = "Admin,Finance,FinanceViewOnly")]
         [HttpPost]
         public ActionResult Create(GivingPageViewModel viewModel)
         {
@@ -61,6 +67,7 @@ namespace CmsWeb.Areas.Giving.Controllers
             return Json(result, JsonRequestBehavior.AllowGet);
         }
 
+        [Authorize(Roles = "Admin,Finance,FinanceViewOnly")]
         [HttpPost]
         public ActionResult Update(GivingPageViewModel viewModel)
         {
@@ -77,6 +84,7 @@ namespace CmsWeb.Areas.Giving.Controllers
             }
         }
 
+        [Authorize(Roles = "Admin,Finance,FinanceViewOnly")]
         [HttpPost]
         public JsonResult SaveGivingPageEnabled(bool value, int PageId)
         {
@@ -85,16 +93,8 @@ namespace CmsWeb.Areas.Giving.Controllers
             CurrentDatabase.SubmitChanges();
             return Json(new { givingPage.GivingPageId, givingPage.PageName, givingPage.Enabled });
         }
-
-        [HttpPost]
-        public JsonResult SetGivingDefaultPage(bool value, int PageId)
-        {
-            var model = new GivingPageModel(CurrentDatabase);
-            var result = model.UpdateGivingDefaultPage(value, PageId);
-            return Json(result, JsonRequestBehavior.AllowGet);
-        }
-
-        [HttpGet]
+        
+        [Authorize(Roles = "Admin,Finance,FinanceViewOnly")]
         public JsonResult CheckUrlAvailability(string url)
         {
             bool result = false;
@@ -107,22 +107,62 @@ namespace CmsWeb.Areas.Giving.Controllers
                result
             }, JsonRequestBehavior.AllowGet);
         }
+        
+        [Authorize(Roles = "Admin,Finance,FinanceViewOnly")]
+        public JsonResult GetAvailableFunds()
+        {
+            var availableFundsList = (from f in CurrentDatabase.ContributionFunds where f.FundStatusId == 1 orderby f.FundName select new { Id = f.FundId, Name = f.FundName }).ToList();
+            return Json(availableFundsList, JsonRequestBehavior.AllowGet);
+        }
+        
+        [Authorize(Roles = "Admin,Finance,FinanceViewOnly")]
+        public JsonResult GetEntryPoints()
+        {
+            var entryPointsList = (from ep in CurrentDatabase.EntryPoints orderby ep.Description select new { ep.Id, Name = ep.Description }).ToList();
+            return Json(entryPointsList, JsonRequestBehavior.AllowGet);
+        }
+        
+        [Authorize(Roles = "Admin,Finance,FinanceViewOnly")]
+        public JsonResult GetOnlineNotifyPersonList()
+        {
+            var onlineNotifyPersonList = (from p in CurrentDatabase.People
+                                          join u in CurrentDatabase.Users on p.PeopleId equals u.PeopleId
+                                          join ur in CurrentDatabase.UserRoles on u.UserId equals ur.UserId
+                                          join r in CurrentDatabase.Roles on ur.RoleId equals r.RoleId
+                                          where r.RoleName == "Access"
+                                          where u.EmailAddress != null
+                                          orderby p.Name
+                                          select new { Id = p.PeopleId, p.Name }).Distinct().ToList();
+            return Json(onlineNotifyPersonList, JsonRequestBehavior.AllowGet);
+        }
+        
+        [Authorize(Roles = "Admin,Finance,FinanceViewOnly")]
+        public JsonResult GetConfirmationEmailList()
+        {
+            var confirmationEmailList = (from c in CurrentDatabase.Contents
+                                         where ContentTypeCode.EmailTemplates.Contains(c.TypeID)
+                                         orderby c.Name
+                                         select new { c.Id, Name = c.Title }).ToList();
+            return Json(confirmationEmailList, JsonRequestBehavior.AllowGet);
+        }
+        
+        [Authorize(Roles = "Admin,Finance,FinanceViewOnly")]
+        public JsonResult GetShellList()
+        {
+            var shellList = (from c in CurrentDatabase.Contents
+                             where c.TypeID == ContentTypeCode.TypeHtml
+                             where c.ContentKeyWords.Any(vv => vv.Word == "Shell")
+                             orderby c.Name
+                             select new { c.Id, Name = c.Title }).ToList();
+            return Json(shellList, JsonRequestBehavior.AllowGet);
+        }
 
-        [HttpGet]
         public JsonResult GetPageTypes()
         {
             var pageTypesList = GivingPageTypes.GetGivingPageTypes();
             return Json(pageTypesList, JsonRequestBehavior.AllowGet);
         }
 
-        [HttpGet]
-        public JsonResult GetAvailableFunds()
-        {
-            var availableFundsList = (from f in CurrentDatabase.ContributionFunds where f.FundStatusId == 1 orderby f.FundName select new { Id = f.FundId, Name = f.FundName }).ToList();
-            return Json(availableFundsList, JsonRequestBehavior.AllowGet);
-        }
-
-        [HttpGet]
         public JsonResult GetGivingFrequencies()
         {
             var givingFrequencyList = (from t in CurrentDatabase.ScheduledGiftTypes orderby t.Id select new { Id = t.Id, Name = t.Description }).ToList();
@@ -145,46 +185,5 @@ namespace CmsWeb.Areas.Giving.Controllers
             return Json(givingFrequencyList, JsonRequestBehavior.AllowGet);
         }
 
-        [HttpGet]
-        public JsonResult GetEntryPoints()
-        {
-            var entryPointsList = (from ep in CurrentDatabase.EntryPoints orderby ep.Description select new { ep.Id, Name = ep.Description }).ToList();
-            return Json(entryPointsList, JsonRequestBehavior.AllowGet);
-        }
-
-        [HttpGet]
-        public JsonResult GetOnlineNotifyPersonList()
-        {
-            var onlineNotifyPersonList = (from p in CurrentDatabase.People
-                                          join u in CurrentDatabase.Users on p.PeopleId equals u.PeopleId
-                                          join ur in CurrentDatabase.UserRoles on u.UserId equals ur.UserId
-                                          join r in CurrentDatabase.Roles on ur.RoleId equals r.RoleId
-                                          where r.RoleName == "Access"
-                                          where u.EmailAddress != null
-                                          orderby p.Name
-                                          select new { Id = p.PeopleId, p.Name }).Distinct().ToList();
-            return Json(onlineNotifyPersonList, JsonRequestBehavior.AllowGet);
-        }
-
-        [HttpGet]
-        public JsonResult GetConfirmationEmailList()
-        {
-            var confirmationEmailList = (from c in CurrentDatabase.Contents
-                                         where ContentTypeCode.EmailTemplates.Contains(c.TypeID)
-                                         orderby c.Name
-                                         select new { c.Id, Name = c.Title }).ToList();
-            return Json(confirmationEmailList, JsonRequestBehavior.AllowGet);
-        }
-
-        [HttpGet]
-        public JsonResult GetShellList()
-        {
-            var shellList = (from c in CurrentDatabase.Contents
-                             where c.TypeID == ContentTypeCode.TypeHtml
-                             where c.ContentKeyWords.Any(vv => vv.Word == "Shell")
-                             orderby c.Name
-                             select new { c.Id, Name = c.Title }).ToList();
-            return Json(shellList, JsonRequestBehavior.AllowGet);
-        }
     }
 }

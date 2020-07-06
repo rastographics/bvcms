@@ -3,44 +3,38 @@
         <button v-if="count > 1" @click="remove" type="button" class="close" aria-label="Remove"><span aria-hidden="true">&times;</span></button>
         <div class="row">
             <div class="col-sm-12">
-                <div class="form-group">
+                <div :class="{'form-group': true, 'text-center': true, 'has-error': showValidation && value.amount < 1}">
                     <money-input v-model="value.amount"></money-input>
+                    <small v-if="showValidation && value.amount < 1" class="text-danger">Please enter an amount</small>
                 </div>
             </div>
             <div class="col-sm-12 col-md-8 col-md-offset-2">
                 <fund-picker :value="value" :funds="funds"></fund-picker>
-                <a v-if="showNote == false" @click="showNote = true" class="notelink" style="cursor:pointer;"><i class="fa fa-plus-circle"></i> Note</a>
-            </div>
-        </div>
-        <div class="row" v-if="showNote" style="margin-bottom: 15px;">
-            <div class="col-sm-12 col-md-8 col-md-offset-2">
-                <div class="form-group">
-                    <label class="control-label">Note (optional)</label>
-                    <input class="form-control" type="text" v-model="value.note" />
-                </div>
             </div>
         </div>
         <div class="row" style="margin-bottom: 15px;">
             <div v-if="frequencies.length < 5" class="col-sm-12">
-                <div class="btn-group btn-group-justified" aria-label="Giving Frequency" role="group">
+                <div :class="{'btn-group': true, 'btn-group-justified': true, 'has-error': showValidation && !value.frequency}" aria-label="Giving Frequency" role="group">
                     <div class="btn-group" role="group" v-for="frequency in frequencies" :key="frequency.Id">
                         <button :class="{'btn-primary': value.frequency == frequency.Id, btn: true, 'btn-default': true}" @click="setFrequency(frequency.Id)">{{ frequency.Name }}</button>
                     </div>
                 </div>
+                <small v-if="showValidation && !value.frequency" class="text-danger text-center">Please choose a frequency</small>
             </div>
             <div v-else class="col-sm-12 col-md-8 col-md-offset-2">
-                <div class="form-group">
+                <div :class="{'form-group': true, 'has-error': showValidation && !value.frequency}">
                     <select class="form-control" :value="value.frequency" @input="setFrequency($event.target.value)">
                         <option value="0">Select frequency</option>
                         <option v-for="frequency in frequencies" :key="frequency.Id" :value="frequency.Id">{{ frequency.Name }}</option>
                     </select>
+                    <small v-if="showValidation && !value.frequency" class="text-danger">Please choose a frequency</small>
                 </div>
             </div>
-            <div class="col-sm-12 text-center" v-if="value.frequency" style="margin-top: 16px; font-size: 13px;">
+            <div class="col-sm-12 text-center" v-if="value.frequency" ref="giftText" style="margin-top: 16px; font-size: 13px;">
                 <template v-if="value.frequency == 3">
                     On the
-                    <a data-type="select" :data-value="value.d1" ref="d1"></a> and
-                    <a data-type="select" :data-value="value.d2" ref="d2"></a> of each month starting
+                    <a data-type="select" :data-value="value.d1" ref="d1">{{ getOrdinal(value.d1) }}</a> and
+                    <a data-type="select" :data-value="value.d2" ref="d2">{{ getOrdinal(value.d2) }}</a> of each month starting
                     <a data-type="date" :data-value="value.date" ref="startdate" class="datepicker"></a>{{ givingToday ? '(today)' : '' }}
                 </template>
                 <template v-else>
@@ -54,10 +48,9 @@
 </template>
 <script>
     export default {
-        props: ["value", "count", "funds", "frequencies"],
+        props: ["value", "count", "funds", "frequencies", "showValidation"],
         data: function () {
             return {
-                showNote: false,
                 showEndDate: false
             }
         },
@@ -103,16 +96,11 @@
         watch: {
             showEndDate: function (show) {
                 let vm = this;
-                $(vm.$refs['startdate']).editable('destroy');
-                $(vm.$refs['enddate']).editable('destroy');
-                $(vm.$refs['d1']).editable('destroy');
-                $(vm.$refs['d2']).editable('destroy');
                 setTimeout(vm.initEditables, 100);
                 if (show) {
                     var year = vm.value.date.slice(0, 4);
                     var nextyear = parseInt(year) + 1;
                     vm.value.enddate = vm.value.date.replace(year, nextyear);
-                    setTimeout($(vm.$refs['enddate']).editable('show'),150);
                 } else {
                     $(vm.$refs['enddate']).editable('destroy');
                     vm.value.enddate = null;
@@ -148,15 +136,13 @@
                     vm.value.d2 = null;
                 }
                 // clear editables
-                $(vm.$refs['startdate']).editable('destroy');
-                $(vm.$refs['enddate']).editable('destroy');
-                $(vm.$refs['d1']).editable('destroy');
-                $(vm.$refs['d2']).editable('destroy');
+                vm.value.frequency = 0;
                 // update frequency
-                vm.value.frequency = parseInt(f);
-                this.$emit('input', this.value);
+                setTimeout(function () {
+                    vm.value.frequency = parseInt(f);
+                }, 100);
                 // init editables
-                setTimeout(vm.initEditables, 100);
+                setTimeout(vm.initEditables, 200);
             },
             initEditables() {
                 let vm = this;
@@ -206,8 +192,8 @@
                         mode: 'inline',
                         type: 'select',
                         showbuttons: false,
-                        source: this.dayOptions,
-                        value: this.value.d1
+                        source: vm.dayOptions,
+                        value: vm.value.d1
                     }).on('save', function (e, params) {
                         vm.value.d1 = params.submitValue;
                         vm.$emit('input', vm.value);
@@ -218,8 +204,8 @@
                         mode: 'inline',
                         type: 'select',
                         showbuttons: false,
-                        source: this.dayOptions,
-                        value: this.value.d2
+                        source: vm.dayOptions,
+                        value: vm.value.d2
                     }).on('save', function (e, params) {
                         vm.value.d2 = params.submitValue;
                         vm.$emit('input', vm.value);
@@ -236,9 +222,14 @@
     .btn-group .btn {
         padding: 8px 0px;
     }
-    .notelink {
-        position: absolute;
-        top: 17px;
-        right: -38px;
+    .btn-group.has-error .btn {
+        border-top-color: #a94442;
+        border-bottom-color: #a94442;
+    }
+    .btn-group.has-error > .btn-group:first-child:not(:last-child) > .btn:last-child {
+        border-left-color: #a94442;
+    }
+    .btn-group.has-error > .btn-group:last-child:not(:first-child) > .btn:first-child {
+        border-right-color: #a94442;
     }
 </style>
