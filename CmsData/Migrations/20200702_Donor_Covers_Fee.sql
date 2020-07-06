@@ -3,7 +3,7 @@ BEGIN
 INSERT INTO [dbo].SettingMetadata
            ([SettingId], [DisplayName], [Description], [DataType], [SettingCategoryId], [DefaultValue])
      VALUES
-           ('CreditBase', NULL, '', 5, 3, NULL)
+           ('CreditBase', NULL, 'This is the base fee you want to recoup for credit cards when the donor covers the fee. It should be a dollar amount (example: .30).', 5, 3, NULL)
 END
 GO
 
@@ -12,7 +12,7 @@ BEGIN
 INSERT INTO [dbo].SettingMetadata
            ([SettingId], [DisplayName], [Description], [DataType], [SettingCategoryId], [DefaultValue])
      VALUES
-           ('CreditPercent', NULL, '', 5, 3, NULL)
+           ('CreditPercent', NULL, 'This is the percent fee you want to recoup for credit card when the donor covers the fee. It should be a number (example: 1.9).', 5, 3, NULL)
 END
 GO
 
@@ -21,7 +21,7 @@ BEGIN
 INSERT INTO [dbo].SettingMetadata
            ([SettingId], [DisplayName], [Description], [DataType], [SettingCategoryId], [DefaultValue])
      VALUES
-           ('DebitBase', NULL, '', 5, 3, NULL)
+           ('DebitBase', NULL, 'This is the base fee you want to recoup for debit cards when the donor covers the fee. It should be a dollar amount (example: .30).', 5, 3, NULL)
 END
 GO
 
@@ -30,7 +30,7 @@ BEGIN
 INSERT INTO [dbo].SettingMetadata
            ([SettingId], [DisplayName], [Description], [DataType], [SettingCategoryId], [DefaultValue])
      VALUES
-           ('DebitPercent', NULL, '', 5, 3, NULL)
+           ('DebitPercent', NULL, 'This is the percent fee you want to recoup for debit cards when the donor covers the fee. It should be a number (example: 1.5).', 5, 3, NULL)
 END
 GO
 
@@ -39,7 +39,7 @@ BEGIN
 INSERT INTO [dbo].SettingMetadata
            ([SettingId], [DisplayName], [Description], [DataType], [SettingCategoryId], [DefaultValue])
      VALUES
-           ('ACHBase', NULL, '', 5, 3, NULL)
+           ('ACHBase', NULL, 'This is the base fee you want to recoup for ACH when the donor covers the fee. It should be a dollar amount (example: .30).', 5, 3, NULL)
 END
 GO
 
@@ -48,6 +48,6 @@ BEGIN
 INSERT INTO [dbo].SettingMetadata
            ([SettingId], [DisplayName], [Description], [DataType], [SettingCategoryId], [DefaultValue])
      VALUES
-           ('ACHPercent', NULL, '', 5, 3, NULL)
+           ('ACHPercent', NULL, 'This is the percent fee you want to recoup for ACH when the donor covers the fee. It should be a number (example: .5).', 5, 3, NULL)
 END
 GO
