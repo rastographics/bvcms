@@ -198,28 +198,6 @@ $(function () {
         return false;
     });
 
-
-
-    //$('body').on('click', '#showaddress', function (ev) {
-    //    ev.preventDefault();
-    //    $(this).toggleClass("active");
-    //    $("#ShowAddress").val($(this).hasClass("active"));
-    //    $.RebindMemberGrids();
-    //    return false;
-    //});
-
-    // JRR EXPERIMENTAL ????????????
-
-    //$('body').on('click', '#chkAddress', function (ev) {
-    //    ev.preventDefault();
-    //    $(this).toggleClass("active");
-    //    $("#ShowAddress").val($(this).hasClass("active"));
-    //    $.RebindMemberGrids();
-    //    return false;
-    //});
-
-
-
     $('body').on('click', '#groupSelector button.grp', function (event) {
         event.preventDefault();
         var $this = $(this);

@@ -144,7 +144,7 @@ namespace CmsWeb.Areas.Org.Models.Org
 
                         if (field.Label == "Online Registration")
                         {
-                            if (DbUtil.Db.Setting("UseNewInvolvementCreation", "true").ToBool())
+                            if (DbUtil.Db.Setting("UseNewInvolvementCreation"))
                             {
                                 field.Label = "Involvement Type";
                             }

@@ -41,6 +41,8 @@ namespace CmsWeb.Common
 
         public string RemoteDepositCaptureServiceToken => GetString("x9serviceToken");
 
+        public string SeatsIoSecretKey => GetString("SeatsIoSecretKey");
+
         /// <summary>
         ///     Returns a string representation of this application setting
         /// </summary>

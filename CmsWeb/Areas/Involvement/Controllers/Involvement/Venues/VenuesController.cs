@@ -15,6 +15,7 @@ using SeatsioDotNet.Subaccounts;
 using SeatsioDotNet.Util;
 using SeatsioDotNet.Events;
 using SeatsioDotNet;
+using CmsWeb.Common;
 
 namespace CmsWeb.Areas.Involvement.Controllers.Involvement
 {
@@ -24,9 +25,9 @@ namespace CmsWeb.Areas.Involvement.Controllers.Involvement
     public class VenuesController : CmsStaffController
     {
         protected SeatsioClient Client;
-        protected static readonly string BaseUrl = "https://api.seatsio.net";
-        protected string SecretKey = "cf8a6c45-cc68-44f8-938e-14d8d27004c1";
-        protected string WorkspaceKey = "80e61a21-6a93-4af8-9b75-64f41e37eb51";
+        const string BaseUrl = "https://api.seatsio.net";
+        protected string SecretKey = Configuration.Current.SeatsIoSecretKey;
+        protected string WorkspaceKey => CurrentDatabase.Setting("SeatsIoWorkspaceKey", "");
 
         public VenuesController(IRequestManager requestManager) : base(requestManager)
         {

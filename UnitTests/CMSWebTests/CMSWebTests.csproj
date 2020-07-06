@@ -83,8 +83,8 @@
     <Reference Include="RestSharp, Version=106.6.9.0, Culture=neutral, PublicKeyToken=598062e77f915f75, processorArchitecture=MSIL">
       <HintPath>..\..\packages\RestSharp.106.6.9\lib\net452\RestSharp.dll</HintPath>
     </Reference>
-    <Reference Include="SeatsioDotNet, Version=70.7.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\SeatsioDotNet.70.7.0\lib\net452\SeatsioDotNet.dll</HintPath>
+    <Reference Include="SeatsioDotNet, Version=70.8.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\SeatsioDotNet.70.8.0\lib\net452\SeatsioDotNet.dll</HintPath>
     </Reference>
     <Reference Include="Shouldly, Version=4.0.0.0, Culture=neutral, PublicKeyToken=6042cbcb05cbc941, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Shouldly.4.0.0-beta0002\lib\net451\Shouldly.dll</HintPath>
