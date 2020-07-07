@@ -397,7 +397,7 @@ namespace CmsData.API
             if (model.FilterByNotesEnabled)
             {
                 contributions = from c in contributions
-                                where c.Notes != null || c.Notes.Length > 0
+                                where c.Notes != null && c.Notes.Length > 0
                                 select c;
             }
 
