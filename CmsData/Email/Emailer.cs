@@ -929,10 +929,8 @@ namespace CmsData
                         htmlView.LinkedResources.Add(a);
                 msg.AlternateViews.Add(htmlView);
 
-                using (var smtp = Smtp())
-                {
-                    smtp.Send(msg);
-                }
+                var smtp = Smtp();
+                smtp.Send(msg);
             }
             return fromDomain;
         }
