@@ -17,6 +17,10 @@
         {
             <th>@Model.SortLink("Tab")</th>
         }
+        @if (Model.ShowProfileImages)
+        {
+        <th></th>
+        }
         <th>
             @Model.SortLink("Name")
         </th>
@@ -24,13 +28,15 @@
             @Model.SortLink("MemberType")
         </th>
         <th>
-            @Model.SortLink("Church")<br/>
+            @Model.SortLink("Status")<br/>
             @if (Model.ShowBirthday)
             {
                 <text>@Model.SortLink("Age") - @Model.SortLink("Bday")</text>
             }
         </th>
         <th>Communication</th>
+
+        @if (Model.ShowAttendance) {
         <th>@Model.SortLink("% Att.")</th>
         <th>
             <div class="btn-group">
@@ -53,6 +59,15 @@
                 </ul>
             </div>
         </th>
+        }
+        @if (Model.ShowTickets) {
+        <th>
+            # Tickets
+        </th>
+        <th>
+            Purchase Date
+        </th>
+        }
         @if (!Model.OrgLeaderAddDrop && Model.ShowTagButtons)
         {
             <th>Tag</th>
@@ -70,13 +85,21 @@
         <tr class="@(p.IsDeceased == true ? "danger" : "")">
             @if (!Model.OrgLeaderAddDrop)
             {
-                <td style="width: 20px;">
-                    <input type="checkbox" class="omck" value="@p.PeopleId" @(p.IsChecked == true ? "checked=checked" : "")/>
-                </td>
+            <td style="width: 20px;">
+                <input type="checkbox" class="omck" value="@p.PeopleId" @(p.IsChecked == true ? "checked=checked" : "") />
+            </td>
             }
             @if (Model.MultiSelect)
             {
-                <td>@p.Tab</td>
+            <td>@p.Tab</td>
+            }
+            @if (Model.ShowProfileImages)
+            {
+            <td>
+                <a href="#" class="templateItem" template="0">
+                    <img src="/PreviewImage/0" class="img-responsive img-circle" width="30" height="30" />
+                </a>
+            </td>
             }
             <td>
                 @if (Model.DisablePeopleLink)
@@ -87,6 +110,7 @@
                 {
                     <a href="/Person2/@p.PeopleId" class="target" @target>@p.Name</a>
                 }
+
                 @if (Model.NameLinks != null && p.PeopleId.HasValue && Model.NameLinks.ContainsKey(p.PeopleId.Value))
                 {
                     <div>
@@ -106,7 +130,7 @@
                 @ManageProspectLinks(p)
             </td>
             <td>
-                @p.MemberStatus<br/>
+                @p.MemberStatus<br />
                 @if (Model.ShowBirthday)
                 {
                     var age = Person.AgeDisplay(p.Age, p.PeopleId).ToString();
@@ -119,10 +143,11 @@
                 @foreach (var ph in p.Phones)
                 {
                     @ph
-                    <br/>
+                    <br />
                 }
                 <a href="mailto:@p.EmailAddress">@p.EmailAddress</a>
             </td>
+            @if (Model.ShowAttendance) {
             <td>
                 @(!string.IsNullOrWhiteSpace(p.AttPct.ToString2("N1")) ? $"{p.AttPct.ToString2("N1")}%" : "")
             </td>
@@ -139,6 +164,15 @@
                     @ShowDateLink(p.TaskDelegatedDt, "/Person2", p.PeopleId, "Has Task", "#tab-tasksassigned")
                 }
             </td>
+            }
+            @if (Model.ShowTickets) {
+            <td>
+                @p.NumberOfTickets
+            </td>
+            <td>
+                @p.PurchaseDate
+            </td>
+            }
             @if (!Model.OrgLeaderAddDrop && Model.ShowTagButtons)
             {
                 <td>

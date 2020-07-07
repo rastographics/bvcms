@@ -1,23 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
-using CmsData;
-using CmsData.View;
-using CmsWeb.Areas.Involvement.Models;
 using CmsWeb.Areas.Involvement.Models.Venues;
-using CmsWeb.Areas.Org.Models;
-using CmsWeb.Areas.People.Models;
-using CmsWeb.Code;
 using CmsWeb.Lifecycle;
-using UtilityExtensions;
-using SeatsioDotNet.Subaccounts;
-using SeatsioDotNet.Util;
 using SeatsioDotNet.Events;
 using SeatsioDotNet;
 using CmsWeb.Common;
 
-namespace CmsWeb.Areas.Involvement.Controllers.Involvement
+namespace CmsWeb.Areas.Org.Controllers
 {
     [RouteArea("Involvement", AreaPrefix = "Involvement"), Route("{action}/{id?}")]
     [ValidateInput(false)]

@@ -1,8 +1,13 @@
 using System.Linq;
 using System.Web.Mvc;
 using CmsData;
+using CmsData.Codes;
+using CmsWeb.Areas.Involvement.Models;
 using CmsWeb.Areas.Org.Models;
+using CmsWeb.Areas.People.Models;
+using CmsWeb.Code;
 using UtilityExtensions;
+using ContactsReceivedModel = CmsWeb.Areas.Org.Models.ContactsReceivedModel;
 
 namespace CmsWeb.Areas.Org.Controllers
 {
@@ -22,6 +27,7 @@ namespace CmsWeb.Areas.Org.Controllers
                 id = recent.Any() ? recent[0].Id : 1;
                 return Redirect($"/Org/{id}");
             }
+
             var m = OrganizationModel.Create(CurrentDatabase, CurrentUser);
             m.OrgId = id;
             if (peopleid.HasValue)
@@ -39,18 +45,25 @@ namespace CmsWeb.Areas.Org.Controllers
                 if (sgleader.HasValue())
                     m.SgFilter = sgleader;
             }
+
             if (m.Org.LimitToRole.HasValue())
                 if (!User.IsInRole(m.Org.LimitToRole))
                     return NotAllowed("no privilege to view ", m.Org.OrganizationName);
 
             DbUtil.LogOrgActivity($"Viewing Org({m.Org.OrganizationName})", id, m.Org.OrganizationName);
-
+            CodeValueModel cvm = new CodeValueModel();
+            m.AllCampuses = cvm.AllCampuses();
+            m.CanUserEditCampus = m.Org.RegistrationTypeId == RegistrationTypeCode.TicketedEvent;
             m.OrgMain.Divisions = GetOrgDivisions(id);
 
             ViewBag.OrganizationContext = true;
             ViewBag.orgname = m.Org.FullName;
             ViewBag.model = m;
             ViewBag.selectmode = 0;
+
+            var pm = new PersonModel(id, CurrentDatabase);
+            m.PersonModel = pm;
+
             InitExportToolbar(m);
             ViewBag.OrganizationName = m.Org.OrganizationName;
             Util.ActiveOrganization = m.Org.OrganizationName;
@@ -73,7 +86,7 @@ namespace CmsWeb.Areas.Org.Controllers
             if (id == 1)
                 return Content("Cannot delete first org");
             var err = org.PurgeOrg(CurrentDatabase);
-            if(err.HasValue())
+            if (err.HasValue())
                 return Content($"error, {err}");
             DbUtil.LogActivity($"Delete Org {Util.ActiveOrganization}");
             Util.ActiveOrganization = null;
@@ -90,12 +103,20 @@ namespace CmsWeb.Areas.Org.Controllers
             ViewBag.AddContact = "/Org/AddContact/" + m.QueryId;
             ViewBag.AddTasks = "/Org/AddTasks/" + m.QueryId;
             ViewBag.OrganizationContext = true;
+
             if (!CurrentDatabase.Organizations.Any(oo => oo.ParentOrgId == m.Id))
                 return;
 
             ViewBag.ParentOrgContext = true;
             ViewBag.leadersqid = CurrentDatabase.QueryLeadersUnderCurrentOrg().QueryId;
             ViewBag.membersqid = CurrentDatabase.QueryMembersUnderCurrentOrg().QueryId;
+        }
+
+        [HttpPost]
+        public ActionResult Meetings(InvolvementMeetingsModel m)
+        {
+            DbUtil.LogActivity($"Viewing Meetings for orgId={m.Id}", orgid: m.Id);
+            return PartialView("InvolvementMeetings", m);
         }
 
         [HttpPost]
@@ -124,25 +145,7 @@ namespace CmsWeb.Areas.Org.Controllers
 
             return PartialView("Contacts", m);
         }
-
-        /*[HttpPost]
-        public ActionResult Resources(int id)
-        {
-            var resources = new List<CmsData.Resource.Resource>();
-            resources.Add(new CmsData.Resource.Resource
-            {
-                Name = "South America Mission Goals",
-                UpdatedTime = DateTime.Now.AddDays(-22)
-            });
-            resources.Add(new CmsData.Resource.Resource
-            {
-                Name = "Trip Budget",
-                UpdatedTime = DateTime.Now.AddDays(-12)
-            });
-            
-            return PartialView(resources);
-        }*/
-
+        
         [HttpPost]
         public ActionResult CommunityGroup(int id)
         {
@@ -178,6 +181,14 @@ namespace CmsWeb.Areas.Org.Controllers
 
             Util.TempContactEdit = true;
             return Content($"/Contact2/{c.ContactId}");
+        }
+
+        [HttpPost]
+        public ActionResult PostData(int pk, string name, string value)
+        {
+            var org = CurrentDatabase.LoadOrganizationById(pk);
+            org.UpdateCampus(CurrentDatabase, value.ToInt());
+            return new EmptyResult();
         }
     }
 }

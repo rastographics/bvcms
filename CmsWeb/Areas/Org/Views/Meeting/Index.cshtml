@@ -6,18 +6,11 @@
     var Db = ViewExtensions2.CurrentDatabase;
     ViewBag.Title = "Meeting";
     ViewBag.PageHeader = "Meeting";
-
-    if (Model.meeting.Organization.RegistrationTypeId == RegistrationTypeCode.TicketedEvent)
-    {
-        ViewBag.PageSubHeader = $"<a href=\"/Inv/{Model.meeting.OrganizationId}\">{Model.meeting.Organization.OrganizationName}</a>";
-    }
-    else
-    {
-        ViewBag.PageSubHeader = $"<a href=\"/Org/{Model.meeting.OrganizationId}\">{Model.meeting.Organization.OrganizationName}</a>";
-    }
+    ViewBag.PageSubHeader = $"<a href=\"/Org/{Model.meeting.OrganizationId}\">{Model.meeting.Organization.OrganizationName}</a>";
     Layout = ViewExtensions2.TouchPointLayout();
     var RegularMeetingHeadCount = Model.RegularMeetingHeadCountSetting();
     var CanEditHeadCount = Model.meeting.GroupMeetingFlag || RegularMeetingHeadCount;
+    var InvolvementOrg = Model.meeting.Organization.RegistrationTypeId == RegistrationTypeCode.TicketedEvent;
 }
 @section head
 {
@@ -36,11 +29,31 @@
         }
     </style>
 }
+
+@if (InvolvementOrg) {
+    <div class="btn-group">
+        <a class="btn btn-default" tabindex="0" href="#" data-toggle="popover" data-container="body" data-placement="bottom" data-trigger="focus" data-title="Involvement Meeting Buttons"></a>
+        @InvMeetingButton("", "Event Manager")
+    </div>
+
+    @InvMeetingButton("", "Attendance")
+    @InvMeetingButton("", "Extra Values")
+}
+
+@helper InvMeetingButton(string group, string name)
+{
+    <div class="btn-group">
+        <button class="btn btn-default" value="@group">@name</button>
+    </div>
+}
+
 <div class="row">
     <div class="col-md-9">
         <div class="box box-responsive">
             <div class="box-content">
-                @Html.Partial("Toolbar/Toolbar")
+            	@if (!InvolvementOrg) {
+                    @Html.Partial("Toolbar/Toolbar")
+                }
                 @Html.Hidden("meetingid", Model.meeting.MeetingId)
                 @Html.Hidden("sort", "false")
                 @Html.Hidden("RegularMeetingHeadCount", RegularMeetingHeadCount)
@@ -177,6 +190,9 @@
                                     @if (Model.ShowCurrentMemberType)
                                     {
                                         <th>Current Member Type</th>
+                                    }
+                                    @if (InvolvementOrg) {
+                                    <th>Number of Tickets</th>
                                     }
                                     <th>Attend Member Type</th>
                                     @if (Model.ShowAttendType)

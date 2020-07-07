@@ -270,7 +270,7 @@
 }
 @helper ManageMemberLinks(OrgFilterPerson p)
 {
-    if (!(new[] { GroupSelectCode.Guest, GroupSelectCode.Previous }).Contains(p.GroupCode))
+    if (!(new[] {GroupSelectCode.Guest, GroupSelectCode.Previous}).Contains(p.GroupCode))
     {
         <div>
             @p.MemberType

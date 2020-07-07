@@ -565,11 +565,7 @@
     <Compile Include="Areas\Finance\Models\RemoteDepositCaptureError.cs" />
     <Compile Include="Areas\Finance\Models\TotalsByFundRange.cs" />
     <Compile Include="Areas\Finance\Models\TotalsByFundAgeRangeModel.cs" />
-    <Compile Include="Areas\Involvement\Controllers\InvolvementSearchController.cs" />
-    <Compile Include="Areas\Involvement\Controllers\Involvement\InvolvementPeople.cs" />
-    <Compile Include="Areas\Involvement\Controllers\Involvement\Venues\VenuesController.cs" />
-    <Compile Include="Areas\Involvement\InvolvementAreaRegistration.cs" />
-    <Compile Include="Areas\Involvement\Controllers\Involvement\InvolvementController.cs" />
+    <Compile Include="Areas\Org\Controllers\VenuesController.cs" />
     <Compile Include="Areas\Involvement\Models\InvolvementMain.cs" />
     <Compile Include="Areas\Involvement\Models\InvolvementModel.cs" />
     <Compile Include="Areas\Involvement\Models\InvolvementPeopleModel.cs" />
@@ -1979,17 +1975,14 @@
     <Content Include="Areas\Involvement\Views\Involvement\People\FilterPeople.cshtml" />
     <Content Include="Areas\Involvement\Views\Involvement\People\GroupButtons.cshtml" />
     <Content Include="Areas\Involvement\Views\Involvement\People\Table.cshtml" />
-    <Content Include="Areas\Involvement\Views\Involvement\People.cshtml" />
     <Content Include="Areas\Involvement\Views\web.config" />
     <Content Include="Areas\Dialog\Views\AddInvolvement\index.cshtml" />
     <Content Include="Areas\Involvement\Views\InvolvementSearch\Index.cshtml" />
     <Content Include="Areas\Involvement\Views\Involvement\Index.cshtml" />
-    <Content Include="Areas\Involvement\Views\Involvement\People\Hidden.cshtml" />
     <Content Include="Views\SpecialLinks\Index.cshtml" />
     <Content Include="Areas\Dialog\Views\AddInvolvement\index.cshtml" />
     <Content Include="Areas\Involvement\Views\Venues\Index.cshtml" />
     <Content Include="Areas\Involvement\Views\Venues\CreateVenue.cshtml" />
-    <Content Include="Areas\Involvement\Views\InvolvementMeeting\Index.cshtml" />
     <Content Include="Areas\Involvement\Views\Involvement\InvolvementMeetings.cshtml" />
     <Content Include="Areas\Involvement\Views\InvolvementSearch\Toolbar\Custom.cshtml" />
     <Content Include="Areas\Involvement\Views\InvolvementSearch\Toolbar\Toolbar.cshtml" />
@@ -2001,8 +1994,6 @@
     <Content Include="Areas\Involvement\Views\InvolvementSearch\Row.cshtml" />
     <Content Include="Areas\Involvement\Views\Involvement\InvolvementSettings.cshtml" />
     <Content Include="Areas\Involvement\Views\Involvement\InvolvementRegistrations.cshtml" />
-    <Content Include="Areas\Involvement\Views\Involvement\Settings\General.cshtml" />
-    <Content Include="Areas\Involvement\Views\Involvement\Registration\Registration.cshtml" />
     <Content Include="Areas\Org\Views\Org\Registration\RegistrationTypes.cshtml" />
     <Content Include="Views\SpecialLinks\Index.cshtml" />
     <Content Include="Areas\Involvement\Views\Involvement\DisplayTemplates\EditCampusTemplate.cshtml" />
@@ -3529,6 +3520,7 @@
     <Folder Include="Areas\CheckIn\Views\Shared\" />
     <Folder Include="Areas\Dialog\Views\Shared\" />
     <Folder Include="Areas\Figures\Views\Shared\" />
+    <Folder Include="Areas\Involvement\Controllers\Involvement\" />
     <Folder Include="Areas\Involvement\Views\Meeting\" />
     <Folder Include="Areas\Involvement\Views\Shared\" />
     <Folder Include="Areas\Main\Views\Shared\" />

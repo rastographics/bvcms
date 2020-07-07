@@ -128,7 +128,6 @@ namespace CmsWeb.Areas.Org.Models
             }
         }
 
-
         public override IQueryable<OrgFilterPerson> DefineModelSort(IQueryable<OrgFilterPerson> q)
         {
             if (Direction == "asc")
@@ -310,6 +309,7 @@ namespace CmsWeb.Areas.Org.Models
         {
             return GroupSelect.Contains(group) ? "active" : "";
         }
+
         public bool IsFiltered
         {
             get
@@ -320,6 +320,7 @@ namespace CmsWeb.Areas.Org.Models
                         FilterTag;
             }
         }
+
 
         public string MultiSelectActive => MultiSelect ? "active" : "";
         public string ShowMinistryInfoActive => ShowMinistryInfo ? "active" : "";
@@ -338,6 +339,10 @@ namespace CmsWeb.Areas.Org.Models
         public bool HidePendingButton => RoleChecker.HasSetting(SettingName.HidePendingOrgMembers, false);
         public bool HideGuestsButton => RoleChecker.HasSetting(SettingName.HideGuestsOrgMembers, false);
         public bool HidePreviousButton => RoleChecker.HasSetting(SettingName.HidePreviousOrgMembers, false);
+        public bool IsTicketedEvent => org?.RegistrationTypeId == RegistrationTypeCode.TicketedEvent;
+        public bool ShowAttendance => !IsTicketedEvent;
+        public bool ShowProfileImages => IsTicketedEvent;
+        public bool ShowTickets => IsTicketedEvent;
 
         public bool ShowOptions => RoleChecker.HasSetting(SettingName.Organization_ShowOptionsMenu, true);
         public bool ShowSubgroupFilters => RoleChecker.HasSetting(SettingName.Organization_ShowFiltersBar, true);
