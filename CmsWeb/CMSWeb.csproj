@@ -2928,6 +2928,8 @@
     <Content Include="src\components\Giving\GivingPage\FundPicker.vue" />
     <Content Include="src\components\Common\ContentTransition.vue" />
     <Content Include="src\components\Common\Login.vue" />
+    <Content Include="Views\_ViewStart.cshtml" />
+    <Content Include="Views\Shared\Menu\Involvement.cshtml" />
     <Content Include="src\components\Giving\GivingPage\GivingLogin.vue" />
     <None Include="Web.staging.config">
       <DependentUpon>Web.config</DependentUpon>
