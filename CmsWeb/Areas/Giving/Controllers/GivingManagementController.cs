@@ -93,6 +93,7 @@ namespace CmsWeb.Areas.Giving.Controllers
             return Json(new { givingPage.GivingPageId, givingPage.PageName, givingPage.Enabled });
         }
 
+        [Authorize(Roles = "Admin,Finance,FinanceViewOnly")]
         [HttpPost]
         public JsonResult SetGivingDefaultPage(bool value, int PageId)
         {
