@@ -93,7 +93,17 @@ namespace CmsWeb.Areas.Giving.Controllers
             CurrentDatabase.SubmitChanges();
             return Json(new { givingPage.GivingPageId, givingPage.PageName, givingPage.Enabled });
         }
-        
+
+
+        [Authorize(Roles = "Admin,Finance,FinanceViewOnly")]
+        [HttpPost]
+        public JsonResult SetGivingDefaultPage(bool value, int PageId)
+        {
+            var model = new GivingPageModel(CurrentDatabase);
+            var result = model.UpdateGivingDefaultPage(value, PageId);
+            return Json(result, JsonRequestBehavior.AllowGet);
+        }
+
         [Authorize(Roles = "Admin,Finance,FinanceViewOnly")]
         public JsonResult CheckUrlAvailability(string url)
         {
