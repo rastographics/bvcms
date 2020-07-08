@@ -57,7 +57,6 @@
         var linkType = specialLinks.typeSelect.val();
         var linkText = 'https://' + linkType;
         var orgId = specialLinks.orgInput.val();
-        var givingPagesList = {};
 
         switch (linkType) {
             case 'registerlink':
@@ -131,11 +130,8 @@
                     GetGivingPages();
                 } else {
                     let givingPageSelected = givingPagesSelect.options[givingPagesSelect.selectedIndex].value;
-                    if (givingPageSelected > 0) {
-                        //let index = parseInt(givingPageSelected) - 1;
-                        //console.log(givingPagesList);
-                        //console.log(givingPagesList[index]);
-                        linkText += '/?page=';// + givingPagesList[parseInt(index)].PageUrl;
+                    if (givingPageSelected.length > 0) {
+                        linkText = window.location.hostname + '/give/' + givingPageSelected;
                     } else {
                         linkText = '';
                     }
@@ -168,8 +164,6 @@ function GetGivingPages() {
         dataType: "json",
         url: "/Giving/GetSimpleGivingPages",
         success: function (data) {
-            console.log(data);
-            //givingPagesList = data;
             let givingPagesSelect = $("#givingPagesSelect");
             let optionZero = $("<option/>", {
                 value: 0,
@@ -179,7 +173,7 @@ function GetGivingPages() {
             givingPagesSelect.append(optionZero);
             $.each(data, function (key, value) {
                 let option = $("<option/>", {
-                    value: key + 1,
+                    value: value.PageUrl,
                     text: value.PageName
                 });
                 givingPagesSelect.append(option);
