@@ -4,10 +4,11 @@
         function (ev) {
             ev.preventDefault();
             $("#upload-file-modal").modal('show');
+            $("#upload-file-modal input.toupload").val('');
             $("#urlresult input").val("");
         });
     $("#upload-file-modal").on("click",
-        "a.upload-file",
+        "a.submit-file",
         function (ev) {
             ev.preventDefault();
             var form = $(this).closest("form")[0];
