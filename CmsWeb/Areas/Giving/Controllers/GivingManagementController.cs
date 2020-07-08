@@ -186,5 +186,14 @@ namespace CmsWeb.Areas.Giving.Controllers
                              select new { c.Id, Name = c.Title }).ToList();
             return Json(shellList, JsonRequestBehavior.AllowGet);
         }
+
+        [HttpGet]
+        public JsonResult GetSimpleGivingPages()
+        {
+            var givingPages = (from g in CurrentDatabase.GivingPages
+                             orderby g.PageName
+                             select new { g.GivingPageId, g.PageName, g.PageUrl }).ToList();
+            return Json(givingPages, JsonRequestBehavior.AllowGet);
+        }
     }
 }
