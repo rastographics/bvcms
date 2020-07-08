@@ -102,6 +102,13 @@ namespace CmsWeb.Areas.Dialog.Controllers
             return Redirect("/Resources");
         }
 
+        [HttpPost, ValidateInput(false)]
+        public ActionResult UploadFile(HttpPostedFileBase doc)
+        {
+            var url = UploadAttachment(doc);
+            return Content(url);
+        }
+
         public string UploadAttachment(HttpPostedFileBase file)
         {
             var m = new AccountModel();
@@ -137,7 +144,6 @@ namespace CmsWeb.Areas.Dialog.Controllers
                     baseurl = string.Empty;
                 }
             }
-
             return baseurl + fn;
         }
     }
