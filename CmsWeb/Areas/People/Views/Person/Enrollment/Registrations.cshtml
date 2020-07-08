@@ -7,17 +7,16 @@
 }
 <form class="ajax" method="post">
     <h3>Registration History</h3>
-
-    <div class="row">
-        <div class="col-sm-6">
-            <h4>Mission Trip Funding</h4>
-        </div>
-        <div class="col-sm-6">
-            @FormActions()
-        </div>
-    </div>
     @if (fulfillmentlist.Count > 0)
     {
+        <div class="row">
+            <div class="col-sm-6">
+                <h4>Mission Trip Funding</h4>
+            </div>
+            <div class="col-sm-6">
+                @FormActions()
+            </div>
+        </div>
         <div class="row">
             <div class="col-sm-6">
                 <h4>Event Registration Fulfillment</h4>
