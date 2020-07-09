@@ -55,7 +55,7 @@
   var cstr = clause.FriendlyString();
   var newcondition = "";
   var disabled = clause.DisableOnScratchpad ? "disabled" : "";
-  if (cstr == "MatchAnything = True")
+  if (clause.ConditionName == "MatchAnything")
   {
     newcondition = "newcondition";
     cstr = "Select Condition";
