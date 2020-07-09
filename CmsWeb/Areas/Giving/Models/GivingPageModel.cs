@@ -72,7 +72,8 @@ namespace CmsWeb.Areas.Giving.Models
                                                   select new FundsClass {
                                                       Id = fund.FundId,
                                                       Name = f.FundName,
-                                                      AllowEndDate = f.EndDateFlag
+                                                      AllowEndDate = f.EndDateFlag,
+                                                      AllowNotes = f.Notes
                                                   }).ToArray(),
                                 ConfirmEmailPledge = new ContentFile
                                 {
@@ -239,6 +240,7 @@ namespace CmsWeb.Areas.Giving.Models
         public int Id { get; set; }
         public string Name { get; set; }
         public bool? AllowEndDate { get; set; }
+        public bool AllowNotes { get; set; }
     }
 
     public class EntryPoint

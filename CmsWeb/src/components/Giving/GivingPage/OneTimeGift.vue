@@ -9,8 +9,8 @@
                 </div>
             </div>
             <div class="col-sm-12 col-md-8 col-md-offset-2">
-                <fund-picker :value="value" :funds="funds"></fund-picker>
-                <a v-if="showNote == false" @click="showNote = true" class="notelink" style="cursor:pointer;"><i class="fa fa-plus-circle"></i> Note</a>
+                <fund-picker :value="value" :funds="funds" @input="hideNote"></fund-picker>
+                <a v-if="value.fund.AllowNotes && showNote == false" @click="showNote = true" class="notelink" style="cursor:pointer;"><i class="fa fa-plus-circle"></i> Note</a>
             </div>
         </div>
         <transition name="gift">
@@ -37,6 +37,10 @@
             remove() {
                 this.$emit('remove');
             },
+            hideNote() {
+                this.value.note = '';
+                this.showNote = false;
+            }
         }
     }
 </script>

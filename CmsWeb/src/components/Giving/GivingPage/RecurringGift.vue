@@ -33,15 +33,15 @@
             <div class="col-sm-12 text-center" v-if="value.frequency" ref="giftText" style="margin-top: 16px; font-size: 13px;">
                 <template v-if="value.frequency == 3">
                     On the
-                    <a data-type="select" :data-value="value.d1" ref="d1">{{ getOrdinal(value.d1) }}</a> and
-                    <a data-type="select" :data-value="value.d2" ref="d2">{{ getOrdinal(value.d2) }}</a> of each month starting
-                    <a data-type="date" :data-value="value.date" ref="startdate" class="datepicker"></a>{{ givingToday ? '(today)' : '' }}
+                    <a data-type="select" :data-value="value.d1" ref="d1" class="editlink">{{ getOrdinal(value.d1) }}</a> and
+                    <a data-type="select" :data-value="value.d2" ref="d2" class="editlink">{{ getOrdinal(value.d2) }}</a> of each month starting
+                    <a data-type="date" :data-value="value.date" ref="startdate" class="datepicker"></a>{{ givingToday ? ' (today)' : '' }}
                 </template>
                 <template v-else>
-                    {{ giftText }} <a data-type="date" :data-value="value.date" ref="startdate" class="datepicker"></a>{{ givingToday ? '(today)' : '' }}
+                    {{ giftText }} <a data-type="date" :data-value="value.date" ref="startdate" class="datepicker"></a>{{ givingToday ? ' (today)' : '' }}
                 </template>
                 <span v-if="showEndDate">and ending <a data-type="date" :data-value="value.enddate" class="datepicker" ref="enddate"></a></span>
-                <span v-else-if="value.fund.AllowEndDate">. <a @click="showEndDate = true" style="cursor:pointer;">Set end date</a></span>
+                <span v-else-if="value.fund.AllowEndDate">and ending <a @click="showEndDate = true" class="editlink">when cancelled</a></span>
             </div>
         </div>
     </div>
@@ -231,5 +231,11 @@
     }
     .btn-group.has-error > .btn-group:last-child:not(:first-child) > .btn:first-child {
         border-right-color: #a94442;
+    }
+    .editlink,
+    .datepicker {
+        border-bottom: dashed 1px #003f72;
+        padding: 4px 0px;
+        cursor: pointer;
     }
 </style>
