@@ -9,7 +9,7 @@
                 </div>
             </div>
             <div class="col-sm-12 col-md-8 col-md-offset-2">
-                <fund-picker :value="value" :funds="funds"></fund-picker>
+                <fund-picker :value="value" :funds="funds" @input="showEndDate = false"></fund-picker>
             </div>
         </div>
         <div class="row" style="margin-bottom: 15px;">
@@ -41,7 +41,7 @@
                     {{ giftText }} <a data-type="date" :data-value="value.date" ref="startdate" class="datepicker"></a>{{ givingToday ? '(today)' : '' }}
                 </template>
                 <span v-if="showEndDate">and ending <a data-type="date" :data-value="value.enddate" class="datepicker" ref="enddate"></a></span>
-                <span v-else>. <a @click="showEndDate = true" style="cursor:pointer;">Set end date</a></span>
+                <span v-else-if="value.fund.AllowEndDate">. <a @click="showEndDate = true" style="cursor:pointer;">Set end date</a></span>
             </div>
         </div>
     </div>

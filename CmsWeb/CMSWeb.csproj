@@ -2928,6 +2928,7 @@
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Shared\Menu\Involvement.cshtml" />
     <Content Include="src\components\Giving\GivingPage\GivingLogin.vue" />
+    <Content Include="src\components\Giving\GivingPage\PledgeGift.vue" />
     <None Include="Web.staging.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

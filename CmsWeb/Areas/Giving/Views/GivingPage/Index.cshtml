@@ -25,7 +25,7 @@
     #main .btn-primary {
         background-color: #003f72;
     }
-    #main a,
+    #main a:not(.btn),
     #main .btn-link {
         color: #003f72;
     }
@@ -44,9 +44,15 @@
     #main .give-type .btn {
         padding: 8px 30px;
     }
-
     #main div.form-group select.form-control:not(.input-sm) {
         height: 40px !important;
+    }
+    .popover.bs-popover-bottom .arrow {
+        top: -10px;
+    }
+    .popover-body a {
+        color: #003f72;
+        text-decoration: underline;
     }
 </style>
 }

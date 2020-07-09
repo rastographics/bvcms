@@ -805,6 +805,51 @@ namespace CmsWeb.Areas.Manage.Controllers
         }
 
         [HttpPost, MyRequireHttps]
+        public ActionResult SigninWithUsername(string usernameOrEmail, string password)
+        {
+            // json api version of Logon()
+            var result = new AccountResult
+            {
+                Status = "error",
+                Message = ""
+            };
+            var ret = AccountModel.AuthenticateLogon(usernameOrEmail, password, Request, CurrentDatabase, CurrentImageDatabase);
+            if (ret.ErrorMessage.HasValue())
+            {
+                // invalid login
+                result.Message = ret.ErrorMessage;
+                return Json(result);
+            }
+
+            var user = ret.User;
+            var access = CurrentDatabase.Setting("LimitAccess", "");
+            if (access.HasValue())
+            {
+                if (!user.InRole("Developer"))
+                {
+                    // invalid login
+                    result.Message = access;
+                    return Json(result);
+                }
+            }
+
+            // if user needs 2fa return error and redirect client side
+            if (MembershipService.ShouldPromptForTwoFactorAuthentication(user, CurrentDatabase, Request))
+            {
+                result.Message = "Needs 2FA";
+                return Json(result);
+            }
+            else
+            {
+                AccountModel.FinishLogin(user.Username, CurrentDatabase, CurrentImageDatabase);
+            }
+
+            result.Status = "success";
+            result.Message = "Logged In";
+            return Json(result);
+        }
+        
+        [HttpPost, MyRequireHttps]
         public ActionResult EasyLogin(string search, string code)
         {
             var result = new AccountResult

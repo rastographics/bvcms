@@ -8,7 +8,7 @@
 </head>
 <body>
     <script>
-        setTimeout(function () { window.open('@ViewData["Redirect"]', '_top') }, 100);
+        setTimeout(function () { window.open('@Html.Raw(ViewData["Redirect"])', '_top') }, 100);
     </script>
 </body>
 </html>

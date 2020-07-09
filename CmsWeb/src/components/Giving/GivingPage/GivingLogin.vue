@@ -2,8 +2,12 @@
     <transition name="slide-left" mode="out-in">
         <div v-if="view == 'phone'" class="text-center" key="phone">
             <div class="well">
-                <h3>Enter your cell phone number  <a href="#" data-toggle="popover" data-placement="right" data-trigger="focus" data-title="Page URL" data-content="The publically accessible URL for this giving page. This can't be changed later, and must be unique."><i class="fa fa-question-circle"></i></a></h3>
+                <h3>Enter your cell phone number <a href="#" tabindex="0" id="page_url"><i class="fa fa-question-circle"></i></a></h3>
                 <p>We will text you a secure one-time code to sign in to your account.</p>
+                <b-popover target="page_url" placement="bottom" triggers="focus">
+                    You can also
+                    <a href="#" @click="loadView('email')">sign in with your email</a> or <a href="#" @click="loadView('user')">sign in with a username and password</a>
+                </b-popover>
                 <div class="row text-left">
                     <div class="col-md-8 col-md-offset-2">
                         <form @submit.prevent="phoneSearch">
@@ -13,9 +17,9 @@
                             </div>
                             <div class="row">
                                 <div class="col-md-6">
-                                    <button @click="$emit('back')" class="btn-block btn btn-default" tabindex="-1">
+                                    <a @click="$emit('back')" class="btn-block btn btn-default" tabindex="-1">
                                         Back
-                                    </button>
+                                    </a>
                                 </div>
                                 <div class="col-md-6">
                                     <input type="submit" class="btn-block btn btn-primary" value="Next" />
@@ -42,9 +46,9 @@
                         <div class="col-md-8 col-md-offset-2">
                             <div class="row">
                                 <div class="col-md-6">
-                                    <button @click="$emit('back')" class="btn-block btn btn-default" tabindex="-1">
+                                    <a @click="$emit('back')" class="btn-block btn btn-default" tabindex="-1">
                                         Back
-                                    </button>
+                                    </a>
                                 </div>
                                 <div class="col-md-6">
                                     <input type="submit" class="btn-block btn btn-primary" value="Next" />
@@ -59,27 +63,28 @@
         <div v-if="view == 'user'" class="text-center" key="user">
             <div class="well">
                 <h3>Sign in with username</h3>
-                <p>If you don't have a username and password you can click forgot password, or <a @click="loadView('phone')">sign in with phone number</a>, or <a @click="loadView('email')">signin with email</a>.</p>
+                <p>If you don't have a username and password you can also <a @click="loadView('phone')">sign in with a phone number</a> or <a @click="loadView('email')">sign in with email</a>.</p>
                 <form @submit.prevent="userLogin">
                     <div class="row text-left">
                         <div class="col-md-6 col-md-offset-3">
                             <div class="form-group">
-                                <input type="text" class="form-control" v-model="username" placeholder="username or email" autofocus />
-                                <small v-if="showValidation && !username" class="text-danger">Please enter your username</small>
+                                <input type="text" class="form-control" v-model="username" placeholder="username or email" required autofocus />
                             </div>
                         </div>
                         <div class="col-md-6 col-md-offset-3">
                             <div class="form-group">
-                                <input type="password" class="form-control" v-model="password" placeholder="password" />
-                                <small v-if="showValidation && !password" class="text-danger">Please enter your password</small>
+                                <input type="password" class="form-control" v-model="password" placeholder="password" required />
                             </div>
+                        </div>
+                        <div v-if="validationMsg" class="col-sm-12 text-center">
+                            <p class="text-danger">{{ validationMsg }}</p>
                         </div>
                         <div class="col-md-8 col-md-offset-2">
                             <div class="row">
                                 <div class="col-md-6">
-                                    <button @click="$emit('back')" class="btn-block btn btn-default" tabindex="-1">
+                                    <a @click="$emit('back')" class="btn-block btn btn-default" tabindex="-1">
                                         Back
-                                    </button>
+                                    </a>
                                 </div>
                                 <div class="col-md-6">
                                     <input type="submit" class="btn-block btn btn-primary" value="Next" />
@@ -95,7 +100,7 @@
             <div class="well code-entry">
                 <h3>Enter your code</h3>
                 <p>Check your messages for a secure one-time code.</p>
-                <form @submit.prevent="attemptLogin">
+                <form @submit.prevent="easyLogin">
                     <div class="form-inline text-left" style="margin-bottom: 20px;">
                         <input type="number" min="0" max="9" class="form-control code-input" ref="code1" v-model="code1" @paste="pasteCode" @input="$refs.code2.focus()" autofocus />
                         <input type="number" min="0" max="9" class="form-control code-input" ref="code2" v-model="code2" @paste="pasteCode" @input="$refs.code3.focus()" />
@@ -104,16 +109,16 @@
                         <input type="number" min="0" max="9" class="form-control code-input" ref="code5" v-model="code5" @paste="pasteCode" @input="$refs.code6.focus()" />
                         <input type="number" min="0" max="9" class="form-control code-input" ref="code6" v-model="code6" @paste="pasteCode" @input="$refs.next.focus()" />
                     </div>
-                    <div v-if="codeEntryMsg" class="text-center">
-                        <p class="text-danger">{{ codeEntryMsg }}</p>
+                    <div v-if="validationMsg" class="text-center">
+                        <p class="text-danger">{{ validationMsg }}</p>
                     </div>
                     <div class="row text-left">
                         <div class="col-md-8 col-md-offset-2">
                             <div class="row">
                                 <div class="col-md-6">
-                                    <button @click="$emit('back')" class="btn-block btn btn-default" tabindex="-1">
+                                    <a @click="$emit('back')" class="btn-block btn btn-default" tabindex="-1">
                                         Back
-                                    </button>
+                                    </a>
                                 </div>
                                 <div class="col-md-6">
                                     <input type="submit" ref="next" class="btn-block btn btn-primary" value="Next" />
@@ -177,36 +182,134 @@
             <button @click="loadView('signup')" class="btn btn-link">Create account</button>
             <button v-if="method == 'phone'" @click="loadView('email')" class="btn btn-link">Sign in with email address</button>
         </div>
+        <div v-if="view == 'signup'" class="text-center" key="signup">
+            <div class="well">
+                <h3>Create Account</h3>
+                <p>We couldn't find your account. No problem! Let's create one:</p>
+                <form @submit.prevent="register">
+                    <div class="row text-left">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <input type="text" class="form-control" v-model="newUser.first" placeholder="First Name" autofocus required />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <input type="text" class="form-control" v-model="newUser.last" placeholder="Last Name" required />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div :class="{'form-group': true, 'has-error': showValidation && newUser.email.length < 6}">
+                                <input type="email" class="form-control" v-model="newUser.email" placeholder="Email Address" />
+                                <small v-if="showValidation && newUser.email.length < 6" class="text-danger">Please enter your email</small>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div :class="{'form-group': true, 'has-error': showValidation && newUser.phone.length < 10}">
+                                <input type="tel" class="form-control" v-model="newUser.phone" placeholder="Phone Number" />
+                                <small v-if="showValidation && newUser.phone.length < 10" class="text-danger">Please enter your phone</small>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <input type="text" class="form-control" v-model="newUser.address" placeholder="Address" required />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <input type="text" class="form-control" v-model="newUser.city" placeholder="City" required />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <input type="text" class="form-control" v-model="newUser.state" placeholder="State" required />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <input type="text" class="form-control" v-model="newUser.zip" placeholder="Zip" required />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <input type="text" class="form-control" v-model="newUser.country" placeholder="Country" required />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <button @click="$emit('back')" class="btn-block btn btn-default" tabindex="-1">
+                                Back
+                            </button>
+                        </div>
+                        <div class="col-md-6">
+                            <input type="submit" class="btn-block btn btn-primary" value="Next" />
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div v-if="view == '2fa'" class="text-center" key="2fa">
+            <div class="well">
+                <h3>Welcome back</h3>
+                <p>Because your account has 2 factor authentication enabled, you'll need to sign in with your username and password.</p>
+                <div class="row">
+                    <div class="col-sm-6 col-sm-offset-3">
+                        <a :href="loginUrl" class="btn btn-block btn-primary">Sign In</a>
+                    </div>
+                </div>
+            </div>
+        </div>
     </transition>
 </template>
 <script>
     import axios from "axios";
 
     export default {
-        props: ["value", "SMSReady"],
+        props: ["value", "SMSReady", "loginUrl"],
         data: function () {
             return {
-                view: this.SMSReady ? "phone" : "email",
+                view: "",
                 showValidation: false,
-                codeEntryMsg: "",
+                validationMsg: "",
                 method: "",
                 phone: "",
                 email: "",
+                username: "",
+                password: "",
                 code1: "",
                 code2: "",
                 code3: "",
                 code4: "",
                 code5: "",
-                code6: ""
+                code6: "",
+                newUser: {
+                    first: "",
+                    last: "",
+                    email: "",
+                    phone: "",
+                    address: "",
+                    city: "",
+                    state: "",
+                    zip: "",
+                    country: ""
+                }
             };
+        },
+        watch: {
+            view: function () {
+                setTimeout(function () {
+                    $('[autofocus]').focus();
+                }, 1000);
+            }
         },
         methods: {
             loadView(newView) {
                 let vm = this;
                 // setup the new view
-                if (['phone', 'email', 'notfound'].includes(newView)) {
+                if (['phone', 'email', 'user', 'notfound'].includes(newView)) {
                     vm.phone = "";
                     vm.email = "";
+                    vm.username = "";
+                    vm.password = "";
                 }
                 if (newView == 'phone' && !vm.SMSReady) {
                     newView = 'email';
@@ -218,12 +321,10 @@
                     vm.code4 = "";
                     vm.code5 = "";
                     vm.code6 = "";
-                    setTimeout(() => {
-                        vm.$refs.code1.focus();
-                    }, 400);
                 }
                 vm.showValidation = false;
                 vm.view = newView;
+                return false;
             },
             update(value) {
                 this.$emit("input", value);
@@ -272,7 +373,7 @@
                             if (response.data.Status == "success") {
                                 vm.loadView('code');
                                 if (resend) {
-                                    vm.codeEntryMsg = "Code resent";
+                                    vm.validationMsg = "Code resent";
                                 }
                             } else {
                                 switch (response.data.Message) {
@@ -280,7 +381,7 @@
                                         vm.loadView('notfound');
                                         break;
                                     case "Needs 2FA":
-                                        window.location.href = "/Logon?ReturnUrl=" + window.location.pathname + window.location.search;
+                                        vm.loadView('2fa');
                                         break;
                                     default:
                                         vm.loadView('notfound');
@@ -301,7 +402,7 @@
                     console.log(error);
                 });
             },
-            attemptLogin() {
+            easyLogin() {
                 let vm = this;
                 let code = "" + vm.code1 + vm.code2 + vm.code3 + vm.code4 + vm.code5 + vm.code6;
                 if ($.isNumeric(code) && code.length == 6) {
@@ -316,7 +417,7 @@
                                 } else {
                                     switch (response.data.Message) {
                                         case "Invalid code":
-                                            vm.codeEntryMsg = "Invalid code. Please enter the code from the most recent message we sent.";
+                                            vm.validationMsg = "Invalid code. Please enter the code from the most recent message we sent.";
                                             vm.loadView('code');
                                             break;
                                         default:
@@ -338,14 +439,58 @@
                             console.log(error);
                         });
                 } else {
-                    vm.codeEntryMsg = "Please enter the 6 digit code in the message we sent."
+                    vm.validationMsg = "Please enter the 6 digit code in the message we sent."
                     vm.loadView('code');
                 }
+            },
+            userLogin() {
+                let vm = this;
+                axios.post("/Account/SigninWithUsername", {
+                    usernameOrEmail: vm.username,
+                    password: vm.password
+                }).then(
+                    response => {
+                        if (response.status === 200) {
+                            if (response.data.Status == "success") {
+                                vm.$emit('next');
+                            } else {
+                                switch (response.data.Message) {
+                                    case "Needs 2FA":
+                                        vm.loadView('2fa');
+                                        break;
+                                    default:
+                                        vm.validationMsg = response.data.Message;
+                                        vm.loadView('user');
+                                        break;
+                                }
+                            }
+                        } else {
+                            warning_swal("Warning", "Error");
+                            vm.loadView('notfound');
+                        }
+                    },
+                    err => {
+                        error_swal("Error", "Error");
+                        vm.loadView('notfound');
+                    }
+                )
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
+            register() {
+
             }
+        },
+        mounted() {
+            this.view = this.SMSReady ? "phone" : "email";
         }
     }
 </script>
 <style scoped>
+    a {
+        cursor: pointer;
+    }
     .code-entry .form-inline .form-control.code-input {
         -webkit-appearance: none;
         -moz-appearance: textfield;

@@ -54,7 +54,7 @@
                         </div>
                         <div v-else-if="givingType == 'Pledge'" key="pledge">
                             <transition-group name="gift">
-                                <one-time-gift v-for="(gift, index) in gifts" v-model="gifts[index]" :count="gifts.length" :key="gift.key" :funds="unusedFunds" :showValidation="showValidation" @remove="removeGift(index)"></one-time-gift>
+                                <pledge-gift v-for="(gift, index) in gifts" v-model="gifts[index]" :count="gifts.length" :key="gift.key" :funds="unusedFunds" :showValidation="showValidation" @remove="removeGift(index)"></pledge-gift>
                             </transition-group>
                             <div class="row">
                                 <div class="col-md-6">
@@ -72,7 +72,7 @@
                     </transition>
                 </div>
                 <div class="panel-body" v-else-if="view === 'signin'" key="signin">
-                    <giving-login v-model="identity" :SMSReady="identity.SMSReady" @next="loadView('payment')" @back="loadView('gifts')"></giving-login>
+                    <giving-login v-model="identity" :SMSReady="identity.SMSReady" :loginUrl="loginUrl" @next="loadView('payment')" @back="loadView('gifts')"></giving-login>
                 </div>
             </transition>
         </div>
@@ -107,6 +107,9 @@
             today: function () {
                 var today = new Date();
                 return today.getFullYear() + '-' + String(today.getMonth() + 1).padStart(2, '0') + '-' + String(today.getDate()).padStart(2, '0');
+            },
+            loginUrl: function () {
+                return '/Logon?ReturnUrl=' + encodeURIComponent(window.location.pathname + window.location.search);
             }
         },
         methods: {

@@ -71,8 +71,9 @@ namespace CmsWeb.Areas.Giving.Models
                                                   join f in db.ContributionFunds on fund.FundId equals f.FundId
                                                   select new FundsClass {
                                                       Id = fund.FundId,
-                                                      Name = f.FundName
-                                                    }).ToArray(),
+                                                      Name = f.FundName,
+                                                      AllowEndDate = f.EndDateFlag
+                                                  }).ToArray(),
                                 ConfirmEmailPledge = new ContentFile
                                 {
                                     Id = gp.ConfirmationEmailPledge.Id,
@@ -237,6 +238,7 @@ namespace CmsWeb.Areas.Giving.Models
     {
         public int Id { get; set; }
         public string Name { get; set; }
+        public bool? AllowEndDate { get; set; }
     }
 
     public class EntryPoint
