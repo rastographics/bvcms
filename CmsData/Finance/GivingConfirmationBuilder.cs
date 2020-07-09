@@ -30,11 +30,12 @@ namespace CmsData.Finance
             text = text.Replace("{contact}", staff.Name);
             text = text.Replace("{contactemail}", staff.EmailAddress);
             text = text.Replace("{contactphone}", org.PhoneNumber.FmtFone());
+            text = text.Replace("{itemnote}", (from c in db.Contributions where c.FundId == donationFundId && c.PeopleId == person.PeopleId select c.Notes).FirstOrDefault());
             var re = new Regex(@"(?<b>.*?)<!--ITEM\sROW\sSTART-->(?<row>.*?)\s*<!--ITEM\sROW\sEND-->(?<e>.*)",
                 RegexOptions.Singleline | RegexOptions.IgnorePatternWhitespace);
             var match = re.Match(text);
             var b = match.Groups["b"].Value;
-            var row = match.Groups["row"].Value.Replace("{funditem}", "{0}").Replace("{itemamt}", "{1:N2}");
+            var row = match.Groups["row"].Value.Replace("{funditem}", "{0}").Replace("{itemamt}", "{1:N2}").Replace("{itemnote}", "{2}");
             var sb = new StringBuilder();
             var e = match.Groups["e"].Value;
             if(b.HasValue())
@@ -42,10 +43,11 @@ namespace CmsData.Finance
 
             foreach (var g in fundItems)
             {
+                var itemNote = (from c in db.Contributions where c.FundId == g.Fundid && c.PeopleId == person.PeopleId select c.Notes).FirstOrDefault();
                 if (g.Amt <= 0)
                     continue;
                 if(row.HasValue())
-                    sb.AppendFormat(row, g.Desc, g.Amt);
+                    sb.AppendFormat(row, g.Desc, g.Amt, itemNote);
                 person.PostUnattendedContribution(db, g.Amt, g.Fundid, desc, tranid: tran.Id);
             }
             tran.TransactionPeople.Add(new TransactionPerson

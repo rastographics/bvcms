@@ -19,10 +19,7 @@ namespace CmsData
 
                 case "{address2}":
                     if (person.PrimaryAddress2.HasValue())
-                    {
                         return "<br>" + person.PrimaryAddress2;
-                    }
-
                     return "";
 
                 case "{amtdue}":
@@ -36,10 +33,7 @@ namespace CmsData
 
                 case "{amount}":
                     if (pi != null)
-                    {
                         return pi.Amount.ToString2("c");
-                    }
-
                     break;
 
                 case "{barcode}":
@@ -65,10 +59,7 @@ namespace CmsData
 
                 case "{createaccount}":
                     if (emailqueueto != null)
-                    {
                         return CreateUserLinkReplacement(emailqueueto);
-                    }
-
                     break;
 
                 case "{church}":
@@ -88,29 +79,22 @@ namespace CmsData
 
                 case "{estatement}":
                     if (person.ElectronicStatement == true)
-                    {
                         return "Online Electronic Statement Only";
-                    }
-
                     return "Printed Statement in Addition to Online Option";
 
                 case "{emailhref}":
                     if (emailqueueto != null)
-                    {
                         return db.ServerLink("/EmailView/" + emailqueueto.Id);
-                    }
-
                     break;
 
                 case "{first}":
                     if (person != null)
-                    {
                         return person.PreferredName.Contains("?") || person.PreferredName.Contains("unknown", true) ? "" : person.PreferredName;
-                    }
-
                     break;
+
                 case "{firstorjoint}":
                     return FirstOrJoint();
+
                 case "{fromemail}":
                     return from.Address;
 
@@ -119,10 +103,7 @@ namespace CmsData
 
                 case "{last}":
                     if (person != null)
-                    {
                         return person.LastName;
-                    }
-
                     break;
 
                 case "{name}":
@@ -130,25 +111,23 @@ namespace CmsData
 
                 case "{nextmeetingtime}":
                     if (emailqueueto != null)
-                    {
                         return NextMeetingDate(emailqueueto.OrgId, emailqueueto.PeopleId) ?? code;
-                    }
-
                     break;
+
                 case "{nextmeetingtime0}":
                     if (emailqueueto != null)
-                    {
                         return NextMeetingDate0(emailqueueto.OrgId) ?? code;
-                    }
-
                     break;
 
                 case "{occupation}":
                     return person.OccupationOther;
 
                 case "{orgname}":
+                    return OrgInfos.Name(emailqueueto?.OrgId);
+
                 case "{org}":
                     return OrgInfos.Name(emailqueueto?.OrgId);
+
                 case "{orgid}":
                     return OrgInfos.Name(emailqueueto?.OrgId);
 
@@ -157,10 +136,7 @@ namespace CmsData
 
                 case "{paylink}":
                     if (pi != null && pi.PayLink.HasValue())
-                    {
                         return $"<a href=\"{pi.PayLink}\">Click this link to make a payment and view your balance.</a>";
-                    }
-
                     break;
 
                 case "{peopleid}":
@@ -171,11 +147,7 @@ namespace CmsData
 
                 case "{salutation}":
                     if (emailqueueto != null)
-                    {
-                        return db.GoerSupporters.Where(ee => ee.Id == emailqueueto.GoerSupportId)
-                                .Select(ee => ee.Salutation).SingleOrDefault();
-                    }
-
+                        return db.GoerSupporters.Where(ee => ee.Id == emailqueueto.GoerSupportId).Select(ee => ee.Salutation).SingleOrDefault();
                     break;
 
                 case "{state}":
@@ -185,12 +157,13 @@ namespace CmsData
                     return StatementTypeReplacement();
 
                 case "{email}":
+                    if (ListAddresses?.Count > 0)
+                        return ListAddresses[0].Address;
+                    return person.EmailAddress;
+
                 case "{toemail}":
                     if (ListAddresses?.Count > 0)
-                    {
                         return ListAddresses[0].Address;
-                    }
-
                     return person.EmailAddress;
 
                 case "{today}":
@@ -198,28 +171,17 @@ namespace CmsData
 
                 case "{title}":
                     if (person.TitleCode.HasValue())
-                    {
                         return person.TitleCode;
-                    }
-
                     return person.ComputeTitle();
 
                 case "{track}":
                     if (emailqueueto != null)
-                    {
-                        return emailqueueto.Guid.HasValue ?
-                            $"<img src=\"{db.ServerLink("/Track/Key/" + emailqueueto.Guid.Value.GuidToQuerystring())}\" />"
-                            : "";
-                    }
-
+                        return emailqueueto.Guid.HasValue ? $"<img src=\"{db.ServerLink("/Track/Key/" + emailqueueto.Guid.Value.GuidToQuerystring())}\" />" : "";
                     break;
 
                 case "{unsubscribe}":
                     if (emailqueueto != null)
-                    {
                         return UnsubscribeReplacement(emailqueueto);
-                    }
-
                     break;
 
                 default:

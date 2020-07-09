@@ -53,6 +53,7 @@
                                 <th><a href="#" class="sortable" data-sortby="ShowList">Show List</a></th>
                                 <th class="text-center"><a href="#" class="sortable" data-sortby="EndDateFlag">Allow End Date</a></th>
                                 <th class="text-center"><a href="#" class="sortable" data-sortby="PledgeFlag">Pledge</a></th>
+                                <th class="text-center"><a href="#" class="sortable" data-sortby="Notes">Note</a></th>
                                 <th class="text-center"><a href="#" class="sortable" data-sortby="NonTaxDed">Non Tax Deductible</a></th>
                                 <th><a href="#" class="sortable" data-sortby="Created">Date Created</a></th>
                                 <th>Action</th>
@@ -94,6 +95,12 @@
                                     </td>
                                     <td class="text-center">
                                         @if (item.FundPledgeFlag)
+                                        {
+                                            <i class="fa fa-check"></i>
+                                        }
+                                    </td>
+                                    <td class="text-center">
+                                        @if (item.Notes)
                                         {
                                             <i class="fa fa-check"></i>
                                         }

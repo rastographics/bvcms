@@ -31,6 +31,8 @@ namespace CmsData
 
         private string _ContributionDesc;
 
+        private string _Notes;
+
         private int? _ContributionStatusId;
 
         private bool? _PledgeFlag;
@@ -110,6 +112,9 @@ namespace CmsData
 
         partial void OnContributionDescChanging(string value);
         partial void OnContributionDescChanged();
+
+        partial void OnNotesChanging(string value);
+        partial void OnNotesChanged();
 
         partial void OnContributionStatusIdChanging(int? value);
         partial void OnContributionStatusIdChanged();
@@ -356,6 +361,24 @@ namespace CmsData
                     _ContributionDesc = value;
                     SendPropertyChanged("ContributionDesc");
                     OnContributionDescChanged();
+                }
+            }
+        }
+
+        [Column(Name = "Notes", UpdateCheck = UpdateCheck.Never, Storage = "_Notes", DbType = "nvarchar(MAX)")]
+        public string Notes
+        {
+            get => _Notes;
+
+            set
+            {
+                if (_Notes != value)
+                {
+                    OnNotesChanging(value);
+                    SendPropertyChanging();
+                    _Notes = value;
+                    SendPropertyChanged("Notes");
+                    OnNotesChanged();
                 }
             }
         }

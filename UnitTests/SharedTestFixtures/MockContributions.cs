@@ -72,13 +72,7 @@ namespace SharedTestFixtures
             return bundleHeader;
         }
 
-        public static Contribution CreateSaveContribution(CMSDataContext db, BundleHeader bundleHeader,
-            DateTime date,
-            decimal amount,
-            int? peopleId = null,
-            int contributionType = ContributionTypeCode.CheckCash,
-            int fundId = 1,
-            int statusId = ContributionStatusCode.Recorded)
+        public static Contribution CreateSaveContribution(CMSDataContext db, BundleHeader bundleHeader, DateTime date, decimal amount, int? peopleId = null, int contributionType = ContributionTypeCode.CheckCash, int fundId = 1, int statusId = ContributionStatusCode.Recorded, string notes = null)
         {
             var contribution = new Contribution
             {
@@ -90,6 +84,7 @@ namespace SharedTestFixtures
                 PledgeFlag = contributionType == ContributionTypeCode.Pledge,
                 FundId = fundId,
                 PeopleId = peopleId,
+                Notes = notes
             };
             db.Contributions.InsertOnSubmit(contribution);
             db.SubmitChanges();

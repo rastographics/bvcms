@@ -40,7 +40,7 @@ namespace SharedTestFixtures
             db.SubmitChanges();
         }
 
-        public static ContributionFund CreateContributionFund(CMSDataContext db, string fundName = null)
+        public static ContributionFund CreateContributionFund(CMSDataContext db, string fundName = null, bool notes = false)
         {
             if (fundName == null)
             {
@@ -58,7 +58,8 @@ namespace SharedTestFixtures
                 QBIncomeAccount = 0,
                 QBAssetAccount = 0,
                 FundManagerRoleId = 0,
-                ShowList = 1
+                ShowList = 1,
+                Notes = notes
             };
             db.ContributionFunds.InsertOnSubmit(contributionFund);
             db.SubmitChanges();
