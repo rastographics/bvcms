@@ -7,6 +7,8 @@ using CmsData.Codes;
 using CmsData.Classes.Giving;
 using System.Text.RegularExpressions;
 using MoreLinq;
+using System.Collections.Generic;
+using CmsData;
 
 namespace CmsWeb.Areas.Giving.Controllers
 {
@@ -120,6 +122,14 @@ namespace CmsWeb.Areas.Giving.Controllers
         {
             var availableFundsList = (from f in CurrentDatabase.ContributionFunds where f.FundStatusId == 1 orderby f.FundName select new { Id = f.FundId, Name = f.FundName }).ToList();
             return Json(availableFundsList, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpGet]
+        public JsonResult GetFundsByGivingPage(string givingPageTitle)
+        {
+            var model = new GivingPageModel(CurrentDatabase);
+            var result = model.GetFundsByGivingPageUrl(givingPageTitle);
+            return Json(result, JsonRequestBehavior.AllowGet);
         }
 
         [HttpGet]
