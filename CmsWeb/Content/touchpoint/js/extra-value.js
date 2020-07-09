@@ -12,6 +12,7 @@
                 $('#empty-dialog').modal("show");
 
                 $.AttachFormElements();
+                $("#fields").sortable();
                 $(this).validate({
                     highlight: function (element) {
                         $(element).closest(".form-group").addClass("error");
@@ -63,6 +64,9 @@
         };
         $('body').on('click', '#CloseListStandard', function (e) {
             e.preventDefault();
+            $.InitFunctions.StandardExtraValueDialogCallback();
+        });
+        $('body').on('click', '#SaveOrderListStandard', function () {
             $.InitFunctions.StandardExtraValueDialogCallback();
         });
     });

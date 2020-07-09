@@ -328,5 +328,15 @@ namespace CmsWeb.Code
             list.Insert(0, new { Value = "0", Text = @"(not specified)" });
             return new SelectList(list, "Value", "Text");
         }
+
+        public SelectList ExtraValueLocationList()
+        {
+            return new SelectList(new[]
+            {
+                new {Value = "Standard", Text = "Extra Values Tab"},
+                new {Value = "Membership", Text = "Member Tab"},
+                new {Value = "Entry", Text = "Entry Tab"}
+            }, "Value", "Text");
+        }
     }
 }

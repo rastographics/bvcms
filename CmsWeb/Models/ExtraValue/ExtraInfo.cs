@@ -1,10 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using CmsData;
 
 namespace CmsWeb.Models.ExtraValues
 {
     public abstract class ExtraInfo
     {
+        public CMSDataContext CurrentDatabase { get; set; }
+
+        protected ExtraInfo(CMSDataContext db)
+        {
+            CurrentDatabase = db;
+        }
         public string Field { get; set; }
         public string Value { get; set; }
         public string Type { get; set; }
@@ -22,28 +29,16 @@ namespace CmsWeb.Models.ExtraValues
         public abstract string DeleteAll(string type, string field, string value);
         public abstract IEnumerable<ExtraInfo> CodeSummary();
 
-        public static IEnumerable<ExtraInfo> CodeSummary(string table)
-        {
-            return GetExtraInfo(table).CodeSummary();
-        }
-        public static void RenameAll(string table, string field, string newname)
-        {
-            GetExtraInfo(table).RenameAll(field, newname.Trim());
-        }
-        public static string DeleteAll(string table, string type, string field, string value)
-        {
-            return GetExtraInfo(table).DeleteAll(type, field, value);
-        }
-        public static ExtraInfo GetExtraInfo(string table)
+        public static ExtraInfo GetExtraInfo(CMSDataContext db, string table)
         {
             switch (table)
             {
                 case "People":
-                    return new ExtraInfoPeople();
+                    return new ExtraInfoPeople(db);
                 case "Family":
-                    return new ExtraInfoFamily();
+                    return new ExtraInfoFamily(db);
                 case "Organization":
-                    return new ExtraInfoOrganization();
+                    return new ExtraInfoOrganization(db);
             }
             throw new Exception("unknown table " + table);
         }

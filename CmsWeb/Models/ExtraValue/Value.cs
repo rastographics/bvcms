@@ -58,15 +58,15 @@ namespace CmsWeb.Models.ExtraValues
 
         public string DataName => HttpUtility.UrlEncode(Name);
 
-        public string SwitchMultiLineText
+        public HtmlString SwitchMultiLineText
         {
             get
             {
                 if (Type == "Text")
-                    return "Switch to Multiline";
+                    return new HtmlString("<i class=\"fa fa-minus\"></i>");
                 if (Type == "Text2")
-                    return "Switch to Singleline";
-                return "";
+                    return new HtmlString("<i class=\"fa fa-bars\"></i>");
+                return new HtmlString("&nbsp;");
             }
         }
 

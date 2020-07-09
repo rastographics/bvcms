@@ -1,5 +1,27 @@
 ﻿@using CmsWeb.Models.ExtraValues
 @model ExtraValueModel
+<style>
+    #fields {
+        list-style: none;
+    }
+    #fields li div.pointer {
+        cursor: pointer;
+    }
+    #fields li div.cell {
+        display: block;
+        float: left;
+        margin-bottom: 5px;
+    }
+    #fields li.header {
+        cursor: default;
+        font-weight: bold;
+    }
+    #fields div.narrow { width: 5%}
+    #fields div.short { width: 12%}
+    #fields div.wide { width: 35%; padding-right: 5px;}
+    #fields div.center { text-align: center }
+</style>
+
 <div class="modal-dialog modal-lg">
     <div class="modal-content">
         <div class="modal-header">
@@ -10,46 +32,59 @@
             @Html.HiddenFor(m => m.Id)
             @Html.HiddenFor(m => m.Table)
             @Html.HiddenFor(m => m.Location)
-            <div class="table-responsive">
-                <table id="fields" class="table table-condensed table-striped">
-                    <thead>
-                        <tr>
-                            <th style="width: 85px;">Order</th>
-                            <th>Name</th>
-                            <th>Type</th>
-                            <th colspan="3" style="width: 150px;">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var f in Model.GetStandardExtraValuesWithDataType(Model.Table, Model.Location))
-                        {
-                            <tr id="ev-name-@f.Name.SlugifyString()">
-                                <td style="width: 85px;"><input type="number" name="orders[@f.Name]" value="@f.Order" class="form-control" /></td>
-                                <td>@f.Name</td>
-                                <td>
-                                    @f.Type
-                                </td>
-                                <td style="width: 50px;">
-                                    @if (f.Type.StartsWith("Text"))
-                                    {
-                                        <a href="/ExtraValue/SwitchMultiline/@Model.Table/@Model.Location?name=@f.Name" class="ajax btn btn-default btn-sm">@f.SwitchMultiLineText</a>
-                                    }
-                                </td>
-                                <td style="width: 50px;">
-                                    <a href="/ExtraValue/EditStandard/@Model.Table?location=@Model.Location&name=@Server.UrlEncode(f.Name)" class="ajax btn btn-default btn-sm"><i class="fa fa-pencil"></i> Edit</a>
-                                </td>
-                                <td style="width: 50px;">
-                                    <a href="/ExtraValue/DeleteStandard/@Model.Table/@Model.Location?name=@Server.UrlEncode(f.Name)" data-rowid="#ev-name-@f.Name.SlugifyString()" class="btn btn-danger btn-sm delete-extra-value" title="Delete Standard Extra Value: @f.Name"><i class="fa fa-trash"></i> Delete</a> 
-                                </td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
-            </div>    
+            <ul id="fields">
+                 <li class="clearfix header">
+                     <div class="cell narrow center">Sort</div>
+                     <div class="cell wide">Name</div>
+                     <div class="cell short">Type</div>
+                     <div class="cell short center">Text Toggle</div>
+                     <div class="cell short center">Edit</div>
+                     <div class="cell short center">Delete</div>
+                 </li>
+             @foreach (var f in Model.GetStandardExtraValuesWithDataType(Model.Table, Model.Location))
+             {
+                 <li class="clearfix">
+                     <div class="cell narrow pointer center"><i class="fa fa-bars"></i></div>
+                     <div class="cell wide">
+                         @f.Name
+                         <input type="hidden" name="names" value="@f.Name"/>
+                     </div>
+                     <div class="cell short">@f.Type</div>
+                     <div class="cell short center">
+                     @if (f.Type.StartsWith("Text"))
+                     {
+                         <a href="/ExtraValue/SwitchMultiline/@Model.Table/@Model.Location?name=@f.Name"
+                            class="ajax">
+                             @f.SwitchMultiLineText
+                         </a>
+                     }
+                     else
+                     {
+                         @:&nbsp;
+                     }
+                     </div>
+                     <div class="cell short center">
+                         <a href="/ExtraValue/EditStandard/@Model.Table?location=@Model.Location&name=@Server.UrlEncode(f.Name)"
+                            class="ajax"
+                            title="Edit Standard Extra Value: @f.Name">
+                             <i class="fa fa-pencil"></i>
+                         </a>
+                     </div>
+                     <div class="cell short center">
+                         <a href="/ExtraValue/DeleteStandard/@Model.Table/@Model.Location?name=@Server.UrlEncode(f.Name)"
+                            data-rowid="#ev-name-@f.Name.SlugifyString()" 
+                            class="delete-extra-value"
+                            title="Delete Standard Extra Value: @f.Name">
+                             <i class="fa fa-trash"></i>
+                         </a>
+                     </div>
+                 </li>
+             }
+            </ul>
         </div>
         <div class="modal-footer">
             <a id="CloseListStandard" href="#" class="btn btn-default">Close</a>
-            <a href="/ExtraValue/ApplyOrder/@Model.Table/@Model.Location" class="btn btn-warning ajax">Apply Ordering</a>
+            <a id="SaveOrderListStandard" href="/ExtraValue/ApplyOrder/@Model.Table/@Model.Location" class="btn btn-warning ajax">Save Ordering</a> 
         </div>
     </div>
 </div>

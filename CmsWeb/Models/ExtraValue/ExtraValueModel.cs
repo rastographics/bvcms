@@ -407,14 +407,18 @@ namespace CmsWeb.Models.ExtraValues
             CurrentDatabase.SubmitChanges();
         }
 
-        public void ApplyOrder(Dictionary<string, int> orders)
+        public void ApplyOrder(List<string> names)
         {
             var i = Views.GetViewsView(CurrentDatabase, Table, Location);
-            var q = from v in i.view.Values
-                    join o in orders on v.Name equals o.Key
-                    orderby o.Value
-                    select v;
-            i.view.Values = q.ToList();
+
+            var list = new List<CmsData.ExtraValue.Value>();
+            foreach (var name in names)
+            {
+                var v = i.view.Values.Find(vv => vv.Name == name);
+                list.Add(v);
+            }
+
+            i.view.Values = list;
             int n = 1;
             foreach (var v in i.view.Values)
             {
