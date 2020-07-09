@@ -15,7 +15,6 @@ namespace CmsWeb.Controllers
             if (Util2.OrgLeadersOnly)
                 return Redirect("/Home");
 
-
             var m = ExtraInfo.GetExtraInfo(CurrentDatabase, table).CodeSummary();
             var c = CurrentDatabase.Content("StandardExtraValues2", "<Views />", ContentTypeCode.TypeText);
             ViewBag.EvSpecId = c.Id;
