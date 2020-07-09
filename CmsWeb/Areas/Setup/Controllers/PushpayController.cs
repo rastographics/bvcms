@@ -308,7 +308,6 @@ namespace CmsWeb.Areas.Setup.Controllers
             }
             catch (Exception ex)
             {
-                ErrorSignal.FromCurrentContext().Raise(ex);
                 ViewBag.Message = "Something went wrong";
                 CurrentDatabase.LogActivity($"Error in pushpay payment process: {ex.Message}");
                 return View("~/Views/Shared/PageError.cshtml");
