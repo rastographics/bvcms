@@ -186,6 +186,15 @@ namespace CmsData
             }
         }
 
+        internal bool Friendly;
+        public string FriendlyString()
+        {
+            Friendly = true;
+            var ret = ToString();
+            Friendly = false;
+            return ret;
+        }
+
         public override string ToString()
         {
             string ret = "null";
@@ -445,7 +454,8 @@ namespace CmsData
                                               select aa.Length > 1 ? $"{aa[0]}[{aa[1]}]" : aa[0]
                         ).ToArray());
                 var a = CodeIdValue.SplitStr(",", 2);
-                return a.Length > 1 ? $"{a[0]}[{a[1]}]" : CodeIdValue;
+                var text = a.Length > 1 && Friendly ? a[1] : $"{a[0]}[{a[1]}]";
+                return a.Length > 1 ? text : CodeIdValue;
             }
         }
 

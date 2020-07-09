@@ -55,16 +55,16 @@ namespace CmsData
                 switch (param)
                 {
                     case Param.Program:
-                        list.AddParamCode("Prog", prop);
+                        list.AddParamCode("Prog", prop, c);
                         break;
                     case Param.Division:
-                        list.AddParamCode("Div", prop);
+                        list.AddParamCode("Div", prop, c);
                         break;
                     case Param.Organization:
-                        list.AddParamCode("Org", prop);
+                        list.AddParamCode("Org", prop, c);
                         break;
                     case Param.Schedule:
-                        list.AddParamCode("Sched", prop);
+                        list.AddParamCode("Sched", prop, c);
                         break;
                     case Param.SavedQueryIdDesc:
                         list.AddParamStr("SavedQuery", prop);
@@ -73,31 +73,31 @@ namespace CmsData
                     case Param.PmmLabels:
                         var tags = prop.ToString();
                         foreach (var t in tags.Split(';'))
-                            list.AddParamCode("Tag", t);
+                            list.AddParamCode("Tag", t, c);
                         break;
                     case Param.MemberTypes:
                         var memberTypes = prop.ToString();
                         foreach (var m in memberTypes.Split(';'))
-                            list.AddParamCode("MemberType", m);
+                            list.AddParamCode("MemberType", m, c);
                         break;
                     case Param.AttendTypes:
                         var attendTypes = prop.ToString();
                         foreach (var a in attendTypes.Split(';'))
-                            list.AddParamCode("AttendType", a);
+                            list.AddParamCode("AttendType", a, c);
                         break;
                     case Param.OnlineReg:
-                        list.AddParamCode(attr, prop, -1);
+                        list.AddParamCode(attr, prop, c, -1);
                         break;
                     case Param.OrgStatus:
                     case Param.Campus:
                     case Param.OrgType:
                     case Param.OrgType2:
-                        list.AddParamCode(attr, prop);
+                        list.AddParamCode(attr, prop, c);
                         break;
                     case Param.Ministry:
                         if(prop.Equals(""))
                             prop = Util.GetProperty(c, "Program") ?? ""; // Ministry used to be stored in Program
-                        list.AddParamCode(attr, prop);
+                        list.AddParamCode(attr, prop, c);
                         break;
                     case Param.OrgName:
                     case Param.Quarters:
@@ -123,13 +123,14 @@ namespace CmsData
             if (list.Any(vv => vv.Name == "Org"))
                 list.RemoveAll(vv => vv.Name == "Div");
             var parms = string.Join(", ", list.Select(vv => $"{vv.Name}={vv.Value}"));
-            return $"{Name}( {parms} )";
+            var name = c.Friendly ? Title : Name;
+            return $"{name}( {parms} )";
         }
         internal string ToString(Condition c)
         {
             if (ParamList != null && ParamList.Any())
                 return FormatArgs(c);
-            return Name;
+            return c.Friendly ? Title : Name;
         }
 
         public bool HasParam(string p)
@@ -170,7 +171,7 @@ namespace CmsData
 
     public static class Helper
     {
-        public static void AddParamCode(this List<ParamArg> d, string key, object o, int skip = 0)
+        public static void AddParamCode(this List<ParamArg> d, string key, object o, Condition c, int skip = 0)
         {
             var s = o.ToString();
             if (!s.HasValue())
@@ -179,13 +180,14 @@ namespace CmsData
             if (n == skip || n == null)
                 return;
             var v = s.GetCsvToken(2, 2);
-            d.Add(new ParamArg(key, v.HasValue() ? $"{n}[{v}]" : n.ToString()));
+            var code = c.Friendly ? v : $"{n}[{v}]";
+            d.Add(new ParamArg(key, v.HasValue() ? code : n.ToString()));
         }
         public static void AddParamStr(this List<ParamArg> d, string key, object o)
         {
             var s = o.ToString();
             if (s.HasValue())
-            d.Add(new ParamArg(key, $"'{s.Replace("'","''")}'"));
+                d.Add(new ParamArg(key, $"'{s.Replace("'","''")}'"));
         }
         public static void AddParamDate(this List<ParamArg> d, string key, object o)
         {
