@@ -658,6 +658,7 @@ namespace CmsWeb.Areas.Org.Controllers
                 .Where(m => m.OrganizationId == orgId && m.MeetingDate == meetingDate)
                 .FirstOrDefault();
             ViewBag.Meeting = meeting;
+            Util.SandboxedPath = "/Meeting/.*";
             return View();
         }
 
@@ -670,6 +671,7 @@ namespace CmsWeb.Areas.Org.Controllers
             {
                 return RedirectShowError("This meeting has expired");
             }
+
             var meeting = Meeting.FetchOrCreateMeeting(CurrentDatabase, orgId, meetingDate, didNotMeet, didNotMeet);
             if (didNotMeet == true)
             {
@@ -691,6 +693,7 @@ namespace CmsWeb.Areas.Org.Controllers
                 meeting.AttendCreditId = 1;
                 CurrentDatabase.SubmitChanges();
             }
+
             return Redirect($"/Meeting/Attendance/{meeting.MeetingId}?currentMembers=true");
         }
 

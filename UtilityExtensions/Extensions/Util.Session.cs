@@ -193,6 +193,13 @@ namespace UtilityExtensions
             set => SetValueInSession(STR_QueryClipboard, value);
         }
 
+        private const string STR_SandboxedPath = "SandboxedPath";
+        public static string SandboxedPath
+        {
+            get => GetFromSession<string>(STR_SandboxedPath, null);
+            set => SetValueInSession(STR_SandboxedPath, value);
+        }
+
         private const string STR_ShowAllMeetings = "ShowAllMeetings";
         public static bool? ShowAllMeetings
         {

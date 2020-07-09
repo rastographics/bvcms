@@ -12,11 +12,13 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Reflection;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Web;
 using System.Web.Http;
 using System.Web.Mvc;
 using System.Web.Routing;
+using System.Web.Security;
 using UtilityExtensions;
 using CMSImageDataContext = ImageData.CMSImageDataContext;
 
@@ -96,12 +98,12 @@ namespace CmsWeb
                 return;
             }
 
+            Response.Headers?.Remove("Server");
+
             if (ShouldBypassProcessing())
             {
                 return;
             }
-
-            Response.Headers?.Remove("Server");
 
             var host = CMSDataContext.GetHost(new HttpContextWrapper(Context));
             var r = DbUtil.CheckDatabaseExists($"CMS_{host}");
@@ -200,6 +202,17 @@ namespace CmsWeb
                         !Request.Url.PathAndQuery.StartsWith("/Account/SetPassword"))
                     {
                         Response.Redirect("/Account/ChangePassword");
+                    }
+
+                    var pattern = Util.SandboxedPath;
+                    if (pattern.HasValue())
+                    {
+                        var sandbox = new Regex(pattern);
+                        if (!sandbox.IsMatch(Request.Path))
+                        {
+                            FormsAuthentication.SignOut();
+                            Response.Redirect($"/Logon?ReturnUrl={HttpUtility.UrlEncode(Request.Path)}");
+                        }
                     }
                 }
             }
@@ -345,7 +358,7 @@ namespace CmsWeb
 
             return url.Contains("/Errors/", ignoreCase: true) ||
                 url.Contains("/Account/LogOff", ignoreCase: true) ||
-                url.Contains("/Content/touchpoint/", ignoreCase: true) ||
+                url.Contains("/Content/", ignoreCase: true) ||
                 url.Contains("healthcheck.txt", ignoreCase: true) ||
                 url.Contains("version.txt", ignoreCase: true) ||
                 url.Contains("analytics.txt", ignoreCase: true) ||
