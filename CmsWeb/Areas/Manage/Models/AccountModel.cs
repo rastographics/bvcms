@@ -412,6 +412,7 @@ namespace CmsWeb.Models
         {
             SetUserInfo(db, idb, userName, logEntry);
             FormsAuthentication.SetAuthCookie(userName, false);
+            Util.SandboxedPath = null;
             if (logEntry)
             {
                 DbUtil.LogActivity($"User {userName} logged in");
