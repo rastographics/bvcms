@@ -680,6 +680,7 @@ namespace CmsWeb.Areas.Org.Controllers
                     meeting.DidNotMeet = true;
                     meeting.AttendCreditId = null;
                     CurrentDatabase.SubmitChanges();
+                    CurrentDatabase.LogActivity($"Meeting {meeting.MeetingId} did not meet", meeting.OrganizationId);
                 }
                 ViewBag.OrgId = orgId;
                 ViewBag.Timestamp = timestamp;
