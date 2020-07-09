@@ -197,12 +197,13 @@ namespace CmsData.Finance
                 peopleId.ToString(CultureInfo.InvariantCulture));
 
             var response = achCharge.Execute();
+            var responseIdString = response.Response.Items == null ? string.Empty : response.Response.Items.First().IdString;
 
             var transactionResponse = new TransactionResponse
             {
                 Approved = response.Response.Status == "success" ? true : false,
                 AuthCode = response.Response.TransStatus,
-                Message = $"{response.Response.TransStatusMsg}#{response.Response.Items.First().IdString}",
+                Message = $"{response.Response.TransStatusMsg}#{responseIdString}",
                 TransactionId = response.Response.TransIdStr
             };
 
@@ -402,12 +403,13 @@ namespace CmsData.Finance
         {
             var storedPayerCharge = new StoredPayerCharge(_isTesting, _apiKey, merchId, acceptivaPayerId, amt, tranId, description, paymentType, lname, fname);
             var response = storedPayerCharge.Execute();
+            var responseIdString = response.Response.Items == null ? string.Empty : response.Response.Items.First().IdString;
 
             return new TransactionResponse
             {
                 Approved = response.Response.Status == "success" ? true : false,
                 AuthCode = response.Response.TransStatus,
-                Message = $"{response.Response.TransStatusMsg}#{response.Response.Items.First().IdString}",
+                Message = $"{response.Response.TransStatusMsg}#{responseIdString}",
                 TransactionId = response.Response.TransIdStr
             };
         }
@@ -442,12 +444,13 @@ namespace CmsData.Finance
             string idString = message[1];
             var refundTrans = new RefundTransPartial(_isTesting, _apiKey, reference, idString, amt);
             var response = refundTrans.Execute();
+            var responseIdString = response.Response.Items == null ? string.Empty : response.Response.Items.First().IdString;
 
             return new TransactionResponse
             {
                 Approved = response.Response.Status == "success" ? true : false,
                 AuthCode = response.Response.ProcessorResponseCode,
-                Message = $"{response.Response.TransStatusMsg}#{response.Response.Items.First().IdString}",
+                Message = $"{response.Response.TransStatusMsg}#{responseIdString}",
                 TransactionId = response.Response.TransIdStr
             };
         }
