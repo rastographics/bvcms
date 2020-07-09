@@ -387,12 +387,13 @@ namespace CmsData.Finance
                 description);
 
             var response = cardCharge.Execute();
+            var responseIdString = response.Response.Items == null ? string.Empty : response.Response.Items.First().IdString;
 
             return new TransactionResponse
             {
                 Approved = response.Response.Status == "success" ? true : false,
                 AuthCode = response.Response.ProcessorResponseCode,
-                Message = $"{response.Response.TransStatusMsg}#{response.Response.Items.First().IdString}",
+                Message = $"{response.Response.TransStatusMsg}#{responseIdString}",
                 TransactionId = response.Response.TransIdStr
             };
         }
