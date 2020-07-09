@@ -7,6 +7,7 @@ using CmsData.Finance.Acceptiva.Transaction.Refund;
 using CmsData.Finance.Acceptiva.Transaction.Settlement;
 using CmsData.Finance.Acceptiva.Transaction.Void;
 using MoreLinq;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -197,6 +198,10 @@ namespace CmsData.Finance
                 peopleId.ToString(CultureInfo.InvariantCulture));
 
             var response = achCharge.Execute();
+
+            if (response.Response.Status != "success")
+                db.LogActivity($"Acceptiva payment no success: {JsonConvert.SerializeObject(response)}");
+
             var responseIdString = response.Response.Items == null ? string.Empty : response.Response.Items.First().IdString;
 
             var transactionResponse = new TransactionResponse
@@ -388,6 +393,10 @@ namespace CmsData.Finance
                 description);
 
             var response = cardCharge.Execute();
+
+            if (response.Response.Status != "success")
+                db.LogActivity($"Acceptiva payment no success: {JsonConvert.SerializeObject(response)}");
+
             var responseIdString = response.Response.Items == null ? string.Empty : response.Response.Items.First().IdString;
 
             return new TransactionResponse
@@ -402,7 +411,12 @@ namespace CmsData.Finance
         private TransactionResponse StoredPayerCharge(string merchId, string acceptivaPayerId, decimal amt, string tranId, string description, int paymentType, string lname, string fname)
         {
             var storedPayerCharge = new StoredPayerCharge(_isTesting, _apiKey, merchId, acceptivaPayerId, amt, tranId, description, paymentType, lname, fname);
+
             var response = storedPayerCharge.Execute();
+
+            if (response.Response.Status != "success")
+                db.LogActivity($"Acceptiva payment no success: {JsonConvert.SerializeObject(response)}");
+
             var responseIdString = response.Response.Items == null ? string.Empty : response.Response.Items.First().IdString;
 
             return new TransactionResponse
@@ -423,7 +437,11 @@ namespace CmsData.Finance
         private TransactionResponse VoidTransaction(string reference)
         {
             var voidTrans = new VoidTrans(_isTesting, _apiKey, reference);
+
             var response = voidTrans.Execute();
+
+            if (response.Response.Status != "success")
+                db.LogActivity($"Acceptiva payment no success: {JsonConvert.SerializeObject(response)}");
 
             return new TransactionResponse
             {
@@ -443,7 +461,12 @@ namespace CmsData.Finance
             string[] message = db.Transactions.SingleOrDefault(p => p.TransactionId == reference + testString).Message.Split('#');
             string idString = message[1];
             var refundTrans = new RefundTransPartial(_isTesting, _apiKey, reference, idString, amt);
+
             var response = refundTrans.Execute();
+
+            if (response.Response.Status != "success")
+                db.LogActivity($"Acceptiva payment no success: {JsonConvert.SerializeObject(response)}");
+
             var responseIdString = response.Response.Items == null ? string.Empty : response.Response.Items.First().IdString;
 
             return new TransactionResponse
