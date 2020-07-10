@@ -1,6 +1,4 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using CmsWeb.Areas.Public.Controllers;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using Xunit;
@@ -16,14 +14,22 @@ using CmsData.Codes;
 using CmsData;
 using UtilityExtensions;
 using CmsData.Classes.Twilio;
-using CmsWeb.Common.Extensions;
 using System.Data.Linq;
+using System.Text;
+using SharedTestFixtures.Network;
+using OfficeOpenXml.FormulaParsing.Excel.Functions.Math;
+using System.Text.RegularExpressions;
 
-namespace CmsWeb.Areas.Public.ControllersTests
+namespace CmsWeb.Areas.Public.Controllers.Tests
 {
     [Collection(Collections.Database)]
     public class MobileAPIv2ControllerTests : ControllerTestBase
     {
+        public MobileAPIv2ControllerTests()
+        {
+            MockAppSettings.Apply(("sysfromemail", "test@example.com"));
+        }
+
         [Fact]
         public void FetchInvolvementTest()
         {
@@ -272,8 +278,10 @@ namespace CmsWeb.Areas.Public.ControllersTests
             result.data.ShouldEndWith($"/Logon?otltoken={token}&ReturnUrl=%2fPerson2%2f{user.PeopleId}%2fResources%3fsource%3dAndroid");
         }
 
-        [Fact]
-        public void QuickSignInTest()
+        [Theory]
+        [InlineData(true)]
+        [InlineData(false)]
+        public void QuickSignInTest(bool useEmail)
         {
             var requestManager = FakeRequestManager.Create();
             db = requestManager.CurrentDatabase;
@@ -284,6 +292,7 @@ namespace CmsWeb.Areas.Public.ControllersTests
             CMSRoleProvider.SetCurrentProvider(roleProvider);
             var person = CreatePerson();
             person.CellPhone = RandomPhoneNumber();
+            person.EmailAddress = RandomEmailAddress();
             db.SetSetting("UseMobileQuickSignInCodes", "true");
             db.SetSetting("TwilioToken", RandomString());
             db.SetSetting("TwilioSid", RandomString());
@@ -296,17 +305,30 @@ namespace CmsWeb.Areas.Public.ControllersTests
             }
             db.SMSNumbers.InsertOnSubmit(new SMSNumber { GroupID = group.Id, Number = RandomPhoneNumber(), LastUpdated = DateTime.Now });
             db.SubmitChanges();
-            string smsBody = "";
-            TwilioHelper.MockSender = (to, from, body, statusCallback) => {
-                smsBody = body;
-                return new TwilioMessageResult { Status = "Sent" };
-            };
+            string messageBody = "";
+            if (useEmail)
+            {
+                db.SMTPClient = new MockEmailClient
+                {
+                    Receive = (to, from, subject, body) => {
+                        messageBody = body;
+                    }
+                };
+            }
+            else
+            {
+                TwilioHelper.MockSender = (to, from, body, statusCallback) => {
+                    messageBody = body;
+                    return new TwilioMessageResult { Status = "Sent" };
+                };
+            }
+
             var controller = new MobileAPIv2Controller(requestManager);
             var message = new MobileMessage
             {
                 device = (int)MobileMessage.Device.ANDROID,
                 instance = RandomString(),
-                argString = person.CellPhone,
+                argString = useEmail ? person.EmailAddress : person.CellPhone,
                 build = build,
             };
 
@@ -314,9 +336,9 @@ namespace CmsWeb.Areas.Public.ControllersTests
             var result = controller.QuickSignIn(data) as MobileMessage;
             result.ShouldNotBeNull();
             result.error.ShouldBe(0);
-            smsBody.ShouldNotBeEmpty();
+            messageBody.ShouldNotBeEmpty();
 
-            requestManager.CurrentHttpContext.Request.Headers["Authorization"] = "quick " + smsBody.GetDigits().Substring(0, 6);
+            requestManager.CurrentHttpContext.Request.Headers["Authorization"] = "Quick " + FindCode(messageBody);
             message = new MobileMessage
             {
                 device = (int)MobileMessage.Device.ANDROID,
@@ -329,7 +351,7 @@ namespace CmsWeb.Areas.Public.ControllersTests
             result.error.ShouldBe(0);
             result.count.ShouldBeGreaterThan(0);
             result.data.ShouldNotBeEmpty();
-            //result.data.ShouldBe($"[{{""userID"":0,"peopleID":158,"name":"A0SF6Udv AfxHaTA7","user":"Create User"}}]")
+
             var list = JsonConvert.DeserializeObject<IEnumerable<MobileQuickSignInUser>>(result.data);
             var user = list.First();
             user.userID.ShouldBe(0);
@@ -340,6 +362,63 @@ namespace CmsWeb.Areas.Public.ControllersTests
             device.ShouldNotBeNull();
             device.AppVersion.ShouldBe(build);
             Should.Equals(device.DeviceTypeID, MobileMessage.Device.ANDROID);
+
+            //Test QuickSignInCreateUser
+            message = new MobileMessage
+            {
+                device = (int)MobileMessage.Device.ANDROID,
+                instance = device.InstanceID,
+                build = build,
+                argInt = person.PeopleId,
+            };
+            data = message.ToString();
+            result = controller.QuickSignInCreateUser(data) as MobileMessage;
+            result.ShouldNotBeNull();
+            result.error.ShouldBe(0);
+            result.count.ShouldBe(0);
+            result.data.ShouldNotBeEmpty();
+            result.id.ShouldBeGreaterThan(0);
+            var userId = result.id;
+            var username = result.data;
+
+            //Test SetDevicePIN
+            var pin = "1234";
+            message = new MobileMessage
+            {
+                device = (int)MobileMessage.Device.ANDROID,
+                instance = device.InstanceID,
+                build = build,
+                argInt = userId,
+                argString = pin.Sha256Hash(),
+            };
+            data = message.ToString();
+            result = controller.SetDevicePIN(data) as MobileMessage;
+            result.ShouldNotBeNull();
+            result.error.ShouldBe(0);
+            result.count.ShouldBe(0);
+            result.data.ShouldNotBeEmpty();
+
+            //Test PIN authorization by getting the user's own profile
+            requestManager.CurrentHttpContext.Request.Headers["Authorization"] = "PIN " + Convert.ToBase64String(Encoding.ASCII.GetBytes($"{username}:{pin.Sha256Hash()}"));
+            message = new MobileMessage
+            {
+                device = (int)MobileMessage.Device.ANDROID,
+                instance = device.InstanceID,
+                build = build,
+                argInt = person.PeopleId,
+            };
+            data = message.ToString();
+            result = controller.FetchPerson(data) as MobileMessage;
+            result.ShouldNotBeNull();
+            result.error.ShouldBe(0);
+            result.count.ShouldBe(1);
+            result.data.ShouldNotBeEmpty();
+        }
+
+        private string FindCode(string messageBody)
+        {
+            Regex regex = new Regex(@"\d{6}");
+            return regex.Match(messageBody).Value;
         }
 
         [Theory]
@@ -372,6 +451,12 @@ namespace CmsWeb.Areas.Public.ControllersTests
             user.Person.EnvelopeOptionsId.ShouldBe(envelope);
             user.Person.ElectronicStatement.ShouldBe(electronic != 0);
             user.Person.ContributionOptionsId.ShouldBe(statement);
+        }
+
+        public override void Dispose()
+        {
+            base.Dispose();
+            MockAppSettings.Remove("sysfromemail");
         }
     }
 }

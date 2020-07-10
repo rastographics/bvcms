@@ -81,6 +81,10 @@
                     </div>
                     <div class="row" style="margin-left:0px;">
                         <a href="/Display/#tab_@(backtolist)" class="btn btn-default">Back to List</a>
+                        @if (Model.TypeID == ContentTypeCode.TypeUnlayerTemplate)
+                        {
+                            <button id="SaveTemplateCopyButton" class="btn btn-default" type="submit"><i class="fa fa-clone"></i> Clone</button>
+                        }
                         <a href="#" class="btn btn-danger delete"><i class="fa fa-trash"></i> Delete</a>
                         <input id="SaveTemplateButton" type="submit" class="btn btn-primary" value="Save @templatedraft" />
                     </div>
