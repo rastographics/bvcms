@@ -726,7 +726,11 @@ namespace CmsData
         partial void InsertSMSNumber(SMSNumber instance);
         partial void UpdateSMSNumber(SMSNumber instance);
         partial void DeleteSMSNumber(SMSNumber instance);
-
+        
+        partial void InsertSmsReceived(SmsReceived instance);
+        partial void UpdateSmsReceived(SmsReceived instance);
+        partial void DeleteSmsReceived(SmsReceived instance);
+        
         partial void InsertStateLookup(StateLookup instance);
         partial void UpdateStateLookup(StateLookup instance);
         partial void DeleteStateLookup(StateLookup instance);
@@ -1251,6 +1255,10 @@ namespace CmsData
         public Table<SMSList> SMSLists => GetTable<SMSList>();
 
         public Table<SMSNumber> SMSNumbers => GetTable<SMSNumber>();
+
+        public Table<SmsGroupOptOut> SmsGroupOptOuts => GetTable<SmsGroupOptOut>();
+
+        public Table<SmsReceived> SmsReceiveds => GetTable<SmsReceived>();
 
         public Table<StateLookup> StateLookups => GetTable<StateLookup>();
 

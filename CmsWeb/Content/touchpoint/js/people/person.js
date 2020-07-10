@@ -446,7 +446,7 @@
                     }
                 }
                 break;
-            case '#tab-emails':
+            case '#tab-communications':
                 if (subLink) {
                     if (subLink.attr("href") !== '#') {
                         $.cookie('lasttab', tlink.attr("href"));
@@ -714,6 +714,13 @@
         });
     });
 
+    $('#sms').on('change',
+        'form.ajax #GroupId',
+        function (event) {
+            event.preventDefault();
+            $.formAjaxClick($(this));
+            return false;
+        });
 });
 
 function AddSelected(ret) {

@@ -50,23 +50,23 @@
                                 </td>
                                 <td>
                                     @i.From<br />
-                                @i.FromAddr
-                            </td>
-                            @if (showEmailDetails)
-                            {
-                                <td>@i.Count</td>
-                            }
-                            <td>
+                                    @i.FromAddr
+                                </td>
                                 @if (showEmailDetails)
                                 {
-                                    <a target="viewemail" href="/Emails/Details/@i.Id">@i.Subject</a>
+                                    <td>@i.Count</td>
                                 }
-                                else
-                                {
-                                    <a target="viewemail" href="/Person2/ViewEmail/@i.Id">@i.Subject</a>
-                                }
-                            </td>
-                        </tr>
+                                <td>
+                                    @if (showEmailDetails)
+                                    {
+                                        <a target="viewemail" href="/Emails/Details/@i.Id">@i.Subject</a>
+                                    }
+                                    else
+                                    {
+                                        <a target="viewemail" href="/Person2/ViewEmail/@i.Id">@i.Subject</a>
+                                    }
+                                </td>
+                            </tr>
                         }
                     </tbody>
                 </table>
@@ -76,5 +76,5 @@
             @Html.HiddenFor2(m => m.PeopleId)
         </div>
     </div>
-    <br/>
+    <br />
 </form>

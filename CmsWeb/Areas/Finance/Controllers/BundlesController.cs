@@ -2,6 +2,8 @@
 using CmsData.Codes;
 using CmsWeb.Areas.Finance.Models;
 using CmsWeb.Lifecycle;
+using System;
+using System.Linq;
 using System.Web.Mvc;
 using UtilityExtensions;
 
@@ -15,16 +17,20 @@ namespace CmsWeb.Areas.Finance.Controllers
         {
         }
 
+        [HttpGet]
         public ActionResult Index()
         {
             var m = new BundlesModel(CurrentDatabase);
             return View(m);
         }
+
         [HttpPost]
         public ActionResult Results(BundlesModel m)
         {
             return View(m);
         }
+
+        [HttpGet]
         public ActionResult NewBundle()
         {
             var dt = Util.Now.Date;
@@ -39,7 +45,7 @@ namespace CmsWeb.Areas.Finance.Controllers
                 CreatedBy = CurrentDatabase.UserId1,
                 CreatedDate = Util.Now,
                 RecordStatus = false,
-                FundId = CurrentDatabase.Setting("DefaultFundId", "1").ToInt(),
+                FundId = GetDefaultFundId(),
             };
             if (User.IsInRole("FinanceDataEntry"))
             {
@@ -49,7 +55,19 @@ namespace CmsWeb.Areas.Finance.Controllers
             CurrentDatabase.BundleHeaders.InsertOnSubmit(b);
             CurrentDatabase.SubmitChanges();
 
-            return Redirect($"/Bundle/{b.BundleHeaderId}");
+            return Redirect($"/Bundle/Edit/{b.BundleHeaderId}");
+        }
+
+        private int GetDefaultFundId()
+        {
+            var fundId = CurrentDatabase.Setting("DefaultFundId", "0").ToInt();
+            if (fundId == 0)
+            {
+                fundId = CurrentDatabase.ContributionFunds
+                    .OrderBy(f => f.FundStatusId)
+                    .OrderBy(f => f.FundId).Select(f => f.FundId).FirstOrDefault();
+            }
+            return fundId;
         }
     }
 }

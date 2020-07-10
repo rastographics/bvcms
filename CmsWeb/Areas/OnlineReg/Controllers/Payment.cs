@@ -74,11 +74,14 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             }
 
             int? datumid = null;
+
+            int? GatewayId = MultipleGatewayUtils.GatewayId(CurrentDatabase, m?.ProcessType ?? pf.ProcessType);
+
             if (m != null)
             {
                 m.TermsSignature = pf.TermsSignature;
                 datumid = m.DatumId;
-                var msg = m.CheckDuplicateGift(pf.AmtToPay);
+                var msg = m.CheckDuplicateGift(pf.AmtToPay, GatewayId);
                 if (Util.HasValue(msg))
                 {
                     return Message(msg);
@@ -87,9 +90,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             if (IsCardTester(pf, "Payment Page"))
             {
                 return Message("Found Card Tester");
-            }
-
-            int? GatewayId = MultipleGatewayUtils.GatewayId(CurrentDatabase, m?.ProcessType ?? pf.ProcessType);
+            }            
 
             if (CurrentDatabase.Setting("UseRecaptcha") && GatewayId != (int)GatewayTypes.Pushpay)
             {
@@ -341,7 +342,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                     return View("OnePageGiving/NotConfigured");
 
                 RequestManager.SessionProvider.Add("PaymentProcessType", PaymentProcessTypes.OnlineRegistration.ToInt().ToString());
-                return Redirect($"/Pushpay/PayAmtDue/{ti.Id}/{amtdue}");
+                return Redirect($"/Pushpay/PayAmtDue/{ti.Id}/{amtdue}/{ti.OrgId}");
             }
 #if DEBUG
             ti.Testing = true;

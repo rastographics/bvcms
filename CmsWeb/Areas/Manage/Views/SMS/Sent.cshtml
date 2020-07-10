@@ -1,0 +1,24 @@
+﻿@model CmsWeb.Areas.Manage.Models.SmsMessages.SmsSentMessagesModel
+<form id="sentform" method="post" data-results="#sentresults" class="ajax" action="/SmsMessages/SentResults">
+    @Html.Partial("Toolbar/Toolbar")
+    <div class="row well">
+        <div class="col-lg-3">
+            @Html.EditorFor(m => m.SentFilterGroupId, "Dropdown", new { items = Model.Groups() })
+            @Html.EditorFor(v => v.SentFilterStart)
+        </div>
+        <div class="col-lg-3">
+            <div id="SentFilterGroupMembers">
+                @Html.EditorFor(m => m.SentFilterPeopleId, "Dropdown", new { items = Model.GroupMembers() })
+            </div>
+            @Html.EditorFor(v => v.SentFilterEnd)
+        </div>
+        <div class="col-lg-3 col-md-3 col-sm-4">
+            @Html.EditorFor(v => v.SentFilterTitle)
+            <div class="pull-right" style="margin-top:25px">
+                <a id="clearsent" class="btn btn-default">Clear</a>
+                <a id="searchsent" class="btn btn-primary ajax" href="/SmsMessages/SentResults">Search</a>
+            </div>
+        </div>
+    </div>
+    @Html.Partial("SentResults", Model)
+</form>

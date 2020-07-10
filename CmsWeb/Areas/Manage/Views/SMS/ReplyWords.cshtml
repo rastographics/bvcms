@@ -1,0 +1,48 @@
+﻿@using UtilityExtensions
+@model CmsWeb.Areas.Manage.Models.SmsMessages.SmsReplyWordsModel
+@{
+    var n = 0;
+}
+<div id="replywordslist">
+    @foreach (var item in Model.Actions)
+    {
+        <div class="row">
+            <div class="col-lg-2 col-sm-11">
+                <label>Reply Word</label>
+                <input type="text" name="Actions[@n].Word" value="@item.Word" class="replyword form-control"
+                       placeholder="Reply Word" required="required">
+            </div>
+            <div class="col-lg-2 col-sm-12">
+                <label>Action</label>
+                <select name="Actions[@n].Action" class="Action form-control" style="width: auto" required="required">
+                    @item.ActionOptions()
+                </select>
+            </div>
+            <div class="col-lg-4 col-sm-12">
+                <label>Reply Message</label>
+                <input type="text" name="Actions[@n].ReplyMessage" value="@item.ReplyMessage"
+                       placeholder="Default Message" class="form-control" />
+            </div>
+            <div class="col-lg-2 col-sm-12">
+                @if (item.Arg1Name.HasValue())
+                {
+                    <div>
+                        <label>@item.Arg1Description</label><br />
+                        <input type="text" name="Actions[@n].@item.Arg1Name" value="@item.Arg1Value" class="form-control" />
+                    </div>
+                }
+                @if (item.Arg2Name.HasValue())
+                {
+                    <div>
+                        <label>@item.Arg2Description</label><br />
+                        <input type="text" name="Actions[@n].@item.Arg2Name" value="@item.Arg2Value" class="form-control" />
+                    </div>
+                }
+            </div>
+            <div class="col-lg-1 col-sm-1">
+                <a href="#" class="deleteaction pull-right"><i class="fa fa-trash" aria-hidden="true"></i></a>
+            </div>
+        </div>
+        n++;
+    }
+</div>

@@ -1,0 +1,46 @@
+﻿@using UtilityExtensions
+@model CmsWeb.Areas.People.Models.SmsModel
+<form class="non-modal ajax" method="post">
+    <div class="row">
+        <div class="col-sm-4">
+            @Html.EditorFor(m => m.GroupId, "Dropdown", new { items = Model.PersonSmsGroups() })
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-12">
+            @Html.Partial("PagerTop", Model)
+            <div class="table-responsive">
+                <table id="smstable" class="table">
+                    <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Time</th>
+                        <th>Sender</th>
+                        <th>Message</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @foreach (var i in Model.ViewList())
+                    {
+                        <tr @(i.IsIncoming ? "class=gray" : "")>
+                            <td>@i.Date.FormatDate()</td>
+                            <td>@i.Date.FormatTime()</td>
+                            <td title="@i.Id">@i.Sender (@(i.IsIncoming ? i.Number.FmtFone() : i.Number))</td>
+                            <td>
+                                @if (i.ReplyToIncomingId.GetValueOrDefault() > 0)
+                                {
+                                    <i class="fa fa-reply text-muted"></i>
+                                }
+                                @i.Message
+                            </td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+            @Html.Partial("PagerBottom", Model)
+            @Html.Partial("PagerHidden", Model)
+            @Html.HiddenFor2(m => m.PeopleId)
+        </div>
+    </div>
+</form>

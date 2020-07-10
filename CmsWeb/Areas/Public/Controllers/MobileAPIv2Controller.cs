@@ -174,7 +174,7 @@ namespace CmsWeb.Areas.Public.Controllers
 
             MobileAccount account = new MobileAccount(CurrentDatabase);
             account.setDeepLinkFields(message.device, message.instance, message.key, message.argString);
-            if (CurrentDatabase.Setting("UseMobileQuickSignInCodes"))
+            if (CurrentDatabase.Setting("UseMobileQuickSignInCodes", true))
             {
                 account.sendLoginCode();
             }
@@ -258,7 +258,10 @@ namespace CmsWeb.Areas.Public.Controllers
             MobileMessage response = new MobileMessage();
             MobileAppDevice device = authentication.getDevice();
 
-            if (!CurrentDatabase.People.Any(p => (p.EmailAddress == device.CodeEmail || p.EmailAddress2 == device.CodeEmail) && p.PeopleId == message.argInt))
+            if (!CurrentDatabase.People.Any(p => p.PeopleId == message.argInt &&
+                (p.EmailAddress == device.CodeEmail ||
+                 p.EmailAddress2 == device.CodeEmail ||
+                 p.CellPhone == device.CodeEmail)))
             {
                 return response;
             }
@@ -528,7 +531,7 @@ namespace CmsWeb.Areas.Public.Controllers
         {
             MobileMessage message = MobileMessage.createFromString(data);
 
-            MobileAuthentication authentication = new MobileAuthentication(CurrentDatabase, message.build);
+            MobileAuthentication authentication = new MobileAuthentication(CurrentDatabase, message.build, roles: "Access");
             authentication.authenticate(message.instance);
 
             if (authentication.hasError())

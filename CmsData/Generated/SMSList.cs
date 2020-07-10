@@ -31,11 +31,19 @@ namespace CmsData
 
         private string _Title;
 
+        private int? _ReplyToId;
+
+        private bool? _Sent;
+
+        private bool? _ReadyToSend;
+
         private EntitySet<SMSItem> _SMSItems;
 
         private EntityRef<Person> _Person;
 
         private EntityRef<SMSGroup> _SMSGroup;
+
+        private EntityRef<SmsReceived> _SmsReceived;
 
         #endregion
 
@@ -81,6 +89,8 @@ namespace CmsData
             _Person = default(EntityRef<Person>);
 
             _SMSGroup = default(EntityRef<SMSGroup>);
+
+            _SmsReceived = default(EntityRef<SmsReceived>);
 
             OnCreated();
         }
@@ -261,6 +271,57 @@ namespace CmsData
             }
         }
 
+        [Column(Name = "ReplyToId", UpdateCheck = UpdateCheck.Never, Storage = "_ReplyToId", DbType = "int NULL")]
+        public int? ReplyToId
+        {
+            get => _ReplyToId;
+
+            set
+            {
+                if (_ReplyToId != value)
+                {
+                    SendPropertyChanging();
+                    _ReplyToId = value;
+                    SendPropertyChanged("ReplyToId");
+                    OnSentNoneChanged();
+                }
+            }
+        }
+
+        [Column(Name = "Sent", UpdateCheck = UpdateCheck.Never, Storage = "_Sent", DbType = "bit NULL")]
+        public bool? Sent
+        {
+            get => _Sent;
+
+            set
+            {
+                if (_Sent != value)
+                {
+                    SendPropertyChanging();
+                    _Sent = value;
+                    SendPropertyChanged("Sent");
+                    OnSentNoneChanged();
+                }
+            }
+        }
+
+        [Column(Name = "ReadyToSend", UpdateCheck = UpdateCheck.Never, Storage = "_ReadyToSend", DbType = "bit NULL")]
+        public bool? ReadyToSend
+        {
+            get => _ReadyToSend;
+
+            set
+            {
+                if (_ReadyToSend != value)
+                {
+                    SendPropertyChanging();
+                    _ReadyToSend = value;
+                    SendPropertyChanged("ReadyToSend");
+                    OnSentNoneChanged();
+                }
+            }
+        }
+
         #endregion
 
         #region Foreign Key Tables
@@ -269,9 +330,7 @@ namespace CmsData
         public EntitySet<SMSItem> SMSItems
            {
                get => _SMSItems;
-
-            set => _SMSItems.Assign(value);
-
+               set => _SMSItems.Assign(value);
            }
 
         #endregion
@@ -302,13 +361,11 @@ namespace CmsData
                         value.SMSLists.Add(this);
 
                         _SenderID = value.PeopleId;
-
                     }
 
                     else
                     {
                         _SenderID = default(int);
-
                     }
 
                     SendPropertyChanged("Person");
@@ -340,13 +397,11 @@ namespace CmsData
                         value.SMSLists.Add(this);
 
                         _SendGroupID = value.Id;
-
                     }
 
                     else
                     {
                         _SendGroupID = default(int);
-
                     }
 
                     SendPropertyChanged("SMSGroup");
@@ -354,6 +409,41 @@ namespace CmsData
             }
         }
 
+        [Association(Name = "FK_SMSList_SmsReceived", Storage = "_SmsReceived", ThisKey = "ReplyToId", IsForeignKey = true)]
+        public SmsReceived SmsReceived
+        {
+            get => _SmsReceived.Entity;
+
+            set
+            {
+                SmsReceived previousValue = _SmsReceived.Entity;
+                if (((previousValue != value)
+                            || (_SmsReceived.HasLoadedOrAssignedValue == false)))
+                {
+                    SendPropertyChanging();
+                    if (previousValue != null)
+                    {
+                        _SmsReceived.Entity = null;
+                        previousValue.SmsReplies.Remove(this);
+                    }
+
+                    _SmsReceived.Entity = value;
+                    if (value != null)
+                    {
+                        value.SmsReplies.Add(this);
+
+                        _ReplyToId = value.Id;
+
+                    }
+                    else
+                    {
+                        _ReplyToId = null;
+                    }
+
+                    SendPropertyChanged("SMSGroup");
+                }
+            }
+        }
         #endregion
 
         public event PropertyChangingEventHandler PropertyChanging;

@@ -171,7 +171,7 @@ namespace CmsData
             return !setting.HasValue() ? defaultValue : setting.ToLower() == "true";
         }
 
-        public void SetSetting(string name, string value)
+        public void SetSetting(string name, string value, bool system = false)
         {
             name = name.Trim();
             var list = HttpRuntime.Cache[Host + "Setting"] as Dictionary<string, string>;
@@ -189,12 +189,13 @@ namespace CmsData
             var setting = Settings.SingleOrDefault(c => c.Id == name);
             if (setting == null)
             {
-                setting = new Setting { Id = name, SettingX = value };
+                setting = new Setting { Id = name, SettingX = value, System = system };
                 Settings.InsertOnSubmit(setting);
             }
             else
             {
                 setting.SettingX = value;
+                setting.System = system;
             }
         }
 
@@ -271,7 +272,8 @@ namespace CmsData
                 {
                     user = ConfigurationManager.AppSettings[sendgridmailuser];
                 }
-                HttpRuntime.Cache.Insert(Host + sendgridmailuser, user, null, DateTime.Now.AddSeconds(60), Cache.NoSlidingExpiration);
+                if(user.HasValue())
+                    HttpRuntime.Cache.Insert(Host + sendgridmailuser, user, null, DateTime.Now.AddSeconds(60), Cache.NoSlidingExpiration);
 
                 return user;
             }
@@ -294,7 +296,8 @@ namespace CmsData
                 {
                     user = ConfigurationManager.AppSettings[sendgridmailpassword];
                 }
-                HttpRuntime.Cache.Insert(Host + sendgridmailpassword, user, null, DateTime.Now.AddSeconds(60), Cache.NoSlidingExpiration);
+                if(user.HasValue())
+                    HttpRuntime.Cache.Insert(Host + sendgridmailpassword, user, null, DateTime.Now.AddSeconds(60), Cache.NoSlidingExpiration);
 
                 return user;
             }
