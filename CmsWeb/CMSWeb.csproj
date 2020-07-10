@@ -564,7 +564,9 @@
     <Compile Include="Areas\Main\Models\Other\CouponResponseModel.cs" />
     <Compile Include="Areas\Manage\Controllers\ActivityController.cs" />
     <Compile Include="Areas\Manage\Controllers\BatchMoveAndDelete.cs" />
+    <Compile Include="Areas\Manage\Controllers\GridResult.cs" />
     <Compile Include="Areas\Manage\Controllers\InvolvementController.cs" />
+    <Compile Include="Areas\Manage\Models\DisplayModel.cs" />
     <Compile Include="Areas\Manage\Models\SmsMessages\ReceivedDetailViewModel.cs" />
     <Compile Include="Areas\Manage\Models\SmsMessages\ReplyModel.cs" />
     <Compile Include="Areas\Manage\Controllers\UploadAddressesController.cs" />
@@ -1315,6 +1317,7 @@
     <Content Include="Content\touchpoint\js\sms\ReplyWords.js" />
     <Content Include="Content\touchpoint\js\sms\Received.js" />
     <Content Include="Content\touchpoint\js\sms\Sent.js" />
+    <Content Include="Content\touchpoint\js\speciallinks.js" />
     <Content Include="Content\touchpoint\js\update-add-modal-results.js" />
     <Content Include="Content\touchpoint\js\update-modal-results.js" />
     <Content Include="Content\touchpoint\js\vue-search-add.js" />
@@ -1957,6 +1960,7 @@
     <Content Include="Areas\Manage\Views\Sms\DisplayTemplates\DateTime.cshtml" />
     <Content Include="Areas\Manage\Views\Sms\DisplayTemplates\Int32.cshtml" />
     <Content Include="Areas\People\Views\Person\Communications\Sms.cshtml" />
+    <Content Include="Views\SpecialLinks\Index.cshtml" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>

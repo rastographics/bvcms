@@ -41,6 +41,7 @@
                     </div>
                     <small v-if="isEmptyTemplate" class="red-empty">"Empty Template" cannot be deleted or renamed</small><br /><br />
                     <a href="/Display/#tab_emailTemplates" class="btn btn-default">Back to List</a>
+                    <button id="SaveTemplateCopyButton" class="btn btn-default" type="submit"><i class="fa fa-clone"></i> Clone</button>
                     <a href="#" v-bind:class="'btn btn-danger delete ' + (isEmptyTemplate ? 'disabled' : '')"><i class="fa fa-trash"></i> Delete</a>
                     <input type="submit" v-bind:class="'btn btn-primary ' + (notValidName ? 'disabled' : '')" value="Save Template" />
                 </div>
@@ -62,6 +63,10 @@
     }
 
     $(function () {
+        $("#SaveTemplateCopyButton").click(function (ev) {
+            var f = $(this).closest("form")[0];
+            f.action = f.action + "Copy";
+        });
 
       $("a.delete").click(function (ev) {
         ev.preventDefault();
