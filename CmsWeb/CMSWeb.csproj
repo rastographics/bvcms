@@ -564,7 +564,9 @@
     <Compile Include="Areas\Main\Models\Other\CouponResponseModel.cs" />
     <Compile Include="Areas\Manage\Controllers\ActivityController.cs" />
     <Compile Include="Areas\Manage\Controllers\BatchMoveAndDelete.cs" />
+    <Compile Include="Areas\Manage\Controllers\GridResult.cs" />
     <Compile Include="Areas\Manage\Controllers\InvolvementController.cs" />
+    <Compile Include="Areas\Manage\Models\DisplayModel.cs" />
     <Compile Include="Areas\Manage\Models\SmsMessages\ReceivedDetailViewModel.cs" />
     <Compile Include="Areas\Manage\Models\SmsMessages\ReplyModel.cs" />
     <Compile Include="Areas\Manage\Controllers\UploadAddressesController.cs" />
