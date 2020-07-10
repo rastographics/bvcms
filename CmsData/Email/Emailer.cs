@@ -15,6 +15,7 @@ using Elmah;
 using HtmlAgilityPack;
 using SendGrid;
 using SendGrid.Helpers.Mail;
+using CmsData.Email;
 
 namespace CmsData
 {
@@ -934,18 +935,22 @@ namespace CmsData
             return fromDomain;
         }
 
-        public SmtpClient Smtp()
+        public IEmailClient SMTPClient { get; set; }
+        public IEmailClient Smtp()
         {
-            var smtp = new SmtpClient();
-            if (ConfigurationManager.AppSettings["requiresSsl"] == "true")
-                smtp.EnableSsl = true;
-            if (Util.SmtpDebug)
+            if (SMTPClient == null)
             {
-                smtp.DeliveryMethod = SmtpDeliveryMethod.SpecifiedPickupDirectory;
-                smtp.PickupDirectoryLocation = @"c:\email";
-                smtp.Host = "localhost";
+                SMTPClient = new DefaultSmtpClient();
+                if (ConfigurationManager.AppSettings["requiresSsl"] == "true")
+                    SMTPClient.EnableSsl = true;
+                if (Util.SmtpDebug)
+                {
+                    SMTPClient.DeliveryMethod = SmtpDeliveryMethod.SpecifiedPickupDirectory;
+                    SMTPClient.PickupDirectoryLocation = ConfigurationManager.AppSettings["smtpdebugdirectory"] ?? @"C:\email";
+                    SMTPClient.Host = "localhost";
+                }
             }
-            return smtp;
+            return SMTPClient;
         }
 
         private static string CcMessage(List<MailAddress> cc)
