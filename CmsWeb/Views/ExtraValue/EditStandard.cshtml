@@ -20,7 +20,7 @@
             @Html.HiddenFor(m => m.ExtraValueType.Name)
             @Html.HiddenFor(m => m.ExtraValueType.Value)
             @Html.DisplayFor(m => m.ExtraValueType)
-            @Html.EditorFor(m => m.ExtraValueLocation)
+            @Html.EditorFor(m => m.ExtraValueLocation.Value)
             @Html.EditorFor(m => m.ExtraValueName)
             <input type="hidden" name="OriginalExtraValueLocation" value="@Model.ExtraValueLocation.Value" />
             <input type="hidden" name="OriginalName" value="@Model.ExtraValueName" />

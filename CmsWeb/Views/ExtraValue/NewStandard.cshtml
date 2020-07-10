@@ -17,7 +17,7 @@
             }
             @Html.HiddenFor(m => m.Id)
             @Html.HiddenFor(m => m.ExtraValueTable)
-            @Html.HiddenFor(m => m.ExtraValueLocation)
+            @Html.HiddenFor(m => m.ExtraValueLocation.Value)
             @Html.EditorFor(m => m.ExtraValueType, new { PlainSelect = true })
             @Html.EditorFor(m => m.ExtraValueName)
             <div class="form-group">
