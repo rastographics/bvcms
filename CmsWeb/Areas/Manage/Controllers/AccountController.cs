@@ -9,6 +9,7 @@ using Google.Authenticator;
 using ImageData;
 using net.openstack.Core.Domain;
 using net.openstack.Providers.Rackspace;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -439,12 +440,17 @@ namespace CmsWeb.Areas.Manage.Controllers
         }
 
         [MyRequireHttps]
-        public ActionResult LogOff()
+        public ActionResult LogOff(string ReturnUrl = null)
         {
             CurrentDatabase.DeleteSpecialTags(CurrentDatabase.UserPeopleId);
             FormsAuthentication.SignOut();
             RequestManager.SessionProvider.Clear();
             Session.Abandon();
+
+            if (ReturnUrl.HasValue() && Url.IsLocalUrl(ReturnUrl))
+            {
+                return Redirect(ReturnUrl);
+            }
             return Redirect("/");
         }
 
@@ -850,7 +856,7 @@ namespace CmsWeb.Areas.Manage.Controllers
         }
         
         [HttpPost, MyRequireHttps]
-        public ActionResult EasyLogin(string search, string code)
+        public ActionResult EasyLogin(string search, string code, int? loginas)
         {
             var result = new AccountResult
             {
@@ -876,16 +882,23 @@ namespace CmsWeb.Areas.Manage.Controllers
                     (p.CellPhone.Length > 0 && p.CellPhone == phone)
                 ).ToList();
 
-            if (matches.Count == 0)
+            if (matches.Count > 1)
+            {
+                if (matches.Any(p => p.PeopleId == loginas))
+                {
+                    matches = matches.Where(p => p.PeopleId == loginas).ToList();
+                }
+                else
+                {
+                    // invalid
+                    result.Message = "No person found";
+                    return Json(result);
+                }
+            }
+            else if (matches.Count == 0)
             {
                 // return no person found
                 result.Message = "No person found";
-                return Json(result);
-            }
-            else if (matches.Count > 1)
-            {
-                // return list of people found
-                result.Message = matches.ToString();
                 return Json(result);
             }
 
@@ -923,7 +936,7 @@ namespace CmsWeb.Areas.Manage.Controllers
         }
 
         [HttpPost, MyRequireHttps]
-        public ActionResult SendEasyLoginCode(string search)
+        public ActionResult SendEasyLoginCode(string search, int? sendto)
         {
             // find user by phone or email, send a code
             // returns fail (no results), success (sent), or multiple results
@@ -952,16 +965,24 @@ namespace CmsWeb.Areas.Manage.Controllers
                     (p.CellPhone.Length > 0 && p.CellPhone == phone)
                 ).ToList();
 
-            if (matches.Count == 0)
+            if (matches.Count > 1)
+            {
+                if (matches.Any(p => p.PeopleId == sendto))
+                {
+                    matches = matches.Where(p => p.PeopleId == sendto).ToList();
+                }
+                else
+                {
+                    // return list of people found
+                    result.Status = "success";
+                    result.Message = JsonConvert.SerializeObject(matches.Select(p => new { p.PeopleId, p.Name }));
+                    return Json(result);
+                }
+            }
+            else if (matches.Count == 0)
             {
                 // return no person found
                 result.Message = "No person found";
-                return Json(result);
-            }
-            else if (matches.Count > 1)
-            {
-                // return list of people found
-                result.Message = matches.ToString();
                 return Json(result);
             }
 
@@ -1027,6 +1048,7 @@ namespace CmsWeb.Areas.Manage.Controllers
             }
             else
             {
+                // send email
                 List<MailAddress> mailAddresses = new List<MailAddress>();
                 mailAddresses.Add(new MailAddress(email));
 
@@ -1036,13 +1058,12 @@ namespace CmsWeb.Areas.Manage.Controllers
                 body = body.Replace("{code}", code).Replace("{church}", church);
 
                 CurrentDatabase.SendEmail(new MailAddress(DbUtil.AdminMail, DbUtil.AdminMailName), CurrentDatabase.Setting("MobileQuickSignInCodeSubject", "Mobile Sign In Code"), body, mailAddresses);
-                // success! email sent
                 result.Status = "success";
                 result.Message = "Email sent";
                 return Json(result);
             }
         }
-
+        
         public class AccountResult {
             public string Status { get; set; }
             public string Message { get; set; }

@@ -37,7 +37,7 @@
                 <p>We will send you a secure one-time code to sign in to your account.</p>
                 <form @submit.prevent="emailSearch">
                     <div class="row text-left">
-                        <div class="col-md-6 col-md-offset-3">
+                        <div class="col-md-8 col-md-offset-2">
                             <div :class="{'form-group': true, 'has-error': showValidation && email.length < 6}">
                                 <input type="email" class="form-control" v-model="email" placeholder="you@gmail.com" autofocus />
                                 <small v-if="showValidation && email.length < 6" class="text-danger">Please enter your email</small>
@@ -66,12 +66,12 @@
                 <p>If you don't have a username and password you can also <a @click="loadView('phone')">sign in with a phone number</a> or <a @click="loadView('email')">sign in with email</a>.</p>
                 <form @submit.prevent="userLogin">
                     <div class="row text-left">
-                        <div class="col-md-6 col-md-offset-3">
+                        <div class="col-md-8 col-md-offset-2">
                             <div class="form-group">
                                 <input type="text" class="form-control" v-model="username" placeholder="username or email" required autofocus />
                             </div>
                         </div>
-                        <div class="col-md-6 col-md-offset-3">
+                        <div class="col-md-8 col-md-offset-2">
                             <div class="form-group">
                                 <input type="password" class="form-control" v-model="password" placeholder="password" required />
                             </div>
@@ -129,6 +129,25 @@
                 </form>
             </div>
             <button @click="resendCode" class="btn btn-link">Resend Code</button>
+        </div>
+        <div v-if="view == 'userselect'" class="text-center" key="notfound">
+            <h3>Select person <a href="#" tabindex="0" id="person_select"><i class="fa fa-question-circle"></i></a></h3>
+            <b-popover target="person_select" placement="bottom" triggers="focus">
+                Why am I seeing multiple people?
+            </b-popover>
+            <p>Who is making this gift?</p>
+            <div class="row" v-for="user in userResults" :key="user.PeopleId">
+                <div class="col-sm-6 col-sm-offset-3">
+                    <a @click="sendCodeTo(user.PeopleId)" class="btn btn-block btn-default" style="margin-bottom: 14px;">{{ user.Name }}</a>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6 col-sm-offset-3">
+                    <button @click="$emit('back')" class="btn-block btn btn-default" tabindex="-1">
+                        Back
+                    </button>
+                </div>
+            </div>
         </div>
         <div v-if="view == 'notfound'" class="text-center" key="notfound">
             <div class="well">
@@ -281,6 +300,8 @@
                 code4: "",
                 code5: "",
                 code6: "",
+                loginas: null,
+                userResults: [],
                 newUser: {
                     first: "",
                     last: "",
@@ -363,15 +384,27 @@
             resendCode() {
                 this.sendCode(this.method == "phone" ? this.phone : this.email, true);
             },
-            sendCode(search, resend) {
+            sendCodeTo(pid) {
+                this.sendCode(this.method == "phone" ? this.phone : this.email, false, pid);
+            },
+            sendCode(search, resend, sendto = null) {
                 let vm = this;
+                vm.loginas = sendto;
                 axios.post("/Account/SendEasyLoginCode", {
-                    search: search
+                    search: search,
+                    sendto: sendto
                 }).then(
                     response => {
                         if (response.status === 200) {
                             if (response.data.Status == "success") {
-                                vm.loadView('code');
+                                if (response.data.Message.startsWith('[{')) {
+                                    // multiple results
+                                    var result = JSON.parse(response.data.Message);
+                                    vm.userResults = result;
+                                    vm.loadView('userselect');
+                                } else {
+                                    vm.loadView('code');
+                                }
                                 if (resend) {
                                     vm.validationMsg = "Code resent";
                                 }
@@ -407,8 +440,9 @@
                 let code = "" + vm.code1 + vm.code2 + vm.code3 + vm.code4 + vm.code5 + vm.code6;
                 if ($.isNumeric(code) && code.length == 6) {
                     axios.post("/Account/EasyLogin", {
-                        search: vm.phone,
-                        code: code
+                        search: vm.method == 'phone' ? vm.phone : vm.email,
+                        code: code,
+                        loginas: vm.loginas
                     }).then(
                         response => {
                             if (response.status === 200) {

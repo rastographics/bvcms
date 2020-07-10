@@ -9,7 +9,14 @@
                     <div class="row">
                         <div class="col-sm-12">
                             <button v-if="!identity.PeopleId" @click="loadView('signin', true)" class="btn btn-link pull-right"><i class="fa fa-user"></i> Sign In</button>
-                            <button v-else class="btn btn-link pull-right"><i class="fa fa-user"></i> {{ identity.Name }}</button>
+                            <div v-else class="dropdown pull-right">
+                                <button class="btn btn-link dropdown-toggle" id="accountDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <i class="fa fa-user"></i> {{ identity.Name }}
+                                </button>
+                                <div class="dropdown-menu" aria-labelledby="accountDropdown">
+                                    <a class="dropdown-item" :href="'/Account/LogOff?ReturnUrl=/Give/' + page.PageUrl">Sign Out</a>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div v-if="pageTypes.length > 1" class="text-center" style="margin-bottom: 25px;">
@@ -234,6 +241,9 @@
                 .catch(function (error) {
                     console.log(error);
                 });
+            },
+            submitOneTimePayment() {
+                alert('submit!');
             },
             init() {
                 let gift = {
