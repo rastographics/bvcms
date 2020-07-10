@@ -509,11 +509,11 @@ namespace CmsWeb.Models
             return null;
         }
 
-        public static User AddUser(CMSDataContext db, int id)
+        public static User AddUser(CMSDataContext db, int peopleId)
         {
-            var p = db.People.Single(pe => pe.PeopleId == id);
+            var p = db.People.Single(pe => pe.PeopleId == peopleId);
             CMSMembershipProvider.provider.AdminOverride = true;
-            var user = MembershipService.CreateUser(db, id);
+            var user = MembershipService.CreateUser(db, peopleId);
             CMSMembershipProvider.provider.AdminOverride = false;
             user.MustChangePassword = false;
             db.SubmitChanges();
