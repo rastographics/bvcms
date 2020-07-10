@@ -34,6 +34,8 @@ namespace CmsData
                 "https://sendlink",
                 "http://sendlink2",
                 "https://sendlink2",
+                "http://givinglink",
+                "https://givinglink",
                 "{emailhref}",
             };
             foreach (string item in SpecialLinks)

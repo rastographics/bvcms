@@ -52,6 +52,7 @@
         specialLinks.givingTypeSelect.change(specialLinks.refreshForm);
         specialLinks.givingTypeSelect.change(specialLinks.refreshForm);
         specialLinks.givingAmountInput.on('input', specialLinks.refreshForm);
+        specialLinks.orgInput.on('input', specialLinks.refreshForm);
 
         // init
         specialLinks.refreshForm();
@@ -158,7 +159,7 @@
                     let givingPageSelected = givingPagesSelect.options[givingPagesSelect.selectedIndex].value;
                     var currentGivingPageSelected = $("#currentGivingPageSelected").val();
                     if (givingPageSelected.length > 0) {
-                        linkText = window.location.hostname + '/give/' + givingPageSelected + '?';
+                        linkText += '/?givingPageUrl=' + givingPageSelected;
                         if (fundsSelect.options.length === 0 || currentGivingPageSelected !== givingPageSelected) {
                             let length = fundsSelect.options.length;
                             for (i = length - 1; i >= 0; i--) {
@@ -169,7 +170,7 @@
                         else {
                             let fundSelected = fundsSelect.options[fundsSelect.selectedIndex].value;
                             if (fundSelected.length > 0) {
-                                linkText += 'fund=' + fundSelected + '&';
+                                linkText += '&' + 'fund=' + fundSelected;
                             }
                         }
                         $("#currentGivingPageSelected").val(givingPageSelected);
@@ -178,20 +179,20 @@
                         if (givingTypeSelected > 0) {
                             switch (givingTypeSelected) {
                                 case "1":
-                                    linkText += 'type=pledge&';
+                                    linkText += '&type=pledge';
                                     break;
                                 case "2":
-                                    linkText += 'type=onetime&';
+                                    linkText += '&type=onetime';
                                     break;
                                 case "3":
-                                    linkText += 'type=recurring&';
+                                    linkText += '&type=recurring';
                                     break;
                                 default:
                                     break;
                             }
                         }
                         if (givingAmountValue.length > 0) {
-                            linkText += 'amount=' + givingAmountValue + '&';
+                            linkText += '&' + 'amount=' + givingAmountValue;
                         }
                     }
                     else {

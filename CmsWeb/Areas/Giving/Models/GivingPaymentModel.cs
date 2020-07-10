@@ -247,7 +247,7 @@ namespace CmsWeb.Areas.Giving.Models
                 var dollarAmt = 1;
                 var transactionResponse = gateway.AuthCreditCard(currentPeopleId, dollarAmt, viewModel.cardNumber, expires, "Recurring Giving Auth", 0, viewModel.cvv, string.Empty, viewModel.firstName, viewModel.lastName, viewModel.address, viewModel.address2, viewModel.city, viewModel.state, viewModel.country, viewModel.zip, viewModel.phone);
                 if (transactionResponse.Approved == false)
-                    return Message.createErrorReturn("Card authorization failed.", Message.API_ERROR_PAYMENT_METHOD_AUTHORIZATION_FAILED);
+                    return Message.createErrorReturn("Card authorization failed. Message: " + transactionResponse.Message, Message.API_ERROR_PAYMENT_METHOD_AUTHORIZATION_FAILED);
                 else
                 {
                     gateway.VoidCreditCardTransaction(transactionResponse.TransactionId);
