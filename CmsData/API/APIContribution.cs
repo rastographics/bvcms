@@ -456,6 +456,7 @@ namespace CmsData.API
         public string Fund { get; set; }
         public string CampusCode { get; set; }
         public string Description { get; set; }
+        public string Notes { get; set; }
         public string CheckNo { get; set; }
         public int BundleId { get; set; }
         public string TranId { get; set; }

@@ -39,8 +39,7 @@ namespace CMSWebTests
                 var fromDate = new DateTime(2019, 1, 1);
                 var fund = MockFunds.CreateSaveFund(db, true);                
                 var bundleHeader = MockContributions.CreateSaveBundle(db);
-                var pledge = MockContributions.CreateSaveContribution(
-                    db, bundleHeader, fromDate, pledged, peopleId: 1, fundId: fund.FundId, contributionType: ContributionTypeCode.Pledge);
+                var pledge = MockContributions.CreateSaveContribution(db, bundleHeader, fromDate, pledged, peopleId: 1, fundId: fund.FundId, contributionType: ContributionTypeCode.Pledge);
                 MockSettings.CreateSaveSetting(db, "PostContributionPledgeFunds", fund.FundId.ToString());
                 var firstContribution = MockContributions.CreateSaveContribution(db, bundleHeader, fromDate, contributed, peopleId: 1, fundId: fund.FundId, contributionType: ContributionTypeCode.CheckCash);
                 var secondContribution = MockContributions.CreateSaveContribution(db, bundleHeader, fromDate, 100, peopleId: 1, fundId: 2, contributionType: ContributionTypeCode.CheckCash);

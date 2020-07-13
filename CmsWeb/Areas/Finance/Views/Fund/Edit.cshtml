@@ -101,7 +101,7 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-sm-3 col-lg-3">
+                        <div class="col-sm-2 col-lg-2">
                             <div class="form-group">
                                 <label for="FundStatusId" class="control-label">Status</label>
                                 @Html.DropDownList("FundStatusId", CmsWeb.Areas.Finance.Controllers.FundController.GetFundStatusList(), new { @class = "form-control" })
@@ -136,6 +136,15 @@
                                 <label class="control-label">
                                     @Html.CheckBox("EndDateFlag")
                                     Allow end date
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-md-1 col-lg-1">
+                            <label></label>
+                            <div class="checkbox">
+                                <label class="control-label">
+                                    @Html.CheckBox("Notes")
+                                    Notes
                                 </label>
                             </div>
                         </div>
