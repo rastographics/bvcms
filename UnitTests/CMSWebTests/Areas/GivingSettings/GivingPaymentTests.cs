@@ -1,13 +1,9 @@
 ﻿using CmsWeb.Areas.Giving.Models;
 using CMSWebTests.Support;
-using FluentAssertions;
 using SharedTestFixtures;
 using Shouldly;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace CMSWebTests.Areas.GivingSettings
