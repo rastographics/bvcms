@@ -96,27 +96,33 @@
                 });
             },
             toggleDefault(id, value) {
-                axios.post("/Giving/SetGivingDefaultPage", {
-                    value: value,
-                    PageId: id
-                })
-                .then(
-                    response => {
-                        if (response.status === 200) {
-                            if(response.data.PageId !== response.data.OldDefaultPageId && response.data.OldDefaultPageId > 0) {
-                                snackbar(response.data.PageName + " has been " + (response.data.DefaultPage ? "set as default page" : "unset as default page"), "success");
-                                this.fetchGivingPages();
+                if (value == false) {
+                    console.log(value);
+                    snackbar("There must be a default giving page.", "error");
+                    this.fetchGivingPages();
+                } else {
+                    axios.post("/Giving/SetGivingDefaultPage", {
+                        value: value,
+                        PageId: id
+                    })
+                        .then(
+                            response => {
+                                if (response.status === 200) {
+                                    if (response.data.PageId !== response.data.OldDefaultPageId && response.data.OldDefaultPageId > 0) {
+                                        snackbar(response.data.PageName + " has been " + (response.data.DefaultPage ? "set as default page" : "unset as default page"), "success");
+                                        this.fetchGivingPages();
+                                    }
+                                } else {
+                                    snackbar("Error updating giving page status.", "error");
+                                    this.fetchGivingPages();
+                                }
                             }
-                        } else {
+                        )
+                        .catch(error => {
                             snackbar("Error updating giving page status.", "error");
                             this.fetchGivingPages();
-                        }
-                    }
-                )
-                .catch(error => {
-                    snackbar("Error updating giving page status.", "error");
-                    this.fetchGivingPages();
-                });
+                        });
+                }
             },
             getPageTypes: function () {
                 let vm = this;

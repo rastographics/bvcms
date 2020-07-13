@@ -28,6 +28,8 @@ namespace CmsData
 
         private bool _FundPledgeFlag;
 
+        private bool _Notes;
+
         private bool _EndDateFlag;
 
         private int? _FundAccountCode;
@@ -99,6 +101,9 @@ namespace CmsData
 
         partial void OnFundPledgeFlagChanging(bool value);
         partial void OnFundPledgeFlagChanged();
+        
+        partial void OnNotesChanging(bool value);
+        partial void OnNotesChanged();
 
         partial void OnEndDateFlagChanging(bool value);
         partial void OnEndDateFlagChanged();
@@ -296,6 +301,23 @@ namespace CmsData
                     _FundPledgeFlag = value;
                     SendPropertyChanged("FundPledgeFlag");
                     OnFundPledgeFlagChanged();
+                }
+            }
+        }
+
+        [Column(Name = "Notes", UpdateCheck = UpdateCheck.Never, Storage = "_Notes", DbType = "bit NOT NULL")]
+        public bool Notes
+        {
+            get => _Notes;
+            set
+            {
+                if (_Notes != value)
+                {
+                    OnNotesChanging(value);
+                    SendPropertyChanging();
+                    _Notes = value;
+                    SendPropertyChanged("Notes");
+                    OnNotesChanged();
                 }
             }
         }

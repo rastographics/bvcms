@@ -22,9 +22,7 @@ namespace CmsWeb.Areas.Finance.Controllers
         }
 
         [Route("~/Contributions/{id:int?}")]
-        public ActionResult Index(int? id, int? year, int? fundId, DateTime? dt1, DateTime? dt2, int? campus, int? bundletype,
-            bool? includeunclosedbundles = true, int online = 2, string taxnontax = "TaxDed", string fundSet = null, 
-			bool filterbyactivetag = false, string setQueryTag = null)
+        public ActionResult Index(int? id, int? year, int? fundId, DateTime? dt1, DateTime? dt2, int? campus, int? bundletype, bool? includeunclosedbundles = true, int online = 2, string taxnontax = "TaxDed", string fundSet = null, bool filterbyactivetag = false, string setQueryTag = null)
         {
             if (setQueryTag.HasValue())
                 Util2.CurrentTag = $"QueryTag:{setQueryTag}";
