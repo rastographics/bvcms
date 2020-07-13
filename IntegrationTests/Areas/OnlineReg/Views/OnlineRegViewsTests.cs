@@ -36,7 +36,7 @@ namespace IntegrationTests.Areas.OnlineReg.Views
 
             SettingUtils.UpdateSetting("UseRecaptcha", "false");
 
-            PayRegistration(OrgId, true);            
+            PayRegistration(OrgId, true);
 
             var startNewTransaction = Find(xpath: "//a[contains(text(),'Start a New Transaction')]");
             startNewTransaction.ShouldNotBeNull();
@@ -91,7 +91,7 @@ namespace IntegrationTests.Areas.OnlineReg.Views
 
             OrgId = CreateOrgWithFee();
 
-            SettingUtils.UpdateSetting("UseRecaptcha", "false");            
+            SettingUtils.UpdateSetting("UseRecaptcha", "false");
 
             Open($"{rootUrl}OnlineReg/{OrgId}");
 
@@ -162,7 +162,7 @@ namespace IntegrationTests.Areas.OnlineReg.Views
             var family = user.Person.Family;
 
             var deceasedPerson = CreatePerson(family);
-            deceasedPerson.DeceasedDate = DateTime.Now.AddYears(-10);            
+            deceasedPerson.DeceasedDate = DateTime.Now.AddYears(-10);
             db.SubmitChanges();
 
             Login();
@@ -171,6 +171,25 @@ namespace IntegrationTests.Areas.OnlineReg.Views
             Wait(3);
             PageSource.ShouldContain(user.Person.FirstName);
             PageSource.ShouldNotContain(deceasedPerson.FirstName);
+        }
+
+        [Fact]
+        public void Should_Complete_Acceptiva_Payment()
+        {
+            MaximizeWindow();
+
+            username = RandomString();
+            password = RandomString();
+            string roleName = "role_" + RandomString();
+            var user = CreateUser(username, password, roles: new string[] { "Access", "Edit", "Admin" });
+            FinanceTestUtils.CreateMockPaymentProcessor(db, PaymentProcessTypes.OnlineRegistration, GatewayTypes.Acceptiva);
+            Login();
+
+            OrgId = CreateOrgWithFee();
+
+            PayRegistration(OrgId);
+
+            PageSource.ShouldContain("Transaction Completed");
         }
 
         public override void Dispose()
