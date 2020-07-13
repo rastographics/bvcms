@@ -208,10 +208,10 @@ namespace CmsData.Finance
             else
             {
                 transactionResponse.Approved = true;
-                transactionResponse.AuthCode = response.Response.ProcessorResponseCode;
                 transactionResponse.Message = $"{response.Response.TransStatusMsg}#{response.Response.Items.First().IdString}";
-                transactionResponse.TransactionId = response.Response.TransIdStr;
             }
+            transactionResponse.AuthCode = response.Response.ProcessorResponseCode;
+            transactionResponse.TransactionId = response.Response.TransIdStr;
 
             if (_automaticSettle && transactionResponse.Approved)
                 SettleTransaction(response.Response.TransIdStr);
@@ -405,10 +405,10 @@ namespace CmsData.Finance
             else
             {
                 transactionResponse.Approved = true;
-                transactionResponse.AuthCode = response.Response.ProcessorResponseCode;
-                transactionResponse.Message = $"{response.Response.TransStatusMsg}#{response.Response.Items.First().IdString}";
-                transactionResponse.TransactionId = response.Response.TransIdStr;
+                transactionResponse.Message = $"{response.Response.TransStatusMsg}#{response.Response.Items.First().IdString}";                
             }
+            transactionResponse.AuthCode = response.Response.ProcessorResponseCode;
+            transactionResponse.TransactionId = response.Response.TransIdStr;
 
             return transactionResponse;
         }
@@ -428,10 +428,10 @@ namespace CmsData.Finance
             else
             {
                 transactionResponse.Approved = true;
-                transactionResponse.AuthCode = response.Response.ProcessorResponseCode;
                 transactionResponse.Message = $"{response.Response.TransStatusMsg}#{response.Response.Items.First().IdString}";
-                transactionResponse.TransactionId = response.Response.TransIdStr;
             }
+            transactionResponse.AuthCode = response.Response.ProcessorResponseCode;
+            transactionResponse.TransactionId = response.Response.TransIdStr;
 
             return transactionResponse;
         }
@@ -457,20 +457,12 @@ namespace CmsData.Finance
             else
             {
                 transactionResponse.Approved = true;
-                transactionResponse.AuthCode = response.Response.ProcessorResponseCode;
                 transactionResponse.Message = $"{response.Response.TransStatusMsg}#{response.Response.Items.First().IdString}";
-                transactionResponse.TransactionId = response.Response.TransIdStr;
             }
+            transactionResponse.AuthCode = response.Response.ProcessorResponseCode;
+            transactionResponse.TransactionId = response.Response.TransIdStr;
 
             return transactionResponse;
-
-            //return new TransactionResponse
-            //{
-            //    Approved = response.Response.Status == "success" ? true : false,
-            //    AuthCode = response.Response.ProcessorResponseCode,
-            //    Message = response.Response.Errors.FirstOrDefault()?.ErrorMsg,
-            //    TransactionId = response.Response.TransIdStr
-            //};
         }
 
         private TransactionResponse RefundTransaction(string reference, decimal amt)
@@ -494,10 +486,10 @@ namespace CmsData.Finance
             else
             {
                 transactionResponse.Approved = true;
-                transactionResponse.AuthCode = response.Response.ProcessorResponseCode;
                 transactionResponse.Message = $"{response.Response.TransStatusMsg}#{response.Response.Items.First().IdString}";
-                transactionResponse.TransactionId = response.Response.TransIdStr;
             }
+            transactionResponse.AuthCode = response.Response.ProcessorResponseCode;
+            transactionResponse.TransactionId = response.Response.TransIdStr;
 
             return transactionResponse;            
         }
