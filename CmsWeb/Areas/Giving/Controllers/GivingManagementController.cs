@@ -24,6 +24,31 @@ namespace CmsWeb.Areas.Giving.Controllers
         [Route("~/Giving")]
         public ActionResult Index()
         {
+            //GivingPaymentViewModel viewModel = new GivingPaymentViewModel()
+            //{
+            //    paymentTypeId = 2,
+            //    isDefault = true,
+            //    name = "My Visa",
+            //    firstName = "Jason",
+            //    lastName = "Rice",
+            //    cardNumber = "4111111111111111",
+            //    cvv = "999",
+            //    expiresMonth = "05",
+            //    expiresYear = "2019",
+            //    address = "33",
+            //    address2 = "55",
+            //    city = "Dallas",
+            //    state = "Texas",
+            //    country = "United States",
+            //    zip = "99997-0008",
+            //    phone = "2149123704",
+            //    transactionTypeId = "authOnlyTransaction",
+            //    incomingPeopleId = 3199047,
+            //    testing = true
+            //};
+            //var model = new GivingPaymentModel(CurrentDatabase);
+            //var result = model.CreateMethod(viewModel);
+
             return View();
         }
 
