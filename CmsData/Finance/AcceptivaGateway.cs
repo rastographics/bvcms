@@ -198,20 +198,7 @@ namespace CmsData.Finance
 
             var response = achCharge.Execute();
 
-            var transactionResponse = new TransactionResponse();
-
-            if (response.Response.Status != "success")
-            {
-                transactionResponse.Approved = false;
-                transactionResponse.Message = $"Error{response.Response.Errors.FirstOrDefault()?.ErrorNo}:{response.Response.Errors.FirstOrDefault()?.ErrorMsg}";
-            }
-            else
-            {
-                transactionResponse.Approved = true;
-                transactionResponse.Message = $"{response.Response.TransStatusMsg}#{response.Response.Items.First().IdString}";
-            }
-            transactionResponse.AuthCode = response.Response.ProcessorResponseCode;
-            transactionResponse.TransactionId = response.Response.TransIdStr;
+            var transactionResponse = GetTransactionResponse(response.Response);
 
             if (_automaticSettle && transactionResponse.Approved)
                 SettleTransaction(response.Response.TransIdStr);
@@ -395,45 +382,15 @@ namespace CmsData.Finance
 
             var response = cardCharge.Execute();
 
-            var transactionResponse = new TransactionResponse();
-
-            if (response.Response.Status != "success")
-            {
-                transactionResponse.Approved = false;
-                transactionResponse.Message = $"Error{response.Response.Errors.FirstOrDefault()?.ErrorNo}:{response.Response.Errors.FirstOrDefault()?.ErrorMsg}";
-            }
-            else
-            {
-                transactionResponse.Approved = true;
-                transactionResponse.Message = $"{response.Response.TransStatusMsg}#{response.Response.Items.First().IdString}";                
-            }
-            transactionResponse.AuthCode = response.Response.ProcessorResponseCode;
-            transactionResponse.TransactionId = response.Response.TransIdStr;
-
-            return transactionResponse;
+            return GetTransactionResponse(response.Response);
         }
 
         private TransactionResponse StoredPayerCharge(string merchId, string acceptivaPayerId, decimal amt, string tranId, string description, int paymentType, string lname, string fname)
         {
             var storedPayerCharge = new StoredPayerCharge(_isTesting, _apiKey, merchId, acceptivaPayerId, amt, tranId, description, paymentType, lname, fname);
-            var response = storedPayerCharge.Execute();
+            var response = storedPayerCharge.Execute();            
 
-            var transactionResponse = new TransactionResponse();
-
-            if (response.Response.Status != "success")
-            {
-                transactionResponse.Approved = false;
-                transactionResponse.Message = $"Error{response.Response.Errors.FirstOrDefault()?.ErrorNo}:{response.Response.Errors.FirstOrDefault()?.ErrorMsg}";
-            }
-            else
-            {
-                transactionResponse.Approved = true;
-                transactionResponse.Message = $"{response.Response.TransStatusMsg}#{response.Response.Items.First().IdString}";
-            }
-            transactionResponse.AuthCode = response.Response.ProcessorResponseCode;
-            transactionResponse.TransactionId = response.Response.TransIdStr;
-
-            return transactionResponse;
+            return GetTransactionResponse(response.Response);
         }
 
         private void SettleTransaction(string transactionId)
@@ -447,22 +404,7 @@ namespace CmsData.Finance
             var voidTrans = new VoidTrans(_isTesting, _apiKey, reference);
             var response = voidTrans.Execute();
 
-            var transactionResponse = new TransactionResponse();
-
-            if (response.Response.Status != "success")
-            {
-                transactionResponse.Approved = false;
-                transactionResponse.Message = $"Error{response.Response.Errors.FirstOrDefault()?.ErrorNo}:{response.Response.Errors.FirstOrDefault()?.ErrorMsg}";
-            }
-            else
-            {
-                transactionResponse.Approved = true;
-                transactionResponse.Message = $"{response.Response.TransStatusMsg}#{response.Response.Items.First().IdString}";
-            }
-            transactionResponse.AuthCode = response.Response.ProcessorResponseCode;
-            transactionResponse.TransactionId = response.Response.TransIdStr;
-
-            return transactionResponse;
+            return GetTransactionResponse(response.Response);
         }
 
         private TransactionResponse RefundTransaction(string reference, decimal amt)
@@ -476,22 +418,27 @@ namespace CmsData.Finance
             var refundTrans = new RefundTransPartial(_isTesting, _apiKey, reference, idString, amt);
             var response = refundTrans.Execute();
 
+            return GetTransactionResponse(response.Response);
+        }
+
+        private TransactionResponse GetTransactionResponse(Response response)
+        {
             var transactionResponse = new TransactionResponse();
 
-            if (response.Response.Status != "success")
+            if (response.Status != "success")
             {
                 transactionResponse.Approved = false;
-                transactionResponse.Message = $"Error{response.Response.Errors.FirstOrDefault()?.ErrorNo}:{response.Response.Errors.FirstOrDefault()?.ErrorMsg}";
+                transactionResponse.Message = $"Error{response.Errors.FirstOrDefault()?.ErrorNo}:{response.Errors.FirstOrDefault()?.ErrorMsg}";
             }
             else
             {
                 transactionResponse.Approved = true;
-                transactionResponse.Message = $"{response.Response.TransStatusMsg}#{response.Response.Items.First().IdString}";
+                transactionResponse.Message = $"{response.TransStatusMsg}#{response.Items.First().IdString}";
             }
-            transactionResponse.AuthCode = response.Response.ProcessorResponseCode;
-            transactionResponse.TransactionId = response.Response.TransIdStr;
+            transactionResponse.AuthCode = response.ProcessorResponseCode;
+            transactionResponse.TransactionId = response.TransIdStr;
 
-            return transactionResponse;            
+            return transactionResponse;
         }
 
         private void MarkBatchesAsComplete(List<BatchTransaction> batchTransactions)
@@ -625,11 +572,6 @@ namespace CmsData.Finance
 
         private void StorePayerData(Person person, PaymentInfo paymentInfo, string cardNumber, string expires, string account, string routing)
         {
-            //var creditCard = new CreditCard();
-            //creditCard.CardNum = cardNumber;
-            //creditCard.CardExpiration = expires;
-            //var storePayer = new StorePayer();
-
             var storePayer = new StorePayer(
                 _isTesting,
                 _apiKey,
