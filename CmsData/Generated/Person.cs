@@ -314,9 +314,13 @@ namespace CmsData
 
         private EntitySet<ScheduledGift> _ScheduledGifts;
 
+        private EntitySet<SmsGroupOptOut> _SmsGroupOptOuts;
+
         private EntitySet<SMSItem> _SMSItems;
 
         private EntitySet<SMSList> _SMSLists;
+
+        private EntitySet<SmsReceived> _SmsReceiveds;
 
         private EntitySet<GoerSupporter> _FK_Supporters;
 
@@ -830,7 +834,7 @@ namespace CmsData
 
             _PaymentInfos = new EntitySet<PaymentInfo>(new Action<PaymentInfo>(attach_PaymentInfos), new Action<PaymentInfo>(detach_PaymentInfos));
 
-            _PaymentMethods = new EntitySet<PaymentMethod>(new Action<PaymentMethod>(this.attach_PaymentMethods), new Action<PaymentMethod>(detach_PaymentMethods));
+            _PaymentMethods = new EntitySet<PaymentMethod>(new Action<PaymentMethod>(attach_PaymentMethods), new Action<PaymentMethod>(detach_PaymentMethods));
 
             _PeopleExtras = new EntitySet<PeopleExtra>(new Action<PeopleExtra>(attach_PeopleExtras), new Action<PeopleExtra>(detach_PeopleExtras));
 
@@ -842,9 +846,13 @@ namespace CmsData
 
             _ScheduledGifts = new EntitySet<ScheduledGift>(new Action<ScheduledGift>(attach_ScheduledGifts), new Action<ScheduledGift>(detach_ScheduledGifts));
 
+            _SmsGroupOptOuts = new EntitySet<SmsGroupOptOut>(new Action<SmsGroupOptOut>(attach_SmsGroupOptOuts), new Action<SmsGroupOptOut>(detach_SmsGroupOptOuts));
+
             _SMSItems = new EntitySet<SMSItem>(new Action<SMSItem>(attach_SMSItems), new Action<SMSItem>(detach_SMSItems));
 
             _SMSLists = new EntitySet<SMSList>(new Action<SMSList>(attach_SMSLists), new Action<SMSList>(detach_SMSLists));
+
+            _SmsReceiveds = new EntitySet<SmsReceived>(new Action<SmsReceived>(attach_SmsReceiveds), new Action<SmsReceived>(detach_SmsReceiveds));
 
             _FK_Supporters = new EntitySet<GoerSupporter>(new Action<GoerSupporter>(attach_FK_Supporters), new Action<GoerSupporter>(detach_FK_Supporters));
 
@@ -3324,6 +3332,13 @@ namespace CmsData
             set => _ScheduledGifts.Assign(value);
         }
 
+        [Association(Name = "FK_SmsGroupOptOut_People", Storage = "_SmsGroupOptOuts", OtherKey = "ToPeopleId")]
+        public EntitySet<SmsGroupOptOut> SmsGroupOptOuts
+        {
+            get => _SmsGroupOptOuts;
+            set => _SmsGroupOptOuts.Assign(value);
+        }
+
         [Association(Name = "FK_SMSItems_People", Storage = "_SMSItems", OtherKey = "PeopleID")]
         public EntitySet<SMSItem> SMSItems
         {
@@ -3336,6 +3351,13 @@ namespace CmsData
         {
             get => _SMSLists;
             set => _SMSLists.Assign(value);
+        }
+
+        [Association(Name = "FK_SmsReceived_People", Storage = "_SmsReceiveds", OtherKey = "FromPeopleId")]
+        public EntitySet<SmsReceived> SmsReceiveds
+        {
+            get => _SmsReceiveds;
+            set => _SmsReceiveds.Assign(value);
         }
 
         [Association(Name = "FK_Supporters__Goer", Storage = "_FK_Supporters", OtherKey = "GoerId")]
@@ -3524,8 +3546,7 @@ namespace CmsData
             set
             {
                 Organization previousValue = _BFClass.Entity;
-                if (((previousValue != value)
-                            || (_BFClass.HasLoadedOrAssignedValue == false)))
+                if (previousValue != value || _BFClass.HasLoadedOrAssignedValue == false)
                 {
                     SendPropertyChanging();
                     if (previousValue != null)
@@ -4612,6 +4633,18 @@ namespace CmsData
             entity.Person = null;
         }
 
+        private void attach_SmsGroupOptOuts(SmsGroupOptOut entity)
+        {
+            SendPropertyChanging();
+            entity.Person = this;
+        }
+
+        private void detach_SmsGroupOptOuts(SmsGroupOptOut entity)
+        {
+            SendPropertyChanging();
+            entity.Person = null;
+        }
+
         private void attach_SMSItems(SMSItem entity)
         {
             SendPropertyChanging();
@@ -4631,6 +4664,18 @@ namespace CmsData
         }
 
         private void detach_SMSLists(SMSList entity)
+        {
+            SendPropertyChanging();
+            entity.Person = null;
+        }
+
+        private void attach_SmsReceiveds(SmsReceived entity)
+        {
+            SendPropertyChanging();
+            entity.Person = this;
+        }
+
+        private void detach_SmsReceiveds(SmsReceived entity)
         {
             SendPropertyChanging();
             entity.Person = null;
