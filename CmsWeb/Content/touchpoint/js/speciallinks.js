@@ -13,6 +13,14 @@
     secondaryRows: $('#small_group.row, #message.row, #confirmation.row'),
     resultRow: $('#result.row'),
     resultInput: $('#result.row input'),
+    givingPagesRow: $('#givingpages.row'),
+    givingPagesSelect: $('#givingPagesSelect'),
+    fundsRow: $('#funds.row'),
+    fundsSelect: $('#fundsSelect'),
+    givingTypeRow: $('#givingType.row'),
+    givingTypeSelect: $('#givingTypeSelect'),
+    givingAmountRow: $('#givingAmount.row'),
+    givingAmountInput: $('#givingAmountInput'),
 
     init: function () {
         // toggle visibility
@@ -39,7 +47,12 @@
         // update result row and toggle inputs
         specialLinks.typeSelect.change(specialLinks.refreshForm);
         specialLinks.confirmationSelect.change(specialLinks.refreshForm);
-        specialLinks.formInput.on('input', specialLinks.refreshForm);
+        specialLinks.givingPagesSelect.change(specialLinks.refreshForm);
+        specialLinks.fundsSelect.change(specialLinks.refreshForm);
+        specialLinks.givingTypeSelect.change(specialLinks.refreshForm);
+        specialLinks.givingTypeSelect.change(specialLinks.refreshForm);
+        specialLinks.givingAmountInput.on('input', specialLinks.refreshForm);
+        specialLinks.orgInput.on('input', specialLinks.refreshForm);
 
         // init
         specialLinks.refreshForm();
@@ -54,6 +67,7 @@
         var linkType = specialLinks.typeSelect.val();
         var linkText = 'https://' + linkType;
         var orgId = specialLinks.orgInput.val();
+        var givingAmountValue = specialLinks.givingAmountInput.val();
 
         switch (linkType) {
             case 'registerlink':
@@ -62,11 +76,16 @@
             case 'sendlink2':
             case 'supportlink':
                 specialLinks.orgRow.show();
+                specialLinks.givingPagesRow.hide();
+                specialLinks.fundsRow.hide();
+                specialLinks.givingTypeRow.hide();
+                specialLinks.givingAmountRow.hide();
                 specialLinks.meetingRow.hide();
                 specialLinks.secondaryRows.hide();
                 if (orgId.length) {
                     linkText += '/?org=' + orgId;
-                } else {
+                }
+                else {
                     linkText = '';
                 }
                 break;
@@ -74,6 +93,10 @@
             case 'rsvplink':
             case 'regretslink':
                 specialLinks.orgRow.hide();
+                specialLinks.givingPagesRow.hide();
+                specialLinks.fundsRow.hide();
+                specialLinks.givingTypeRow.hide();
+                specialLinks.givingAmountRow.hide();
                 specialLinks.meetingRow.show();
                 specialLinks.secondaryRows.show();
                 var message = specialLinks.messageInput.val();
@@ -88,13 +111,18 @@
                     if (message.length) {
                         linkText += '&msg=' + message;
                     }
-                } else {
+                }
+                else {
                     linkText = '';
                 }
                 break;
 
             case 'votelink':
                 specialLinks.orgRow.show();
+                specialLinks.givingPagesRow.hide();
+                specialLinks.fundsRow.hide();
+                specialLinks.givingTypeRow.hide();
+                specialLinks.givingAmountRow.hide();
                 specialLinks.meetingRow.hide();
                 specialLinks.secondaryRows.show();
                 message = specialLinks.messageInput.val();
@@ -108,8 +136,68 @@
                     if (smallGroup.length) {
                         linkText += '&group=' + smallGroup;
                     }
-                } else {
+                }
+                else {
                     linkText = '';
+                }
+                break;
+
+            case 'givinglink':
+                specialLinks.orgRow.hide();
+                specialLinks.givingPagesRow.show();
+                specialLinks.fundsRow.show();
+                specialLinks.givingTypeRow.show();
+                specialLinks.givingAmountRow.show();
+                specialLinks.meetingRow.hide();
+                specialLinks.secondaryRows.hide();
+                var length = givingPagesSelect.options.length;
+                if (length === 0) {
+                    linkText = '';
+                    GetGivingPagesList();
+                }
+                else {
+                    let givingPageSelected = givingPagesSelect.options[givingPagesSelect.selectedIndex].value;
+                    var currentGivingPageSelected = $("#currentGivingPageSelected").val();
+                    if (givingPageSelected.length > 0) {
+                        linkText += '/?givingPageUrl=' + givingPageSelected;
+                        if (fundsSelect.options.length === 0 || currentGivingPageSelected !== givingPageSelected) {
+                            let length = fundsSelect.options.length;
+                            for (i = length - 1; i >= 0; i--) {
+                                fundsSelect.options[i] = null;
+                            }
+                            GetFundsList(givingPageSelected);
+                        }
+                        else {
+                            let fundSelected = fundsSelect.options[fundsSelect.selectedIndex].value;
+                            if (fundSelected.length > 0) {
+                                linkText += '&' + 'fund=' + fundSelected;
+                            }
+                        }
+                        $("#currentGivingPageSelected").val(givingPageSelected);
+                        
+                        let givingTypeSelected = givingTypeSelect.options[givingTypeSelect.selectedIndex].value;
+                        if (givingTypeSelected > 0) {
+                            switch (givingTypeSelected) {
+                                case "1":
+                                    linkText += '&type=pledge';
+                                    break;
+                                case "2":
+                                    linkText += '&type=onetime';
+                                    break;
+                                case "3":
+                                    linkText += '&type=recurring';
+                                    break;
+                                default:
+                                    break;
+                            }
+                        }
+                        if (givingAmountValue.length > 0) {
+                            linkText += '&' + 'amount=' + givingAmountValue;
+                        }
+                    }
+                    else {
+                        linkText = '';
+                    }
                 }
                 break;
 
@@ -117,6 +205,10 @@
                 linkText = '';
                 specialLinks.secondaryRows.hide();
                 specialLinks.orgRow.hide();
+                specialLinks.givingPagesRow.hide();
+                specialLinks.fundsRow.hide();
+                specialLinks.givingTypeRow.hide();
+                specialLinks.givingAmountRow.hide();
                 specialLinks.meetingRow.hide();
                 specialLinks.formInput.val('');
                 break;
@@ -131,3 +223,53 @@
 };
 
 specialLinks.init();
+
+function GetGivingPagesList() {
+    $.ajax({
+        type: "Get",
+        dataType: "json",
+        url: "/Giving/GetSimpleGivingPages",
+        success: function (data) {
+            let givingPagesSelect = $("#givingPagesSelect");
+            let optionZero = $("<option/>", {
+                value: 0,
+                text: 'Select Giving Page',
+                select: true
+            });
+            givingPagesSelect.append(optionZero);
+            $.each(data, function (key, value) {
+                let option = $("<option/>", {
+                    value: value.PageUrl,
+                    text: value.PageName
+                });
+                givingPagesSelect.append(option);
+            });
+        }
+    });
+}
+function GetFundsList(givingPageTitle) {
+    $.ajax({
+        type: "Get",
+        dataType: "json",
+        url: "/Giving/GetFundsByGivingPage",
+        data: {
+            givingPageTitle: givingPageTitle
+        },
+        success: function (data) {
+            let fundsSelect = $("#fundsSelect");
+            let optionZero = $("<option/>", {
+                value: 0,
+                text: 'Select Fund',
+                select: true
+            });
+            fundsSelect.append(optionZero);
+            $.each(data, function (key, value) {
+                let option = $("<option/>", {
+                    value: value.FundId,
+                    text: value.FundName
+                });
+                fundsSelect.append(option);
+            });
+        }
+    });
+}

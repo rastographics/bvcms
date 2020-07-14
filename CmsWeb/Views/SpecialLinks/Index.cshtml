@@ -22,6 +22,7 @@
                                 <option value="sendlink2">Send Link 2 (Family)</option>
                                 <option value="supportlink">Support Link</option>
                                 <option value="votelink">Vote Link</option>
+                                <option value="givinglink">Giving Page Link</option>
                             </select>
                         </div>
                     </div>
@@ -32,6 +33,44 @@
                         <div class="col-sm-8">
                             <input type="number" class="form-control" name="org_id" />
                         </div>
+                    </div>
+                    <div id="givingpages" class="row form-group">
+                        <div class="col-sm-4">
+                            <label for="givingpages">Giving Page</label>
+                        </div>
+                        <div class="col-sm-8">
+                            <select class="form-control" id="givingPagesSelect"></select>
+                        </div>
+                    </div>
+                    <div id="funds" class="row form-group">
+                        <div class="col-sm-4">
+                            <label for="funds">Fund</label>
+                        </div>
+                        <div class="col-sm-8">
+                            <select class="form-control" id="fundsSelect"></select>
+                        </div>
+                    </div>
+                    <div id="givingType" class="row form-group">
+                        <div class="col-sm-4">
+                            <label for="givingType">Giving Type</label>
+                        </div>
+                        <div class="col-sm-8">
+                            <select class="form-control" id="givingTypeSelect">
+                                <option value="0" selected>Select Giving Type</option>
+                                <option value="1">Pledge</option>
+                                <option value="2">One Time</option>
+                                <option value="3">Recurring</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div id="givingAmount" class="row form-group">
+                        <div class="col-sm-4">
+                            <label for="givingAmount">Amount</label>
+                        </div>
+                        <div class="col-sm-8">
+                            <input type="number" class="form-control" id="givingAmountInput" />
+                        </div>
+                        <input type="text" class="form-control" id="currentGivingPageSelected" style="display:none" />
                     </div>
                     <div id="meeting_id" class="row form-group">
                         <div class="col-sm-4">

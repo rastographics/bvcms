@@ -7,6 +7,8 @@ using CmsData.Codes;
 using CmsData.Classes.Giving;
 using System.Text.RegularExpressions;
 using MoreLinq;
+using System.Collections.Generic;
+using CmsData;
 
 namespace CmsWeb.Areas.Giving.Controllers
 {
@@ -118,6 +120,14 @@ namespace CmsWeb.Areas.Giving.Controllers
         }
 
         [HttpGet]
+        public JsonResult GetFundsByGivingPage(string givingPageTitle)
+        {
+            var model = new GivingPageModel(CurrentDatabase);
+            var result = model.GetFundsByGivingPageUrl(givingPageTitle);
+            return Json(result, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpGet]
         public JsonResult GetGivingFrequencies()
         {
             var givingFrequencyList = (from t in CurrentDatabase.ScheduledGiftTypes orderby t.Id select new { Id = t.Id, Name = t.Description }).ToList();
@@ -172,6 +182,15 @@ namespace CmsWeb.Areas.Giving.Controllers
                              orderby c.Name
                              select new { c.Id, Name = c.Title }).ToList();
             return Json(shellList, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpGet]
+        public JsonResult GetSimpleGivingPages()
+        {
+            var givingPages = (from g in CurrentDatabase.GivingPages
+                             orderby g.PageName
+                             select new { g.GivingPageId, g.PageName, g.PageUrl }).ToList();
+            return Json(givingPages, JsonRequestBehavior.AllowGet);
         }
     }
 }

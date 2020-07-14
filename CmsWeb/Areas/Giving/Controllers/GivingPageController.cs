@@ -42,10 +42,10 @@ namespace CmsWeb.Areas.Giving.Controllers
         }
 
         [HttpGet]
-        [Route("~/Give/{id}")]
-        public ActionResult Index(string id, string type = null, int fund = 0, string amount = null)
+        [Route("~/Give/{givingPageUrl}")]
+        public ActionResult Index(string givingPageUrl, string type = null, int fund = 0, string amount = null)
         {
-            var givingPage = CurrentDatabase.GivingPages.Where(p => p.PageUrl == id).SingleOrDefault();
+            var givingPage = CurrentDatabase.GivingPages.Where(p => p.PageUrl == givingPageUrl).SingleOrDefault();
             if (givingPage == null)
             {
                 // no giving page at this url

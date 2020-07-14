@@ -206,6 +206,28 @@ namespace CmsWeb.Areas.Giving.Models
             givingPageItem.DefaultPage = givingPage.DefaultPage;
             return givingPageItem;
         }
+
+        public List<ContributionFund> GetFundsByGivingPageUrl(string givingPageTitle)
+        {
+            var givingPage = (from g in CurrentDatabase.GivingPages where g.PageUrl == givingPageTitle select g).FirstOrDefault();
+            if (givingPage == null)
+                return null;
+            else
+            {
+                var fundsList = new List<ContributionFund>();
+                foreach (var item in givingPage.GivingPageFunds)
+                {
+                    var fund = new ContributionFund()
+                    {
+                        FundId = item.ContributionFund.FundId,
+                        FundName = item.ContributionFund.FundName
+                    };
+                    fundsList.Add(fund);
+                }
+                fundsList.OrderBy(f => f.FundName);
+                return fundsList;
+            }
+        }
     }
 
     public class GivingPageItem

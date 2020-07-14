@@ -247,7 +247,7 @@ namespace CmsWeb.Areas.Giving.Models
                 var dollarAmt = 1;
                 var transactionResponse = gateway.AuthCreditCard(currentPeopleId, dollarAmt, viewModel.cardNumber, expires, "Recurring Giving Auth", 0, viewModel.cvv, string.Empty, viewModel.firstName, viewModel.lastName, viewModel.address, viewModel.address2, viewModel.city, viewModel.state, viewModel.country, viewModel.zip, viewModel.phone);
                 if (transactionResponse.Approved == false)
-                    return Message.createErrorReturn("Card authorization failed.", Message.API_ERROR_PAYMENT_METHOD_AUTHORIZATION_FAILED);
+                    return Message.createErrorReturn("Card authorization failed. Message: " + transactionResponse.Message, Message.API_ERROR_PAYMENT_METHOD_AUTHORIZATION_FAILED);
                 else
                 {
                     gateway.VoidCreditCardTransaction(transactionResponse.TransactionId);
@@ -290,10 +290,13 @@ namespace CmsWeb.Areas.Giving.Models
 
         public Message CreateSchedule(GivingPaymentViewModel viewModel)
         {
-            if (viewModel.peopleId != CurrentDatabase.CurrentPeopleId)
-                return Message.createErrorReturn("People Id does not match the current people id.", Message.API_ERROR_SCHEDULED_GIFT__PEOPLE_ID_NOT_FOUND);
-            if (viewModel.peopleId == null)
-                return Message.createErrorReturn("People Id is a required field, but is missing.", Message.API_ERROR_SCHEDULED_GIFT__PEOPLE_ID_NOT_FOUND);
+            if (viewModel.testing == false)
+            {
+                if (viewModel.peopleId != CurrentDatabase.CurrentPeopleId)
+                    return Message.createErrorReturn("People Id does not match the current people id.", Message.API_ERROR_SCHEDULED_GIFT__PEOPLE_ID_NOT_FOUND);
+                if (viewModel.peopleId == null)
+                    return Message.createErrorReturn("People Id is a required field, but is missing.", Message.API_ERROR_SCHEDULED_GIFT__PEOPLE_ID_NOT_FOUND);
+            }
             if (viewModel.scheduleTypeId == null || viewModel.scheduleTypeId == 0)
                 return Message.createErrorReturn("No scheduled gift type ID found.", Message.API_ERROR_SCHEDULED_GIFT_TYPE_ID_NOT_FOUND);
             if (viewModel.start == null)
@@ -317,9 +320,16 @@ namespace CmsWeb.Areas.Giving.Models
                     return Message.createErrorReturn("Contribution fund not found.", Message.API_ERROR_SCHEDULED_GIFT_FUND_ID_NOT_FOUND);
             }
 
+            // this is for testing purposes
+            int currentPeopleId = 0;
+            if (viewModel.incomingPeopleId == null)
+                currentPeopleId = (int)CurrentDatabase.UserPeopleId;
+            else
+                currentPeopleId = (int)viewModel.incomingPeopleId;
+
             var scheduledGift = new ScheduledGift()
             {
-                PeopleId = (int)CurrentDatabase.UserPeopleId,
+                PeopleId = currentPeopleId,
                 ScheduledGiftTypeId = (int)viewModel.scheduleTypeId,
                 PaymentMethodId = (Guid)viewModel.paymentMethodId,
                 IsEnabled = false,
