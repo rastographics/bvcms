@@ -703,7 +703,10 @@ namespace CmsData
             if (body.Contains("{tracklinks}", true))
             {
                 body = body.Replace("{tracklinks}", "", ignoreCase: true);
+                if (ConfigurationManager.AppSettings["UseClickTracking"].ToBool())
+                {
                 body = CreateClickTracking(emailqueue.Id, body);
+                }
             }
             return body;
         }
