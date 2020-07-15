@@ -6,6 +6,7 @@ using CMSWebTests.Support;
 using CmsWeb.Lifecycle;
 using CmsWeb.Membership;
 using CmsWeb.Areas.Giving.Models;
+using System;
 
 namespace CMSWebTests.Areas.Finance
 {
@@ -34,7 +35,7 @@ namespace CMSWebTests.Areas.Finance
                 cardNumber = "4111111111111111",
                 cvv = "999",
                 expiresMonth = "05",
-                expiresYear = "2099",
+                expiresYear = DateTime.Now.AddYears(2).Year.ToString(),
                 address = "33",
                 address2 = "55",
                 city = "Dallas",

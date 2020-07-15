@@ -15,7 +15,7 @@ namespace CmsData
         string Identifier { get; }
         bool UseIdsForSettlementDates { get; }
 
-        TransactionResponse AuthCreditCard(int peopleId, decimal amt, string cardnumber, string expires, string description, int tranid, string cardcode, string email, string first, string last, string addr, string addr2, string city, string state, string country, string zip, string phone);
+        TransactionResponse AuthCreditCard(int peopleId, decimal amt, string cardnumber, string expires, string description, int tranid, string cardcode, string email, string first, string last, string addr, string addr2, string city, string state, string country, string zip, string phone, bool testing = false);
         [Obsolete]
         TransactionResponse AuthCreditCardVault(int peopleId, decimal amt, string description, int tranid);
         TransactionResponse AuthCreditCardVault(PaymentMethod paymentMethod, decimal amt, string description, int tranid, string lastName, string firstName, string address, string address2, string city, string state, string country, string zip, string phone, string emailAddress);

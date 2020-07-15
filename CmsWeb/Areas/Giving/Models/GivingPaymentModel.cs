@@ -36,8 +36,8 @@ namespace CmsWeb.Areas.Giving.Models
             if (viewModel.firstName == "")
                 return Message.createErrorReturn("First name required.", Message.API_ERROR_PAYMENT_METHOD_REQUIRED_FIELD_EMPTY);
             if (viewModel.lastName == "")
-                return Message.createErrorReturn("First name required.", Message.API_ERROR_PAYMENT_METHOD_REQUIRED_FIELD_EMPTY);
-            if (viewModel.paymentTypeId != 1)
+                return Message.createErrorReturn("Last name required.", Message.API_ERROR_PAYMENT_METHOD_REQUIRED_FIELD_EMPTY);
+            if (viewModel.paymentTypeId == 1)
             {
                 if (viewModel.address == "")
                     return Message.createErrorReturn("Address required.", Message.API_ERROR_PAYMENT_METHOD_REQUIRED_FIELD_EMPTY);
@@ -49,6 +49,10 @@ namespace CmsWeb.Areas.Giving.Models
                     return Message.createErrorReturn("Country required.", Message.API_ERROR_PAYMENT_METHOD_REQUIRED_FIELD_EMPTY);
                 if (viewModel.zip == "")
                     return Message.createErrorReturn("Zip required.", Message.API_ERROR_PAYMENT_METHOD_REQUIRED_FIELD_EMPTY);
+            }
+            else if (viewModel.paymentTypeId == 2 || viewModel.paymentTypeId == 3 || viewModel.paymentTypeId == 4 || viewModel.paymentTypeId == 5)
+            {
+
             }
             if (viewModel.transactionTypeId == "")
                 return Message.createErrorReturn("Transaction Type ID required.", Message.API_ERROR_PAYMENT_METHOD_REQUIRED_FIELD_EMPTY);
@@ -245,7 +249,7 @@ namespace CmsWeb.Areas.Giving.Models
             {
                 var expires = HelperMethods.FormatExpirationDate(Convert.ToInt32(viewModel.expiresMonth), Convert.ToInt32(viewModel.expiresYear));
                 var dollarAmt = 1;
-                var transactionResponse = gateway.AuthCreditCard(currentPeopleId, dollarAmt, viewModel.cardNumber, expires, "Recurring Giving Auth", 0, viewModel.cvv, string.Empty, viewModel.firstName, viewModel.lastName, viewModel.address, viewModel.address2, viewModel.city, viewModel.state, viewModel.country, viewModel.zip, viewModel.phone);
+                var transactionResponse = gateway.AuthCreditCard(currentPeopleId, dollarAmt, viewModel.cardNumber, expires, "Recurring Giving Auth", 0, viewModel.cvv, string.Empty, viewModel.firstName, viewModel.lastName, viewModel.address, viewModel.address2, viewModel.city, viewModel.state, viewModel.country, viewModel.zip, viewModel.phone, viewModel.testing);
                 if (transactionResponse.Approved == false)
                     return Message.createErrorReturn("Card authorization failed. Message: " + transactionResponse.Message, Message.API_ERROR_PAYMENT_METHOD_AUTHORIZATION_FAILED);
                 else

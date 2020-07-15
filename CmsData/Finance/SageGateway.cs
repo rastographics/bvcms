@@ -51,7 +51,7 @@ namespace CmsData.Finance
             }
         }
 
-        public TransactionResponse AuthCreditCard(int peopleId, decimal amt, string cardnumber, string expires, string description, int tranid, string cardcode, string email, string first, string last, string addr, string addr2, string city, string state, string country, string zip, string phone)
+        public TransactionResponse AuthCreditCard(int peopleId, decimal amt, string cardnumber, string expires, string description, int tranid, string cardcode, string email, string first, string last, string addr, string addr2, string city, string state, string country, string zip, string phone, bool testing = false)
         {
             var creditCardAuthRequest = new CreditCardAuthRequest(
                 _id,

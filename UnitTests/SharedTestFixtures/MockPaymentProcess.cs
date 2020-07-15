@@ -11,7 +11,7 @@ namespace SharedTestFixtures
             var actionTaken = "";
             if (paymentProcess.GatewayAccountId == null)
             {
-                paymentProcess.GatewayAccountId = 2;
+                paymentProcess.GatewayAccountId = 4;
                 db.SubmitChanges();
                 actionTaken = "changed";
             }
