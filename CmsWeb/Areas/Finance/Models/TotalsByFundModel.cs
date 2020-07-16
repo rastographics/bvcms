@@ -14,7 +14,7 @@ using UtilityExtensions;
 
 namespace CmsWeb.Models
 {
-    public class TotalsByFundModel :IDbBinder
+    public class TotalsByFundModel : IDbBinder
     {
         public DateTime? Dt1 { get; set; }
         public DateTime? Dt2 { get; set; }
@@ -30,6 +30,7 @@ namespace CmsWeb.Models
         public bool NonTaxDeductible { get; set; }
         public bool FilterByActiveTag { get; set; }
         public bool IncludePledges { get; set; }
+        public List<int> AuthorizedFundIds { get; set; }
 
         private CMSDataContext _currentDatabase;
         public CMSDataContext CurrentDatabase
@@ -49,6 +50,7 @@ namespace CmsWeb.Models
             CurrentDatabase = db;
             var today = Util.Now.Date;
             var first = new DateTime(today.Year, today.Month, 1);
+            AuthorizedFundIds = CurrentDatabase.ContributionFunds.ScopedByRoleMembership(CurrentDatabase).Select(f => f.FundId).ToList();
             if (today.Day < 8)
             {
                 first = first.AddMonths(-1);
