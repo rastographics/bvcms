@@ -7,7 +7,7 @@
     ViewBag.Title = "Totals By Fund";
     ViewBag.ReportPageHeader = "Totals By Fund";
     var customFundsList = ContributionStatements.CustomFundSetSelectList(ViewExtensions2.CurrentDatabase);
-    var allowedToSeeDonotDetails = (Model.AuthorizedFundIds.Count != 0 && User.IsInRole("FinanceViewOnly") && User.IsInRole("FundManager")) || User.IsInRole("Finance") || User.IsInRole("FinanceAdmin");
+    var allowedToSeeDonorDetails = (Model.AuthorizedFundIds.Count != 0 && User.IsInRole("FinanceViewOnly") && User.IsInRole("FundManager")) || User.IsInRole("Finance") || User.IsInRole("FinanceAdmin");
 }
 @*
     @section head
@@ -111,7 +111,7 @@
                                     <i class="fa fa-cloud-download"></i> Other Reports <span class="caret"></span>
                                 </button>
                                 <ul class="dropdown-menu" role="menu">
-                                    @if (allowedToSeeDonotDetails)
+                                    @if (allowedToSeeDonorDetails)
                                     {
                                         <li>
                                             <a href="#" id="exportdonordetails">Export Donor Details</a>
