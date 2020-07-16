@@ -118,5 +118,13 @@ namespace CmsWeb.Areas.Giving.Controllers
             var result = model.DeleteSchedule(scheduledGiftId, peopleId);
             return Json(result, JsonRequestBehavior.AllowGet);
         }
+
+        [HttpPost]
+        public ActionResult ProcessOneTimeGift(GivingPaymentViewModel viewModel)
+        {
+            var model = new GivingPaymentModel(CurrentDatabase);
+            var result = model.ProcessOneTimePayment(viewModel);
+            return Json(result, JsonRequestBehavior.AllowGet);
+        }
     }
 }

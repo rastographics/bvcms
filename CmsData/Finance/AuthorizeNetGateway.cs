@@ -147,11 +147,28 @@ namespace CmsData.Finance
             return returnTransactionResponse;
         }
 
-        public void StoreInVault(PaymentMethod paymentMethod, string type, string cardNumber, string cvv, string bankAccountNum, string bankRoutingNum, int? expireMonth, int? expireYear, string address, string address2, string city, string state, string country, string zip, string phone, string emailAddress)
+        public void StoreInVault(PaymentMethod paymentMethod, string type, string cardNumber, string cardCode, string bankAccountNum, string bankRoutingNum, int? expireMonth, int? expireYear, string address, string address2, string city, string state, string country, string zip, string phone, string emailAddress, bool testing = false)
         {
+            const SslProtocols _Tls12 = (SslProtocols)0x00000C00;
+            const SecurityProtocolType Tls12 = (SecurityProtocolType)_Tls12;
+            ServicePointManager.SecurityProtocol = Tls12;
+
+            if (testing == true)
+                ApiOperationBase<ANetApiRequest, ANetApiResponse>.RunEnvironment = AuthorizeNet.Environment.SANDBOX;
+            else
+                ApiOperationBase<ANetApiRequest, ANetApiResponse>.RunEnvironment = AuthorizeNet.Environment.PRODUCTION;
+
+            ApiOperationBase<ANetApiRequest, ANetApiResponse>.MerchantAuthentication = new merchantAuthenticationType()
+            {
+                name = _login,
+                ItemElementName = ItemChoiceType.transactionKey,
+                Item = _key,
+            };
+
             if (paymentMethod == null)
                 throw new Exception($"Payment method not found.");
             var custName = paymentMethod.NameOnAccount.Split(' ').ToList();
+
             var billToAddress = new AuthorizeNet.Address
             {
                 First = custName[0],
@@ -308,23 +325,49 @@ namespace CmsData.Finance
         }
 
         //public createTransactionResponse ChargeCreditCardOneTime(PaymentMethod paymentMethod, decimal amt, string description, int tranid, string lastName, string firstName, string address, string address2, string city, string state, string country, string zip, string phone, string emailAddress)
-        public TransactionResponse ChargeCreditCardOneTime(decimal amt)
+        public TransactionResponse ChargeCreditCardOneTime(decimal amt, string cardNumber, string expires, string cardCode, string firstName, string lastName, string address, string address2, string city, string state, string country, string zip, bool testing = false)
         {
+            const SslProtocols _Tls12 = (SslProtocols)0x00000C00;
+            const SecurityProtocolType Tls12 = (SecurityProtocolType)_Tls12;
+            ServicePointManager.SecurityProtocol = Tls12;
+
+            if (testing == true)
+                ApiOperationBase<ANetApiRequest, ANetApiResponse>.RunEnvironment = AuthorizeNet.Environment.SANDBOX;
+            else
+                ApiOperationBase<ANetApiRequest, ANetApiResponse>.RunEnvironment = AuthorizeNet.Environment.PRODUCTION;
+
+            ApiOperationBase<ANetApiRequest, ANetApiResponse>.MerchantAuthentication = new merchantAuthenticationType()
+            {
+                name = _login,
+                ItemElementName = ItemChoiceType.transactionKey,
+                Item = _key,
+            };
+
             var creditCard = new creditCardType
             {
-                cardNumber = "4111111111111111",
-                expirationDate = "1028",
-                cardCode = "123"
+                cardNumber = cardNumber,
+                expirationDate = expires,
+                cardCode = cardCode
             };
 
             var billingAddress = new customerAddressType
             {
-                firstName = "John",
-                lastName = "Doe",
-                address = "123 My St",
-                city = "OurTown",
-                zip = "98004"
+                firstName = firstName,
+                lastName = lastName,
+                city = city,
+                zip = zip
             };
+            if(address2 != null)
+            {
+                if (address2.Length > 0)
+                {
+                    billingAddress.address = address + " " + address2;
+                }
+                else
+                {
+                    billingAddress.address = address;
+                }
+            }
 
             //standard api call to retrieve response
             var paymentType = new paymentType { Item = creditCard };

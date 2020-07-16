@@ -39,7 +39,7 @@ namespace CMSWebTests.Areas.GivingSettings
 
             var requestManager = FakeRequestManager.Create();
             var controller = new CmsWeb.Areas.Giving.Controllers.GivingPaymentController(requestManager);
-            var paymentProcessActionTaken = MockPaymentProcess.PaymentProcessNullCheck(db);
+            MockPaymentProcess.PaymentProcessNullCheck(db);
             controller.MethodsCreate(viewModel);
 
             var paymentMethod = (from pm in db.PaymentMethods where pm.PeopleId == person.PeopleId select pm).FirstOrDefault();
@@ -57,9 +57,6 @@ namespace CMSWebTests.Areas.GivingSettings
 
             var scheduledGiftAmount = (from sa in db.ScheduledGiftAmounts where sa.ScheduledGiftId == scheduledGift.ScheduledGiftId && sa.FundId == viewModel.fundId select sa).FirstOrDefault();
             scheduledGiftAmount.Amount.ShouldBe((int)viewModel.amount);
-
-            if (paymentProcessActionTaken == "changed")
-                MockPaymentProcess.ChangePaymentProcessToNull(db);
         }
 
         public override void Dispose()

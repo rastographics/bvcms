@@ -5,21 +5,17 @@ namespace SharedTestFixtures
 {
     public class MockPaymentProcess
     {
-        public static string PaymentProcessNullCheck(CMSDataContext db)
+        public static void PaymentProcessNullCheck(CMSDataContext db)
         {
-            var paymentProcess = (from p in db.PaymentProcess where p.ProcessName == "Recurring Giving" select p).FirstOrDefault();
-            var actionTaken = "";
-            if (paymentProcess.GatewayAccountId == null)
+            var paymentProcessList = (from p in db.PaymentProcess select p).ToList();
+            foreach(var item in paymentProcessList)
             {
-                paymentProcess.GatewayAccountId = 4;
-                db.SubmitChanges();
-                actionTaken = "changed";
+                if (item.GatewayAccountId == null)
+                {
+                    item.GatewayAccountId = 4;
+                    db.SubmitChanges();
+                }
             }
-            else
-            {
-                actionTaken = "good";
-            }
-            return actionTaken;
         }
 
         public static void ChangePaymentProcessToNull(CMSDataContext db)

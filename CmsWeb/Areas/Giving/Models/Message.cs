@@ -110,6 +110,7 @@ namespace CmsWeb.Areas.Giving.Models
         public const int API_ERROR_INVALID_CREDENTIALS = -6;
 
         public const int API_ERROR_PERSON_NOT_FOUND = 100;
+        public const int API_ERROR_GIVING_PAGE_ID_NOT_FOUND = 101;
 
         public const int API_ERROR_PAYMENT_METHOD_NOT_FOUND = 110;
         public const int API_ERROR_PAYMENT_METHOD_IN_USE = 111;
