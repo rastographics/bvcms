@@ -57,12 +57,14 @@
     @Html.Partial("SearchBox")
     @Html.Partial("AdminAlerts")
     @Html.Partial("_diagnostics")
-    <script>
-        if (!$("#main").find("script").length) {
-            new Vue({
-            }).$mount('#main');
-        }
-    </script>
+    @if (ViewBag.NoVue == null) {
+        <script>
+            if (!$("#main").find("script").length) {
+                new Vue({
+                }).$mount('#main');
+            }
+        </script>
+    }
     @RenderSection("modals", false)
     @RenderSection("scripts", false)
 </body>

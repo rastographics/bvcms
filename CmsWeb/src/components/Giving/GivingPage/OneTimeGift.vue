@@ -3,9 +3,9 @@
         <button v-if="count > 1" @click="remove" type="button" class="close" aria-label="Remove"><span aria-hidden="true">&times;</span></button>
         <div class="row">
             <div class="col-sm-12">
-                <div :class="{'form-group': true, 'text-center': true, 'has-error': showValidation && value.amount < 1}">
+                <div :class="{'form-group': true, 'text-center': true, 'has-error': showValidation && !valid}">
                     <money-input v-model="value.amount"></money-input>
-                    <small v-if="showValidation && value.amount < 1" class="text-danger">Please enter an amount</small>
+                    <small v-if="showValidation" class="text-danger">Please enter an amount</small>
                 </div>
             </div>
             <div class="col-sm-12 col-md-8 col-md-offset-2">
@@ -33,6 +33,17 @@
                 showNote: false
             }
         },
+        computed: {
+            valid: function () {
+                return this.value.amount >= 1;
+            }
+        },
+        watch: {
+            valid: function (value) {
+                this.value.valid = value;
+                this.$emit('input', this.value);
+            }
+        },
         methods: {
             remove() {
                 this.$emit('remove');
@@ -41,6 +52,9 @@
                 this.value.note = '';
                 this.showNote = false;
             }
+        },
+        mounted() {
+            this.value.valid = this.valid;
         }
     }
 </script>

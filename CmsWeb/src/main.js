@@ -4,6 +4,7 @@ import VueMask from 'v-mask';
 import VueRouter from 'vue-router';
 import BootstrapVue from 'bootstrap-vue';
 import 'bootstrap-vue/dist/bootstrap-vue.css';
+require("jquery");
 
 Vue.prototype.$http = axios;
 Vue.config.productionTip = false;
@@ -29,7 +30,10 @@ Vue.component('one-time-gift', require('./components/Giving/GivingPage/OneTimeGi
 Vue.component('pledge-gift', require('./components/Giving/GivingPage/PledgeGift.vue').default);
 Vue.component('money-input', require('./components/Giving/GivingPage/MoneyInput.vue').default);
 Vue.component('fund-picker', require('./components/Giving/GivingPage/FundPicker.vue').default);
-Vue.component('giving-login', require('./components/Giving/GivingPage/GivingLogin.vue').default);
+//Vue.component('giving-login', require('./components/Giving/GivingPage/GivingLogin.vue').default);
+Vue.component('payment-method', require('./components/Giving/GivingPage/PaymentMethod.vue').default);
+Vue.component('payment-list', require('./components/Giving/GivingPage/PaymentList.vue').default);
+Vue.component('new-payment-method', require('./components/Giving/GivingPage/NewPaymentMethod.vue').default);
 
 // Touchpoint Common Components
 Vue.component('tp-toggle', require('./components/Common/Toggle.vue').default);

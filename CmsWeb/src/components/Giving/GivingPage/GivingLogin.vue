@@ -13,7 +13,7 @@
                         <form @submit.prevent="phoneSearch">
                             <div :class="{'form-group': true, 'has-error': showValidation && phone.length < 10}">
                                 <input type="tel" class="form-control" v-mask="'(###) ###-####'" v-model="phone" placeholder="(000) 000-0000" autofocus />
-                                <small v-if="showValidation && phone.length < 10" class="text-danger">Please enter your phone number</small>
+                                <small v-if="showValidation" class="text-danger">Please enter your phone number</small>
                             </div>
                             <div class="row">
                                 <div class="col-md-6">
@@ -38,9 +38,9 @@
                 <form @submit.prevent="emailSearch">
                     <div class="row text-left">
                         <div class="col-md-8 col-md-offset-2">
-                            <div :class="{'form-group': true, 'has-error': showValidation && email.length < 6}">
+                            <div :class="{'form-group': true, 'has-error': showValidation && !emailValid}">
                                 <input type="email" class="form-control" v-model="email" placeholder="you@gmail.com" autofocus />
-                                <small v-if="showValidation && email.length < 6" class="text-danger">Please enter your email</small>
+                                <small v-if="showValidation" class="text-danger">Please enter your email</small>
                             </div>
                         </div>
                         <div class="col-md-8 col-md-offset-2">
@@ -160,7 +160,7 @@
                         <form v-if="method == 'phone'" @submit.prevent="phoneSearch">
                             <div :class="{'form-group': true, 'has-error': showValidation && phone.length < 10}">
                                 <input type="tel" class="form-control" v-mask="'(###) ###-####'" v-model="phone" placeholder="(000) 000-0000" autofocus />
-                                <small v-if="showValidation && phone.length < 10" class="text-danger">Please enter your phone number</small>
+                                <small v-if="showValidation" class="text-danger">Please enter your phone number</small>
                             </div>
                             <div class="row">
                                 <div class="col-md-6">
@@ -178,9 +178,9 @@
                 <form v-else @submit.prevent="emailSearch">
                     <div class="row text-left">
                         <div class="col-md-6 col-md-offset-3">
-                            <div :class="{'form-group': true, 'has-error': showValidation && email.length < 6}">
+                            <div :class="{'form-group': true, 'has-error': showValidation && !emailValid}">
                                 <input type="email" class="form-control" v-model="email" placeholder="you@gmail.com" autofocus />
-                                <small v-if="showValidation && email.length < 6" class="text-danger">Please enter your email</small>
+                                <small v-if="showValidation" class="text-danger">Please enter your email</small>
                             </div>
                         </div>
                         <div class="col-md-8 col-md-offset-2">
@@ -218,15 +218,15 @@
                             </div>
                         </div>
                         <div class="col-md-6">
-                            <div :class="{'form-group': true, 'has-error': showValidation && newUser.email.length < 6}">
+                            <div :class="{'form-group': true, 'has-error': showValidation && !newUserEmailValid}">
                                 <input type="email" class="form-control" v-model="newUser.email" placeholder="Email Address" />
-                                <small v-if="showValidation && newUser.email.length < 6" class="text-danger">Please enter your email</small>
+                                <small v-if="showValidation" class="text-danger">Please enter your email</small>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div :class="{'form-group': true, 'has-error': showValidation && newUser.phone.length < 10}">
                                 <input type="tel" class="form-control" v-model="newUser.phone" placeholder="Phone Number" />
-                                <small v-if="showValidation && newUser.phone.length < 10" class="text-danger">Please enter your phone</small>
+                                <small v-if="showValidation" class="text-danger">Please enter your phone</small>
                             </div>
                         </div>
                         <div class="col-md-12">
@@ -281,10 +281,11 @@
 </template>
 <script>
     import axios from "axios";
+    import { utils } from "touchpoint/common/utils.js";
 
     export default {
         props: ["value", "SMSReady", "loginUrl"],
-        data: function () {
+        data() {
             return {
                 view: "",
                 showValidation: false,
@@ -314,6 +315,14 @@
                     country: ""
                 }
             };
+        },
+        computed: {
+            emailValid: function () {
+                return utils.validateEmail(this.email);
+            },
+            newUserEmailValid: function () {
+                return utils.validateEmail(this.newUser.email);
+            }
         },
         watch: {
             view: function () {
@@ -360,7 +369,7 @@
                 }
             },
             emailSearch() {
-                if (this.email.length < 6) {
+                if (!this.emailValid) {
                     this.showValidation = true;
                 } else {
                     this.method = "email";

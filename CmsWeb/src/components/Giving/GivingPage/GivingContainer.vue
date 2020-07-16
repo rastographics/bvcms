@@ -30,14 +30,17 @@
                                 <one-time-gift v-for="(gift, index) in gifts" v-model="gifts[index]" :count="gifts.length" :key="gift.key" :funds="unusedFunds" :showValidation="showValidation" @remove="removeGift(index)"></one-time-gift>
                             </transition-group>
                             <div class="row">
-                                <div class="col-md-6">
+                                <div class="col-md-6 col-md-offset-6">
                                     <button v-if="unusedFunds.length" @click="addGift" class="btn-block btn btn-default">
                                         <i class="fa fa-plus-circle"></i> Add Gift
                                     </button>
                                 </div>
-                                <div class="col-md-6">
-                                    <button @click="loadView('signin')" class="btn-block btn btn-primary">
-                                        Next
+                            </div>
+                            <payment-method v-model="paymentMethod" :identity="identity" :showValidation="showValidation"></payment-method>
+                            <div class="row">
+                                <div class="col-md-6 col-md-offset-6">
+                                    <button @click="submitOneTimePayment" class="btn-block btn btn-primary">
+                                        Submit Gift
                                     </button>
                                 </div>
                             </div>
@@ -46,6 +49,7 @@
                             <transition-group name="gift">
                                 <recurring-gift v-for="(gift, index) in gifts" v-model="gifts[index]" :count="gifts.length" :key="gift.key" :funds="unusedFunds" :showValidation="showValidation" :frequencies="recurringFrequencies" @remove="removeGift(index)"></recurring-gift>
                             </transition-group>
+                            <payment-method v-if="identity.PeopleId" v-model="paymentMethod" :identity="identity"></payment-method>
                             <div class="row">
                                 <div class="col-md-6">
                                     <button v-if="unusedFunds.length" @click="addGift" class="btn-block btn btn-default">
@@ -87,24 +91,59 @@
 </template>
 <script>
     import axios from "axios";
+    import { bus } from "touchpoint/common/bus.js";
+    import * as accountService from "touchpoint/services/AccountService.js";
+
+    var givingLogin = require("./GivingLogin.vue").default;
 
     export default {
         props: ["pageProp", "fund", "type", "amount" ],
         data: function () {
             return {
+                identity: false,
+                gifts: [],
+                paymentMethod: {
+                    cardInfo: {
+                        number: "",
+                        date: "",
+                        cvc: ""
+                    },
+                    bankInfo: {
+                        name: "",
+                        routing: "",
+                        account: ""
+                    },
+                    billingInfo: {
+                        first: "",
+                        last: "",
+                        email: "",
+                        phone: "",
+                        address: "",
+                        city: "",
+                        state: "",
+                        zip: "",
+                        country: ""
+                    }
+                },
                 recurringFrequencies: [],
                 givingType: "",
-                gifts: [],
                 pageTypes: [],
                 page: {},
                 view: "gifts",
                 onKey: 0,
-                identity: false,
                 showValidation: false,
-                slideDirection: 'slide-left'
+                slideDirection: 'slide-left',
+                paymentIsValid: false
             };
         },
+        components: {
+            givingLogin
+        },
         computed: {
+            giftsAreValid: function () {
+                if (!this.gifts.length) return false;
+                return !this.gifts.some(gift => gift.valid === false);
+            },
             unusedFunds: function () {
                 if (!this.page.AvailableFunds) return [];
                 return this.page.AvailableFunds.filter(fund => {
@@ -161,17 +200,12 @@
                 this.view = newView;
             },
             validateGifts() {
-                let vm = this;
-                let valid = true;
-                vm.gifts.forEach((gift) => {
-                    if (!gift.amount || gift.amount < 1) {
-                        valid = false;
-                    }
-                    if (vm.givingType == 'Recurring' && !gift.frequency) {
-                        valid = false;
-                    }
-                });
-                vm.showValidation = !valid;
+                this.showValidation = !this.giftsAreValid;
+                return this.giftsAreValid;
+            },
+            validateOneTimePayment() {
+                let valid = this.giftsAreValid && this.paymentIsValid;
+                this.showValidation = !valid;
                 return valid;
             },
             getIdentity() {
@@ -243,7 +277,9 @@
                 });
             },
             submitOneTimePayment() {
-                alert('submit!');
+                if (this.validateOneTimePayment()) {
+                    alert('submit!');
+                }
             },
             init() {
                 let gift = {
@@ -309,9 +345,14 @@
             }
         },
         mounted() {
-            this.page = JSON.parse(this.pageProp);
-            this.getIdentity();
-            this.getPageTypes();
+            let vm = this;
+            vm.page = JSON.parse(vm.pageProp);
+            vm.getIdentity();
+            vm.getPageTypes();
+
+            bus.$on('paymentValidationChange', (data) => {
+                vm.paymentIsValid = data;
+            })
         }
     };
 </script>

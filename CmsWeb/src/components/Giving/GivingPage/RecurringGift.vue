@@ -5,7 +5,7 @@
             <div class="col-sm-12">
                 <div :class="{'form-group': true, 'text-center': true, 'has-error': showValidation && value.amount < 1}">
                     <money-input v-model="value.amount"></money-input>
-                    <small v-if="showValidation && value.amount < 1" class="text-danger">Please enter an amount</small>
+                    <small v-if="showValidation" class="text-danger">Please enter an amount</small>
                 </div>
             </div>
             <div class="col-sm-12 col-md-8 col-md-offset-2">
@@ -27,7 +27,7 @@
                         <option value="0">Select frequency</option>
                         <option v-for="frequency in frequencies" :key="frequency.Id" :value="frequency.Id">{{ frequency.Name }}</option>
                     </select>
-                    <small v-if="showValidation && !value.frequency" class="text-danger">Please choose a frequency</small>
+                    <small v-if="showValidation" class="text-danger">Please choose a frequency</small>
                 </div>
             </div>
             <div class="col-sm-12 text-center" v-if="value.frequency" ref="giftText" style="margin-top: 16px; font-size: 13px;">
@@ -91,6 +91,9 @@
                     });
                 }
                 return dates;
+            },
+            valid: function () {
+                return this.value.amount >= 1 && this.value.frequency > 0;
             }
         },
         watch: {
@@ -105,6 +108,10 @@
                     $(vm.$refs['enddate']).editable('destroy');
                     vm.value.enddate = null;
                 }
+            },
+            valid: function (value) {
+                this.value.valid = value;
+                this.$emit('input', this.value);
             }
         },
         methods: {
@@ -215,6 +222,7 @@
         },
         mounted() {
             this.initEditables();
+            this.value.valid = this.valid;
         }
     }
 </script>

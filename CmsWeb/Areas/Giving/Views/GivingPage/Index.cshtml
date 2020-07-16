@@ -41,7 +41,8 @@
         top: 13px;
         z-index: 99;
     }
-    #main .give-type .btn {
+    #main .give-type .btn,
+    #main .payment-type .btn {
         padding: 8px 30px;
     }
     #main div.form-group select.form-control:not(.input-sm) {
@@ -53,6 +54,12 @@
     .popover-body a {
         color: #003f72;
         text-decoration: underline;
+    }
+    .form-group small.text-danger {
+        display: none;
+    }
+    .form-group.has-error small.text-danger {
+        display: block;
     }
 </style>
 }
