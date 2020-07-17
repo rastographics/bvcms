@@ -4,9 +4,13 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using AuthorizeNet;
-using AuthorizeNet.APICore;
+using AuthorizeNet.Api.Controllers;
+using AuthorizeNet.Api.Controllers.Bases;
 using UtilityExtensions;
 using UtilityExtensions.Extensions;
+using AuthorizeNet.Api.Contracts.V1;
+using System.Security.Authentication;
+using System.Net;
 
 namespace CmsData.Finance
 {
@@ -47,33 +51,124 @@ namespace CmsData.Finance
             }
         }
 
-        public TransactionResponse AuthCreditCard(int peopleId, decimal amt, string cardnumber, string expires, string description, int tranid, string cardcode, string email, string first, string last, string addr, string addr2, string city, string state, string country, string zip, string phone)
+        // New methods
+        public TransactionResponse AuthCreditCard(int peopleId, decimal amt, string cardnumber, string expires, string description, int tranid, string cardcode, string email, string first, string last, string addr, string addr2, string city, string state, string country, string zip, string phone, bool testing = false)
         {
-            var request = new AuthorizationRequest(cardnumber, expires, amt, description, includeCapture: false);
+            const SslProtocols _Tls12 = (SslProtocols)0x00000C00;
+            const SecurityProtocolType Tls12 = (SecurityProtocolType)_Tls12;
+            ServicePointManager.SecurityProtocol = Tls12;
 
-            request.AddCustomer(peopleId.ToString(), email, first, last, addr, city, state, zip);
-            request.Country = country;
-            request.CardCode = cardcode;
-            request.Phone = phone;
-            request.InvoiceNum = tranid.ToString();
+            if(testing == true)
+                ApiOperationBase<ANetApiRequest, ANetApiResponse>.RunEnvironment = AuthorizeNet.Environment.SANDBOX;
+            else
+                ApiOperationBase<ANetApiRequest, ANetApiResponse>.RunEnvironment = AuthorizeNet.Environment.PRODUCTION;
 
-            var response = Gateway.Send(request);
-
-            return new TransactionResponse
+            ApiOperationBase<ANetApiRequest, ANetApiResponse>.MerchantAuthentication = new merchantAuthenticationType()
             {
-                Approved = response.Approved,
-                AuthCode = response.AuthorizationCode,
-                Message = response.Message,
-                TransactionId = response.TransactionID
+                name = _login,
+                ItemElementName = ItemChoiceType.transactionKey,
+                Item = _key,
             };
+
+            var creditCard = new creditCardType
+            {
+                cardNumber = cardnumber,
+                expirationDate = expires
+            };
+
+            //standard api call to retrieve response
+            var paymentType = new paymentType { Item = creditCard };
+
+            var transactionRequest = new transactionRequestType
+            {
+                transactionType = transactionTypeEnum.authOnlyTransaction.ToString(),    // authorize only
+                amount = amt,
+                payment = paymentType
+            };
+
+            var request = new createTransactionRequest { transactionRequest = transactionRequest };
+
+            // instantiate the controller that will call the service
+            var controller = new createTransactionController(request);
+            controller.Execute();
+
+            // get the response from the service (errors contained if any)
+            var response = controller.GetApiResponse();
+
+            // initialize the returning object
+            var returnTransactionResponse = new TransactionResponse();
+
+            // validate response
+            if (response != null)
+            {
+                if (response.messages.resultCode == messageTypeEnum.Ok)
+                {
+                    if (response.transactionResponse.messages != null)
+                    {
+                        returnTransactionResponse.Approved = true;
+                        returnTransactionResponse.AuthCode = response.transactionResponse.authCode;
+                        returnTransactionResponse.Message = ("Response Code: " + response.transactionResponse.responseCode) + " " + ("Message Code: " + response.transactionResponse.messages[0].code) + " " + ("Description: " + response.transactionResponse.messages[0].description);
+                        returnTransactionResponse.TransactionId = response.transactionResponse.transId;
+                    }
+                    else
+                    {
+                        returnTransactionResponse.Approved = false;
+                        if (response.transactionResponse.errors != null)
+                        {
+                            returnTransactionResponse.AuthCode = "Error Code: " + response.transactionResponse.errors[0].errorCode;
+                            returnTransactionResponse.Message = "Error message: " + response.transactionResponse.errors[0].errorText;
+                        }
+                    }
+                }
+                else
+                {
+                    returnTransactionResponse.Approved = false;
+                    if (response.transactionResponse != null && response.transactionResponse.errors != null)
+                    {
+                        returnTransactionResponse.AuthCode = "Error Code: " + response.transactionResponse.errors[0].errorCode;
+                        returnTransactionResponse.Message = "Error message: " + response.transactionResponse.errors[0].errorText;
+                    }
+                    else
+                    {
+                        returnTransactionResponse.AuthCode = "Error Code: " + response.transactionResponse.errors[0].errorCode;
+                        returnTransactionResponse.Message = "Error message: " + response.transactionResponse.errors[0].errorText;
+                    }
+                }
+            }
+            else
+            {
+                return new TransactionResponse
+                {
+                    Approved = false,
+                    Message = "Null Response."
+                };
+            }
+
+            return returnTransactionResponse;
         }
 
-        // New methods
-        public void StoreInVault(PaymentMethod paymentMethod, string type, string cardNumber, string cvv, string bankAccountNum, string bankRoutingNum, int? expireMonth, int? expireYear, string address, string address2, string city, string state, string country, string zip, string phone, string emailAddress)
+        public void StoreInVault(PaymentMethod paymentMethod, string type, string cardNumber, string cardCode, string bankAccountNum, string bankRoutingNum, int? expireMonth, int? expireYear, string address, string address2, string city, string state, string country, string zip, string phone, string emailAddress, bool testing = false)
         {
+            const SslProtocols _Tls12 = (SslProtocols)0x00000C00;
+            const SecurityProtocolType Tls12 = (SecurityProtocolType)_Tls12;
+            ServicePointManager.SecurityProtocol = Tls12;
+
+            if (testing == true)
+                ApiOperationBase<ANetApiRequest, ANetApiResponse>.RunEnvironment = AuthorizeNet.Environment.SANDBOX;
+            else
+                ApiOperationBase<ANetApiRequest, ANetApiResponse>.RunEnvironment = AuthorizeNet.Environment.PRODUCTION;
+
+            ApiOperationBase<ANetApiRequest, ANetApiResponse>.MerchantAuthentication = new merchantAuthenticationType()
+            {
+                name = _login,
+                ItemElementName = ItemChoiceType.transactionKey,
+                Item = _key,
+            };
+
             if (paymentMethod == null)
                 throw new Exception($"Payment method not found.");
             var custName = paymentMethod.NameOnAccount.Split(' ').ToList();
+
             var billToAddress = new AuthorizeNet.Address
             {
                 First = custName[0],
@@ -229,7 +324,188 @@ namespace CmsData.Finance
             };
         }
 
+        public TransactionResponse ChargeCreditCardOneTime(decimal amt, string cardNumber, string expires, string cardCode, string firstName, string lastName, string address, string address2, string city, string state, string country, string zip, string phone, string email, bool testing = false)
+        {
+            const SslProtocols _Tls12 = (SslProtocols)0x00000C00;
+            const SecurityProtocolType Tls12 = (SecurityProtocolType)_Tls12;
+            ServicePointManager.SecurityProtocol = Tls12;
+
+            if (testing == true)
+                ApiOperationBase<ANetApiRequest, ANetApiResponse>.RunEnvironment = AuthorizeNet.Environment.SANDBOX;
+            else
+                ApiOperationBase<ANetApiRequest, ANetApiResponse>.RunEnvironment = AuthorizeNet.Environment.PRODUCTION;
+
+            ApiOperationBase<ANetApiRequest, ANetApiResponse>.MerchantAuthentication = new merchantAuthenticationType()
+            {
+                name = _login,
+                ItemElementName = ItemChoiceType.transactionKey,
+                Item = _key,
+            };
+
+            var creditCard = new creditCardType
+            {
+                cardNumber = cardNumber,
+                expirationDate = expires,
+                cardCode = cardCode
+            };
+
+            var billingAddress = new customerAddressType
+            {
+                firstName = firstName,
+                lastName = lastName,
+                address = address,
+                city = city,
+                zip = zip,
+                state = state,
+                country = country,
+                email = email,
+                phoneNumber = phone
+            };
+
+            if(address2 != null)
+            {
+                if (address2.Length > 0)
+                {
+                    billingAddress.address = address + " " + address2;
+                }
+                else
+                {
+                    billingAddress.address = address;
+                }
+            }
+
+            //standard api call to retrieve response
+            var paymentType = new paymentType { Item = creditCard };
+
+            //// Add line Items
+            //var lineItems = new lineItemType[2];
+            //lineItems[0] = new lineItemType { itemId = "1", name = "t-shirt", quantity = 2, unitPrice = new Decimal(15.00) };
+            //lineItems[1] = new lineItemType { itemId = "2", name = "snowboard", quantity = 1, unitPrice = new Decimal(450.00) };
+
+            var transactionRequest = new transactionRequestType
+            {
+                transactionType = transactionTypeEnum.authCaptureTransaction.ToString(),    // charge the card
+
+                amount = amt,
+                payment = paymentType,
+                billTo = billingAddress
+                //lineItems = lineItems
+            };
+
+            var request = new createTransactionRequest { transactionRequest = transactionRequest };
+
+            // instantiate the controller that will call the service
+            var controller = new createTransactionController(request);
+            controller.Execute();
+
+            // get the response from the service (errors contained if any)
+            var response = controller.GetApiResponse();
+
+            // initialize the returning object
+            var returnTransactionResponse = new TransactionResponse();
+
+            // validate response
+            if (response != null)
+            {
+                if (response.messages.resultCode == messageTypeEnum.Ok)
+                {
+                    if (response.transactionResponse.messages != null)
+                    {
+                        returnTransactionResponse.Approved = true;
+                        returnTransactionResponse.AuthCode = response.transactionResponse.authCode;
+                        returnTransactionResponse.Message = ("Response Code: " + response.transactionResponse.responseCode) + " " + ("Message Code: " + response.transactionResponse.messages[0].code) + " " + ("Description: " + response.transactionResponse.messages[0].description);
+                        returnTransactionResponse.TransactionId = response.transactionResponse.transId;
+                    }
+                    else
+                    {
+                        returnTransactionResponse.Approved = false;
+                        if (response.transactionResponse.errors != null)
+                        {
+                            returnTransactionResponse.AuthCode = "Error Code: " + response.transactionResponse.errors[0].errorCode;
+                            returnTransactionResponse.Message = "Error message: " + response.transactionResponse.errors[0].errorText;
+                        }
+                    }
+                }
+                else
+                {
+                    returnTransactionResponse.Approved = false;
+                    if (response.transactionResponse != null && response.transactionResponse.errors != null)
+                    {
+                        returnTransactionResponse.AuthCode = "Error Code: " + response.transactionResponse.errors[0].errorCode;
+                        returnTransactionResponse.Message = "Error message: " + response.transactionResponse.errors[0].errorText;
+                    }
+                    else
+                    {
+                        returnTransactionResponse.AuthCode = "Error Code: " + response.transactionResponse.errors[0].errorCode;
+                        returnTransactionResponse.Message = "Error message: " + response.transactionResponse.errors[0].errorText;
+                    }
+                }
+            }
+            else
+            {
+                return new TransactionResponse
+                {
+                    Approved = false,
+                    Message = "Null Response."
+                };
+            }
+
+            return returnTransactionResponse;
+        }
+
         // Old methods
+        #region
+        //public TransactionResponse AuthCreditCard(int peopleId, decimal amt, string cardnumber, string expires, string description, int tranid, string cardcode, string email, string first, string last, string addr, string addr2, string city, string state, string country, string zip, string phone)
+        //{
+        //    var request = new AuthorizationRequest(cardnumber, expires, amt, description, includeCapture: false);
+
+        //    request.AddCustomer(peopleId.ToString(), email, first, last, addr, city, state, zip);
+        //    request.Country = country;
+        //    request.CardCode = cardcode;
+        //    request.Phone = phone;
+        //    request.InvoiceNum = tranid.ToString();
+
+        //    var response = Gateway.Send(request);
+
+        //    return new TransactionResponse
+        //    {
+        //        Approved = response.Approved,
+        //        AuthCode = response.AuthorizationCode,
+        //        Message = response.Message,
+        //        TransactionId = response.TransactionID
+        //    };
+        //}
+        #endregion
+
+        public TransactionResponse AuthCreditCardVault(int peopleId, decimal amt, string description, int tranid)
+        {
+            var paymentInfo = db.PaymentInfos.Single(pp => pp.PeopleId == peopleId && pp.GatewayAccountId == GatewayAccountId);
+            if (paymentInfo?.AuNetCustPayId == null)
+                return new TransactionResponse
+                {
+                    Approved = false,
+                    Message = "missing payment info",
+                };
+
+            var paymentProfileId = paymentInfo.AuNetCustPayId.ToString();
+
+            var order = new Order(paymentInfo.AuNetCustId.ToString(), paymentProfileId, null)
+            {
+                Description = description,
+                Amount = amt,
+                InvoiceNumber = tranid.ToString()
+            };
+            var response = CustomerGateway.Authorize(order);
+
+            return new TransactionResponse
+            {
+                Approved = response.Approved,
+                AuthCode = response.AuthorizationCode,
+                Message = response.Message,
+                TransactionId = response.TransactionID
+            };
+        }
+
         public void StoreInVault(int peopleId, string type, string cardNumber, string expires, string cardCode, string routing, string account, bool giving)
         {
             var person = db.LoadPersonById(peopleId);
@@ -485,35 +761,6 @@ namespace CmsData.Finance
             };
         }
 
-        public TransactionResponse AuthCreditCardVault(int peopleId, decimal amt, string description, int tranid)
-        {
-            var paymentInfo = db.PaymentInfos.Single(pp => pp.PeopleId == peopleId && pp.GatewayAccountId == GatewayAccountId);
-            if (paymentInfo?.AuNetCustPayId == null)
-                return new TransactionResponse
-                {
-                    Approved = false,
-                    Message = "missing payment info",
-                };
-
-            var paymentProfileId = paymentInfo.AuNetCustPayId.ToString();
-
-            var order = new Order(paymentInfo.AuNetCustId.ToString(), paymentProfileId, null)
-            {
-                Description = description,
-                Amount = amt,
-                InvoiceNumber = tranid.ToString()
-            };
-            var response = CustomerGateway.Authorize(order);
-
-            return new TransactionResponse
-            {
-                Approved = response.Approved,
-                AuthCode = response.AuthorizationCode,
-                Message = response.Message,
-                TransactionId = response.TransactionID
-            };
-        }
-
         public TransactionResponse PayWithVault(int peopleId, decimal amt, string description, int tranid, string type)
         {
             var paymentInfo = db.PaymentInfos.Single(pp => pp.PeopleId == peopleId && pp.GatewayAccountId == GatewayAccountId);
@@ -551,12 +798,12 @@ namespace CmsData.Finance
 
         private static BatchType GetBatchType(string paymentMethod)
         {
-            var pm = paymentMethod.ParseEnum<paymentMethodEnum>();
+            var pm = paymentMethod.ParseEnum<AuthorizeNet.APICore.paymentMethodEnum>();
             switch (pm)
             {
-                case paymentMethodEnum.creditCard:
+                case AuthorizeNet.APICore.paymentMethodEnum.creditCard:
                     return BatchType.CreditCard;
-                case paymentMethodEnum.eCheck:
+                case AuthorizeNet.APICore.paymentMethodEnum.eCheck:
                     return BatchType.Ach;
                 default:
                     return BatchType.Unknown;
@@ -599,13 +846,13 @@ namespace CmsData.Finance
 
         private static TransactionType GetTransactionType(string transactionStatus)
         {
-            var transType = transactionStatus.ParseEnum<transactionStatusEnum>();
+            var transType = transactionStatus.ParseEnum<AuthorizeNet.APICore.transactionStatusEnum>();
             switch (transType)
             {
-                case transactionStatusEnum.chargeback:
-                case transactionStatusEnum.refundPendingSettlement:
-                case transactionStatusEnum.refundSettledSuccessfully:
-                case transactionStatusEnum.returnedItem:
+                case AuthorizeNet.APICore.transactionStatusEnum.chargeback:
+                case AuthorizeNet.APICore.transactionStatusEnum.refundPendingSettlement:
+                case AuthorizeNet.APICore.transactionStatusEnum.refundSettledSuccessfully:
+                case AuthorizeNet.APICore.transactionStatusEnum.returnedItem:
                      return TransactionType.Refund;
                 default:
                     return TransactionType.Charge;
@@ -638,7 +885,7 @@ namespace CmsData.Finance
 
         private static bool IsApproved(string batchSettlementState)
         {
-            return batchSettlementState.ParseEnum<settlementStateEnum>() == settlementStateEnum.settledSuccessfully;
+            return batchSettlementState.ParseEnum<AuthorizeNet.APICore.settlementStateEnum>() == AuthorizeNet.APICore.settlementStateEnum.settledSuccessfully;
         }
 
         public bool CanVoidRefund => true;

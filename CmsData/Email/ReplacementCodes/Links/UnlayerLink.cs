@@ -11,7 +11,7 @@ namespace CmsData
     public partial class EmailReplacements
     {
         // match all links generated in the unlayer special links prompt, and handle from there
-        private const string MatchUnlayerLinkRe = @"""https://(?:rsvplink|regretslink|registerlink|registerlink2|sendlink|sendlink2|supportlink|votelink)/\?.*?""";
+        private const string MatchUnlayerLinkRe = @"""https://(?:rsvplink|regretslink|registerlink|registerlink2|sendlink|sendlink2|supportlink|votelink|givinglink)/\?.*?""";
         private static readonly Regex UnlayerLinkRe = new Regex(MatchUnlayerLinkRe, RegexOptions.IgnoreCase | RegexOptions.Singleline);
 
         private string UnlayerLinkReplacement(string code, EmailQueueTo emailqueueto)
@@ -27,6 +27,10 @@ namespace CmsData
             Uri SpecialLink = new Uri(code);
             string type = SpecialLink.Host;
             string orgId = HttpUtility.ParseQueryString(SpecialLink.Query).Get("org");
+            string givingPageUrl = HttpUtility.ParseQueryString(SpecialLink.Query).Get("givingPageUrl");
+            string givingPageType = HttpUtility.ParseQueryString(SpecialLink.Query).Get("type");
+            string givingPageFund = HttpUtility.ParseQueryString(SpecialLink.Query).Get("fund");
+            string givingPageAmount = HttpUtility.ParseQueryString(SpecialLink.Query).Get("amount");
             string meetingId = HttpUtility.ParseQueryString(SpecialLink.Query).Get("meeting");
             string groupId = HttpUtility.ParseQueryString(SpecialLink.Query).Get("group");
             string confirm = HttpUtility.ParseQueryString(SpecialLink.Query).Get("confirm");
@@ -66,9 +70,11 @@ namespace CmsData
                     showfamily = (type == "sendlink2");
                     qs = $"{orgId},{emailqueueto.PeopleId},{emailqueueto.Id},{(showfamily ? "registerlink2" : "registerlink")}";
                     break;
+
                 case "supportlink":
                     qs = $"{orgId},{emailqueueto.PeopleId},{emailqueueto.Id},{"supportlink"}:{emailqueueto.GoerSupportId}";
                     break;
+
                 case "votelink":
                     string pre = "";
                     var a = groupId.SplitStr(":");
@@ -78,6 +84,11 @@ namespace CmsData
                     }
                     qs = $"{orgId},{emailqueueto.PeopleId},{emailqueueto.Id},{pre},{groupId}";
                     break;
+
+                case "givinglink":
+                    qs = $"{givingPageUrl},{givingPageType},{givingPageFund},{givingPageAmount},{emailqueueto.PeopleId},{emailqueueto.Id}";
+                    break;
+
                 default:
                     return code;
             }
@@ -104,18 +115,14 @@ namespace CmsData
                 case "regretslink":
                     url = db.ServerLink($"/OnlineReg/RsvpLinkSg/{ot.Id.ToCode()}?confirm={confirm}&message={HttpUtility.UrlEncode(message)}");
                     if (type == "regretslink")
-                    {
                         url += "&regrets=true";
-                    }
                     break;
 
                 case "registerlink":
                 case "registerlink2":
                     url = db.ServerLink($"/OnlineReg/RegisterLink/{ot.Id.ToCode()}");
                     if (showfamily)
-                    {
                         url += "?showfamily=true";
-                    }
                     break;
 
                 case "sendlink":
@@ -126,6 +133,26 @@ namespace CmsData
 
                 case "votelink":
                     url = db.ServerLink($"/OnlineReg/VoteLinkSg/{ot.Id.ToCode()}?confirm={confirm}&message={HttpUtility.UrlEncode(message)}");
+                    break;
+
+                case "givinglink":
+                    var parameter = ot.Querystring.Split(',');
+                    if (parameter[0].Length > 0)
+                    {
+                        url = db.ServerLink($"/Give/{parameter[0]}?");
+                        if (parameter[1].Length > 0)
+                        {
+                            url += $"type={parameter[1]}&";
+                        }
+                        if (parameter[2].Length > 0)
+                        {
+                            url += $"fund={parameter[2]}&";
+                        }
+                        if (parameter[3].Length > 0)
+                        {
+                            url += $"amount={parameter[3]}&";
+                        }
+                    }
                     break;
             }
             return url;

@@ -82,12 +82,16 @@ namespace CmsWeb.Areas.Giving.Controllers
             var givingFrequencyList = (from t in CurrentDatabase.ScheduledGiftTypes orderby t.Id select new { Id = t.Id, Name = t.Description }).ToList();
             if (!CurrentDatabase.Setting("UseQuarterlyRecurring"))
                 givingFrequencyList = givingFrequencyList.Where(f => f.Name != "Quarterly").ToList();
+
             if (!CurrentDatabase.Setting("UseAnnualRecurring"))
                 givingFrequencyList = givingFrequencyList.Where(f => f.Name != "Annually").ToList();
+
             if (CurrentDatabase.Setting("HideBiWeeklyRecurring"))
                 givingFrequencyList = givingFrequencyList.Where(f => f.Name != "Biweekly").ToList();
+
             if (CurrentDatabase.Setting("HideSemiMonthlyRecurring"))
                 givingFrequencyList = givingFrequencyList.Where(f => f.Name != "Semi-monthly").ToList();
+
             return Json(givingFrequencyList, JsonRequestBehavior.AllowGet);
         }
 
@@ -112,6 +116,14 @@ namespace CmsWeb.Areas.Giving.Controllers
         {
             var model = new GivingPaymentModel(CurrentDatabase);
             var result = model.DeleteSchedule(scheduledGiftId, peopleId);
+            return Json(result, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        public ActionResult ProcessOneTimeGift(GivingPaymentViewModel viewModel)
+        {
+            var model = new GivingPaymentModel(CurrentDatabase);
+            var result = model.ProcessOneTimePayment(viewModel);
             return Json(result, JsonRequestBehavior.AllowGet);
         }
     }

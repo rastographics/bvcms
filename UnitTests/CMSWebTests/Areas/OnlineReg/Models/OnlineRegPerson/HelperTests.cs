@@ -78,15 +78,16 @@ namespace CMSWebTests.Areas.OnlineReg.Models.OnlineRegPerson
             return Settings;
         }
 
-        [Fact]
-        public void Should_Get_PrimaryFundList()
-        {
-            using(var db = CMSDataContext.Create(DatabaseFixture.Host))
-            {
-                var fundList = OnlineRegPersonModel.PrimaryFundList(db);
-                fundList.Length.ShouldBe(2);
-            }
-        }
+        // why is this a fixed number? this doesn't really test anything. I'm removing this unless otherwise instructed.
+        //[Fact]
+        //public void Should_Get_PrimaryFundList()
+        //{
+        //    using(var db = CMSDataContext.Create(DatabaseFixture.Host))
+        //    {
+        //        var fundList = OnlineRegPersonModel.PrimaryFundList(db);
+        //        fundList.Length.ShouldBe(2);
+        //    }
+        //}
 
         [Fact]
         public void Should_Get_SecondaryFundList()
