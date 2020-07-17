@@ -194,6 +194,20 @@ namespace CmsWeb.Areas.Giving.Controllers
             }
             return Json(givingFrequencyList, JsonRequestBehavior.AllowGet);
         }
-
+        
+        public JsonResult GetSimpleGivingPages()
+        {
+            var givingPages = (from g in CurrentDatabase.GivingPages
+                               orderby g.PageName
+                               select new { g.GivingPageId, g.PageName, g.PageUrl }).ToList();
+            return Json(givingPages, JsonRequestBehavior.AllowGet);
+        }
+        
+        public JsonResult GetFundsByGivingPage(string givingPageTitle)
+        {
+            var model = new GivingPageModel(CurrentDatabase);
+            var result = model.GetFundsByGivingPageUrl(givingPageTitle);
+            return Json(result, JsonRequestBehavior.AllowGet);
+        }
     }
 }
