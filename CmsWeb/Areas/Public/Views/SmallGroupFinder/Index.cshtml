@@ -19,9 +19,21 @@
     var GroupsFound = Model.getGroups().Organizations;
 }
 <!DOCTYPE html>
-<html>
+<html lang="@System.Globalization.CultureInfo.CurrentUICulture.Name">
 <head>
     <title>Small Group Finder</title>
+    <link rel="shortcut icon" href="@Url.Content("~/favicon.ico?v=4")">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="robots" content="noindex" />
+    <meta name="viewport" content="width=device-width, maximum-scale=1.0">
+    @ViewExtensions2.GoogleFonts()
+    @ViewExtensions2.FontAwesome()
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
     <style type="text/css">
         body {
             font-size: @(TextSize)px;
@@ -82,14 +94,15 @@
         <tbody>
             <tr>
                 <td width="1%" class="nowrap center top">
-                    @if( ShowHeaders ) {
+                    @if (ShowHeaders)
+                    {
                         <text>Select Group Options</text>
                         <hr />
                     }
                     <div class="search">
                         <form method="post">
                             <table width="100%">
-                                @for( var iX = 0; iX < Model.getCount( SmallGroupFinderModel.TYPE_FILTER ); iX++ )
+                                @for (var iX = 0; iX < Model.getCount(SmallGroupFinderModel.TYPE_FILTER); iX++)
                                 {
                                     var f = Model.getFilter(iX);
                                     var fi = Model.getFilterItems(iX);
@@ -98,10 +111,10 @@
                                         <td class="right nowrap">@(f.title + ":")</td>
                                         <td class="left">
                                             <select name="@f.name">
-                                            @foreach( var item in fi )
-                                            {
-                                                <option @(Model.IsSelectedValue( f.name, item.value ) ? "selected" : "") value="@item.value">@item.value</option>
-                                            }
+                                                @foreach (var item in fi)
+                                                {
+                                                    <option @(Model.IsSelectedValue(f.name, item.value) ? "selected" : "") value="@item.value">@item.value</option>
+                                                }
                                             </select>
                                         </td>
                                     </tr>
@@ -119,7 +132,8 @@
                     </div>
                 </td>
                 <td width="99%" class="top">
-                    @if( ShowHeaders ) {
+                    @if (ShowHeaders)
+                    {
                         <text>Search Results - </text>@(GroupsFound.Count())<text> Group(s) Found</text>
                         <hr />
                     }
