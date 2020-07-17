@@ -175,6 +175,7 @@
     <Compile Include="Areas\Search\Models\OrgSearchModelTests.cs" />
     <Compile Include="Areas\Search\Models\SearchAdd\SearchAddModelTests.cs" />
     <Compile Include="Areas\Setup\Controllers\DivisionControllerTests.cs" />
+    <Compile Include="Code\FingerprintTests.cs" />
     <Compile Include="Code\PledgesHelperTests.cs" />
     <Compile Include="Controllers\Api\CustomControllerTests.cs" />
     <Compile Include="Controllers\HomeControllerTests.cs" />
