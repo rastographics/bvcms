@@ -59,6 +59,7 @@ namespace CmsWeb.Areas.Giving.Models
     {
         public decimal amount { get; set; }
         public SelectedFund fund { get; set; }
+        public string note { get; set; }
     }
     public class BillingInfo
     {

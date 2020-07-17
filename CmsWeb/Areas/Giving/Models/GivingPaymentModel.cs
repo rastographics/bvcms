@@ -7,6 +7,7 @@ using Elmah;
 using Newtonsoft.Json;
 using System;
 using System.Linq;
+using UtilityExtensions;
 
 namespace CmsWeb.Areas.Giving.Models
 {
@@ -616,19 +617,46 @@ namespace CmsWeb.Areas.Giving.Models
 
                 if (transactionResponse.Approved == true)
                 {
-                    var transactionResponseForCreditCardPayment = gateway.ChargeCreditCardOneTime(totalAmount, viewModel.cardInfo.cardNumber, expires, viewModel.cardInfo.cardCode, viewModel.billingInfo.firstName, viewModel.billingInfo.lastName, viewModel.billingInfo.address, viewModel.billingInfo.address2, viewModel.billingInfo.city, viewModel.billingInfo.state, viewModel.billingInfo.country, viewModel.billingInfo.zip, viewModel.testing);
+                    var transactionResponseForCreditCardPayment = gateway.ChargeCreditCardOneTime(totalAmount, viewModel.cardInfo.cardNumber, expires, viewModel.cardInfo.cardCode, viewModel.billingInfo.firstName, viewModel.billingInfo.lastName, viewModel.billingInfo.address, viewModel.billingInfo.address2, viewModel.billingInfo.city, viewModel.billingInfo.state, viewModel.billingInfo.country, viewModel.billingInfo.zip, viewModel.billingInfo.phone, viewModel.billingInfo.email, viewModel.testing);
                     if (transactionResponseForCreditCardPayment.Approved == true)
                     {
-                        
+                        foreach (var item in viewModel.gifts)
+                        {
+                            var contribution = new Contribution
+                            {
+                                CreatedBy = 0,
+                                CreatedDate = DateTime.Now,
+                                ContributionTypeId = 5,
+                                ContributionDate = DateTime.Now,
+                                ContributionAmount = item.amount,
+                                ImageID = 0,
+                                Origin = 0
+                            };
+                            var contributionFund = (from c in CurrentDatabase.ContributionFunds where c.FundId == item.fund.fundId select c).FirstOrDefault();
+                            if(contributionFund != null)
+                            {
+                                contribution.FundId = item.fund.fundId;
+                                if (contributionFund.Notes == true)
+                                {
+                                    contribution.Notes = item.note;
+                                }
+                            }
+                            else
+                            {
+                                contribution.FundId = CurrentDatabase.Setting("DefaultFundId", "1").ToInt();
+                            }
+                            CurrentDatabase.Contributions.InsertOnSubmit(contribution);
+                            CurrentDatabase.SubmitChanges();
+                        }
                     }
                     else
                     {
-                        return Message.createErrorReturn("Card processing failed. Message: " + transactionResponse.Message, Message.API_ERROR_PAYMENT_METHOD_AUTHORIZATION_FAILED);
+                        return Message.createErrorReturn("Card processing failed. Message: " + transactionResponse.Message, Message.API_ERROR_CREDIT_CARD_PAYMENT_FAILED);
                     }
                 }
                 else
                 {
-                    return Message.createErrorReturn("Card authorization failed. Message: " + transactionResponse.Message, Message.API_ERROR_PAYMENT_METHOD_AUTHORIZATION_FAILED);
+                    return Message.createErrorReturn("Card authorization failed. Message: " + transactionResponse.Message, Message.API_ERROR_CREDIT_CARD_AUTHORIZATION_FAILED);
                 }
             }
             #endregion

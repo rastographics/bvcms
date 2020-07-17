@@ -23,18 +23,35 @@ namespace CMSWebTests.Areas.GivingSettings
         public void CreateGivingPaymentSchedule()
         {
             var person = CreatePerson();
+            var emailStarting = RandomString();
+            BillingInfo billingInfo = new BillingInfo()
+            {
+                firstName = person.FirstName,
+                lastName = person.LastName,
+                email = emailStarting.ToString() + "@myemail.com",
+                phone = "2149123704",
+                address = "33",
+                address2 = "55",
+                city = "Dallas",
+                state = "Texas",
+                zip = "99997-0008",
+                country = "United States"
+            };
+            BankInfo bankInfo = new BankInfo()
+            {
+                accountName = "My Bank",
+                accountNumber = "123456789",
+                routingNumber = "111000614"
+            };
             GivingPaymentViewModel viewModel = new GivingPaymentViewModel()
             {
                 paymentTypeId = 1,
                 isDefault = true,
-                name = "My Bank",
-                firstName = "Jason",
-                lastName = "Rice",
-                bankAccount = "123456789",
-                bankRouting = "111000614",
                 transactionTypeId = "authOnlyTransaction",
                 incomingPeopleId = person.PeopleId,
-                testing = true
+                testing = true,
+                billingInfo = billingInfo,
+                bankInfo = bankInfo
             };
 
             var requestManager = FakeRequestManager.Create();

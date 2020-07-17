@@ -324,8 +324,7 @@ namespace CmsData.Finance
             };
         }
 
-        //public createTransactionResponse ChargeCreditCardOneTime(PaymentMethod paymentMethod, decimal amt, string description, int tranid, string lastName, string firstName, string address, string address2, string city, string state, string country, string zip, string phone, string emailAddress)
-        public TransactionResponse ChargeCreditCardOneTime(decimal amt, string cardNumber, string expires, string cardCode, string firstName, string lastName, string address, string address2, string city, string state, string country, string zip, bool testing = false)
+        public TransactionResponse ChargeCreditCardOneTime(decimal amt, string cardNumber, string expires, string cardCode, string firstName, string lastName, string address, string address2, string city, string state, string country, string zip, string phone, string email, bool testing = false)
         {
             const SslProtocols _Tls12 = (SslProtocols)0x00000C00;
             const SecurityProtocolType Tls12 = (SecurityProtocolType)_Tls12;
@@ -354,9 +353,15 @@ namespace CmsData.Finance
             {
                 firstName = firstName,
                 lastName = lastName,
+                address = address,
                 city = city,
-                zip = zip
+                zip = zip,
+                state = state,
+                country = country,
+                email = email,
+                phoneNumber = phone
             };
+
             if(address2 != null)
             {
                 if (address2.Length > 0)

@@ -92,17 +92,17 @@ namespace CMSWebTests.Areas.Finance
 
             Gift gift1 = new Gift()
             {
-                amount = 1,
+                amount = 10,
                 fund = selectedFund1
             };
             Gift gift2 = new Gift()
             {
-                amount = 2,
+                amount = 20,
                 fund = selectedFund1
             };
             Gift gift3 = new Gift()
             {
-                amount = 3,
+                amount = 30,
                 fund = selectedFund2
             };
             var myGifts = new List<Gift>();

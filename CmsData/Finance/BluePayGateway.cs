@@ -51,7 +51,7 @@ namespace CmsData.Finance
         }
 
         // New methods
-        public TransactionResponse ChargeCreditCardOneTime(decimal amt, string cardNumber, string expires, string cardCode, string firstName, string lastName, string address, string address2, string city, string state, string country, string zip, bool testing = false)
+        public TransactionResponse ChargeCreditCardOneTime(decimal amt, string cardNumber, string expires, string cardCode, string firstName, string lastName, string address, string address2, string city, string state, string country, string zip, string phone, string email, bool testing = false)
         {
             throw new NotImplementedException();
         }

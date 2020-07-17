@@ -130,6 +130,10 @@ namespace CmsWeb.Areas.Giving.Models
 
         public const int API_ERROR_SCHEDULED_GIFT_AMOUNT_NOT_FOUND = 130;
 
+        public const int API_ERROR_CREDIT_CARD_AUTHORIZATION_FAILED = 140;
+        public const int API_ERROR_CREDIT_CARD_PAYMENT_FAILED = 141;
+        public const int API_ERROR_BANK_PAYMENT_FAILED = 142;
+
         // API Response Codes
         public const int API_OK = 200;
         public const int API_Created = 201;
