@@ -72,77 +72,83 @@ namespace CMSWebTests.Areas.Finance
             paymentMethod.NameOnAccount.ShouldBe(person.Name);
         }
 
-        //[Fact]
-        //public void ProcessCreditCardPayment()
-        //{
-        //    var person = CreatePerson();
-        //    //var fund = 
-        //    SelectedFund selectedFund1 = new SelectedFund()
-        //    {
-        //        fundId = 1,
-        //        fundName = "General Operation"
-        //    };
-        //    SelectedFund selectedFund2 = new SelectedFund()
-        //    {
-        //        fundId = 2,
-        //        fundName = "Pledge"
-        //    };
-        //    Gift gift1 = new Gift()
-        //    {
-        //        amount = 1,
-        //        fund = selectedFund1
-        //    };
-        //    Gift gift2 = new Gift()
-        //    {
-        //        amount = 2,
-        //        fund = selectedFund1
-        //    };
-        //    Gift gift3 = new Gift()
-        //    {
-        //        amount = 3,
-        //        fund = selectedFund2
-        //    };
-        //    var myGifts = new List<Gift>();
-        //    myGifts.Add(gift1);
-        //    myGifts.Add(gift2);
-        //    myGifts.Add(gift3);
-        //    BillingInfo billingInfo = new BillingInfo()
-        //    {
-        //        firstName = person.FirstName,
-        //        lastName = person.LastName,
-        //        email = "abc@myemail.com",
-        //        phone = "2149123704",
-        //        address = "33",
-        //        address2 = "55",
-        //        city = "Dallas",
-        //        state = "Texas",
-        //        zip = "99997-0008",
-        //        country = "United States"
-        //    };
-        //    CardInfo cardInfo = new CardInfo()
-        //    {
-        //        cardNumber = "4111111111111111",
-        //        nameOnCard = person.Name,
-        //        expDateMonth = "05",
-        //        expDateYear = DateTime.Now.AddYears(2).Year.ToString(),
-        //        cardCode = "999"
-        //    };
-        //    GivingPaymentViewModel viewModel = new GivingPaymentViewModel()
-        //    {
-        //        paymentTypeId = 2,
-        //        incomingPeopleId = person.PeopleId,
-        //        testing = true,
-        //        gifts = myGifts,
-        //        billingInfo = billingInfo,
-        //        cardInfo = cardInfo
-        //    };
+        [Fact]
+        public void ProcessCreditCardPayment()
+        {
+            //var person = CreatePerson();
+            var person = (from p in db.People where p.PeopleId == 1 select p).FirstOrDefault();
+            //var fund =
 
-        //    var requestManager = FakeRequestManager.Create();
-        //    var controller = new CmsWeb.Areas.Giving.Controllers.GivingPaymentController(requestManager);
-        //    MockPaymentProcess.PaymentProcessNullCheck(db);
-        //    var results = controller.ProcessOneTimeGift(viewModel);
+            SelectedFund selectedFund1 = new SelectedFund()
+            {
+                fundId = 1,
+                fundName = "General Operation"
+            };
+            SelectedFund selectedFund2 = new SelectedFund()
+            {
+                fundId = 2,
+                fundName = "Pledge"
+            };
 
-        //}
+            Gift gift1 = new Gift()
+            {
+                amount = 1,
+                fund = selectedFund1
+            };
+            Gift gift2 = new Gift()
+            {
+                amount = 2,
+                fund = selectedFund1
+            };
+            Gift gift3 = new Gift()
+            {
+                amount = 3,
+                fund = selectedFund2
+            };
+            var myGifts = new List<Gift>();
+
+            myGifts.Add(gift1);
+            myGifts.Add(gift2);
+            myGifts.Add(gift3);
+
+            BillingInfo billingInfo = new BillingInfo()
+            {
+                firstName = person.FirstName,
+                lastName = person.LastName,
+                email = "abc@myemail.com",
+                phone = "2149123704",
+                address = "33",
+                address2 = "55",
+                city = "Dallas",
+                state = "Texas",
+                zip = "99997-0008",
+                country = "United States"
+            };
+            CardInfo cardInfo = new CardInfo()
+            {
+                cardNumber = "4111111111111111",
+                nameOnCard = person.Name,
+                expDateMonth = "05",
+                expDateYear = DateTime.Now.AddYears(2).Year.ToString(),
+                cardCode = "999"
+            };
+            GivingPaymentViewModel viewModel = new GivingPaymentViewModel()
+            {
+                paymentTypeId = 2,
+                incomingPeopleId = person.PeopleId,
+                testing = true,
+                gifts = myGifts,
+                billingInfo = billingInfo,
+                cardInfo = cardInfo,
+                givingPageId = 1 // need to create method to create new giving page
+            };
+
+            var requestManager = FakeRequestManager.Create();
+            var controller = new CmsWeb.Areas.Giving.Controllers.GivingPaymentController(requestManager);
+            MockPaymentProcess.PaymentProcessNullCheck(db);
+            var results = controller.ProcessOneTimeGift(viewModel);
+
+        }
 
         [Fact]
         public void AuthBankCreatePaymentMethod()

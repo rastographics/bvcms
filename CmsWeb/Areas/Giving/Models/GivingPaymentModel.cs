@@ -592,12 +592,14 @@ namespace CmsWeb.Areas.Giving.Models
                 //var type = PaymentType.Ach;
                 //gateway.StoreInVault(paymentMethod, type, null, null, viewModel.bankAccount, viewModel.bankRouting, null, null, viewModel.address, viewModel.address2, viewModel.city, viewModel.state, viewModel.country, viewModel.zip, viewModel.phone, viewModel.emailAddress);
             }
-            else if (viewModel.paymentTypeId == 2 || viewModel.paymentTypeId == 3 || viewModel.paymentTypeId == 4 || viewModel.paymentTypeId == 5)
+            else
             {
                 var expires = HelperMethods.FormatExpirationDate(Convert.ToInt32(viewModel.cardInfo.expDateMonth), Convert.ToInt32(viewModel.cardInfo.expDateYear));
 
+                // get totalAmount
+                #region
                 decimal totalAmount = 0;
-                if(viewModel.gifts.Count > 1)
+                if(viewModel.gifts.Count == 1)
                 {
                     totalAmount = viewModel.gifts[0].amount;
                 }
@@ -608,28 +610,26 @@ namespace CmsWeb.Areas.Giving.Models
                         totalAmount += item.amount;
                     }
                 }
+                #endregion
 
                 var transactionResponse = gateway.AuthCreditCard(currentPeopleId, totalAmount, viewModel.cardInfo.cardNumber, expires, "Recurring Giving Auth", 0, viewModel.cardInfo.cardCode, string.Empty, viewModel.billingInfo.firstName, viewModel.billingInfo.lastName, viewModel.billingInfo.address, viewModel.billingInfo.address2, viewModel.billingInfo.city, viewModel.billingInfo.state, viewModel.billingInfo.country, viewModel.billingInfo.zip, viewModel.billingInfo.phone, viewModel.testing);
+
                 if (transactionResponse.Approved == true)
                 {
-                    var transactionResponseForCreditCardPayment = gateway.ChargeCreditCardOneTime(viewModel.gift.amount, viewModel.cardInfo.cardNumber, expires, viewModel.cardInfo.cardCode, viewModel.billingInfo.firstName, viewModel.billingInfo.lastName, viewModel.billingInfo.address, viewModel.billingInfo.address2, viewModel.billingInfo.city, viewModel.billingInfo.state, viewModel.billingInfo.country, viewModel.billingInfo.zip, viewModel.testing);
-                    if (transactionResponseForCreditCardPayment.Approved == false)
+                    var transactionResponseForCreditCardPayment = gateway.ChargeCreditCardOneTime(totalAmount, viewModel.cardInfo.cardNumber, expires, viewModel.cardInfo.cardCode, viewModel.billingInfo.firstName, viewModel.billingInfo.lastName, viewModel.billingInfo.address, viewModel.billingInfo.address2, viewModel.billingInfo.city, viewModel.billingInfo.state, viewModel.billingInfo.country, viewModel.billingInfo.zip, viewModel.testing);
+                    if (transactionResponseForCreditCardPayment.Approved == true)
                     {
-                        return Message.createErrorReturn("Card processing failed. Message: " + transactionResponse.Message, Message.API_ERROR_PAYMENT_METHOD_AUTHORIZATION_FAILED);
+                        
                     }
                     else
                     {
-
+                        return Message.createErrorReturn("Card processing failed. Message: " + transactionResponse.Message, Message.API_ERROR_PAYMENT_METHOD_AUTHORIZATION_FAILED);
                     }
                 }
                 else
                 {
                     return Message.createErrorReturn("Card authorization failed. Message: " + transactionResponse.Message, Message.API_ERROR_PAYMENT_METHOD_AUTHORIZATION_FAILED);
                 }
-            }
-            else
-            {
-                return Message.createErrorReturn("Payment method type not supported.", Message.API_ERROR_PAYMENT_METHOD_AUTHORIZATION_FAILED);
             }
             #endregion
 
