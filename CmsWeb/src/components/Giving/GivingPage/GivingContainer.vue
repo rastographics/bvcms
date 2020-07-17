@@ -92,7 +92,6 @@
 <script>
     import axios from "axios";
     import { bus } from "touchpoint/common/bus.js";
-    import * as accountService from "touchpoint/services/AccountService.js";
 
     var givingLogin = require("./GivingLogin.vue").default;
 
