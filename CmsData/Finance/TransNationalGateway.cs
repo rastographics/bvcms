@@ -98,6 +98,11 @@ namespace CmsData.Finance
             throw new NotImplementedException();
         }
 
+        public TransactionResponse ChargeBankAccountOneTime(decimal amt, string accountNumber, string routingNumber, string accountName, string nameOnAccount, string firstName, string lastName, string address, string address2, string city, string state, string country, string zip, string phone, string email, bool testing = false)
+        {
+            throw new NotImplementedException();
+        }
+
         public void StoreInVault(PaymentMethod paymentMethod, string type, string cardNumber, string cvv, string bankAccountNum, string bankRoutingNum, int? expireMonth, int? expireYear, string address, string address2, string city, string state, string country, string zip, string phone, string emailAddress, bool testing = false)
         {
             if (paymentMethod == null)

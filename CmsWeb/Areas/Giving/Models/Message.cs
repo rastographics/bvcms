@@ -12,6 +12,8 @@ namespace CmsWeb.Areas.Giving.Models
     {
         public int version = 0;
 
+        public decimal totalAmountProcessed = 0;
+
         public int error = 1;
         public int returnCode = 0;
         public int count = 0;
@@ -86,6 +88,25 @@ namespace CmsWeb.Areas.Giving.Models
         }
 
         public static Message successMessage(string message, int errorCode = 0)
+        {
+            return new Message
+            {
+                data = message,
+                error = errorCode
+            };
+        }
+
+        public static Message successMessage(string message, int errorCode = 0, decimal totalAmountProcessed = 0)
+        {
+            return new Message
+            {
+                data = message,
+                error = errorCode,
+                totalAmountProcessed = totalAmountProcessed
+            };
+        }
+
+        public static Message errorMessage(string message, int errorCode = 0)
         {
             return new Message
             {

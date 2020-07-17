@@ -453,29 +453,126 @@ namespace CmsData.Finance
             return returnTransactionResponse;
         }
 
+        public TransactionResponse ChargeBankAccountOneTime(decimal amt, string accountNumber, string routingNumber, string accountName, string nameOnAccount, string firstName, string lastName, string address, string address2, string city, string state, string country, string zip, string phone, string email, bool testing = false)
+        {
+            const SslProtocols _Tls12 = (SslProtocols)0x00000C00;
+            const SecurityProtocolType Tls12 = (SecurityProtocolType)_Tls12;
+            ServicePointManager.SecurityProtocol = Tls12;
+
+            if (testing == true)
+                ApiOperationBase<ANetApiRequest, ANetApiResponse>.RunEnvironment = AuthorizeNet.Environment.SANDBOX;
+            else
+                ApiOperationBase<ANetApiRequest, ANetApiResponse>.RunEnvironment = AuthorizeNet.Environment.PRODUCTION;
+
+            ApiOperationBase<ANetApiRequest, ANetApiResponse>.MerchantAuthentication = new merchantAuthenticationType()
+            {
+                name = _login,
+                ItemElementName = ItemChoiceType.transactionKey,
+                Item = _key,
+            };
+
+            var bankAccount = new bankAccountType
+            {
+                accountType = bankAccountTypeEnum.checking,
+                routingNumber = routingNumber,
+                accountNumber = accountNumber,
+                nameOnAccount = nameOnAccount,
+                echeckType = echeckTypeEnum.WEB,
+                //bankName = accountName,
+                // checkNumber     = "101"                 // needed if echeckType is "ARC" or "BOC"
+            };
+            // standard api call to retrieve response
+            var paymentType = new paymentType { Item = bankAccount };
+
+            var transactionRequest = new transactionRequestType
+            {
+                transactionType = transactionTypeEnum.authCaptureTransaction.ToString(),    // refund type
+                payment = paymentType,
+                amount = amt
+            };
+
+            var request = new createTransactionRequest { transactionRequest = transactionRequest };
+
+            // instantiate the controller that will call the service
+            var controller = new createTransactionController(request);
+            controller.Execute();
+
+            // get the response from the service (errors contained if any)
+            var response = controller.GetApiResponse();
+
+            // initialize the returning object
+            var returnTransactionResponse = new TransactionResponse();
+
+            // validate response
+            if (response != null)
+            {
+                if (response.messages.resultCode == messageTypeEnum.Ok)
+                {
+                    if (response.transactionResponse.messages != null)
+                    {
+                        returnTransactionResponse.Approved = true;
+                        returnTransactionResponse.AuthCode = response.transactionResponse.authCode;
+                        returnTransactionResponse.Message = ("Response Code: " + response.transactionResponse.responseCode) + " " + ("Message Code: " + response.transactionResponse.messages[0].code) + " " + ("Description: " + response.transactionResponse.messages[0].description);
+                        returnTransactionResponse.TransactionId = response.transactionResponse.transId;
+                    }
+                    else
+                    {
+                        returnTransactionResponse.Approved = false;
+                        if (response.transactionResponse.errors != null)
+                        {
+                            returnTransactionResponse.AuthCode = "Error Code: " + response.transactionResponse.errors[0].errorCode;
+                            returnTransactionResponse.Message = "Error message: " + response.transactionResponse.errors[0].errorText;
+                        }
+                    }
+                }
+                else
+                {
+                    returnTransactionResponse.Approved = false;
+                    if (response.transactionResponse != null && response.transactionResponse.errors != null)
+                    {
+                        returnTransactionResponse.AuthCode = "Error Code: " + response.transactionResponse.errors[0].errorCode;
+                        returnTransactionResponse.Message = "Error message: " + response.transactionResponse.errors[0].errorText;
+                    }
+                    else
+                    {
+                        returnTransactionResponse.AuthCode = "Error Code: " + response.transactionResponse.errors[0].errorCode;
+                        returnTransactionResponse.Message = "Error message: " + response.transactionResponse.errors[0].errorText;
+                    }
+                }
+            }
+            else
+            {
+                return new TransactionResponse
+                {
+                    Approved = false,
+                    Message = "Null Response."
+                };
+            }
+
+            return returnTransactionResponse;
+        }
+
         // Old methods
-        #region
-        //public TransactionResponse AuthCreditCard(int peopleId, decimal amt, string cardnumber, string expires, string description, int tranid, string cardcode, string email, string first, string last, string addr, string addr2, string city, string state, string country, string zip, string phone)
-        //{
-        //    var request = new AuthorizationRequest(cardnumber, expires, amt, description, includeCapture: false);
+        public TransactionResponse AuthCreditCard(int peopleId, decimal amt, string cardnumber, string expires, string description, int tranid, string cardcode, string email, string first, string last, string addr, string addr2, string city, string state, string country, string zip, string phone)
+        {
+            var request = new AuthorizationRequest(cardnumber, expires, amt, description, includeCapture: false);
 
-        //    request.AddCustomer(peopleId.ToString(), email, first, last, addr, city, state, zip);
-        //    request.Country = country;
-        //    request.CardCode = cardcode;
-        //    request.Phone = phone;
-        //    request.InvoiceNum = tranid.ToString();
+            request.AddCustomer(peopleId.ToString(), email, first, last, addr, city, state, zip);
+            request.Country = country;
+            request.CardCode = cardcode;
+            request.Phone = phone;
+            request.InvoiceNum = tranid.ToString();
 
-        //    var response = Gateway.Send(request);
+            var response = Gateway.Send(request);
 
-        //    return new TransactionResponse
-        //    {
-        //        Approved = response.Approved,
-        //        AuthCode = response.AuthorizationCode,
-        //        Message = response.Message,
-        //        TransactionId = response.TransactionID
-        //    };
-        //}
-        #endregion
+            return new TransactionResponse
+            {
+                Approved = response.Approved,
+                AuthCode = response.AuthorizationCode,
+                Message = response.Message,
+                TransactionId = response.TransactionID
+            };
+        }
 
         public TransactionResponse AuthCreditCardVault(int peopleId, decimal amt, string description, int tranid)
         {

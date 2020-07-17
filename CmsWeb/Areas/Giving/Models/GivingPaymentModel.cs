@@ -306,7 +306,7 @@ namespace CmsWeb.Areas.Giving.Models
                 FundId = scheduledGiftAmount.FundId,
                 Amount = scheduledGiftAmount.Amount
             };
-            return Message.successMessage(JsonConvert.SerializeObject(givingPaymentScheduleItems));
+            return Message.successMessage(JsonConvert.SerializeObject(givingPaymentScheduleItems), Message.API_ERROR_NONE);
         }
 
         public Message UpdateSchedule(GivingPaymentViewModel viewModel)
@@ -461,7 +461,7 @@ namespace CmsWeb.Areas.Giving.Models
                                          FundId = sga.FundId,
                                          Amount = sga.Amount
                                      }).ToList();
-            return Message.successMessage(JsonConvert.SerializeObject(scheduledGiftList));
+            return Message.successMessage(JsonConvert.SerializeObject(scheduledGiftList), Message.API_ERROR_NONE);
         }
 
         public Message ProcessOneTimePayment(GivingPaymentViewModel viewModel)
@@ -586,38 +586,79 @@ namespace CmsWeb.Areas.Giving.Models
             var gateway = CurrentDatabase.Gateway(viewModel.testing, account, PaymentProcessTypes.OneTimeGiving);
             #endregion
 
+            // get totalAmount
+            #region
+            decimal totalAmount = 0;
+            if (viewModel.gifts.Count == 1)
+            {
+                totalAmount = viewModel.gifts[0].amount;
+            }
+            else
+            {
+                foreach (var item in viewModel.gifts)
+                {
+                    totalAmount += item.amount;
+                }
+            }
+            #endregion
+
             // execute payment and return results from gateway
             #region
             if (viewModel.paymentTypeId == 1)
             {
-                //var type = PaymentType.Ach;
-                //gateway.StoreInVault(paymentMethod, type, null, null, viewModel.bankAccount, viewModel.bankRouting, null, null, viewModel.address, viewModel.address2, viewModel.city, viewModel.state, viewModel.country, viewModel.zip, viewModel.phone, viewModel.emailAddress);
+                var transactionResponseForBankPayment = gateway.ChargeBankAccountOneTime(totalAmount, viewModel.bankInfo.accountNumber, viewModel.bankInfo.routingNumber, viewModel.bankInfo.accountName, viewModel.bankInfo.nameOnAccount, viewModel.billingInfo.firstName, viewModel.billingInfo.lastName, viewModel.billingInfo.address, viewModel.billingInfo.address2, viewModel.billingInfo.city, viewModel.billingInfo.state, viewModel.billingInfo.country, viewModel.billingInfo.zip, viewModel.billingInfo.phone, viewModel.billingInfo.email, viewModel.testing);
+
+                if (transactionResponseForBankPayment.Approved == true)
+                {
+                    foreach (var item in viewModel.gifts)
+                    {
+                        var contribution = new Contribution
+                        {
+                            CreatedBy = 0,
+                            CreatedDate = DateTime.Now,
+                            ContributionTypeId = 5,
+                            ContributionDate = DateTime.Now,
+                            ContributionAmount = item.amount,
+                            ImageID = 0,
+                            Origin = 0
+                        };
+                        var contributionFund = (from c in CurrentDatabase.ContributionFunds where c.FundId == item.fund.fundId select c).FirstOrDefault();
+                        if (contributionFund != null)
+                        {
+                            contribution.FundId = item.fund.fundId;
+                            if (contributionFund.Notes == true)
+                            {
+                                contribution.Notes = item.note;
+                            }
+                        }
+                        else
+                        {
+                            contribution.FundId = CurrentDatabase.Setting("DefaultFundId", "1").ToInt();
+                        }
+                        if(viewModel.testing == true)
+                        {
+                            contribution.PeopleId = currentPeopleId;
+                        }
+                        CurrentDatabase.Contributions.InsertOnSubmit(contribution);
+                        CurrentDatabase.SubmitChanges();
+                    }
+                    return Message.successMessage("Bank payment processed successfully.", Message.API_ERROR_NONE, totalAmount);
+                }
+                else
+                {
+                    return Message.createErrorReturn("Bank payment failed. Message: " + transactionResponseForBankPayment.Message, Message.API_ERROR_BANK_PAYMENT_FAILED);
+                }
             }
             else
             {
                 var expires = HelperMethods.FormatExpirationDate(Convert.ToInt32(viewModel.cardInfo.expDateMonth), Convert.ToInt32(viewModel.cardInfo.expDateYear));
-
-                // get totalAmount
-                #region
-                decimal totalAmount = 0;
-                if(viewModel.gifts.Count == 1)
-                {
-                    totalAmount = viewModel.gifts[0].amount;
-                }
-                else
-                {
-                    foreach(var item in viewModel.gifts)
-                    {
-                        totalAmount += item.amount;
-                    }
-                }
-                #endregion
 
                 var transactionResponse = gateway.AuthCreditCard(currentPeopleId, totalAmount, viewModel.cardInfo.cardNumber, expires, "Recurring Giving Auth", 0, viewModel.cardInfo.cardCode, string.Empty, viewModel.billingInfo.firstName, viewModel.billingInfo.lastName, viewModel.billingInfo.address, viewModel.billingInfo.address2, viewModel.billingInfo.city, viewModel.billingInfo.state, viewModel.billingInfo.country, viewModel.billingInfo.zip, viewModel.billingInfo.phone, viewModel.testing);
 
                 if (transactionResponse.Approved == true)
                 {
                     var transactionResponseForCreditCardPayment = gateway.ChargeCreditCardOneTime(totalAmount, viewModel.cardInfo.cardNumber, expires, viewModel.cardInfo.cardCode, viewModel.billingInfo.firstName, viewModel.billingInfo.lastName, viewModel.billingInfo.address, viewModel.billingInfo.address2, viewModel.billingInfo.city, viewModel.billingInfo.state, viewModel.billingInfo.country, viewModel.billingInfo.zip, viewModel.billingInfo.phone, viewModel.billingInfo.email, viewModel.testing);
+
                     if (transactionResponseForCreditCardPayment.Approved == true)
                     {
                         foreach (var item in viewModel.gifts)
@@ -645,9 +686,14 @@ namespace CmsWeb.Areas.Giving.Models
                             {
                                 contribution.FundId = CurrentDatabase.Setting("DefaultFundId", "1").ToInt();
                             }
+                            if (viewModel.testing == true)
+                            {
+                                contribution.PeopleId = currentPeopleId;
+                            }
                             CurrentDatabase.Contributions.InsertOnSubmit(contribution);
                             CurrentDatabase.SubmitChanges();
                         }
+                        return Message.successMessage("Credit card payment processed successfully.", Message.API_ERROR_NONE, totalAmount);
                     }
                     else
                     {
@@ -660,8 +706,6 @@ namespace CmsWeb.Areas.Giving.Models
                 }
             }
             #endregion
-
-            return Message.successMessage("Payment method created.", Message.API_ERROR_NONE);
         }
     }
     public class GivingPaymentScheduleItems
@@ -673,7 +717,6 @@ namespace CmsWeb.Areas.Giving.Models
         public bool IsEnabled { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime? EndDate { get; set; }
-
         public int ScheduledGiftAmountId { get; set; }
         public int FundId { get; set; }
         public decimal Amount { get; set; }
