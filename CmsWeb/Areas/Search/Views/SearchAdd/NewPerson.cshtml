@@ -2,6 +2,9 @@
 @model CmsWeb.Areas.Search.Models.SearchAddModel
 @{
     var hasErrors = ViewData.ModelState.Any(mm => mm.Value.Errors.Count > 0);
+    var errors = ViewData.ModelState.Where(x => x.Value.Errors.Count > 0)
+             .Select(x => new { x.Key, x.Value.Errors })
+             .ToArray();
 }
 @Html.EditorFor(m => m, "HiddenSearch")
 @Html.EditorFor(m => m, "HiddenMeta")
@@ -19,6 +22,7 @@
     @Html.HiddenFor(m => Model.PendingList[n].context)
     @Html.HiddenFor(m => Model.PendingList[n].FamilyId)
     @Html.HiddenFor(m => Model.PendingList[n].IsNewFamily)
+    @Html.HiddenFor(m => Model.PendingList[n].IsBusiness)
 }
 <div class="modal-dialog modal-lg">
     <div class="modal-content">

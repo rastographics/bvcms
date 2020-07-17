@@ -28,15 +28,29 @@ namespace CmsWeb.Areas.Search.Models
 
         [StringLength(25), Required(ErrorMessage = "required, or put 'na' if not known"), RemoveNA]
         public string FirstName { get; set; }
+        public string FirstNameLabel
+        {
+            get
+            {
+                return (this.IsBusiness) ? "Business/Entity name" : "First Name";
+            }
+        }
 
         [StringLength(25)]
         public string NickName { get; set; }
 
         [StringLength(25)]
         public string MiddleName { get; set; }
-
+        private string _LastName;
         [StringLength(100), Required(ErrorMessage = "required")]
-        public string LastName { get; set; }
+        public string LastName
+        {
+            get
+            {
+                return (this.IsBusiness) ? "Business/Entity name" : "First Name";
+            }
+            set { _LastName = value; }
+        }
 
         [StringLength(10)]
         public string TitleCode { get; set; }
@@ -55,11 +69,27 @@ namespace CmsWeb.Areas.Search.Models
         [StringLength(150), EmailAddress, RemoveNA]
         public string EmailAddress { get; set; }
 
+        private CodeInfo _Gender;
         [UnallowedCode("99", ErrorMessage = "specify gender (or unknown)")]
-        public CodeInfo Gender { get; set; }
+        public CodeInfo Gender
+        {
+            get
+            {
+                return (this.IsBusiness) ? new CodeInfo(0, "Gender") : new CodeInfo(99, "Gender");
+            }
+            set { _Gender = value; }
+        }
 
+        private CodeInfo _MaritalStatus;
         [UnallowedCode("99", ErrorMessage = "specify marital status (or unknown)")]
-        public CodeInfo MaritalStatus { get; set; }
+        public CodeInfo MaritalStatus
+        {
+            get
+            {
+                return (this.IsBusiness) ? new CodeInfo(0, "MaritalStatus") : new CodeInfo(99, "MaritalStatus");
+            }
+            set { _MaritalStatus = value; }
+        }
 
         public CodeInfo Campus { get; set; }
 
@@ -161,8 +191,10 @@ namespace CmsWeb.Areas.Search.Models
         }
 
         public bool IsNewFamily { get; set; }
+        [DisplayName("Add a business/entity")]
+        public bool IsBusiness { get; set; }
 
-        internal void AddPerson(int originid, int? entrypointid, int? campusid)
+        internal void AddPerson(int originid, int? entrypointid, int? campusid, bool? isbusiness = false)
         {
             Family f;
             if (FamilyId > 0)
@@ -188,7 +220,7 @@ namespace CmsWeb.Areas.Search.Models
 
             person = Person.Add(CurrentDatabase, f, position,
                                  null, FirstName.Trim(), NickName, LastName.Trim(), DOB, false, Gender.Value.ToInt(),
-                                 originid, entrypointid);
+                                 originid, entrypointid, isbiz: (bool)isbusiness);
 
             this.CopyPropertiesTo(Person);
             Person.CellPhone = CellPhone.GetDigits();
@@ -205,7 +237,7 @@ namespace CmsWeb.Areas.Search.Models
             }
 
             CurrentDatabase.SubmitChanges();
-            DbUtil.LogActivity($"AddPerson {person.PeopleId}");
+            DbUtil.LogActivity($"{((bool)person.IsBusiness ? "AddBusiness" : "AddPerson")} {person.PeopleId}");
             CurrentDatabase.Refresh(RefreshMode.OverwriteCurrentValues, Person);
             PeopleId = Person.PeopleId;
         }
