@@ -1825,6 +1825,8 @@
     <Content Include="src\components\Giving\GivingPage\GivingContainer.vue" />
     <Content Include="src\components\Giving\GivingPage\MoneyInput.vue" />
     <Content Include="src\components\Giving\GivingPage\OneTimeGift.vue" />
+    <Content Include="src\common\bus.js" />
+    <Content Include="src\common\utils.js" />
     <Content Include="Views\Shared\Account\_Layout.cshtml" />
     <Content Include="Areas\Reports\Views\Reports\EditCustomReport.cshtml" />
     <Content Include="Areas\Manage\Views\Account\SetPasswordConfirm.cshtml" />
@@ -2929,6 +2931,10 @@
     <Content Include="Views\Shared\Menu\Involvement.cshtml" />
     <Content Include="src\components\Giving\GivingPage\GivingLogin.vue" />
     <Content Include="src\components\Giving\GivingPage\PledgeGift.vue" />
+    <Content Include="src\components\Giving\GivingPage\NewPaymentMethod.vue" />
+    <Content Include="src\components\Giving\GivingPage\PaymentList.vue" />
+    <Content Include="src\components\Giving\GivingPage\PaymentMethod.vue" />
+    <Content Include="src\components\Giving\GivingPage\CardInput.vue" />
     <None Include="Web.staging.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

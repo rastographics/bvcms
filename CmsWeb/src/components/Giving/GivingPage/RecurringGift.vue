@@ -47,6 +47,8 @@
     </div>
 </template>
 <script>
+    import { utils } from "touchpoint/common/utils.js";
+
     export default {
         props: ["value", "count", "funds", "frequencies", "showValidation"],
         data: function () {
@@ -119,8 +121,7 @@
                 this.$emit('remove');
             },
             getOrdinal(n) {
-                var s = ["th", "st", "nd", "rd"], v = n % 100;
-                return n + (s[(v - 20) % 10] || s[v] || s[0]);
+                return utils.getOrdinal(n);
             },
             setFrequency(f) {
                 let vm = this;

@@ -10,11 +10,11 @@
                 <div class="col-md-6 col-md-offset-3">
                     <div class="row well">
                         <div class="col-xs-12">
-                            <div :class="{'form-group': true, 'has-error': showValidation && value.cardInfo.number.length <= 18}">
+                            <div :class="{'form-group': true, 'has-error': showValidation && !cardNumberValid}">
                                 <label class="control-label">
                                     Card Number
                                 </label>
-                                <input type="text" class="form-control" v-model="value.cardInfo.number" placeholder="4111 1234 1234 1234" v-mask="'#### #### #### ####'" required />
+                                <card-input v-model="value.cardInfo.number" :type="value.cardInfo.type"></card-input>
                                 <small v-if="showValidation" class="text-danger">Please enter your card number</small>
                             </div>
                         </div>
@@ -28,11 +28,11 @@
                             </div>
                         </div>
                         <div class="col-xs-6">
-                            <div :class="{'form-group': true, 'has-error': showValidation && value.cardInfo.cvc.length != 3}">
+                            <div :class="{'form-group': true, 'has-error': showValidation && !cvcValid}">
                                 <label class="control-label">
                                     Security Code
                                 </label>
-                                <input type="text" class="form-control" v-model="value.cardInfo.cvc" placeholder="123" v-mask="'###'" required />
+                                <input type="text" class="form-control" v-model="value.cardInfo.cvc" :placeholder="value.cardInfo.type == 'amex' ? '1234' : '123'" v-mask="value.cardInfo.type == 'amex' ? '####' : '###'" required />
                                 <small v-if="showValidation" class="text-danger">Please enter your security code</small>
                             </div>
                         </div>
@@ -45,10 +45,10 @@
                         <div class="col-sm-12">
                             <div :class="{'form-group': true, 'has-error': showValidation && !value.bankInfo.name.length}">
                                 <label class="control-label">
-                                    Bank Name
+                                    Account Nickname
                                 </label>
                                 <input type="text" class="form-control" v-model="value.bankInfo.name" placeholder="Bank of America" required />
-                                <small v-if="showValidation" class="text-danger">Please enter your bank name</small>
+                                <small v-if="showValidation" class="text-danger">Please enter an account nickname</small>
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -142,6 +142,8 @@
     import { utils } from "touchpoint/common/utils.js";
     import { bus } from "touchpoint/common/bus.js";
 
+    var cardInput = require("./CardInput.vue").default;
+
     export default {
         props: ["value", "showValidation", "paymentTypes"],
         data: function () {
@@ -149,6 +151,7 @@
                 paymentType: "card"
             };
         },
+        components: { cardInput },
         computed: {
             formValid: function () {
                 return this.emailValid && this.paymentValid &&
@@ -165,21 +168,41 @@
             emailValid: function () {
                 return utils.validateEmail(this.value.billingInfo.email);
             },
+            cardNumberValid: function () {
+                if (this.cardType == 'amex') {
+                    return this.value.cardInfo.number.length == 17;
+                } else {
+                    return this.value.cardInfo.number.length == 19;
+                }
+            },
+            cvcValid: function () {
+                if (this.cardType == 'amex') {
+                    return this.value.cardInfo.cvc.length == 4;
+                } else {
+                    return this.value.cardInfo.cvc.length == 3;
+                }
+            },
             paymentValid: function () {
                 if (this.paymentType == 'card') {
-                    return this.value.cardInfo.number.length > 18 &&
-                        this.value.cardInfo.cvc.length == 3 &&
+                    return this.cvcValid && this.cardNumberValid &&
                         this.value.cardInfo.date.length == 7;
                 } else {
                     return this.value.bankInfo.name.length &&
                         this.value.bankInfo.routing.length == 9 &&
                         this.value.bankInfo.account.length > 3;
                 }
+            },
+            cardType: function () {
+                if (!this.value.cardInfo || !this.value.cardInfo.number) return "other";
+                return utils.cardType(this.value.cardInfo.number);
             }
         },
         watch: {
             formValid: function (value) {
                 bus.$emit('paymentValidationChange', value);
+            },
+            cardType: function (type) {
+                if (type) this.value.cardInfo.type = type;
             }
         },
         methods: {
@@ -192,7 +215,8 @@
                 payment.cardInfo = {
                     number: "",
                     date: "",
-                    cvc: ""
+                    cvc: "",
+                    type: "other"
                 };
                 payment.bankInfo = {
                     name: "",
