@@ -16,11 +16,12 @@ namespace CmsWeb.Areas.Search.Controllers
         }
 
         [HttpPost, Route("SearchAdd2/Dialog/{type}/{typeid?}")]
-        public ActionResult Dialog(string type, string typeid, bool displaySkipSearch = true, bool fuzzy = true)
+        public ActionResult Dialog(string type, string typeid, bool displaySkipSearch = true, bool fuzzy = true, bool isbusiness = false)
         {
-            var m = new SearchAddModel(CurrentDatabase, type, typeid, displaySkipSearch)
+            var m = new SearchAddModel(CurrentDatabase, type, typeid, displaySkipSearch, isbusiness: isbusiness)
             {
-                Fuzzy = fuzzy
+                Fuzzy = fuzzy,
+                IsBusiness = isbusiness
             };
             return View("SearchPerson", m);
         }
@@ -139,8 +140,8 @@ namespace CmsWeb.Areas.Search.Controllers
             return View("List", m);
         }
 
-        [HttpPost, Route("SearchAdd2/NewPerson/{familyid}")]
-        public ActionResult NewPerson(int familyid, SearchAddModel m)
+        [HttpPost, Route("SearchAdd2/NewPerson/{familyid?}")]
+        public ActionResult NewPerson(int familyid, SearchAddModel m, bool? IsBusiness = false)
         {
             if (familyid == 0 && string.Compare(m.AddContext, "family", StringComparison.OrdinalIgnoreCase) == 0)
             {
@@ -149,7 +150,7 @@ namespace CmsWeb.Areas.Search.Controllers
                             select pp.FamilyId).Single();
             }
 
-            m.NewPerson(familyid);
+            m.NewPerson(familyid, isBusiness: IsBusiness);
             ModelState.Clear();
             return View(m);
         }
@@ -158,6 +159,7 @@ namespace CmsWeb.Areas.Search.Controllers
         public ActionResult AddNewPerson(string noCheckDuplicate, SearchAddModel m)
         {
             var p = m.PendingList[m.PendingList.Count - 1];
+            m.IsBusiness = p.IsBusiness;
             if (ModelState.IsValid && !noCheckDuplicate.HasValue())
             {
                 p.CheckDuplicate();

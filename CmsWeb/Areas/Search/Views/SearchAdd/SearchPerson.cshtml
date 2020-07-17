@@ -176,6 +176,15 @@ else
                         </div>
                     </div>
                 </div>
+                <div class="row">
+                    <div class="col-xs-10 col-sm-11 col-md-12 col-lg-12">
+                        <div class="visible-xs-block visible-md-block visible-lg-block visible-sm-block">
+                            <label class="checkbox-inline pull-right">
+                                @Html.CheckBox("IsBusiness") Add a business/entity
+                            </label>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="modal-body hidden-xs">
                 <div class="search-results"></div>
@@ -194,7 +203,7 @@ else
                     @Html.HiddenFor(m => m.DisplaySkipSearch)
                     @if (Model.DisplaySkipSearch && Model.CanAdd)
                     {
-                        <a href="/SearchAdd2/NewPerson/0" class="btn btn-warning ajax" title="add new">Skip Search <i class="fa fa-arrow-circle-right"></i></a>
+                        <a href="/SearchAdd2/NewPerson/0?isbusiness=@Model.IsBusiness.ToString()=='False'? 0 : 1" class="btn btn-warning ajax" title="add new">Skip Search <i class="fa fa-arrow-circle-right"></i></a>
                     }
                 </div>
             </div>

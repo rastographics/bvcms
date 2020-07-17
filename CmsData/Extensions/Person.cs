@@ -607,7 +607,7 @@ namespace CmsData
             foreach (var e in this.PeopleExtras)
             {
                 var field = e.Field;
-                FindExisting:
+            FindExisting:
                 var cp = db.PeopleExtras.FirstOrDefault(c2 => c2.PeopleId == targetid && c2.Field == field);
                 if (cp != null)
                 {
@@ -1054,12 +1054,12 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
                         $"Just Added Person on {db.Host}",
                         $"<a href='{db.ServerLink("/Person2/" + p.PeopleId)}'>{p.Name}</a>");
                 }
-            }            
+            }
             return p;
         }
 
         public static Person Add(CMSDataContext db, Family fam, int position, Tag tag, string firstname, string nickname, string lastname,
-                                 string dob, bool married, int gender, int originId, int? entryPointId)
+                                 string dob, bool married, int gender, int originId, int? entryPointId, bool isbusiness = false)
         {
             return Add(db, fam, position, tag, firstname, nickname, lastname, dob, married ? 20 : 10, gender, originId,
                 entryPointId);
@@ -1104,7 +1104,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
 
         public static bool ToggleTag(int peopleId, string tagName, int? ownerId, int tagTypeId, CMSDataContext db)
         {
-            
+
             var tag = db.FetchOrCreateTag(tagName, ownerId, tagTypeId);
             if (tag == null)
             {
@@ -2161,7 +2161,18 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
             }
             return i.Id;
         }
-
+        public static int FetchOrCreateVolunteerCode(CMSDataContext db, string code)
+        {
+            var i = db.VolunteerCodes.SingleOrDefault(m => m.Code == code);
+            if (i == null)
+            {
+                var max = db.VolunteerCodes.Max(mm => mm.Id) + 10;
+                i = new VolunteerCode() { Id = max, Code = "VC" + max, Description = code };
+                db.VolunteerCodes.InsertOnSubmit(i);
+                db.SubmitChanges();
+            }
+            return i.Id;
+        }
         public static Campu FetchOrCreateCampus(CMSDataContext db, string campus)
         {
             if (!campus.HasValue())
@@ -2501,8 +2512,8 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
                 //3.Do we have a person with the first / last name specified
                 list = db.FindPerson(first, last, null, null, null).ToList();
             }
-                
-     
+
+
             var count = list?.Count;
             if (count > 0)
             {

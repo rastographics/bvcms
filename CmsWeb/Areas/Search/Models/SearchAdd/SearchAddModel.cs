@@ -36,12 +36,13 @@ namespace CmsWeb.Areas.Search.Models
             Fuzzy = true;
         }
 
-        public SearchAddModel(CMSDataContext db, string context, string contextid, bool displaySkipSearch = true) : this(db)
+        public SearchAddModel(CMSDataContext db, string context, string contextid, bool displaySkipSearch = true, bool isbusiness = false) : this(db)
         {
             DisplaySkipSearch = displaySkipSearch;
             AddContext = context;
             PrimaryKeyForContextType = contextid;
             CampusId = null;
+            IsBusiness = isbusiness;
             switch (AddContext.ToLower())
             {
                 case "addpeople":
@@ -89,7 +90,11 @@ namespace CmsWeb.Areas.Search.Models
             }
         }
 
-        public List<PendingPersonModel> PendingList { get; set; }
+        public List<PendingPersonModel> PendingList
+        {
+            get;
+            set;
+        }
 
         public string DialogTitle
         {
@@ -153,6 +158,7 @@ namespace CmsWeb.Areas.Search.Models
 
         public new bool ShowLimitedSearch => RoleChecker.HasSetting(SettingName.LimitedSearchPerson, false);
         public bool Fuzzy { get; set; }
+        public bool IsBusiness { get; set; }
 
         public int NewFamilyId { get; set; }
         public int? EntryPointId { get; set; }
@@ -166,20 +172,34 @@ namespace CmsWeb.Areas.Search.Models
             return NewFamilyId;
         }
 
-        public PendingPersonModel NewPerson(int familyid)
+        public PendingPersonModel NewPerson(int familyid, bool? isBusiness = false)
         {
             var campuslist = CurrentDatabase.Setting("CampusRequired") ? "CampusNoNoCampus" : "Campus";
-
-            var p = new PendingPersonModel(CurrentDatabase)
+            var p = new PendingPersonModel(CurrentDatabase);
+            if ((bool)isBusiness)
             {
-                FamilyId = familyid,
-                index = PendingList.Count,
-                Gender = new CodeInfo(99, "Gender"),
-                MaritalStatus = new CodeInfo(99, "MaritalStatus"),
-                Campus = new CodeInfo(CampusId, campuslist),
-                EntryPoint = new CodeInfo(EntryPointId, "EntryPoint"),
-                context = AddContext
-            };
+                p.FamilyId = familyid;
+                p.index = PendingList.Count;
+                p.Campus = new CodeInfo(CampusId, campuslist);
+                p.EntryPoint = new CodeInfo(EntryPointId, "EntryPoint");
+                p.context = AddContext;
+                p.IsBusiness = (bool)isBusiness;
+                p.Gender = new CodeInfo(0, "Gender");
+                p.MaritalStatus = new CodeInfo(0, "MaritalStatus");
+                p.LastName = ".";
+            }
+            else
+            {
+                p.FamilyId = familyid;
+                p.index = PendingList.Count;
+                p.Gender = new CodeInfo(99, "Gender");
+                p.MaritalStatus = new CodeInfo(99, "MaritalStatus");
+                p.Campus = new CodeInfo(CampusId, campuslist);
+                p.EntryPoint = new CodeInfo(EntryPointId, "EntryPoint");
+                p.context = AddContext;
+                p.IsBusiness = (bool)isBusiness;
+            }
+
             if (familyid == 0)
             {
                 p.FamilyId = NextNewFamilyId();
@@ -503,7 +523,7 @@ You can do one of these things:
             {
                 var p = PendingList[0];
                 AddPerson(p, PendingList, origin, EntryPointId);
-                
+
                 var pushpayev = CurrentDatabase.PeopleExtras.SingleOrDefault(ev => ev.PeopleId == c.PeopleId && ev.Field == "PushPayKey");
                 if (pushpayev != null && (c.PeopleId != p.PeopleId))
                 {
@@ -614,7 +634,7 @@ You can do one of these things:
         {
             if (p.IsNew)
             {
-                p.AddPerson(originid, p.EntryPoint.Value.ToInt(), p.Campus.Value.ToInt());
+                p.AddPerson(originid, p.EntryPoint.Value.ToInt(), p.Campus.Value.ToInt(), p.IsBusiness);
             }
             else
             {
