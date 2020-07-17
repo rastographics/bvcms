@@ -18,7 +18,7 @@ namespace Tests
     public class FingerprintTests
     {
         [Fact]
-        public void CssTest()
+        public void FingerprintsTest()
         {
             var fingerprints = ReadFingerprintsJson();
             var references = FindAllFingerprintReferences();
