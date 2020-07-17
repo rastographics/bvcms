@@ -23,7 +23,7 @@
                                 <label class="control-label">
                                     Expiration Date
                                 </label>
-                                <input type="text" class="form-control" v-model="value.cardInfo.date" placeholder="MM / YY" v-mask="'## / ##'" required />
+                                <input type="text" class="form-control" v-model="value.cardInfo.date" placeholder="MM / YY" v-mask="'## / ##'" autocomplete="cc-exp" required />
                                 <small v-if="showValidation" class="text-danger">Please enter your expiration date</small>
                             </div>
                         </div>
@@ -32,7 +32,7 @@
                                 <label class="control-label">
                                     Security Code
                                 </label>
-                                <input type="text" class="form-control" v-model="value.cardInfo.cvc" :placeholder="value.cardInfo.type == 'amex' ? '1234' : '123'" v-mask="value.cardInfo.type == 'amex' ? '####' : '###'" required />
+                                <input type="text" class="form-control" v-model="value.cardInfo.cvc" :placeholder="value.cardInfo.type == 'amex' ? '1234' : '123'" v-mask="value.cardInfo.type == 'amex' ? '####' : '###'" autocomplete="cc-csc" required />
                                 <small v-if="showValidation" class="text-danger">Please enter your security code</small>
                             </div>
                         </div>
@@ -81,25 +81,25 @@
         <div class="row">
             <div class="col-md-6">
                 <div :class="{'form-group': true, 'has-error': showValidation && !value.billingInfo.first.length}">
-                    <input type="text" class="form-control" v-model="value.billingInfo.first" placeholder="First Name" required />
+                    <input type="text" class="form-control" v-model="value.billingInfo.first" placeholder="First Name" autocomplete="fname" required />
                     <small v-if="showValidation" class="text-danger">Please enter your first name</small>
                 </div>
             </div>
             <div class="col-md-6">
                 <div :class="{'form-group': true, 'has-error': showValidation && !value.billingInfo.last.length}">
-                    <input type="text" class="form-control" v-model="value.billingInfo.last" placeholder="Last Name" required />
+                    <input type="text" class="form-control" v-model="value.billingInfo.last" placeholder="Last Name" autocomplete="lname" required />
                     <small v-if="showValidation" class="text-danger">Please enter your last name</small>
                 </div>
             </div>
             <div class="col-md-6">
                 <div :class="{'form-group': true, 'has-error': showValidation && !emailValid}">
-                    <input type="email" class="form-control" v-model="value.billingInfo.email" placeholder="Email Address" />
+                    <input type="email" class="form-control" v-model="value.billingInfo.email" placeholder="Email Address" autocomplete="email" required />
                     <small v-if="showValidation" class="text-danger">Please enter your email</small>
                 </div>
             </div>
             <div class="col-md-6">
                 <div :class="{'form-group': true, 'has-error': showValidation && value.billingInfo.phone.length < 10}">
-                    <input type="tel" class="form-control" v-model="value.billingInfo.phone" placeholder="Phone Number" />
+                    <input type="tel" class="form-control" v-model="value.billingInfo.phone" placeholder="Phone Number" autocomplete="mobile" required />
                     <small v-if="showValidation" class="text-danger">Please enter your phone</small>
                 </div>
             </div>
@@ -107,31 +107,31 @@
         <div class="row">
             <div class="col-md-12">
                 <div :class="{'form-group': true, 'has-error': showValidation && value.billingInfo.address.length < 8}">
-                    <input type="text" class="form-control" v-model="value.billingInfo.address" placeholder="Address" required />
+                    <input type="text" class="form-control" v-model="value.billingInfo.address" placeholder="Address" autocomplete="billing street-address" required />
                     <small v-if="showValidation" class="text-danger">Please enter your billing address</small>
                 </div>
             </div>
             <div class="col-md-6">
                 <div :class="{'form-group': true, 'has-error': showValidation && !value.billingInfo.city.length}">
-                    <input type="text" class="form-control" v-model="value.billingInfo.city" placeholder="City" required />
+                    <input type="text" class="form-control" v-model="value.billingInfo.city" placeholder="City" autocomplete="billing locality" required />
                     <small v-if="showValidation" class="text-danger">Please enter your billing city</small>
                 </div>
             </div>
             <div class="col-md-6">
                 <div :class="{'form-group': true, 'has-error': showValidation && !value.billingInfo.state.length}">
-                    <input type="text" class="form-control" v-model="value.billingInfo.state" placeholder="State" required />
+                    <input type="text" class="form-control" v-model="value.billingInfo.state" placeholder="State" autocomplete="billing state" required />
                     <small v-if="showValidation" class="text-danger">Please enter your billing state</small>
                 </div>
             </div>
             <div class="col-md-6">
                 <div :class="{'form-group': true, 'has-error': showValidation && !value.billingInfo.zip.length}">
-                    <input type="text" class="form-control" v-model="value.billingInfo.zip" placeholder="Zip" required />
+                    <input type="text" class="form-control" v-model="value.billingInfo.zip" placeholder="Zip" autocomplete="billing postal-code" required />
                     <small v-if="showValidation" class="text-danger">Please enter your billing zip code</small>
                 </div>
             </div>
             <div class="col-md-6">
                 <div :class="{'form-group': true, 'has-error': showValidation && !value.billingInfo.country.length}">
-                    <input type="text" class="form-control" v-model="value.billingInfo.country" placeholder="Country" required />
+                    <input type="text" class="form-control" v-model="value.billingInfo.country" placeholder="Country" autocomplete="billing country" required />
                     <small v-if="showValidation" class="text-danger">Please enter your billing country</small>
                 </div>
             </div>

@@ -1,6 +1,6 @@
 ﻿<template>
     <div class="card-input">
-        <input type="text" class="form-control" :value="value" @input="update($event.target.value)" :placeholder="placeholder" v-mask="mask" required />
+        <input type="text" class="form-control" :value="value" @input="update($event.target.value)" :placeholder="placeholder" v-mask="mask" autocomplete="billing cc-number" required />
         <svg v-if="type == 'visa'" class="card-icon"><use xlink:href="#visa-light"></use></svg>
         <svg v-else-if="type == 'mastercard'" class="card-icon"><use xlink:href="#mc-dark"></use></svg>
         <svg v-else-if="type == 'amex'" class="card-icon"><use xlink:href="#amex-dark"></use></svg>

@@ -39,8 +39,14 @@
                             <payment-method v-model="paymentMethod" :identity="identity" :showValidation="showValidation"></payment-method>
                             <div class="row">
                                 <div class="col-md-6 col-md-offset-6">
-                                    <button @click="submitOneTimePayment" class="btn-block btn btn-primary">
+                                    <button v-if="!showValidation && (!paymentIsValid || totalGivingToday == 0)" @click="submitOneTimePayment" class="btn-block btn btn-primary">
                                         Submit Gift
+                                    </button>
+                                    <button v-else-if="showValidation && (!paymentIsValid || totalGivingToday == 0)" @click="submitOneTimePayment" class="btn-block btn btn-primary" disabled="disabled">
+                                        Give ${{ totalGivingToday }}
+                                    </button>
+                                    <button v-else @click="submitOneTimePayment" class="btn-block btn btn-primary">
+                                        Give ${{ totalGivingToday }}
                                     </button>
                                 </div>
                             </div>
@@ -155,6 +161,16 @@
             },
             loginUrl: function () {
                 return '/Logon?ReturnUrl=' + encodeURIComponent(window.location.pathname + window.location.search);
+            },
+            totalGivingToday: function () {
+                let vm = this;
+                let sum = 0;
+                vm.gifts.forEach((gift) => {
+                    if (this.givingType == 'One Time' || gift.date == vm.today) {
+                        sum += gift.amount;
+                    }
+                });
+                return sum.toFixed(2);
             }
         },
         methods: {
