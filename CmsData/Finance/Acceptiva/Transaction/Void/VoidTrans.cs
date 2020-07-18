@@ -8,8 +8,8 @@ namespace CmsData.Finance.Acceptiva.Transaction.Void
     {
         private const string action = "void_trans";
 
-        public VoidTrans(bool isTesting, string apiKey, string reference)
-            : base(isTesting, apiKey, action)
+        public VoidTrans(bool isTesting, string apiKey, string ipAddress, string reference)
+            : base(isTesting, apiKey, action, ipAddress)
         {
             Data["params[0][trans_id_str]"] = reference;
         }

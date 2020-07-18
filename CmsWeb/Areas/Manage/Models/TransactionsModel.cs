@@ -16,6 +16,7 @@ namespace CmsWeb.Models
         private IQueryable<TransactionList> _transactions;
         public int nameid;
         private CMSDataContext _db;
+        public string VisitorIpAddress;
         public CMSDataContext CurrentDatabase
         {
             get => _db;
@@ -42,8 +43,9 @@ namespace CmsWeb.Models
             admin = User != null ? (User.InRole("Admin") || User.InRole("ManageTransactions")) : false;
         }
 
-        public TransactionsModel(CMSDataContext db, int? tranid, string reference = "", string desc = "", bool isBatchref = false)
+        public TransactionsModel(CMSDataContext db, int? tranid, string reference = "", string desc = "", bool isBatchref = false, string visitorIpAddress = null)
         {
+            VisitorIpAddress = visitorIpAddress;
             CurrentDatabase = db;
             name = tranid.ToString();
             if (!tranid.HasValue)
@@ -232,7 +234,7 @@ namespace CmsWeb.Models
             if ((usebatchdates == true) && startdt.HasValue && edt.HasValue)
             {
                 // Apply an offset to the startdate to get those records that occurred prior to the batch date and haven't been batched at present
-                CheckBatchDates(startdt.Value.AddDays(-7), edt.Value);
+                CheckBatchDates(startdt.Value.AddDays(-7), edt.Value, visitorIpAddress: VisitorIpAddress);
                 _transactions = from t in _transactions
                                 where t.Batch >= startdt || startdt == null
                                 where t.Batch <= edt || edt == null
@@ -341,12 +343,12 @@ namespace CmsWeb.Models
             }
         }
 
-        private void CheckBatchDates(DateTime start, DateTime end)
+        private void CheckBatchDates(DateTime start, DateTime end, string visitorIpAddress = null)
         {
             IGateway[] gateways = new[] {
-                CurrentDatabase.Gateway(false, null, PaymentProcessTypes.OneTimeGiving, false),
-                CurrentDatabase.Gateway(false, null, PaymentProcessTypes.OnlineRegistration, false),
-                CurrentDatabase.Gateway(false, null, PaymentProcessTypes.RecurringGiving, false)
+                CurrentDatabase.Gateway(false, null, PaymentProcessTypes.OneTimeGiving, false, visitorIpAddress),
+                CurrentDatabase.Gateway(false, null, PaymentProcessTypes.OnlineRegistration, false, visitorIpAddress),
+                CurrentDatabase.Gateway(false, null, PaymentProcessTypes.RecurringGiving, false, visitorIpAddress)
             };
             foreach (var gateway in gateways.Where(g => g.IsNotNull()).DistinctBy(g => g.Identifier))
             {

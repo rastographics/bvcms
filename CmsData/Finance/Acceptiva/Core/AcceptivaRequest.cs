@@ -1,6 +1,7 @@
 ﻿using System.Collections.Specialized;
 using System.Net;
 using System.Text;
+using UtilityExtensions.Extensions;
 
 namespace CmsData.Finance.Acceptiva.Core
 {
@@ -13,15 +14,16 @@ namespace CmsData.Finance.Acceptiva.Core
 
         public NameValueCollection Data { get; protected set; }
 
-        protected AcceptivaRequest(bool isTesting, string apiKey, string action)
+        protected AcceptivaRequest(bool isTesting, string apiKey, string action, string ipAddress)
         {
             if (isTesting)
-                url = SanboxURL;              
-            
+                url = SanboxURL;
+
             Data = new NameValueCollection
             {
                 {"api_key", apiKey},
-                {"action", action}
+                {"action", action},
+                {"params[0][ip_address]", ipAddress}
             };
         }
 

@@ -8,8 +8,8 @@ namespace CmsData.Finance.Acceptiva.Transaction.Settlement
     {
         private const string action = "settle_trans";
 
-        public SettleTransaction(bool isTesting, string apiKey, string transId)
-            : base(isTesting, apiKey, action)
+        public SettleTransaction(bool isTesting, string apiKey, string ipAddress, string transId)
+            : base(isTesting, apiKey, action, ipAddress)
         {
             Data["params[0][trans_id_str]"] = transId;
         }

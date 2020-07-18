@@ -458,7 +458,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 modelState.AddModelError("Phone", "Needs phone");
         }
 
-        public void Update()
+        public void Update(string visitorIpAddress = null)
         {
             var db = CurrentDatabase;
             // first check for total amount greater than zero.
@@ -485,7 +485,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
                 // first need to do a $1 auth if it's a credit card and throw any errors we get back
                 // from the gateway.
-                var gateway = db.Gateway(testing, account, PaymentProcessTypes.RecurringGiving);
+                var gateway = db.Gateway(testing, account, PaymentProcessTypes.RecurringGiving, visitorIpAddress: visitorIpAddress);
                 if (Type == PaymentType.CreditCard)
                 {
                     // perform $1 auth.

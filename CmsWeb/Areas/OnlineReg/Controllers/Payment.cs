@@ -112,7 +112,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             }
             else
             {
-                ret = pf.ProcessPayment(ModelState, m);
+                ret = pf.ProcessPayment(ModelState, m, visitorIpAddress: VisitorIpAddress);
             }
             SetHeaders(pf.OrgId ?? 0);
 

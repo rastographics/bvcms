@@ -8,8 +8,8 @@ namespace CmsData.Finance.Acceptiva.Transaction.Refund
     {
         private const string action = "refund_trans_partial";
 
-        public RefundTransPartial(bool isTesting, string apiKey, string reference, string idString, decimal amount)
-            : base(isTesting, apiKey, action)
+        public RefundTransPartial(bool isTesting, string apiKey, string ipAddress, string reference, string idString, decimal amount)
+            : base(isTesting, apiKey, action, ipAddress)
         {
             Data["params[0][trans_id_str]"] = reference;
             Data["params[0][items][0][id_str]"] = idString;

@@ -582,14 +582,14 @@ namespace CmsWeb.Areas.OnlineReg.Models
             }
         }
 
-        public void CheckStoreInVault(ModelStateDictionary modelState, int peopleid)
+        public void CheckStoreInVault(ModelStateDictionary modelState, int peopleid, string visitorIpAddress = null)
         {
             if (!IsLoggedIn.GetValueOrDefault() || !SavePayInfo)
             {
                 return;
             }
 
-            var gateway = CurrentDatabase.Gateway(testing, null, ProcessType);
+            var gateway = CurrentDatabase.Gateway(testing, null, ProcessType, visitorIpAddress: visitorIpAddress);
 
             if (!modelState.IsValid)
             {
@@ -655,7 +655,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 State, Country, Zip, Phone);
         }
 
-        public Transaction ProcessPaymentTransaction(OnlineRegModel m)
+        public Transaction ProcessPaymentTransaction(OnlineRegModel m, string visitorIpAddress = null)
         {            
             var ti = (m?.Transaction != null)
                 ? CreateTransaction(CurrentDatabase, m.Transaction, AmtToPay)
@@ -687,7 +687,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
             TransactionResponse tinfo;
             var processType = m?.ProcessType ?? PaymentProcessTypes.OnlineRegistration;
-            var gw = CurrentDatabase.Gateway(testing, null, processType);
+            var gw = CurrentDatabase.Gateway(testing, null, processType, visitorIpAddress: visitorIpAddress);
 
             if (SavePayInfo)
             {
@@ -749,7 +749,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 Zip, Phone);
         }
 
-        public RouteModel ProcessPayment(ModelStateDictionary modelState, OnlineRegModel m)
+        public RouteModel ProcessPayment(ModelStateDictionary modelState, OnlineRegModel m, string visitorIpAddress = null)
         {
             if (m != null && m.email.HasValue() && !Util.ValidEmail(m.email))
             {
@@ -778,7 +778,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
                 if (m?.UserPeopleId != null && m.UserPeopleId > 0)
                 {
-                    CheckStoreInVault(modelState, m.UserPeopleId.Value);
+                    CheckStoreInVault(modelState, m.UserPeopleId.Value, visitorIpAddress: visitorIpAddress);
                 }
 
                 if (!modelState.IsValid)
@@ -786,7 +786,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                     return RouteModel.ProcessPayment();
                 }
 
-                var ti = ProcessPaymentTransaction(m);
+                var ti = ProcessPaymentTransaction(m, visitorIpAddress);
 
                 if (ti == null)
                 {

@@ -9,8 +9,8 @@ namespace CmsData.Finance.Acceptiva.Transaction.Get
     {
         private const string action = "get_trans_details";
 
-        public GetReturnedEChecks(bool isTesting, string apiKey, DateTime dateStart, DateTime dateEnd)
-            : base(isTesting, apiKey, action)
+        public GetReturnedEChecks(bool isTesting, string apiKey, string ipAddress, DateTime dateStart, DateTime dateEnd)
+            : base(isTesting, apiKey, action, ipAddress)
         {
             Data["params[0][filters][0]"] = $"trans_date>{dateStart.ToString("yyyy-MM-dd")}";
             Data["params[0][filters][1]"] = $"trans_date<{dateEnd.ToString("yyyy-MM-dd")}";
