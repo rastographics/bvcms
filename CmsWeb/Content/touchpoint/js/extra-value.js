@@ -12,7 +12,6 @@
                 $('#empty-dialog').modal("show");
 
                 $.AttachFormElements();
-                $("#fields").sortable();
                 $(this).validate({
                     highlight: function (element) {
                         $(element).closest(".form-group").addClass("error");

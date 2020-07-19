@@ -17,6 +17,8 @@
             });
         }
         $.InitializeDateElements();
+        if ($("ul.sortable").length > 0)
+            $("ul.sortable").sortable();
     };
 
     $('body').on('click', 'ul.nav-tabs a.tabajax, ul.nav-tabs a.ajax, a.ajax.ui-tabs-anchor, ul.nav-pills a.ajax, a.ajax.ui-tabs-anchor', function (event) {
