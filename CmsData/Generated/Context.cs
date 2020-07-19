@@ -1270,6 +1270,10 @@ namespace CmsData
 
         public Table<TaskStatus> TaskStatuses => GetTable<TaskStatus>();
 
+		public Table<TicketingOrder> TicketingOrders => this.GetTable<TicketingOrder>();
+
+        public Table<TicketingSeat> TicketingSeats => this.GetTable<TicketingSeat>();
+
         public Table<Transaction> Transactions => GetTable<Transaction>();
 
         public Table<TransactionPerson> TransactionPeople => GetTable<TransactionPerson>();

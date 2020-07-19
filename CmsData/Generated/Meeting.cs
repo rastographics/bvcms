@@ -53,10 +53,14 @@ namespace CmsData
 
         private int? _MaxCount;
 
+		private string _EventKey;
+		
         private EntitySet<Attend> _Attends;
 
         private EntitySet<MeetingExtra> _MeetingExtras;
 
+   		private EntitySet<TicketingOrder> _TicketingOrders;
+		
         private EntitySet<VolRequest> _VolRequests;
 
         private EntityRef<AttendCredit> _AttendCredit;
@@ -131,6 +135,9 @@ namespace CmsData
         partial void OnMaxCountChanging(int? value);
         partial void OnMaxCountChanged();
 
+		partial void OnEventKeyChanging(string value);
+		partial void OnEventKeyChanged();
+		
         #endregion
 
         public Meeting()
@@ -139,6 +146,8 @@ namespace CmsData
 
             _MeetingExtras = new EntitySet<MeetingExtra>(new Action<MeetingExtra>(attach_MeetingExtras), new Action<MeetingExtra>(detach_MeetingExtras));
 
+			this._TicketingOrders = new EntitySet<TicketingOrder>(new Action< TicketingOrder>(this.attach_TicketingOrders), new Action< TicketingOrder>(this.detach_TicketingOrders)); 
+			
             _VolRequests = new EntitySet<VolRequest>(new Action<VolRequest>(attach_VolRequests), new Action<VolRequest>(detach_VolRequests));
 
             _AttendCredit = default(EntityRef<AttendCredit>);
@@ -522,6 +531,22 @@ namespace CmsData
             }
         }
 
+		[Column(Name="EventKey", UpdateCheck=UpdateCheck.Never, Storage="_EventKey", DbType="varchar(50)")]
+		public string EventKey
+		{
+			get { return this._EventKey; }
+			set
+			{
+				if (this._EventKey != value)
+				{
+                    this.OnEventKeyChanging(value);
+					this.SendPropertyChanging();
+					this._EventKey = value;
+					this.SendPropertyChanged("EventKey");
+					this.OnEventKeyChanged();
+				}
+			}
+		}
         #endregion
 
         #region Foreign Key Tables
@@ -544,6 +569,12 @@ namespace CmsData
 
            }
 
+   		[Association(Name="FK_TicketingOrder_Meetings", Storage="_TicketingOrders", OtherKey="MeetingId")]
+   		public EntitySet<TicketingOrder> TicketingOrders
+   		{
+   		    get { return this._TicketingOrders; }
+			set	{ this._TicketingOrders.Assign(value); }
+   		}
         [Association(Name = "VolRequests__Meeting", Storage = "_VolRequests", OtherKey = "MeetingId")]
         public EntitySet<VolRequest> VolRequests
            {
@@ -677,6 +708,16 @@ namespace CmsData
             entity.Meeting = null;
         }
 
+		private void attach_TicketingOrders(TicketingOrder entity)
+		{
+			this.SendPropertyChanging();
+			entity.Meeting = this;
+		}
+		private void detach_TicketingOrders(TicketingOrder entity)
+		{
+			this.SendPropertyChanging();
+			entity.Meeting = null;
+		}
         private void attach_VolRequests(VolRequest entity)
         {
             SendPropertyChanging();

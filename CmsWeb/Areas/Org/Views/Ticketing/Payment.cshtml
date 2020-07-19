@@ -1,0 +1,22 @@
+﻿@model CmsWeb.Areas.Org.Models.Ticketing.TicketingModel
+@{
+    ViewBag.Title = "Event Seating";
+    ViewBag.PageHeader = "Pay For Seats";
+    Layout = ViewExtensions2.TouchPointLayout();
+}
+<pre>
+</pre>
+<form action="/Ticketing/PaymentSucceeded" method="post">
+    <input type="hidden" name="OrderId" value="@Model.OrderId" />
+    <input type="hidden" name="PeopleId" value="@Model.CurrentUserPeopleId"/>
+    <input type="hidden" name="MeetingId" value="@Model.MeetingId" />
+    <button type="submit" class="btn btn.btn-success">Payment Succeeded</button>
+</form>
+
+<form action="/Ticketing/AbandonSeats" method="post">
+    <input type="hidden" name="OrderId" value="@Model.OrderId" />
+    <input type="hidden" name="PeopleId" value="@Model.CurrentUserPeopleId"/>
+    <input type="hidden" name="MeetingId" value="@Model.MeetingId" />
+    <button type="submit" class="btn btn-danger">Abandon and Start Over</button>
+</form>
+<a href="/Ticketing/@Model.MeetingId">Return to buy more tickets (leaving these to be abandoned after 15 minutes)</a>

@@ -16,6 +16,7 @@ using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
+using SeatsioDotNet;
 using UtilityExtensions;
 
 namespace CmsData
@@ -2135,6 +2136,32 @@ This search uses multiple steps which cannot be duplicated in a single query.
             }
             // The following will clean out any tags that no longer have a corresponding F99:name in the queries
             ExecuteCommand("dbo.DeleteOldQueryBitTags");
+        }
+
+        public void ReleaseAbandonedTickets()
+        {
+            if(Setting("TicketingEnabled") == false)
+                return;
+            var secretkey = Setting("TicketingWorkspaceSecretKey", "na");
+            if (secretkey == "na")
+                return;
+            var timeout = Setting("TicketingTimeoutMinutes", "15").ToInt();
+            var list = (from order in TicketingOrders
+                where order.Status == "Booked"
+                where order.CreatedDate.AddMinutes(timeout) <= DateTime.Now
+                select new { order, eventkey = order.Meeting.EventKey }).ToList();
+            if (list.Count == 0)
+                return;
+            var client = new SeatsioClient(secretkey);
+            foreach (var i in list)
+            {
+                var seatlist = i.order.SelectedSeats.SplitStr(",");
+                if (seatlist.Length == 0)
+                    continue;
+                client.Events.Release(i.eventkey, seatlist, orderId:i.order.OrderId.ToString());
+                i.order.Status = "Abandoned";
+                SubmitChanges();
+            }
         }
 
         public void RetrieveBatchData(string startdt = null, string enddt = null, bool testing = false)  // code has mostly been moved over from CmsWeb.Models.TransactionsModel.cs with some cleanup

@@ -190,7 +190,8 @@ namespace CmsData
             "OrgTagger",
             "ManagePrivateContacts",
             "ManageTasks",
-            "ManageOrgMembers"
+            "ManageOrgMembers",
+            "Ticketing"
         };
 
         public static List<string> Hardwired()

@@ -1,0 +1,58 @@
+﻿@model CmsWeb.Areas.Org.Models.Ticketing.TicketingModel
+@{
+    ViewBag.Title = "Event Seating";
+    ViewBag.PageHeader = "Select Seats";
+    Layout = ViewExtensions2.TouchPointLayout();
+}
+@section head
+{
+    @Fingerprint.Css("/Content/touchpoint/lib/bootstrap-editable/css/bootstrap-editable.css")
+    <style type="text/css">
+        dt {
+            font-weight: normal;
+            color: #808080;
+        }
+
+        dd {
+            font-weight: 600;
+            padding: 5px;
+            border: solid 1px #eee;
+            min-height: 32px;
+        }
+    </style>
+}
+<div class="row">
+    <div class="col-md-9">
+        <div class="box box-responsive">
+            <div class="box-content">
+                <form id="myTicketBuyerForm" action="/Ticketing/BookSeats" method="post">
+                    <div id="chart"></div>
+                    <input type="hidden" name="MeetingId" value="@Model.MeetingId"/>
+                    <input type="hidden" name="OrderId" value="@Model.OrderId"/>
+                    <button type="submit" class="btn btn.default">Proceed to Payment</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts
+{
+    <script src="https://cdn.seatsio.net/chart.js"></script>
+    <script>
+        $(function() {
+            var chart = new seatsio.SeatingChart({
+                divId: "chart",
+                workspaceKey: "@Model.Workspacekey",
+                event: "@Model.Eventkey",
+                selectedObjectsInputName: 'SelectedSeats',
+                pricing: @Model.HtmlPricing,
+                priceFormatter: function (price) {
+                    return '$' + price;
+                }
+            }).render();
+            if ('@ViewBag.ErrorMessage')
+                snackbar('@ViewBag.ErrorMessage', 'error', 5000);
+        });
+    </script>
+}

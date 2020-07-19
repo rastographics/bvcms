@@ -90,6 +90,31 @@ namespace CmsData
                 return e.IntValue.ToString();
             return e.BitValue.ToString();
         }
+        public static string GetExtra(CMSDataContext db, int? meetingId, string field)
+        {
+            var mev = db.MeetingExtras.SingleOrDefault(oe => oe.MeetingId == meetingId && oe.Field == field);
+            if (mev == null)
+            {
+                return "";
+            }
+            if (mev.StrValue.HasValue())
+            {
+                return mev.StrValue;
+            }
+            if (mev.Data.HasValue())
+            {
+                return mev.Data;
+            }
+            if (mev.DateValue.HasValue)
+            {
+                return mev.DateValue.FormatDate();
+            }
+            if (mev.IntValue.HasValue)
+            {
+                return mev.IntValue.ToString();
+            }
+            return mev.BitValue.ToString();
+        }
         public static Meeting FetchOrCreateMeeting(CMSDataContext Db, int OrgId, DateTime dt, bool? noautoabsents = null)
         {
             var meeting = (from m in Db.Meetings

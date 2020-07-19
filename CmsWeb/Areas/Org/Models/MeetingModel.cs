@@ -5,6 +5,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using CmsData.Codes;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Org.Models
@@ -37,6 +38,10 @@ namespace CmsWeb.Areas.Org.Models
         public bool ShowAttendType => RoleChecker.HasSetting(SettingName.Meeting_ShowAttendType, true);
         public bool ShowOtherAttend => RoleChecker.HasSetting(SettingName.Meeting_ShowOtherAttend, true);
         public bool ShowCurrentMemberType => RoleChecker.HasSetting(SettingName.Meeting_ShowCurrentMemberType, true);
+        public bool ShowEventKey =>
+            meeting.Organization.RegistrationTypeId == RegistrationTypeCode.Ticketing
+            && CurrentDatabase.Setting("TicketingEnabled")
+            && HttpContextFactory.Current.User.IsInRole("Ticketing");
 
         // Added to support a pick list of meeting descriptions
         public bool UseMeetingDescriptionPickList => CurrentDatabase.Setting("AttendanceUseMeetingCategory", false);

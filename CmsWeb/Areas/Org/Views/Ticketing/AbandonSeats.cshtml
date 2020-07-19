@@ -1,0 +1,11 @@
+﻿@model CmsWeb.Areas.Org.Models.Ticketing.TicketingModel
+@{
+    ViewBag.Title = "Event Seating";
+    ViewBag.PageHeader = "Payment Failed";
+    Layout = ViewExtensions2.TouchPointLayout();
+}
+
+<h4>
+    Payment Failed
+</h4>
+<a href="/Ticketing/@Model.MeetingId">Return to buy more tickets</a>

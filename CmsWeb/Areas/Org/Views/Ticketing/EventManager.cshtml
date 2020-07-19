@@ -1,0 +1,46 @@
+﻿@model CmsWeb.Areas.Org.Models.Ticketing.TicketingModel
+@{
+    ViewBag.Title = "Event Manager";
+    ViewBag.PageHeader = "Event";
+    Layout = ViewExtensions2.TouchPointLayout();
+}
+@section head
+{
+    <style type="text/css">
+        dt {
+            font-weight: normal;
+            color: #808080;
+        }
+
+        dd {
+            font-weight: 600;
+            padding: 5px;
+            border: solid 1px #eee;
+            min-height: 32px;
+        }
+    </style>
+}
+<div class="row">
+    <div class="col-md-9">
+        <div class="box box-responsive">
+            <div class="box-content">
+                <div id="event-manager"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts
+{
+    <script src="https://cdn.seatsio.net/chart.js"></script>
+    <script>
+        $(function(){
+            new seatsio.EventManager({
+                divId: 'event-manager',
+                secretKey: '@Model.Secretkey',
+                event: '@Model.Eventkey',
+                mode: 'manageObjectStatuses'
+            }).render();
+        });
+    </script>
+}

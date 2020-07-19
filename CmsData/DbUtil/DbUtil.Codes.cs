@@ -226,6 +226,7 @@ namespace CmsData.Codes
         public const int SpecialJavascript = 16;
         public const int RecordFamilyAttendance = 18;
         public const int RegisterLinkMaster = 20;
+        public const int Ticketing = 21;
         public static IEnumerable<KeyValuePair<int, string>> GetCodePairs()
         {
             yield return new KeyValuePair<int, string>(None, "No Online Registration");
@@ -240,6 +241,7 @@ namespace CmsData.Codes
             yield return new KeyValuePair<int, string>(ChooseVolunteerTimes, "Choose Volunteer Times");
             yield return new KeyValuePair<int, string>(RecordFamilyAttendance, "Record Family Attendance");
             yield return new KeyValuePair<int, string>(SpecialJavascript, "Special Script");
+            yield return new KeyValuePair<int, string>(Ticketing, "Ticketing");
             if (Util.IsDebug())
             {
                 yield return new KeyValuePair<int, string>(CreateAccount, "Create Account");

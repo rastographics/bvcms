@@ -62,7 +62,9 @@
                                 </dd>
                             </dl>
                         </div>
-                        <div class="col-sm-12">
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
                             <dl>
                                 <dt>Description</dt>
                                 <dd>
@@ -91,6 +93,17 @@
                                 </dd>
                             </dl>
                         </div>
+                        @if (Model.ShowEventKey)
+                        {
+                        <div class="col-sm-6">
+                            <dl>
+                                <dt>Event Key</dt>
+                                <dd>
+                                    <a id="e-@Model.meeting.MeetingId" class="clickEdit" data-pk="e-@Model.meeting.MeetingId" data-title="Event Key" style="cursor: pointer">@Model.meeting.EventKey</a>
+                                </dd>
+                            </dl>
+                        </div>
+                        }
                     </div>
                 </div>
                 <div class="well">

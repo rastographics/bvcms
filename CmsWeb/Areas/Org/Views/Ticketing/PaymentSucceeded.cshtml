@@ -1,0 +1,11 @@
+﻿@using IronPython.Modules
+@model CmsWeb.Areas.Org.Models.Ticketing.TicketingModel
+@{
+    ViewBag.Title = "Event Seating";
+    ViewBag.PageHeader = "Payment Succeeded";
+    Layout = ViewExtensions2.TouchPointLayout();
+}
+<h4>
+    Payment Succeeded
+</h4>
+<a href="/Ticketing/@Model.MeetingId">Return to buy more tickets</a>

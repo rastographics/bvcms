@@ -39,6 +39,8 @@ namespace CmsWeb.Areas.Org.Controllers
                 return RedirectShowError("no meeting");
             }
 
+            var ticketing = m.meeting.Organization.RegistrationTypeId == RegistrationTypeCode.Ticketing;
+
             if (Util2.OrgLeadersOnly)
             {
                 var oids = CurrentDatabase.GetLeaderOrgIds(CurrentDatabase.UserPeopleId);
@@ -179,6 +181,9 @@ namespace CmsWeb.Areas.Org.Controllers
                         break;
                     case 'h':
                         m.meeting.HeadCount = value.ToInt();
+                        break;
+                    case 'e':
+                        m.meeting.EventKey = value;
                         break;
                     case 't':
                         CurrentDatabase.ExecuteCommand(@"

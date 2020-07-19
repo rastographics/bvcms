@@ -10,7 +10,7 @@
         <div class="col-sm-12 text-right">
             <div class="checkbox pull-left">
                 <label class="control-label">
-                    <input id="Future" name="Future" type="checkbox" value="true" @Checked(Model.Future)> Show future meetings
+                    <input id="Future" name="Future" type="checkbox" value="true" @Checked(Model.Future)> Show @(Model.IsTicketing? "past" : "future") meetings
                 </label>
             </div>
             @FormAction()

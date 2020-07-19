@@ -5,6 +5,7 @@ using CmsWeb.Models;
 using UtilityExtensions;
 using CmsData.Classes.RoleChecker;
 using System;
+using CmsData.Codes;
 using CmsWeb.Constants;
 
 namespace CmsWeb.Areas.Org.Models
@@ -32,6 +33,22 @@ namespace CmsWeb.Areas.Org.Models
 
         private bool? _ShowESpaceSyncMeetings;
 
+        public bool IsTicketing
+        {
+            get
+            {
+                if (!isTicketing.HasValue)
+                {
+                    var regtype = (from o in CurrentDatabase.Organizations
+                        where o.OrganizationId == Id
+                        select o.RegistrationTypeId).SingleOrDefault();
+                    isTicketing = regtype == RegistrationTypeCode.Ticketing;
+                }
+                return isTicketing.Value;
+            }
+        }
+        private bool? isTicketing;
+
         [Obsolete(Errors.ModelBindingConstructorError, true)]
         public MeetingsModel()
         {
@@ -47,7 +64,8 @@ namespace CmsWeb.Areas.Org.Models
             var meetings = from m in CurrentDatabase.Meetings
                            where m.OrganizationId == Id
                            select m;
-            if (Future)
+            var future = IsTicketing ? !Future : Future;
+            if (future)
                 meetings = from m in meetings
                            where m.MeetingDate >= midnight
                            select m;
@@ -90,7 +108,8 @@ namespace CmsWeb.Areas.Org.Models
                     break;
                 //case "Date":
                 default:
-                    q = Direction == "asc" ^ Future
+                    var future = IsTicketing ? !Future : Future;
+                    q = Direction == "asc" ^ future
                         ? q.OrderBy(m => m.MeetingDate)
                         : q.OrderByDescending(m => m.MeetingDate);
                     break;
@@ -100,9 +119,10 @@ namespace CmsWeb.Areas.Org.Models
 
         public override IEnumerable<MeetingInfo> DefineViewList(IQueryable<Meeting> q)
         {
+            var future = IsTicketing ? !Future : Future;
             var q2 = from m in q
                      let o = m.Organization
-                     let mc = Future && CurrentDatabase.ViewMeetingConflicts.Any(mm =>
+                     let mc = future && CurrentDatabase.ViewMeetingConflicts.Any(mm =>
                          mm.MeetingDate == m.MeetingDate
                          && (mm.OrgId1 == m.OrganizationId || mm.OrgId2 == m.OrganizationId))
                      select new MeetingInfo
