@@ -7,6 +7,7 @@ using System.Linq;
 using System.Web.Mvc;
 using CmsData;
 using UtilityExtensions;
+using Value = CmsData.ExtraValue.Value;
 
 namespace CmsWeb.Controllers
 {
@@ -46,7 +47,13 @@ namespace CmsWeb.Controllers
                 var n = i.view.Values.FindIndex(vv => vv.Name == i.value.Name);
                 i.view.Values.RemoveAt(n);
                 var movetoview = i.views.List.Find(vv => vv.Location == m.ExtraValueLocation.Value);
+                if (movetoview == null)
+                {
+                    movetoview = new View() {Location = m.ExtraValueLocation.Value, Table = m.ExtraValueTable, Values = new List<Value>()};
+                    i.views.List.Add(movetoview);
+                }
                 movetoview.Values.Add(newvalue);
+                ViewBag.RefreshTab = m.ExtraValueLocation.Value;
             }
             i.views.Save(CurrentDatabase);
             return View("ListStandard", new ExtraValueModel(CurrentDatabase, m.Id, m.ExtraValueTable, m.ExtraValueLocation.Value));
