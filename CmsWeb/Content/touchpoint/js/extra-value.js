@@ -49,6 +49,12 @@
             });
         $.InitFunctions.StandardExtraValueDialogCallback = function () {
             if ($("#StandardExtraValueError").length === 0) {
+                var refreshtab = $("#RefreshTab");
+                if (refreshtab.length > 0) {
+                    var aa = $("div.tab-pane." + refreshtab.val() + " a.ajax-refresh");
+                    aa.click();
+                    refreshtab.remove();
+                }
                 $("#empty-dialog").modal("hide");
                 var a = $a.closest("form").find("a.ajax-refresh");
                 if (a.length > 0)
@@ -56,7 +62,13 @@
             }
         };
         $.InitFunctions.EditStandardExtraValueDialogCallback = function () {
-            if ($("#EditStandardExtraValueError").length == 0) {
+            if ($("#EditStandardExtraValueError").length === 0) {
+                var refreshtab = $("#RefreshTab");
+                if (refreshtab.length > 0) {
+                    var aa = $("div.tab-pane." + refreshtab.val() + " a.ajax-refresh");
+                    aa.click();
+                    refreshtab.remove();
+                }
                 var a = $a.closest("form").find("a.ajax-refresh");
                 if (a.length > 0)
                     a.click();
