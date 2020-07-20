@@ -18,7 +18,7 @@ begin
     (
         [OrderId] asc,
         [SeatLabel] asc
-    )with (pad_index = off, statistics_norecompute = off, ignore_dup_key = off, allow_row_locks = on, allow_page_locks = on, optimize_for_sequential_key = off) on [primary]
+    )with (pad_index = off, statistics_norecompute = off, ignore_dup_key = off, allow_row_locks = on, allow_page_locks = on) on [primary]
     ) on [PRIMARY]
 
     alter table [dbo].[TicketingSeats]  with check add  constraint [FK_TicketingSeats_TicketingOrder] foreign key([OrderId])

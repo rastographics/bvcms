@@ -18,7 +18,7 @@ begin
      constraint [PK_TicketingOrder] primary key clustered
     (
     	[OrderId] asc
-    )with (pad_index = off, statistics_norecompute = off, ignore_dup_key = off, allow_row_locks = on, allow_page_locks = on, optimize_for_sequential_key = off) on [primary]
+    )with (pad_index = off, statistics_norecompute = off, ignore_dup_key = off, allow_row_locks = on, allow_page_locks = on) on [primary]
     ) on [primary]
 
     alter table [dbo].[TicketingOrder]  with check add  constraint [FK_TicketingOrder_Meetings] foreign key([MeetingId])
