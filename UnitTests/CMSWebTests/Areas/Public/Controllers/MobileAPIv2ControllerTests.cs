@@ -1,6 +1,4 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using CmsWeb.Areas.Public.Controllers;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using Xunit;
@@ -16,14 +14,22 @@ using CmsData.Codes;
 using CmsData;
 using UtilityExtensions;
 using CmsData.Classes.Twilio;
-using CmsWeb.Common.Extensions;
 using System.Data.Linq;
+using System.Text;
+using SharedTestFixtures.Network;
+using OfficeOpenXml.FormulaParsing.Excel.Functions.Math;
+using System.Text.RegularExpressions;
 
-namespace CmsWeb.Areas.Public.ControllersTests
+namespace CmsWeb.Areas.Public.Controllers.Tests
 {
     [Collection(Collections.Database)]
     public class MobileAPIv2ControllerTests : ControllerTestBase
     {
+        public MobileAPIv2ControllerTests()
+        {
+            MockAppSettings.Apply(("sysfromemail", "test@example.com"));
+        }
+
         [Fact]
         public void FetchInvolvementTest()
         {
@@ -272,8 +278,10 @@ namespace CmsWeb.Areas.Public.ControllersTests
             result.data.ShouldEndWith($"/Logon?otltoken={token}&ReturnUrl=%2fPerson2%2f{user.PeopleId}%2fResources%3fsource%3dAndroid");
         }
 
-        [Fact]
-        public void QuickSignInTest()
+        [Theory]
+        [InlineData(true)]
+        [InlineData(false)]
+        public void QuickSignInTest(bool useEmail)
         {
             var requestManager = FakeRequestManager.Create();
             db = requestManager.CurrentDatabase;
@@ -372,6 +380,12 @@ namespace CmsWeb.Areas.Public.ControllersTests
             user.Person.EnvelopeOptionsId.ShouldBe(envelope);
             user.Person.ElectronicStatement.ShouldBe(electronic != 0);
             user.Person.ContributionOptionsId.ShouldBe(statement);
+        }
+
+        public override void Dispose()
+        {
+            base.Dispose();
+            MockAppSettings.Remove("sysfromemail");
         }
     }
 }

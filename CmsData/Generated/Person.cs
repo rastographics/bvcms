@@ -9,7 +9,7 @@ namespace CmsData
     [Table(Name = "dbo.People")]
     public partial class Person : INotifyPropertyChanging, INotifyPropertyChanged
     {
-        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+        private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(string.Empty);
 
         #region Private Fields
 
@@ -253,6 +253,7 @@ namespace CmsData
 
         private DateTime? _BarcodeExpires;
 
+
         private EntitySet<Contactee> _contactsHad;
 
         private EntitySet<Contactor> _contactsMade;
@@ -371,6 +372,7 @@ namespace CmsData
 
         private EntitySet<VolRequest> _VolResponses;
 
+
         private EntityRef<Organization> _BFClass;
 
         private EntityRef<EnvelopeOption> _EnvelopeOption;
@@ -416,7 +418,6 @@ namespace CmsData
         #endregion
 
         #region Extensibility Method Definitions
-
         partial void OnLoaded();
         partial void OnValidate(ChangeAction action);
         partial void OnCreated();
@@ -782,7 +783,6 @@ namespace CmsData
         partial void OnBarcodeExpiresChanged();
 
         #endregion
-
         public Person()
         {
 
@@ -904,7 +904,6 @@ namespace CmsData
 
             _VolResponses = new EntitySet<VolRequest>(new Action<VolRequest>(attach_VolResponses), new Action<VolRequest>(detach_VolResponses));
 
-
             _BFClass = default;
 
             _EnvelopeOption = default;
@@ -956,7 +955,6 @@ namespace CmsData
         public int PeopleId
         {
             get => _PeopleId;
-
             set
             {
                 if (_PeopleId != value)
@@ -974,7 +972,6 @@ namespace CmsData
         public int CreatedBy
         {
             get => _CreatedBy;
-
             set
             {
                 if (_CreatedBy != value)
@@ -1038,7 +1035,7 @@ namespace CmsData
                 if (_GenderId != value)
                 {
                     if (_Gender.HasLoadedOrAssignedValue)
-                {
+                    {
                         throw new ForeignKeyReferenceAlreadyHasValueException();
                     }
 
@@ -1146,7 +1143,7 @@ namespace CmsData
                 if (_MaritalStatusId != value)
                 {
                     if (_MaritalStatus.HasLoadedOrAssignedValue)
-                {
+                    {
                         throw new ForeignKeyReferenceAlreadyHasValueException();
                     }
 
@@ -1215,7 +1212,7 @@ namespace CmsData
                 if (_FamilyId != value)
                 {
                     if (_Family.HasLoadedOrAssignedValue)
-                {
+                    {
                         throw new ForeignKeyReferenceAlreadyHasValueException();
                     }
 
@@ -1289,7 +1286,7 @@ namespace CmsData
                 if (_OriginId != value)
                 {
                     if (_Origin.HasLoadedOrAssignedValue)
-                {
+                    {
                         throw new ForeignKeyReferenceAlreadyHasValueException();
                     }
 
@@ -1312,7 +1309,7 @@ namespace CmsData
                 if (_EntryPointId != value)
                 {
                     if (_EntryPoint.HasLoadedOrAssignedValue)
-                {
+                    {
                         throw new ForeignKeyReferenceAlreadyHasValueException();
                     }
 
@@ -1335,7 +1332,7 @@ namespace CmsData
                 if (_InterestPointId != value)
                 {
                     if (_InterestPoint.HasLoadedOrAssignedValue)
-                {
+                    {
                         throw new ForeignKeyReferenceAlreadyHasValueException();
                     }
 
@@ -1381,7 +1378,7 @@ namespace CmsData
                 if (_BaptismStatusId != value)
                 {
                     if (_BaptismStatus.HasLoadedOrAssignedValue)
-                {
+                    {
                         throw new ForeignKeyReferenceAlreadyHasValueException();
                     }
 
@@ -1450,7 +1447,7 @@ namespace CmsData
                 if (_LetterStatusId != value)
                 {
                     if (_MemberLetterStatus.HasLoadedOrAssignedValue)
-                {
+                    {
                         throw new ForeignKeyReferenceAlreadyHasValueException();
                     }
 
@@ -1473,7 +1470,7 @@ namespace CmsData
                 if (_JoinCodeId != value)
                 {
                     if (_JoinType.HasLoadedOrAssignedValue)
-                {
+                    {
                         throw new ForeignKeyReferenceAlreadyHasValueException();
                     }
 
@@ -1536,7 +1533,7 @@ namespace CmsData
                 if (_ResCodeId != value)
                 {
                     if (_ResidentCode.HasLoadedOrAssignedValue)
-                {
+                    {
                         throw new ForeignKeyReferenceAlreadyHasValueException();
                     }
 
@@ -2381,7 +2378,7 @@ namespace CmsData
                 if (_ContributionOptionsId != value)
                 {
                     if (_ContributionStatementOption.HasLoadedOrAssignedValue)
-                {
+                    {
                         throw new ForeignKeyReferenceAlreadyHasValueException();
                     }
 
@@ -3248,7 +3245,6 @@ namespace CmsData
         {
             get => _FK_Goers;
             set => _FK_Goers.Assign(value);
-
         }
 
         [Association(Name = "FK_ManagedGiving_People", Storage = "_ManagedGivings", OtherKey = "PeopleId")]

@@ -263,6 +263,14 @@
         $("#body").val($('#email-body').contents().find('#templateBody').html());
         $.addTemplateClass();
     });
+    $("#SaveTemplateCopyButton").click(function () {
+        $.clearTemplateClass();
+        $("#UnlayerDesign").val($('#email-body').contents().find('#templateDesign').val());
+        $("#body").val($('#email-body').contents().find('#templateBody').html());
+        $.addTemplateClass();
+        var f = $(this).closest("form")[0];
+        f.action = f.action + "Copy";
+    });
 
     $(".TestSend").click(function () {
         $.block();

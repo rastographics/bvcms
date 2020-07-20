@@ -80,6 +80,7 @@ namespace CmsWeb.Areas.Giving.Controllers
         public ActionResult CurrentUserSchedulesList()
         {
             var givingFrequencyList = (from t in CurrentDatabase.ScheduledGiftTypes orderby t.Id select new { Id = t.Id, Name = t.Description }).ToList();
+
             if (!CurrentDatabase.Setting("UseQuarterlyRecurring"))
                 givingFrequencyList = givingFrequencyList.Where(f => f.Name != "Quarterly").ToList();
 

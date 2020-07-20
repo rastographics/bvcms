@@ -241,6 +241,11 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         private void ValidateAskTickets()
         {
+            if (modelState[$"List[{Index}].ntickets"].Errors.Count > 0)
+            {
+                modelState[$"List[{Index}].ntickets"].Errors.Clear();
+                modelState[$"List[{Index}].ntickets"].Errors.Add("Please enter a positive numeric value");
+            }
             if ((ntickets ?? 0) == 0)
                 modelState.AddModelError(Parent.GetNameFor(mm => mm.List[Index].ntickets), "please enter a number of tickets");
         }

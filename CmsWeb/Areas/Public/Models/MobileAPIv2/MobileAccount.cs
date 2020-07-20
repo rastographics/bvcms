@@ -520,7 +520,7 @@ namespace CmsWeb.Areas.Public.Models.MobileAPIv2
                 Authentication = "",
                 Code = hash,
                 CodeExpires = DateTime.Now.AddMinutes(15),
-                CodeEmail = email,
+                CodeEmail = email?.ToLower(),
                 AppVersion = version,
             };
 

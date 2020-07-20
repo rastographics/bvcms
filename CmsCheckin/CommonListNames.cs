@@ -62,7 +62,7 @@ namespace CmsCheckin
             ClearControls();
 
             name = match;
-            var x = this.GetDocument("Checkin2/NameSearch/" + name + "?page=" + page);
+            var x = this.GetDocument($"Checkin2/NameSearch?id={name}&page={page}");
 
             var points = 14F;
 

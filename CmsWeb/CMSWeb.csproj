@@ -574,7 +574,9 @@
     <Compile Include="Areas\Main\Models\Other\CouponResponseModel.cs" />
     <Compile Include="Areas\Manage\Controllers\ActivityController.cs" />
     <Compile Include="Areas\Manage\Controllers\BatchMoveAndDelete.cs" />
+    <Compile Include="Areas\Manage\Controllers\GridResult.cs" />
     <Compile Include="Areas\Manage\Controllers\InvolvementController.cs" />
+    <Compile Include="Areas\Manage\Models\DisplayModel.cs" />
     <Compile Include="Areas\Manage\Models\SmsMessages\ReceivedDetailViewModel.cs" />
     <Compile Include="Areas\Manage\Models\SmsMessages\ReplyModel.cs" />
     <Compile Include="Areas\Manage\Controllers\UploadAddressesController.cs" />
@@ -1984,6 +1986,11 @@
     <Content Include="Areas\Manage\Views\Sms\DisplayTemplates\Int32.cshtml" />
     <Content Include="Areas\People\Views\Person\Communications\Sms.cshtml" />
     <Content Include="Views\SpecialLinks\Index.cshtml" />
+    <Content Include="Areas\Giving\Views\GivingManagement\Index.cshtml" />
+    <Content Include="package-lock.json" />
+    <None Include="package-lock.json" />
+    <Content Include="Content\dist\js\app.js.map" />
+    <Content Include="Views\SpecialLinks\Index.cshtml" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
@@ -2894,11 +2901,16 @@
     <Content Include="src\components\Giving\GivingManagement\GivingPageIndex.vue" />
     <Content Include="src\components\Giving\GivingManagement\GivingPageEdit.vue" />
     <Content Include="Views\Home\Dashboard.cshtml" />
+    <Content Include="src\components\Common\Toggle.vue" />
+    <Content Include="src\components\Giving\GivingManagement\GivingPageIndex.vue" />
+    <Content Include="src\components\Giving\GivingManagement\GivingPageEdit.vue" />
+    <Content Include="Views\Home\Dashboard.cshtml" />
     <Content Include="src\components\Setup\Gateway\Manage.vue" />
     <Content Include="src\components\CheckIn\CheckinSetup.vue" />
     <Content Include="Views\Shared\Giving.cshtml" />
     <Content Include="src\components\Giving\GivingPage\RecurringGift.vue" />
     <Content Include="src\components\Giving\GivingPage\FundPicker.vue" />
+    <Content Include="src\components\Giving\GivingPage\GivingLogin.vue" />
     <None Include="Web.staging.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

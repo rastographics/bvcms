@@ -304,7 +304,7 @@ namespace CmsData
                 }
             }
         }
-
+        
         [Column(Name = "Notes", UpdateCheck = UpdateCheck.Never, Storage = "_Notes", DbType = "bit NOT NULL")]
         public bool Notes
         {
@@ -586,7 +586,6 @@ namespace CmsData
         {
             get => _BundleHeaders;
             set => _BundleHeaders.Assign(value);
-
         }
 
         [Association(Name = "FK_Contribution_ContributionFund", Storage = "_Contributions", OtherKey = "FundId")]
