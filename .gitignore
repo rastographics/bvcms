@@ -103,8 +103,3 @@ CmsWeb/Content/touchpoint/js/onlineregister.min.js
 #npm output
 CmsWeb/Content/dist/
 CmsWeb/Content/dist/css/
-CmsWeb/Content/dist/css/app.css
-CmsWeb/Content/dist/js/
-CmsWeb/Content/dist/js/app.js
-CmsWeb/Content/dist/js/app.js.map
-CmsWeb/Content/dist/index.html

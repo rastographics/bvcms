@@ -105,50 +105,34 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
 									GROUP BY family.FamilyId
 									ORDER BY name";
 
-				using( SqlCommand cmd = new SqlCommand( qFamilies, cmsdb.ReadonlyConnection() as SqlConnection ) ) {
-					SqlParameter parameter = new SqlParameter( "search", $"%{search}" );
+                using (SqlCommand cmd = new SqlCommand(qFamilies, cmsdb.ReadonlyConnection() as SqlConnection))
+                {
+                    SqlParameter parameter = new SqlParameter("search", $"%{search}");
 
-					cmd.Parameters.Add( parameter );
+                    cmd.Parameters.Add(parameter);
 
-					SqlDataAdapter adapter = new SqlDataAdapter( cmd );
-					adapter.Fill( table );
-				}
-			} else {
-				string first = "";
-				string last = "";
+                    SqlDataAdapter adapter = new SqlDataAdapter(cmd);
+                    adapter.Fill(table);
+                }
+            } else {
+                Util.NameSplit(search, out string first, out string last);
 
-                Util.NameSplit(search, out first, out last);
+                qFamilies = GetQuerySearch(first, last);
 
-				qFamilies = @"SELECT TOP 50
-										family.FamilyId AS id,
-										MAX( head.Name ) AS name,
-										CAST( CASE WHEN MAX( lock.FamilyId ) IS NOT NULL THEN 1 ELSE 0 END AS BIT ) AS locked
-									FROM People AS person
-										LEFT JOIN dbo.Families AS family
-											ON family.FamilyId = person.FamilyId
-										LEFT JOIN dbo.People AS head
-											ON family.HeadOfHouseholdId = head.PeopleId
-												AND head.DeceasedDate IS NULL
-										LEFT JOIN dbo.FamilyCheckinLock AS lock
-											ON family.FamilyId = lock.FamilyId
-												AND DATEDIFF( S, lock.Created, GETDATE( ) ) < 60
-												AND Locked = 1
-									WHERE (person.LastName LIKE @last OR person.MaidenName LIKE @last OR @last = '')
-										AND (person.FirstName LIKE @first OR person.NickName LIKE @first OR person.MiddleName LIKE @first OR @first = '')
-									GROUP BY family.FamilyId
-									ORDER BY name";
+                using (SqlCommand cmd = new SqlCommand(qFamilies, cmsdb.ReadonlyConnection() as SqlConnection))
+                {
+                    SqlParameter firstParameter = new SqlParameter("first", $"{first}%");
+                    SqlParameter lastParameter = new SqlParameter("last", $"{last}%");
+                    SqlParameter searchParameter = new SqlParameter("search", $"{search}%");
 
-				using( SqlCommand cmd = new SqlCommand( qFamilies, cmsdb.ReadonlyConnection() as SqlConnection ) ) {
-					SqlParameter firstParameter = new SqlParameter( "first", $"{first}%" );
-					SqlParameter lastParameter = new SqlParameter( "last", $"{last}%" );
+                    cmd.Parameters.Add(firstParameter);
+                    cmd.Parameters.Add(lastParameter);
+                    cmd.Parameters.Add(searchParameter);
 
-					cmd.Parameters.Add( firstParameter );
-					cmd.Parameters.Add( lastParameter );
-
-					SqlDataAdapter adapter = new SqlDataAdapter( cmd );
-					adapter.Fill( table );
-				}
-			}
+                    SqlDataAdapter adapter = new SqlDataAdapter(cmd);
+                    adapter.Fill(table);
+                }
+            }
 
 			foreach( DataRow row in table.Rows ) {
 				Family family = new Family();
@@ -165,7 +149,53 @@ namespace CmsWeb.Areas.Public.Models.CheckInAPIv2
 			return families;
 		}
 
-		private void loadMembers( CMSDataContext cmsdb, CMSImageDataContext cmsidb, int campus, DateTime date, bool returnPictureUrls )
+        private static string GetQuerySearch(string first, string last)
+        {
+            if (string.IsNullOrEmpty(first) && string.IsNullOrEmpty(last))
+            {
+                return @"SELECT TOP 50
+	                        family.FamilyId AS id,
+	                        MAX( head.Name ) AS name,
+	                        CAST( CASE WHEN MAX( lock.FamilyId ) IS NOT NULL THEN 1 ELSE 0 END AS BIT ) AS locked
+                        FROM People AS person
+	                    LEFT JOIN dbo.Families AS family
+		                    ON family.FamilyId = person.FamilyId
+	                    LEFT JOIN dbo.People AS head
+		                    ON family.HeadOfHouseholdId = head.PeopleId
+			                AND head.DeceasedDate IS NULL
+	                    LEFT JOIN dbo.FamilyCheckinLock AS lock
+		                    ON family.FamilyId = lock.FamilyId
+			                AND DATEDIFF( S, lock.Created, GETDATE( ) ) < 60
+			                AND Locked = 1
+                        WHERE (person.LastName LIKE @search OR person.MaidenName LIKE @search)
+                            OR (person.FirstName LIKE @search OR person.NickName LIKE @search OR person.MiddleName LIKE @search)
+                        GROUP BY family.FamilyId
+                        ORDER BY name";
+            }
+            else
+            {
+                return @"SELECT TOP 50
+				        family.FamilyId AS id,
+						MAX( head.Name ) AS name,
+						CAST( CASE WHEN MAX( lock.FamilyId ) IS NOT NULL THEN 1 ELSE 0 END AS BIT ) AS locked
+					FROM People AS person
+					LEFT JOIN dbo.Families AS family
+					    ON family.FamilyId = person.FamilyId
+					LEFT JOIN dbo.People AS head
+						ON family.HeadOfHouseholdId = head.PeopleId
+						AND head.DeceasedDate IS NULL
+					LEFT JOIN dbo.FamilyCheckinLock AS lock
+						ON family.FamilyId = lock.FamilyId
+						AND DATEDIFF( S, lock.Created, GETDATE( ) ) < 60
+						AND Locked = 1
+					WHERE (person.LastName LIKE @last OR person.MaidenName LIKE @last OR @last = '')
+						AND (person.FirstName LIKE @first OR person.NickName LIKE @first OR person.MiddleName LIKE @first OR @first = '')
+					GROUP BY family.FamilyId
+					ORDER BY name";
+            }            
+        }
+
+        private void loadMembers( CMSDataContext cmsdb, CMSImageDataContext cmsidb, int campus, DateTime date, bool returnPictureUrls )
 		{
 			members.AddRange( FamilyMember.forFamilyID( cmsdb, cmsidb, id, campus, date, returnPictureUrls ) );
             memberList = string.Join(", ", members.Where(m => m.name != name).Select(x => x.firstName));

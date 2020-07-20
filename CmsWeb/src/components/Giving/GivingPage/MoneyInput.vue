@@ -68,4 +68,9 @@
         visibility: visible;
         transform: scaleX(1);
     }
+
+    .has-error .money-input input {
+        color: #a94442;
+        border-bottom-color: #a94442;
+    }
 </style>

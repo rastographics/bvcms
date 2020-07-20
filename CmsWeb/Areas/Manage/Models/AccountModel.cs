@@ -12,6 +12,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Mail;
+using System.Security.Cryptography;
 using System.Text;
 using System.Web;
 using System.Web.Security;
@@ -509,11 +510,11 @@ namespace CmsWeb.Models
             return null;
         }
 
-        public static User AddUser(CMSDataContext db, int id)
+        public static User AddUser(CMSDataContext db, int peopleId)
         {
-            var p = db.People.Single(pe => pe.PeopleId == id);
+            var p = db.People.Single(pe => pe.PeopleId == peopleId);
             CMSMembershipProvider.provider.AdminOverride = true;
-            var user = MembershipService.CreateUser(db, id);
+            var user = MembershipService.CreateUser(db, peopleId);
             CMSMembershipProvider.provider.AdminOverride = false;
             user.MustChangePassword = false;
             db.SubmitChanges();
@@ -623,6 +624,29 @@ namespace CmsWeb.Models
             db.SendEmail(Util.FirstAddress(DbUtil.AdminMail),
                 "TouchPoint password reset link", msg, addrlist);
             DbUtil.LogActivity($"ForgotPassword ('{username}', {path})");
+        }
+
+        public static string createQuickSignInCode()
+        {
+            var rng = new Random();
+            return rng.Next(0, 999999).ToString("D6");
+        }
+
+        public static string createHash(string value)
+        {
+            byte[] bytes = Encoding.UTF8.GetBytes(value);
+
+            SHA256Managed sha256Managed = new SHA256Managed();
+            byte[] hash = sha256Managed.ComputeHash(bytes);
+
+            StringBuilder hashString = new StringBuilder(64);
+
+            foreach (byte x in hash)
+            {
+                hashString.Append(x.ToString("x2"));
+            }
+
+            return hashString.ToString();
         }
     }
 }
