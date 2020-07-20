@@ -189,6 +189,8 @@ namespace CmsData
 
         private string _ESpaceEventName;
 
+        private string _VenueId;
+
         private EntitySet<Person> _BFMembers;
 
         private EntitySet<Organization> _ChildOrgs;
@@ -2205,6 +2207,24 @@ namespace CmsData
                     SendPropertyChanging();
                     _ESpaceEventName = value;
                     SendPropertyChanged("ESpaceEventName");
+                    OnESpaceEventNameChanged();
+                }
+            }
+        }
+
+        [Column(Name = "VenueId", UpdateCheck = UpdateCheck.Never, Storage = "_VenueId", DbType = "varchar(50)")]
+        public string VenueId
+        {
+            get => _VenueId;
+
+            set
+            {
+                if (_VenueId != value)
+                {
+                    OnESpaceEventNameChanging(value);
+                    SendPropertyChanging();
+                    _VenueId = value;
+                    SendPropertyChanged("VenueId");
                     OnESpaceEventNameChanged();
                 }
             }

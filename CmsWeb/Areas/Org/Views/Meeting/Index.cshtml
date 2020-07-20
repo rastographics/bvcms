@@ -5,6 +5,7 @@
     ViewBag.Title = "Meeting";
     ViewBag.PageHeader = "Meeting";
     ViewBag.PageSubHeader = $"<a href=\"/Org/{Model.meeting.OrganizationId}\">{Model.meeting.Organization.OrganizationName}</a>";
+    ViewBag.TicketingUrl = $"/Ticketing/{Model.meeting.MeetingId}";
     Layout = ViewExtensions2.TouchPointLayout();
     var RegularMeetingHeadCount = Model.RegularMeetingHeadCountSetting();
     var CanEditHeadCount = Model.meeting.GroupMeetingFlag || RegularMeetingHeadCount;
@@ -99,7 +100,7 @@
                             <dl>
                                 <dt>Event Key</dt>
                                 <dd>
-                                    <a id="e-@Model.meeting.MeetingId" class="clickEdit" data-pk="e-@Model.meeting.MeetingId" data-title="Event Key" style="cursor: pointer">@Model.meeting.EventKey</a>
+                                <a href="@ViewBag.TicketingUrl">@ViewBag.TicketingUrl</a>
                                 </dd>
                             </dl>
                         </div>

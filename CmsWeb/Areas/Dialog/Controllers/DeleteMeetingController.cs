@@ -2,6 +2,7 @@
 using CmsWeb.Areas.Dialog.Models;
 using CmsWeb.Lifecycle;
 using System.Web.Mvc;
+using CmsData.Codes;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Dialog.Controllers
@@ -17,6 +18,12 @@ namespace CmsWeb.Areas.Dialog.Controllers
         public ActionResult Index(int id)
         {
             var model = new DeleteMeeting(id, CurrentDatabase);
+            var org = CurrentDatabase.LoadOrganizationById(model.OrgId);
+            if (!User.IsInRole("Developer"))
+            {
+                if (org.RegistrationTypeId == RegistrationTypeCode.Ticketing)
+                    return Message("You cannot delete a meeting for a Ticketing Org, only a developer can do that");
+            }
             return View(model);
         }
 

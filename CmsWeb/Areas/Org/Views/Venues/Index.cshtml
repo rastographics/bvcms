@@ -1,0 +1,34 @@
+﻿@model IEnumerable<CmsWeb.Areas.Org.Models.Venues.ChartModel>
+@{
+    Layout = ViewExtensions2.TouchPointLayout();
+    ViewBag.Title = "Venue Management";
+}
+@Html.Partial("VenuesMenu")
+<table class="table table-striped">
+    <tr>
+        <th width="200">
+        </th>
+        <th width="350">
+            @*@Html.DisplayNameFor(model => model.Name)*@
+        </th>
+        <th></th>
+    </tr>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                <img src="@item.PublishedVersionThumbnailUrl" style="width:90px; height:75px; border: 1px solid #555; margin:5px;" />
+            </td>
+            <td>
+                <text>@item.Name</text>
+            </td>
+            <td>
+                <a href="@Url.Action("ChartDesigner", "Venues", new { @key = item.Key })"><i class="fa fa-edit" title="Edit Venue"></i></a>&nbsp;
+                <a href="@Url.Action("DeleteChart", "Venues", new { @key = item.Key })"><i class="fa fa-trash" title="Delete Venue"></i></a>&nbsp;
+            </td>
+        </tr>
+    }
+
+</table>
+<br /><br />
+<a href="Index">Dashboard</a>

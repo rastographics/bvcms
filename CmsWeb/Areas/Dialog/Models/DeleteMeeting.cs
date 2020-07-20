@@ -70,9 +70,17 @@ FROM dbo.SubRequest sr
 JOIN dbo.Attend a ON a.AttendId = sr.AttendId
 WHERE a.MeetingId = {0}
 ", model.MeetingId);
+
+
+			// We may want to disable Delete Meeting unless in Developer mode for a Ticketing Org 
+			// since the Ticketing Orders and Seats purchased are tied to the meeting
             db.ExecuteCommand("DELETE dbo.VolRequest WHERE MeetingId = {0}", model.MeetingId);
             db.ExecuteCommand("DELETE dbo.attend WHERE MeetingId = {0}", model.MeetingId);
             db.ExecuteCommand("DELETE dbo.MeetingExtra WHERE MeetingId = {0}", model.MeetingId);
+            db.ExecuteCommand(@"delete dbo.TicketingSeats from dbo.TicketingSeats s
+                                join dbo.TicketingOrder o on o.OrderId = s.OrderId
+                                where o.MeetingId = {0}", model.MeetingId);
+            db.ExecuteCommand("DELETE dbo.TicketingOrder WHERE MeetingId = {0}", model.MeetingId);
             db.ExecuteCommand("DELETE dbo.meetings WHERE MeetingId = {0}", model.MeetingId);
 
             db.SubmitChanges();

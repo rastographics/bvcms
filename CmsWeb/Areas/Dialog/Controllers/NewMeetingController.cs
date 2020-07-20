@@ -8,6 +8,8 @@ using CmsWeb.Services.MeetingCategory;
 using System;
 using System.Linq;
 using System.Web.Mvc;
+using CmsData.Codes;
+using SeatsioDotNet;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Dialog.Controllers
@@ -30,6 +32,10 @@ namespace CmsWeb.Areas.Dialog.Controllers
             {
                 defaultAttendCreditId = oi.Schedules[0].AttendCredit.Value;
             }
+            var org = oi.Org;
+            if (org.RegistrationTypeId == RegistrationTypeCode.Ticketing
+                && string.IsNullOrEmpty(org.VenueId))
+                ViewBag.disabled = "disabled";
 
             var useMeetingDescriptionPickList = CurrentDatabase.Setting("AttendanceUseMeetingCategory");
             var m = new NewMeetingInfo
@@ -157,6 +163,14 @@ namespace CmsWeb.Areas.Dialog.Controllers
             };
             CurrentDatabase.Meetings.InsertOnSubmit(mt);
             CurrentDatabase.SubmitChanges();
+            if (organization.RegistrationTypeId == RegistrationTypeCode.Ticketing && (organization.VenueId ?? "") != "")
+            {
+                var secretkey = CurrentDatabase.Setting("TicketingWorkspaceSecretKey", "na");
+                var client = new SeatsioClient(secretkey);
+                var ev = client.Events.Create(organization.VenueId, mt.MeetingId.ToString());
+                mt.EventKey = ev.Key;
+                CurrentDatabase.SubmitChanges();
+            }
             DbUtil.LogActivity($"Creating new meeting for {organization.OrganizationName}");
             return Redirect("/Meeting/" + mt.MeetingId);
         }

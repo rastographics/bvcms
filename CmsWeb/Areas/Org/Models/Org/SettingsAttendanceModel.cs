@@ -48,6 +48,8 @@ namespace CmsWeb.Areas.Org.Models
             this.CopyPropertiesFrom(Org);
         }
 
+        public bool OrgHasVenueId() => CurrentDatabase.Organizations.Any(o => o.OrganizationId == Id && (o.VenueId ?? "") != "");
+
         public void Update()
         {
             if (!HasSchedules())

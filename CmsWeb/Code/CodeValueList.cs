@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using CmsWeb.Areas.Org.Models.Venues;
+using SeatsioDotNet;
+using SeatsioDotNet.Events;
 using UtilityExtensions;
 
 namespace CmsWeb.Code
@@ -327,6 +330,24 @@ namespace CmsWeb.Code
 
             list.Insert(0, new { Value = "0", Text = @"(not specified)" });
             return new SelectList(list, "Value", "Text");
+        }
+        public SelectList VenueList()
+        {
+            var BaseUrl = "https://api.seatsio.net";
+            var secretKey = Db.Setting("TicketingWorkspaceSecretKey", "");
+            var workspaceKey = Db.Setting("TicketingWorkspaceKey", "");
+            var client = new SeatsioClient(secretKey, workspaceKey, BaseUrl);
+            var chartsFromApi = client.Charts.ListAll(expandEvents: true).ToList();
+
+            var list = (from vc in chartsFromApi
+                        orderby vc.Name
+                        select new CodeValueItem()
+                        {
+                            Code = vc.Key,
+                            Value = vc.Name
+                        }).ToList();
+            list.Insert(0, new CodeValueItem { Code = "0", Value = "(not specified)" });
+            return new SelectList(list, "Code", "Value");
         }
     }
 }

@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web.Mvc;
+using CmsData.Codes;
 
 namespace CmsWeb.Areas.Org.Models
 {
@@ -97,7 +98,11 @@ namespace CmsWeb.Areas.Org.Models
 
         public bool IsESpaceEnabled => CurrentDatabase.Setting("eSpaceEnabled");
 
+        public bool IsTicketing => Org.RegistrationTypeId == RegistrationTypeCode.Ticketing;
+
         public bool ShowGeneralHelp => CurrentDatabase.UserPreference("ShowGeneralHelp");
+
+        public CodeInfo Venue { get; set; }
 
         [Display(Description = LocationDescription)]
         public string Location { get; set; }

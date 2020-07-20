@@ -31,7 +31,11 @@
             </div>
             <div class="modal-footer">
                 <a class="btn btn-default" data-dismiss="modal">Close</a>
-                <input type="submit" class="btn btn-primary" value="OK" />
+                <input @ViewBag.disabled type="submit" class="btn btn-primary" value="OK" />
+                @if (ViewBag.disabled == "disabled")
+                {
+                    <div class="alert alert-warning">You must choose a Venue (seating chart) first.</div>
+                }
             </div>
         </form>
     </div>

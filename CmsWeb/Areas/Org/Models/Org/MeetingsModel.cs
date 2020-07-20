@@ -81,59 +81,72 @@ namespace CmsWeb.Areas.Org.Models
         {
             var future = IsTicketing ? !Future : Future;
             if (Direction == "asc")
-                switch (SortExpression)
-                {
-                    case "Present":
-                        q = q.OrderByDescending(m => m.NumPresent);
-                        break;
-                    case "Count":
-                        q = q.OrderBy(m => m.HeadCount).ThenBy(m => m.NumPresent);
-                        break;
-                    case "Guests":
-                        q = q.OrderByDescending(m => (m.NumNewVisit + m.NumRepeatVst + m.NumVstMembers));
-                        break;
-                    case "Meeting Time":
-                        q = q.OrderBy(m => m.MeetingDate.Value.TimeOfDay).ThenBy(m => m.MeetingDate);
-                        break;
-                    case "Location":
-                        q = q.OrderBy(m => m.Location ?? "zzz").ThenByDescending(m => m.MeetingDate);
-                        break;
-                    case "Description":
-                        q = q.OrderBy(m => (m.Description ?? "") + "zzz").ThenByDescending(m => m.MeetingDate);
-                        break;
-                    default:
-                        q = !future
-                            ? q.OrderBy(m => m.MeetingDate)
-                            : q.OrderByDescending(m => m.MeetingDate);
-                        break;
-                }
+                q = AscendingSort(q, future);
             else
-                switch (SortExpression)
-                {
-                    case "Present":
-                        q = q.OrderBy(m => m.NumPresent);
-                        break;
-                    case "Count":
-                        q = q.OrderByDescending(m => m.HeadCount).ThenByDescending(m => m.NumPresent);
-                        break;
-                    case "Guests":
-                        q = q.OrderBy(m => (m.NumNewVisit + m.NumRepeatVst + m.NumVstMembers)).ThenBy(m => m.NumPresent);
-                        break;
-                    case "Meeting Time":
-                        q = q.OrderByDescending(m => m.MeetingDate.Value.TimeOfDay).ThenByDescending(m => m.MeetingDate);
-                        break;
-                    case "Location":
-                        q = q.OrderBy(m => m.Location ?? "zzz").ThenByDescending(m => m.MeetingDate);
-                        break;
-                    case "Description":
-                        q = q.OrderBy(m => (m.Description ?? "") + "zzz").ThenByDescending(m => m.MeetingDate);
-                        break;
-                    default:
-                        q = future
-                            ? q.OrderBy(m => m.MeetingDate)
-                            : q.OrderByDescending(m => m.MeetingDate);
-                        break;
-                }
+                q = DescendingSort(q, future);
+            return q;
+        }
+
+        private IQueryable<Meeting> AscendingSort(IQueryable<Meeting> q, bool future)
+        {
+            switch (SortExpression)
+            {
+                case "Present":
+                    q = q.OrderByDescending(m => m.NumPresent);
+                    break;
+                case "Count":
+                    q = q.OrderBy(m => m.HeadCount).ThenBy(m => m.NumPresent);
+                    break;
+                case "Guests":
+                    q = q.OrderByDescending(m => (m.NumNewVisit + m.NumRepeatVst + m.NumVstMembers));
+                    break;
+                case "Meeting Time":
+                    q = q.OrderBy(m => m.MeetingDate.Value.TimeOfDay).ThenBy(m => m.MeetingDate);
+                    break;
+                case "Location":
+                    q = q.OrderBy(m => m.Location ?? "zzz").ThenByDescending(m => m.MeetingDate);
+                    break;
+                case "Description":
+                    q = q.OrderBy(m => (m.Description ?? "") + "zzz").ThenByDescending(m => m.MeetingDate);
+                    break;
+                default:
+                    q = !future
+                        ? q.OrderBy(m => m.MeetingDate)
+                        : q.OrderByDescending(m => m.MeetingDate);
+                    break;
+            }
+            return q;
+        }
+
+        private IQueryable<Meeting> DescendingSort(IQueryable<Meeting> q, bool future)
+        {
+            switch (SortExpression)
+            {
+                case "Present":
+                    q = q.OrderBy(m => m.NumPresent);
+                    break;
+                case "Count":
+                    q = q.OrderByDescending(m => m.HeadCount).ThenByDescending(m => m.NumPresent);
+                    break;
+                case "Guests":
+                    q = q.OrderBy(m => (m.NumNewVisit + m.NumRepeatVst + m.NumVstMembers)).ThenBy(m => m.NumPresent);
+                    break;
+                case "Meeting Time":
+                    q = q.OrderByDescending(m => m.MeetingDate.Value.TimeOfDay).ThenByDescending(m => m.MeetingDate);
+                    break;
+                case "Location":
+                    q = q.OrderBy(m => m.Location ?? "zzz").ThenByDescending(m => m.MeetingDate);
+                    break;
+                case "Description":
+                    q = q.OrderBy(m => (m.Description ?? "") + "zzz").ThenByDescending(m => m.MeetingDate);
+                    break;
+                default:
+                    q = future
+                        ? q.OrderBy(m => m.MeetingDate)
+                        : q.OrderByDescending(m => m.MeetingDate);
+                    break;
+            }
+
             return q;
         }
 

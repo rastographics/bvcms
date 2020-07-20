@@ -94,6 +94,14 @@
             </div>
         </div>
         }
+        @if (Model.IsTicketing && User.IsInRole("Ticketing"))
+        {
+        <div class="row">
+            <div class="col-sm-3">
+                @Html.EditorFor(m => m.Venue)
+            </div>
+        </div>
+        }
     </div>
     @Html.Hidden("Id", Model.Id)
     @FormAction()
