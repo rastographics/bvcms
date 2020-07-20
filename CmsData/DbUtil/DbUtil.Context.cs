@@ -2074,13 +2074,13 @@ This search uses multiple steps which cannot be duplicated in a single query.
         internal bool FromActiveRecords { get; set; }
         public bool FromBatch { get; set; }
 
-        public IGateway Gateway(string name, bool exceptionIfMissing = true)
+        public IGateway Gateway(string name, string visitorIpAddress = null)
         {
             var account = GatewayAccount.FirstOrDefault(a => a.GatewayAccountName == name);
-            return Gateway(false, account);
+            return Gateway(false, account, visitorIpAddress: visitorIpAddress);
         }
 
-        public IGateway Gateway(bool testing, GatewayAccount account, PaymentProcessTypes processType = PaymentProcessTypes.RecurringGiving, bool exceptionIfMissing = true)
+        public IGateway Gateway(bool testing, GatewayAccount account, PaymentProcessTypes processType = PaymentProcessTypes.RecurringGiving, bool exceptionIfMissing = true, string visitorIpAddress = null)
         {
             account = account ?? MultipleGatewayUtils.GetAccount(this, processType);
             if (!(account?.GatewayId).HasValue)
@@ -2099,7 +2099,7 @@ This search uses multiple steps which cannot be duplicated in a single query.
                 case (int)GatewayTypes.Transnational:
                     return new TransNationalGateway(this, testing, processType) { GatewayName = account.GatewayAccountName, GatewayAccountId = account.GatewayAccountId };
                 case (int)GatewayTypes.Acceptiva:
-                    return new AcceptivaGateway(this, testing, processType) { GatewayName = account.GatewayAccountName, GatewayAccountId = account.GatewayAccountId };
+                    return new AcceptivaGateway(this, testing, processType, visitorIpAddress) { GatewayName = account.GatewayAccountName, GatewayAccountId = account.GatewayAccountId};
                 case (int)GatewayTypes.AuthorizeNet:
                     return new AuthorizeNetGateway(this, testing, processType) { GatewayName = account.GatewayAccountName, GatewayAccountId = account.GatewayAccountId };
                 case (int)GatewayTypes.BluePay:
@@ -2137,12 +2137,12 @@ This search uses multiple steps which cannot be duplicated in a single query.
             ExecuteCommand("dbo.DeleteOldQueryBitTags");
         }
 
-        public void RetrieveBatchData(string startdt = null, string enddt = null, bool testing = false)  // code has mostly been moved over from CmsWeb.Models.TransactionsModel.cs with some cleanup
+        public void RetrieveBatchData(string startdt = null, string enddt = null, bool testing = false, string visitorIpAddress = null)  // code has mostly been moved over from CmsWeb.Models.TransactionsModel.cs with some cleanup
         {
             IGateway[] gateways = {
-                Gateway(testing, null, PaymentProcessTypes.OneTimeGiving, false),
-                Gateway(testing, null, PaymentProcessTypes.OnlineRegistration, false),
-                Gateway(testing, null, PaymentProcessTypes.RecurringGiving, false)
+                Gateway(testing, null, PaymentProcessTypes.OneTimeGiving, false, visitorIpAddress: visitorIpAddress),
+                Gateway(testing, null, PaymentProcessTypes.OnlineRegistration, false, visitorIpAddress: visitorIpAddress),
+                Gateway(testing, null, PaymentProcessTypes.RecurringGiving, false, visitorIpAddress: visitorIpAddress)
             };
 
             DateTime? dateFrom = startdt.HasValue() ? (DateTime?)DateTime.Parse(startdt) : null;

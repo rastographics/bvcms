@@ -23,7 +23,7 @@ namespace CmsWeb.Areas.Manage.Controllers
         [Route("~/Transactions/{id:int}")]
         public ActionResult Index(int? id, int? goerid = null, int? senderid = null, string reference = "", string desc = "", bool isBatchref = false)
         {
-            var m = new TransactionsModel(CurrentDatabase, id, reference, desc, isBatchref) { GoerId = goerid, SenderId = senderid };
+            var m = new TransactionsModel(CurrentDatabase, id, reference, desc, isBatchref, visitorIpAddress: VisitorIpAddress) { GoerId = goerid, SenderId = senderid };
             return View(m);
         }
 
@@ -54,6 +54,7 @@ namespace CmsWeb.Areas.Manage.Controllers
         [HttpPost]
         public ActionResult List(TransactionsModel m)
         {
+            m.VisitorIpAddress = VisitorIpAddress;
             UpdateModel(m.Pager);
             return View(m);
         }
@@ -104,7 +105,7 @@ namespace CmsWeb.Areas.Manage.Controllers
             var t0 = qq.First();
 
             var processType = MultipleGatewayUtils.ProcessByTransactionDescription(CurrentDatabase, t0.Description);
-            var gw = CurrentDatabase.Gateway(t.Testing.GetValueOrDefault(false), null, processType: processType);
+            var gw = CurrentDatabase.Gateway(t.Testing.GetValueOrDefault(false), null, processType: processType, visitorIpAddress: VisitorIpAddress);
             TransactionResponse resp = null;
             var re = t.TransactionId;
             if (re.Contains("(testing"))
@@ -189,6 +190,7 @@ namespace CmsWeb.Areas.Manage.Controllers
 <tr><td>User</td><td>{Util.UserFullName}</td></tr>
 </table>", Util.EmailAddressListFromString(CurrentDatabase.StaffEmailForOrg(transaction.OrgId ?? 0)));
 
+            m.VisitorIpAddress = VisitorIpAddress;
             return View("List", m);
         }
 

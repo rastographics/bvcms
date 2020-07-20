@@ -8,9 +8,9 @@ namespace CmsData.Finance.Acceptiva.Transaction.Charge
     {
         private const string action = "charge";
 
-        protected ChargeRequest(bool isTesting, string apiKey, string merchAcctId, int paymentType, decimal amount, string orderId,
+        protected ChargeRequest(bool isTesting, string apiKey, string ipAddress, string merchAcctId, int paymentType, decimal amount, string orderId,
             string orderDescription, Payer payer)
-            : base(isTesting, apiKey, action)
+            : base(isTesting, apiKey, action, ipAddress)
         {
             Data["params[0][items][0][id]"] = $"Touchpoint#{orderId.ToString()}";
             Data["params[0][items][0][desc]"] = orderDescription.ToString();

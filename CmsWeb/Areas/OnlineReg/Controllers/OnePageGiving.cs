@@ -231,7 +231,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             if (m?.UserPeopleId != null && m.UserPeopleId > 0)
                 try
                 {
-                    pf.CheckStoreInVault(ModelState, m.UserPeopleId.Value);
+                    pf.CheckStoreInVault(ModelState, m.UserPeopleId.Value, visitorIpAddress: VisitorIpAddress);
                 }
                 catch(Exception ex)
                 {
@@ -261,7 +261,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 }
             }
 
-            var ti = pf.ProcessPaymentTransaction(m);
+            var ti = pf.ProcessPaymentTransaction(m, VisitorIpAddress);
 
             if (ti == null)
             {

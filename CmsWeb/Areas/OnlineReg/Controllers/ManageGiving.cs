@@ -132,7 +132,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 
             try
             {
-                m.Update();
+                m.Update(visitorIpAddress: VisitorIpAddress);
             }
             catch (Exception ex)
             {

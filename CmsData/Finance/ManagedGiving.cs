@@ -3,6 +3,7 @@ using System.Linq;
 using CmsData.Codes;
 using CmsData.Finance;
 using UtilityExtensions;
+using UtilityExtensions.Extensions;
 
 namespace CmsData
 {
@@ -65,9 +66,9 @@ namespace CmsData
 
             var accountId = MultipleGatewayUtils.GetAccount(db, PaymentProcessTypes.RecurringGiving)?.GatewayAccountId ?? 0;
             var paymentInfo = db.PaymentInfos.Single(x => x.PeopleId == PeopleId && x.GatewayAccountId == accountId);
-            var preferredType = paymentInfo.PreferredGivingType ?? paymentInfo.PreferredPaymentType;
+            var preferredType = paymentInfo.PreferredGivingType ?? paymentInfo.PreferredPaymentType;            
 
-            var gw = GetGateway(db, paymentInfo);
+            var gw = GetGateway(db, paymentInfo, IpAddress: IpAddress.GetIpAddress());
 
             var orgid = (from o in db.Organizations
                          where o.RegistrationTypeId == RegistrationTypeCode.ManageGiving
@@ -161,7 +162,7 @@ Please contact the Finance office at the church."
             }
             return 1;
         }
-        private IGateway GetGateway(CMSDataContext db, PaymentInfo pi)
+        private IGateway GetGateway(CMSDataContext db, PaymentInfo pi, string IpAddress = null)
         {
             var account = MultipleGatewayUtils.GetAccount(db, pi.GatewayAccountId);
 
@@ -192,7 +193,7 @@ Please contact the Finance office at the church."
                     if (pi.AcceptivaPayerId.HasValue() &&
                         (pi.PreferredGivingType == "B" || pi.PreferredGivingType == "C"))
                     {
-                        return db.Gateway(IsTesting, account);
+                        return db.Gateway(IsTesting, account, visitorIpAddress: IpAddress);
                     }
                     break;
                 case (int)GatewayTypes.BluePay:
@@ -207,7 +208,7 @@ Please contact the Finance office at the church."
             }
 
             // fall back to default gateway
-            return db.Gateway(IsTesting, null, processType: PaymentProcessTypes.RecurringGiving);
+            return db.Gateway(IsTesting, null, processType: PaymentProcessTypes.RecurringGiving, visitorIpAddress: IpAddress);
         }
 
         public static int DoAllGiving(CMSDataContext Db)

@@ -8,6 +8,7 @@ using Microsoft.AspNet.OData;
 using UtilityExtensions;
 using UtilityExtensions.Session;
 using CMSShared.Session;
+using UtilityExtensions.Extensions;
 
 namespace CmsWeb.Lifecycle
 {
@@ -44,6 +45,7 @@ namespace CmsWeb.Lifecycle
         internal CMSDataContext CurrentDatabase => RequestManager.CurrentDatabase;
         protected CMSImageDataContext CurrentImageDatabase => RequestManager.CurrentImageDatabase;
         protected IPrincipal CurrentUser => RequestManager.CurrentUser;
+        protected string VisitorIpAddress => RequestManager.VisitorIpAddress;
 
         public CMSBaseController(IRequestManager requestManager)
         {
@@ -72,6 +74,8 @@ namespace CmsWeb.Lifecycle
         CMSDataContext CurrentDatabase { get; }
         CMSImageDataContext CurrentImageDatabase { get; }
         ISessionProvider SessionProvider { get; }
+        string VisitorIpAddress { get; }
+        string GetVisitorIpAddress();
         Elmah.ErrorLog GetErrorLog();
     }
 
@@ -83,6 +87,7 @@ namespace CmsWeb.Lifecycle
         public CMSDataContext CurrentDatabase { get; private set; }
         public CMSImageDataContext CurrentImageDatabase { get; private set; }
         public ISessionProvider SessionProvider { get; private set; }
+        public string VisitorIpAddress { get; set; }
 
         public RequestManager()
         {
@@ -93,6 +98,25 @@ namespace CmsWeb.Lifecycle
             CurrentImageDatabase = CMSImageDataContext.Create(CurrentHttpContext);
             SessionProvider = new CmsSessionProvider();
             CurrentHttpContext.Items["SessionProvider"] = SessionProvider;
+            VisitorIpAddress = GetVisitorIpAddress();
+        }
+
+        public string GetVisitorIpAddress()
+        {
+            var ipAdd = CurrentHttpContext.Request.ServerVariables["HTTP_X_FORWARDED_FOR"];
+
+            if (string.IsNullOrEmpty(ipAdd))
+                ipAdd = CurrentHttpContext.Request.ServerVariables["REMOTE_ADDR"];
+
+            if (string.IsNullOrEmpty(ipAdd) || ipAdd == "::1")
+                ipAdd = IpAddress.GetIpAddress();
+
+            if (string.IsNullOrEmpty(ipAdd) || ipAdd == "::1")
+            {
+                ipAdd = "127.0.0.1";
+            }
+
+            return ipAdd;
         }
 
         public Elmah.ErrorLog GetErrorLog()

@@ -8,8 +8,6 @@ namespace CmsData.Finance.Acceptiva.Transaction
     [JsonObject(ItemNullValueHandling = NullValueHandling.Ignore)]
     internal class TransactionResponse : Response
     {
-        [JsonProperty(PropertyName = "trans_id_str")]
-        public string TransIdStr { get; set; }
         [JsonProperty(PropertyName = "orig_trans_id_str")]
         public string OrigTransIdStr { get; set; }
         [JsonProperty(PropertyName = "refund_trans_id_strs")]
@@ -18,10 +16,6 @@ namespace CmsData.Finance.Acceptiva.Transaction
         public DateTime TransDatetime { get; set; }
         [JsonProperty(PropertyName = "trans_status")]
         public int TransStatus { get; set; }
-        [JsonProperty(PropertyName = "trans_status_msg")]
-        public string TransStatusMsg { get; set; }
-        [JsonProperty(PropertyName = "processor_response_code")]
-        public string ProcessorResponseCode { get; set; }
         [JsonProperty(PropertyName = "processor_response_msg")]
         public string ProcessorResponseMsg { get; set; }
         [JsonProperty(PropertyName = "processor_response_msg_public")]
@@ -70,7 +64,5 @@ namespace CmsData.Finance.Acceptiva.Transaction
         public string ClientTransId { get; set; }
         [JsonProperty(PropertyName = "client_payer_id")]
         public string ClientPayerId { get; set; }
-        [JsonProperty(PropertyName = "items")]
-        public List<TransItem> Items { get; set; }
     }
 }
