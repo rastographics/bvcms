@@ -107,6 +107,7 @@ namespace CmsData.Finance
             var achCharge = new AchCharge(
                 _isTesting,
                 _apiKey,
+                _visitorIpAddress,
                 _merch_ach_id,
                 new Ach
                 {
@@ -190,6 +191,7 @@ namespace CmsData.Finance
                 var storePayer = new StorePayer(
                 _isTesting,
                 _apiKey,
+                _visitorIpAddress,
                 new Payer
                 {
                     LastName = lastName,
@@ -226,6 +228,7 @@ namespace CmsData.Finance
                 var storePayer = new StorePayer(
                 _isTesting,
                 _apiKey,
+                _visitorIpAddress,
                 new Payer
                 {
                     LastName = lastName,
@@ -269,6 +272,7 @@ namespace CmsData.Finance
                 var storePayer = new StoreNewPayer(
                 _isTesting,
                 _apiKey,
+                _visitorIpAddress,
                 new Payer
                 {
                     LastName = lastName,
@@ -305,6 +309,7 @@ namespace CmsData.Finance
                 var storePayer = new StoreNewPayer(
                 _isTesting,
                 _apiKey,
+                _visitorIpAddress,
                 new Payer
                 {
                     LastName = lastName,
@@ -344,7 +349,7 @@ namespace CmsData.Finance
 
         private string GetAcceptivaPayerId(string vaultId)
         {
-            var getPayerData = new GetPayerData(_isTesting, _apiKey, vaultId);
+            var getPayerData = new GetPayerData(_isTesting, _apiKey, _visitorIpAddress, vaultId);
             var response = getPayerData.Execute();
             if (response.Response.Status != "success")
             {
