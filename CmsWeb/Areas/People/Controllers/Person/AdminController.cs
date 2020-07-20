@@ -66,12 +66,22 @@ namespace CmsWeb.Areas.People.Controllers
         public ActionResult ConvertRecordType(int id)
         {
             var person = CurrentDatabase.LoadPersonById(id);
-            if (person != null)
+            string first = "", last = "";
+            if ((bool)person?.IsBusiness)
+            {
+                Util.NameSplit(person.LastName, out first, out last);
+                person.FirstName = first;
+                person.LastName = last;
+                person.IsBusiness = false;
+            }
+            else
             {                
-                person.IsBusiness = (person.IsBusiness.IsNull() || (bool)!person.IsBusiness) ? true: false;
+                person.FirstName = "na";
+                person.LastName = String.Concat( first, " ", last);
+                person.IsBusiness = true;
             }
             CurrentDatabase.SubmitChanges();
-            DbUtil.LogActivity($"Record type converted {person.Name} ({person.PeopleId}), CurrentRecordType: { ((bool)person.IsBusiness ? "Business" : "Person")} ");            
+            DbUtil.LogActivity($"Record type converted {person.Name} ({person.PeopleId}), CurrentRecordType: { ((bool)person.IsBusiness ? "Business" : "Person")} ");
             return Content("/Person2/" + id);
         }
 

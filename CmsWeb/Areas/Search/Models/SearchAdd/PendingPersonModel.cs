@@ -220,7 +220,7 @@ namespace CmsWeb.Areas.Search.Models
 
             person = Person.Add(CurrentDatabase, f, position,
                                  null, FirstName.Trim(), NickName, LastName.Trim(), DOB, false, Gender.Value.ToInt(),
-                                 originid, entrypointid, isbiz: (bool)isbusiness);
+                                 originid, entrypointid, isbusiness: (bool)isbusiness);
 
             this.CopyPropertiesTo(Person);
             Person.CellPhone = CellPhone.GetDigits();
