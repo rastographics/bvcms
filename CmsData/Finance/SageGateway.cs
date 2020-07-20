@@ -91,12 +91,75 @@ namespace CmsData.Finance
         // New methods
         public TransactionResponse ChargeCreditCardOneTime(decimal amt, string cardNumber, string expires, string cardCode, string firstName, string lastName, string address, string address2, string city, string state, string country, string zip, string phone, string email, bool testing = false)
         {
-            throw new NotImplementedException();
+            var creditCardSaleRequest = new CreditCardSaleRequest(
+                _id,
+                _key,
+                new CreditCard
+                {
+                    NameOnCard = $"{firstName} {lastName}",
+                    CardNumber = cardNumber,
+                    Expiration = expires,
+                    CardCode = cardCode,
+                    BillingAddress = new BillingAddress
+                    {
+                        Address1 = address,
+                        City = city,
+                        State = state,
+                        Country = country,
+                        Zip = zip,
+                        Email = email,
+                        Phone = phone
+                    }
+                },
+                amt);
+
+            var response = creditCardSaleRequest.Execute();
+
+            return new TransactionResponse
+            {
+                Approved = response.ApprovalIndicator == ApprovalIndicator.Approved,
+                AuthCode = response.Code,
+                Message = response.Message,
+                TransactionId = response.Reference
+            };
         }
 
         public TransactionResponse ChargeBankAccountOneTime(decimal amt, string accountNumber, string routingNumber, string accountName, string nameOnAccount, string firstName, string lastName, string address, string address2, string city, string state, string country, string zip, string phone, string email, bool testing = false)
         {
-            throw new NotImplementedException();
+            var achSaleRequest = new AchSaleRequest(_id,
+                _key,
+                _originatorId,
+                new Ach
+                {
+                    FirstName = firstName,
+                    //MiddleInitial = middle.Truncate(1) ?? "",
+                    LastName = lastName,
+                    //Suffix = suffix,
+                    AccountNumber = accountNumber,
+                    RoutingNumber = routingNumber,
+                    BillingAddress = new BillingAddress
+                    {
+                        Address1 = address,
+                        City = city,
+                        State = state,
+                        Country = country,
+                        Zip = zip,
+                        Email = email,
+                        Phone = phone
+                    }
+
+                },
+                amt);
+
+            var response = achSaleRequest.Execute();
+
+            return new TransactionResponse
+            {
+                Approved = response.ApprovalIndicator == ApprovalIndicator.Approved,
+                AuthCode = response.Code,
+                Message = response.Message,
+                TransactionId = response.Reference
+            };
         }
 
         public void StoreInVault(PaymentMethod paymentMethod, string type, string cardNumber, string cvv, string bankAccountNum, string bankRoutingNum, int? expireMonth, int? expireYear, string address, string address2, string city, string state, string country, string zip, string phone, string emailAddress, bool testing = false)

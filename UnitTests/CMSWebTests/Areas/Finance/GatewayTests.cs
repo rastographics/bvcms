@@ -9,6 +9,7 @@ using CmsWeb.Areas.Giving.Models;
 using System;
 using System.Collections.Generic;
 using CmsData;
+using CmsWeb.Areas.Giving.Controllers;
 
 namespace CMSWebTests.Areas.Finance
 {
@@ -16,6 +17,7 @@ namespace CMSWebTests.Areas.Finance
     public class GatewayTests : ControllerTestBase
     {
         private Person person = new Person();
+        private GivingPage newGivingPage = new GivingPage();
 
         public GatewayTests() : base()
         {
@@ -23,11 +25,68 @@ namespace CMSWebTests.Areas.Finance
                 ("PublicKey", "mytest"),
                 ("PublicSalt", "66 82 79 78 66 82 79 78")
             );
-            person = CreatePerson();
+            var contributionFund = MockFunds.CreateContributionFund(db, null);
+            var pageName = "Giving Page Test" + DateTime.Now.ToString();
+            newGivingPage = MockGivingPage.CreateGivingPage(db, pageName, contributionFund.FundId, 1);
         }
 
         [Fact]
-        public void AuthCreditCardCreatePaymentMethod()
+        public void TestAuthAndProcessMethods()
+        {
+            var requestManager = FakeRequestManager.Create();
+            var controller = new GivingPaymentController(requestManager);
+            MockPaymentProcess.PaymentProcessNullCheck(db);
+
+            person = CreatePerson();
+            AuthCreditCardCreatePaymentMethod(controller);
+            var paymentMethod1 = (from pm in db.PaymentMethods where pm.PeopleId == person.PeopleId select pm).FirstOrDefault();
+            paymentMethod1.Decrypt();
+            paymentMethod1.NameOnAccount.ShouldBe(person.Name);
+
+            person = CreatePerson();
+            AuthBankCreatePaymentMethod(controller);
+            var paymentMethod2 = (from pm in db.PaymentMethods where pm.PeopleId == person.PeopleId select pm).FirstOrDefault();
+            paymentMethod2.Decrypt();
+            paymentMethod2.NameOnAccount.ShouldBe(person.Name);
+
+            person = CreatePerson();
+            ProcessCreditCardPayment(controller);
+            decimal totalAmount1 = 60;
+            decimal storedAmount1 = 0;
+            var contributions1 = (from c in db.Contributions where c.PeopleId == person.PeopleId select c).ToList();
+            if (contributions1.Count == 1)
+            {
+                storedAmount1 = (decimal)contributions1[0].ContributionAmount;
+            }
+            else
+            {
+                foreach (var item in contributions1)
+                {
+                    storedAmount1 += (decimal)item.ContributionAmount;
+                }
+            }
+            storedAmount1.ShouldBe(totalAmount1);
+
+            person = CreatePerson();
+            ProcessBankAccountPayment(controller);
+            decimal totalAmount2 = 60;
+            decimal storedAmount2 = 0;
+            var contributions2 = (from c in db.Contributions where c.PeopleId == person.PeopleId select c).ToList();
+            if (contributions2.Count == 1)
+            {
+                storedAmount2 = (decimal)contributions2[0].ContributionAmount;
+            }
+            else
+            {
+                foreach (var item in contributions2)
+                {
+                    storedAmount2 += (decimal)item.ContributionAmount;
+                }
+            }
+            storedAmount2.ShouldBe(totalAmount2);
+        }
+
+        private void AuthCreditCardCreatePaymentMethod(GivingPaymentController controller)
         {
             var emailStarting = RandomString();
             BillingInfo billingInfo = new BillingInfo()
@@ -62,21 +121,45 @@ namespace CMSWebTests.Areas.Finance
                 billingInfo = billingInfo,
                 cardInfo = cardInfo
             };
-
-            var requestManager = FakeRequestManager.Create();
-            var controller = new CmsWeb.Areas.Giving.Controllers.GivingPaymentController(requestManager);
-            MockPaymentProcess.PaymentProcessNullCheck(db);
             controller.MethodsCreate(viewModel);
-
-            var paymentMethod = (from pm in db.PaymentMethods
-                                 where pm.PeopleId == person.PeopleId
-                                 select pm).FirstOrDefault();
-            paymentMethod.Decrypt();
-            paymentMethod.NameOnAccount.ShouldBe(person.Name);
         }
 
-        [Fact]
-        public void ProcessCreditCardPayment()
+        private void AuthBankCreatePaymentMethod(GivingPaymentController controller)
+        {
+            var emailStarting = RandomString();
+            BillingInfo billingInfo = new BillingInfo()
+            {
+                firstName = person.FirstName,
+                lastName = person.LastName,
+                email = emailStarting.ToString() + "@myemail.com",
+                phone = "2149123704",
+                address = "33",
+                address2 = "55",
+                city = "Dallas",
+                state = "Texas",
+                zip = "99997-0008",
+                country = "United States"
+            };
+            BankInfo bankInfo = new BankInfo()
+            {
+                accountName = "My Bank",
+                accountNumber = "123456789",
+                routingNumber = "111000614"
+            };
+            GivingPaymentViewModel viewModel = new GivingPaymentViewModel()
+            {
+                paymentTypeId = 1,
+                isDefault = true,
+                transactionTypeId = "authOnlyTransaction",
+                incomingPeopleId = person.PeopleId,
+                testing = true,
+                billingInfo = billingInfo,
+                bankInfo = bankInfo
+            };
+            controller.MethodsCreate(viewModel);
+        }
+
+        private void ProcessCreditCardPayment(GivingPaymentController controller)
         {
             SelectedFund selectedFund1 = new SelectedFund()
             {
@@ -139,92 +222,12 @@ namespace CMSWebTests.Areas.Finance
                 gifts = myGifts,
                 billingInfo = billingInfo,
                 cardInfo = cardInfo,
-                givingPageId = 1 // need to create method to create new giving page
+                givingPageId = newGivingPage.GivingPageId
             };
-
-            var requestManager = FakeRequestManager.Create();
-            var controller = new CmsWeb.Areas.Giving.Controllers.GivingPaymentController(requestManager);
-            MockPaymentProcess.PaymentProcessNullCheck(db);
-            var results = controller.ProcessOneTimeGift(viewModel);
-
-            decimal totalAmount = 0;
-            if (myGifts.Count == 1)
-            {
-                totalAmount = myGifts[0].amount;
-            }
-            else
-            {
-                foreach (var item in myGifts)
-                {
-                    totalAmount += item.amount;
-                }
-            }
-
-            decimal storedAmount = 0;
-            var contributions = (from c in db.Contributions where c.PeopleId == person.PeopleId select c).ToList();
-            if (contributions.Count == 1)
-            {
-                storedAmount = (decimal)contributions[0].ContributionAmount;
-            }
-            else
-            {
-                foreach (var item in contributions)
-                {
-                    storedAmount += (decimal)item.ContributionAmount;
-                }
-            }
-
-            storedAmount.ShouldBe(totalAmount);
+            controller.ProcessOneTimeGift(viewModel);
         }
 
-        [Fact]
-        public void AuthBankCreatePaymentMethod()
-        {
-            var emailStarting = RandomString();
-            BillingInfo billingInfo = new BillingInfo()
-            {
-                firstName = person.FirstName,
-                lastName = person.LastName,
-                email = emailStarting.ToString() + "@myemail.com",
-                phone = "2149123704",
-                address = "33",
-                address2 = "55",
-                city = "Dallas",
-                state = "Texas",
-                zip = "99997-0008",
-                country = "United States"
-            };
-            BankInfo bankInfo = new BankInfo()
-            {
-                accountName = "My Bank",
-                accountNumber = "123456789",
-                routingNumber = "111000614"
-            };
-            GivingPaymentViewModel viewModel = new GivingPaymentViewModel()
-            {
-                paymentTypeId = 1,
-                isDefault = true,
-                transactionTypeId = "authOnlyTransaction",
-                incomingPeopleId = person.PeopleId,
-                testing = true,
-                billingInfo = billingInfo,
-                bankInfo = bankInfo
-            };
-
-            var requestManager = FakeRequestManager.Create();
-            var controller = new CmsWeb.Areas.Giving.Controllers.GivingPaymentController(requestManager);
-            MockPaymentProcess.PaymentProcessNullCheck(db);
-            controller.MethodsCreate(viewModel);
-
-            var paymentMethod = (from pm in db.PaymentMethods
-                                 where pm.PeopleId == person.PeopleId
-                                 select pm).FirstOrDefault();
-            paymentMethod.Decrypt();
-            paymentMethod.NameOnAccount.ShouldBe(person.Name);
-        }
-
-        [Fact]
-        public void ProcessBankAccountPayment()
+        private void ProcessBankAccountPayment(GivingPaymentController controller)
         {
             SelectedFund selectedFund1 = new SelectedFund()
             {
@@ -286,42 +289,9 @@ namespace CMSWebTests.Areas.Finance
                 gifts = myGifts,
                 billingInfo = billingInfo,
                 bankInfo = bankInfo,
-                givingPageId = 1 // need to create method to create new giving page
+                givingPageId = newGivingPage.GivingPageId
             };
-
-            var requestManager = FakeRequestManager.Create();
-            var controller = new CmsWeb.Areas.Giving.Controllers.GivingPaymentController(requestManager);
-            MockPaymentProcess.PaymentProcessNullCheck(db);
-            var results = controller.ProcessOneTimeGift(viewModel);
-
-            decimal totalAmount = 0;
-            if (myGifts.Count == 1)
-            {
-                totalAmount = myGifts[0].amount;
-            }
-            else
-            {
-                foreach (var item in myGifts)
-                {
-                    totalAmount += item.amount;
-                }
-            }
-
-            decimal storedAmount = 0;
-            var contributions = (from c in db.Contributions where c.PeopleId == person.PeopleId select c).ToList();
-            if (contributions.Count == 1)
-            {
-                storedAmount = (decimal)contributions[0].ContributionAmount;
-            }
-            else
-            {
-                foreach (var item in contributions)
-                {
-                    storedAmount += (decimal)item.ContributionAmount;
-                }
-            }
-
-            storedAmount.ShouldBe(totalAmount);
+            controller.ProcessOneTimeGift(viewModel);
         }
 
         public override void Dispose()

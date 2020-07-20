@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Net;
 using System.Net.Mime;
+using System.Security.Authentication;
 using System.Text;
 using AuthorizeNet;
 using CmsData.Codes;
@@ -54,6 +56,10 @@ namespace CmsData.Finance
 
         public TransactionResponse AuthCreditCard(int peopleId, decimal amt, string cardnumber, string expires, string description, int tranid, string cardcode, string email, string first, string last, string addr, string addr2, string city, string state, string country, string zip, string phone, bool testing = false)
         {
+            const SslProtocols _Tls12 = (SslProtocols)0x00000C00;
+            const SecurityProtocolType Tls12 = (SecurityProtocolType)_Tls12;
+            ServicePointManager.SecurityProtocol = Tls12;
+
             var creditCardAuthRequest = new CreditCardAuthRequest(
                 _userName,
                 _password,
@@ -95,16 +101,104 @@ namespace CmsData.Finance
         // New methods
         public TransactionResponse ChargeCreditCardOneTime(decimal amt, string cardNumber, string expires, string cardCode, string firstName, string lastName, string address, string address2, string city, string state, string country, string zip, string phone, string email, bool testing = false)
         {
-            throw new NotImplementedException();
+            const SslProtocols _Tls12 = (SslProtocols)0x00000C00;
+            const SecurityProtocolType Tls12 = (SecurityProtocolType)_Tls12;
+            ServicePointManager.SecurityProtocol = Tls12;
+
+            var creditCardSaleRequest = new CreditCardSaleRequest(
+                _userName,
+                _password,
+                new CreditCard
+                {
+                    CardNumber = cardNumber,
+                    Expiration = expires,
+                    CardCode = cardCode,
+                    BillingAddress = new BillingAddress
+                    {
+                        FirstName = firstName,
+                        LastName = lastName,
+                        Address1 = address,
+                        Address2 = address2,
+                        City = city,
+                        State = state,
+                        Country = country,
+                        Zip = zip,
+                        Email = email,
+                        Phone = phone
+                    }
+                },
+                amt);
+
+            var response = creditCardSaleRequest.Execute();
+
+            return new TransactionResponse
+            {
+                Approved = response.ResponseStatus == ResponseStatus.Approved,
+                AuthCode = response.AuthCode,
+                Message = response.ResponseText,
+                TransactionId = response.TransactionId
+            };
         }
 
         public TransactionResponse ChargeBankAccountOneTime(decimal amt, string accountNumber, string routingNumber, string accountName, string nameOnAccount, string firstName, string lastName, string address, string address2, string city, string state, string country, string zip, string phone, string email, bool testing = false)
         {
-            throw new NotImplementedException();
+            const SslProtocols _Tls12 = (SslProtocols)0x00000C00;
+            const SecurityProtocolType Tls12 = (SecurityProtocolType)_Tls12;
+            ServicePointManager.SecurityProtocol = Tls12;
+
+            //var type = AchType(peopleId);
+            var type = AchType(0);
+            var ach = new Ach
+            {
+                NameOnAccount = $"{firstName} {lastName}",
+                AccountNumber = accountNumber,
+                RoutingNumber = routingNumber,
+                Type = type,
+                BillingAddress = new BillingAddress
+                {
+                    FirstName = firstName,
+                    LastName = lastName,
+                    Address1 = address,
+                    Address2 = address2,
+                    City = city,
+                    State = state,
+                    Country = country,
+                    Zip = zip,
+                    Email = email,
+                    Phone = phone
+                }
+            };
+            var achSaleRequest = new AchSaleRequest(
+                _userName,
+                _password,
+                ach,
+                amt);
+
+            var response = achSaleRequest.Execute();
+
+            if (type == "savings")
+            {
+                var s = JsonConvert.SerializeObject(ach, Formatting.Indented).Replace("\r\n", "\n");
+                var c = db.Content("AchSavingsLog", "-", ContentTypeCode.TypeText);
+                c.Body = $"--------------------------\n{DateTime.Now:g}\ntranid={response.TransactionId}\n\n{s}\n{c.Body}";
+                db.SubmitChanges();
+            }
+
+            return new TransactionResponse
+            {
+                Approved = response.ResponseStatus == ResponseStatus.Approved,
+                AuthCode = response.AuthCode,
+                Message = response.ResponseText,
+                TransactionId = response.TransactionId
+            };
         }
 
         public void StoreInVault(PaymentMethod paymentMethod, string type, string cardNumber, string cvv, string bankAccountNum, string bankRoutingNum, int? expireMonth, int? expireYear, string address, string address2, string city, string state, string country, string zip, string phone, string emailAddress, bool testing = false)
         {
+            const SslProtocols _Tls12 = (SslProtocols)0x00000C00;
+            const SecurityProtocolType Tls12 = (SecurityProtocolType)_Tls12;
+            ServicePointManager.SecurityProtocol = Tls12;
+
             if (paymentMethod == null)
                 throw new Exception($"Payment method not found.");
             if (type == PaymentType.CreditCard)
@@ -233,6 +327,10 @@ namespace CmsData.Finance
 
         private void StoreAchVault(PaymentMethod paymentMethod, string account, string routing, string address, string address2, string city, string state, string country, string zip, string phone, string emailAddress)
         {
+            const SslProtocols _Tls12 = (SslProtocols)0x00000C00;
+            const SecurityProtocolType Tls12 = (SecurityProtocolType)_Tls12;
+            ServicePointManager.SecurityProtocol = Tls12;
+
             if (paymentMethod.VaultId == null) // create new vault
             {
                 paymentMethod.VaultId = CreateAchVault(paymentMethod, account, routing, address, address2, city, state, country, zip, phone, emailAddress);
@@ -246,6 +344,10 @@ namespace CmsData.Finance
 
         private string CreateAchVault(PaymentMethod paymentMethod, string accountNumber, string routingNumber, string address, string address2, string city, string state, string country, string zip, string phone, string emailAddress)
         {
+            const SslProtocols _Tls12 = (SslProtocols)0x00000C00;
+            const SecurityProtocolType Tls12 = (SecurityProtocolType)_Tls12;
+            ServicePointManager.SecurityProtocol = Tls12;
+
             var custName = paymentMethod.NameOnAccount.Split(' ').ToList();
             var createAchVaultRequest = new CreateAchVaultRequest(
                 _userName,

@@ -176,7 +176,9 @@ namespace CmsWeb.Areas.Giving.Models
             {
                 var expires = HelperMethods.FormatExpirationDate(Convert.ToInt32(viewModel.cardInfo.expDateMonth), Convert.ToInt32(viewModel.cardInfo.expDateYear));
                 var dollarAmt = 1;
-                var transactionResponse = gateway.AuthCreditCard(currentPeopleId, dollarAmt, viewModel.cardInfo.cardNumber, expires, "Recurring Giving Auth", 0, viewModel.cardInfo.cardCode, string.Empty, viewModel.billingInfo.firstName, viewModel.billingInfo.lastName, viewModel.billingInfo.address, viewModel.billingInfo.address2, viewModel.billingInfo.city, viewModel.billingInfo.state, viewModel.billingInfo.country, viewModel.billingInfo.zip, viewModel.billingInfo.phone, viewModel.testing);
+                //var description = "Recurring Giving Auth";
+                var description = "test transaction";
+                var transactionResponse = gateway.AuthCreditCard(currentPeopleId, dollarAmt, viewModel.cardInfo.cardNumber, expires, description, 0, viewModel.cardInfo.cardCode, string.Empty, viewModel.billingInfo.firstName, viewModel.billingInfo.lastName, viewModel.billingInfo.address, viewModel.billingInfo.address2, viewModel.billingInfo.city, viewModel.billingInfo.state, viewModel.billingInfo.country, viewModel.billingInfo.zip, viewModel.billingInfo.phone, viewModel.testing);
                 if (transactionResponse.Approved == true)
                 {
                     gateway.VoidCreditCardTransaction(transactionResponse.TransactionId);
@@ -570,11 +572,7 @@ namespace CmsWeb.Areas.Giving.Models
             // this is for testing purposes, currentPeopleId
             #region
             var currentPeopleId = 0;
-            if (viewModel.incomingPeopleId == null)
-            {
-                currentPeopleId = (int)CurrentDatabase.UserPeopleId;
-            }
-            else
+            if (viewModel.testing == true)
             {
                 currentPeopleId = (int)viewModel.incomingPeopleId;
             }
@@ -653,7 +651,9 @@ namespace CmsWeb.Areas.Giving.Models
             {
                 var expires = HelperMethods.FormatExpirationDate(Convert.ToInt32(viewModel.cardInfo.expDateMonth), Convert.ToInt32(viewModel.cardInfo.expDateYear));
 
-                var transactionResponse = gateway.AuthCreditCard(currentPeopleId, totalAmount, viewModel.cardInfo.cardNumber, expires, "Recurring Giving Auth", 0, viewModel.cardInfo.cardCode, string.Empty, viewModel.billingInfo.firstName, viewModel.billingInfo.lastName, viewModel.billingInfo.address, viewModel.billingInfo.address2, viewModel.billingInfo.city, viewModel.billingInfo.state, viewModel.billingInfo.country, viewModel.billingInfo.zip, viewModel.billingInfo.phone, viewModel.testing);
+                //var description = "Recurring Giving Auth";
+                var description = "test transaction";
+                var transactionResponse = gateway.AuthCreditCard(currentPeopleId, totalAmount, viewModel.cardInfo.cardNumber, expires, description, 0, viewModel.cardInfo.cardCode, string.Empty, viewModel.billingInfo.firstName, viewModel.billingInfo.lastName, viewModel.billingInfo.address, viewModel.billingInfo.address2, viewModel.billingInfo.city, viewModel.billingInfo.state, viewModel.billingInfo.country, viewModel.billingInfo.zip, viewModel.billingInfo.phone, viewModel.testing);
 
                 if (transactionResponse.Approved == true)
                 {

@@ -11,6 +11,8 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Net;
+using System.Security.Authentication;
 using System.Text;
 using UtilityExtensions;
 
@@ -69,18 +71,78 @@ namespace CmsData.Finance
 
         public TransactionResponse AuthCreditCard(int peopleId, decimal amt, string cardnumber, string expires, string description, int tranid, string cardcode, string email, string first, string last, string addr, string addr2, string city, string state, string country, string zip, string phone, bool testing = false)
         {
+            const SslProtocols _Tls12 = (SslProtocols)0x00000C00;
+            const SecurityProtocolType Tls12 = (SecurityProtocolType)_Tls12;
+            ServicePointManager.SecurityProtocol = Tls12;
+
             return CreditCardCharge(peopleId, amt, cardnumber, expires, description, tranid, cardcode, email, first, last, addr, addr2, city, state, country, zip, phone);
         }
 
         // New methods
         public TransactionResponse ChargeCreditCardOneTime(decimal amt, string cardNumber, string expires, string cardCode, string firstName, string lastName, string address, string address2, string city, string state, string country, string zip, string phone, string email, bool testing = false)
         {
-            throw new NotImplementedException();
+            const SslProtocols _Tls12 = (SslProtocols)0x00000C00;
+            const SecurityProtocolType Tls12 = (SecurityProtocolType)_Tls12;
+            ServicePointManager.SecurityProtocol = Tls12;
+
+            var response = CreditCardCharge(0, amt, cardNumber, expires, "", 0, cardCode, email, firstName, lastName, address, address2, city, state, country, zip, phone);
+
+            if (_automaticSettle && response.Approved)
+                SettleTransaction(response.TransactionId);
+
+            return response;
         }
 
         public TransactionResponse ChargeBankAccountOneTime(decimal amt, string accountNumber, string routingNumber, string accountName, string nameOnAccount, string firstName, string lastName, string address, string address2, string city, string state, string country, string zip, string phone, string email, bool testing = false)
         {
-            throw new NotImplementedException();
+            const SslProtocols _Tls12 = (SslProtocols)0x00000C00;
+            const SecurityProtocolType Tls12 = (SecurityProtocolType)_Tls12;
+            ServicePointManager.SecurityProtocol = Tls12;
+
+            var tranid = 0;
+            var peopleId = 0;
+            var description = "";
+            var achCharge = new AchCharge(
+                _isTesting,
+                _apiKey,
+                _merch_ach_id,
+                new Ach
+                {
+                    AchAccNum = accountNumber,
+                    AchRoutingNum = routingNumber
+                },
+                new Payer
+                {
+                    FirstName = firstName,
+                    LastName = lastName,
+                    Address = address,
+                    Address2 = address2,
+                    City = city,
+                    State = UPSStateCodes.FromStateCountry(state, country, db) ?? state,
+                    Country = ISO3166.Alpha3FromName(country) ?? country,
+                    Zip = zip,
+                    Email = email,
+                    Phone = phone
+                },
+                amt,
+                tranid.ToString(CultureInfo.InvariantCulture),
+                description,
+                peopleId.ToString(CultureInfo.InvariantCulture));
+
+            var response = achCharge.Execute();
+
+            var transactionResponse = new TransactionResponse
+            {
+                Approved = response.Response.Status == "success" ? true : false,
+                AuthCode = response.Response.TransStatus,
+                Message = $"{response.Response.TransStatusMsg}#{response.Response.Items.First().IdString}",
+                TransactionId = response.Response.TransIdStr
+            };
+
+            if (_automaticSettle && transactionResponse.Approved)
+                SettleTransaction(response.Response.TransIdStr);
+
+            return transactionResponse;
         }
 
         public void StoreInVault(PaymentMethod paymentMethod, string type, string cardNumber, string cvv, string bankAccountNum, string bankRoutingNum, int? expireMonth, int? expireYear, string address, string address2, string city, string state, string country, string zip, string phone, string emailAddress, bool testing = false)
