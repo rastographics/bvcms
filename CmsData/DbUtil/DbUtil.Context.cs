@@ -2138,30 +2138,33 @@ This search uses multiple steps which cannot be duplicated in a single query.
             ExecuteCommand("dbo.DeleteOldQueryBitTags");
         }
 
-        public void ReleaseAbandonedTickets()
+        public int ReleaseAbandonedTickets()
         {
             if(Setting("TicketingEnabled") == false)
-                return;
+                return 0;
             var secretkey = Setting("TicketingWorkspaceSecretKey", "na");
             if (secretkey == "na")
-                return;
+                return 0;
             var timeout = Setting("TicketingTimeoutMinutes", "15").ToInt();
             var list = (from order in TicketingOrders
                 where order.Status == "Booked"
                 where order.CreatedDate.AddMinutes(timeout) <= DateTime.Now
                 select new { order, eventkey = order.Meeting.EventKey }).ToList();
             if (list.Count == 0)
-                return;
+                return 0;
             var client = new SeatsioClient(secretkey);
+            var total = 0;
             foreach (var i in list)
             {
                 var seatlist = i.order.SelectedSeats.SplitStr(",");
                 if (seatlist.Length == 0)
                     continue;
                 client.Events.Release(i.eventkey, seatlist, orderId:i.order.OrderId.ToString());
+                total += seatlist.Length;
                 i.order.Status = "Abandoned";
                 SubmitChanges();
             }
+            return total;
         }
 
         public void RetrieveBatchData(string startdt = null, string enddt = null, bool testing = false)  // code has mostly been moved over from CmsWeb.Models.TransactionsModel.cs with some cleanup

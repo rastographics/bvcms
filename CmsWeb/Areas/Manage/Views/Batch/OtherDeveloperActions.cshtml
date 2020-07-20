@@ -1,7 +1,9 @@
-﻿@{
+﻿@using CmsData
+@{
     ViewBag.Title = "Other Developer Actions";
     ViewBag.PageHeader = "Other Developer Actions";
     Layout = ViewExtensions2.TouchPointLayout();
+    var ticketingEnabled = ViewBag.TicketingEnabled == true;
 }
 @{
     var admin = User.IsInRole("Admin");
@@ -27,6 +29,10 @@
           @Helper.LiAnchorLink("Update RegOptions", "/Batch/UpdateRegOptions", developer)
           @Helper.LiAnchorLink("Update RegMessages", "/Batch/UpdateRegMessages", developer)
           @Helper.LiAnchorLink("Update RegSettings", "/Batch/UpdateRegSettings", developer)
+          @if (ticketingEnabled)
+          {
+              @Helper.LiAnchorLink("Release Abandoned Tickets", "/Batch/ReleaseAbandonedTickets", developer)
+          }
         </ul>
       </div>
     </div>

@@ -369,7 +369,14 @@ namespace CmsWeb.Areas.Manage.Controllers
         [Authorize(Roles = "Developer")]
         public ActionResult OtherDeveloperActions()
         {
+            ViewBag.TicketingEnabled = CurrentDatabase.Setting("TicketingEnabled");
             return View();
+        }
+
+        public ActionResult ReleaseAbandonedTickets()
+        {
+            int total = CurrentDatabase.ReleaseAbandonedTickets();
+            return Content($"released {total} tickets");
         }
     }
 }
