@@ -204,6 +204,8 @@ namespace CmsWeb
                         Response.Redirect("/Account/ChangePassword");
                     }
 
+                    HttpContextFactory.Current.Items["SessionProvider"] = new CMSShared.Session.CmsSessionProvider();
+
                     var pattern = Util.SandboxedPath;
                     if (pattern.HasValue())
                     {
@@ -211,7 +213,7 @@ namespace CmsWeb
                         if (!sandbox.IsMatch(Request.Path))
                         {
                             FormsAuthentication.SignOut();
-                            Response.Redirect($"/Logon?ReturnUrl={HttpUtility.UrlEncode(Request.Path)}");
+                            Response.Redirect($"/Logon?ReturnUrl={HttpUtility.UrlEncode(Request.Url.PathAndQuery)}");
                         }
                     }
                 }

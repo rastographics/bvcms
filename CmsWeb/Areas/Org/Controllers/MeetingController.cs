@@ -678,7 +678,7 @@ namespace CmsWeb.Areas.Org.Controllers
                 if (meeting.DidNotMeet == false)
                 {
                     meeting.DidNotMeet = true;
-                    meeting.AttendCreditId = null;
+                    meeting.AttendCredit = null;
                     CurrentDatabase.SubmitChanges();
                     CurrentDatabase.LogActivity($"Meeting {meeting.MeetingId} did not meet", meeting.OrganizationId);
                 }
