@@ -70,7 +70,7 @@ namespace CmsWeb.Areas.People.Controllers
             if ((bool)person?.IsBusiness)
             {
                 Util.NameSplit(person.LastName, out first, out last);
-                person.FirstName = first.Equals("") || first.Equals(last)  ? "na" :  first;
+                person.FirstName = first.Equals("") || first.Equals(person.LastName)  ? "na" :  first;
                 person.LastName = last.Equals("") ? person.LastName : last;
                 person.IsBusiness = false;
             }
