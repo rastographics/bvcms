@@ -7,6 +7,7 @@ using CmsWeb.Lifecycle;
 using SharedTestFixtures;
 using UtilityExtensions.Session;
 using CMSShared.Session;
+using UtilityExtensions.Extensions;
 
 namespace CMSWebTests
 {
@@ -18,6 +19,7 @@ namespace CMSWebTests
         public CMSDataContext CurrentDatabase { get; private set; }
         public CMSImageDataContext CurrentImageDatabase { get; private set; }
         public ISessionProvider SessionProvider { get; }
+        public string VisitorIpAddress { get; set; }
 
         public FakeRequestManager(bool isAuthenticated)
         {
@@ -27,6 +29,25 @@ namespace CMSWebTests
             CurrentUser = CurrentHttpContext.User;
             RequestId = Guid.NewGuid();
             SessionProvider = new CmsSessionProvider(CurrentDatabase);
+            VisitorIpAddress = GetVisitorIpAddress();
+        }
+
+        public string GetVisitorIpAddress()
+        {
+            var ipAdd = CurrentHttpContext.Request.ServerVariables["HTTP_X_FORWARDED_FOR"];
+
+            if (string.IsNullOrEmpty(ipAdd))
+                ipAdd = CurrentHttpContext.Request.ServerVariables["REMOTE_ADDR"];
+
+            if (string.IsNullOrEmpty(ipAdd) || ipAdd == "::1")
+                ipAdd = IpAddress.GetIpAddress();
+
+            if (string.IsNullOrEmpty(ipAdd) || ipAdd == "::1")
+            {
+                ipAdd = "127.0.0.1";
+            }
+
+            return ipAdd;
         }
 
         public Elmah.ErrorLog GetErrorLog()
