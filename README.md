@@ -50,15 +50,17 @@ BVCMS is maintained by TouchPoint Software, Inc.
 1. Find and edit the web.config file in the **CMSWeb** folder.
 
     - In the `appSettings` section, configure the `host` value to point to the name you would like to call your database (without the CMS_). This value will become part of your connection string.
-    - For example, you could change \<add key="host" value="" /> to \<add key="host" value="myBvcms" />.
+        - For example, you could change `\<add key="host" value="" />` to `\<add key="host" value="myBvcms" />`.
+        - If you want to create a database with 150 test records in it, just use ``testdb`` for the host value.
     - In the `mailSettings` section, configure the pickupDirectoryLocation to a directory on your development machine (for testing purposes).
-    - If you want to create a database with 150 test records in it, just use ``testdb`` for the host value.
 
 1. Find and edit the ConnectionStrings.config file in the **CMSWeb** folder
     - Change the database server in the connection string named `CMS` if `(local)` or `localhost` is not the name of your SQL Server. For instance, if you installed SQL Express with the default options, you would change `(local)` to `.\SQLEXPRESS`
     - If SQL Server is not installed on your local machine, you may have to make further connection string changes.  See [connectionstrings.com](https://www.connectionstrings.com/sql-server/) for more help.
+    
+1. If you wish to contribute, you may want to prevent git from indexing these configuration file modifications.  To do this, add these files to `.git/info/exclude`. [More info here](https://stackoverflow.com/a/1753078).
 
-1. The SQL Server database should be running
+1. The SQL Server database should be running.
 
 1. Start SSMS (SQL Server Management Studio) and run the following script to allow installation of CLR extensions.
 
@@ -68,6 +70,7 @@ BVCMS is maintained by TouchPoint Software, Inc.
         RECONFIGURE;
 
 1. Click the **Play** button in the main toolbar to launch BVCMS.
+    - If you experience build errors, these are likely resolved by restarting Visual Studio and, if running locally, IIS. 
 
 1. The first time you start up the system, it will create and populate a starter database.
 
