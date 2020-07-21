@@ -69,7 +69,7 @@ namespace CmsWeb.Areas.People.Models
             FamilyPicture = i.FamilyPicture;
             StatusFlags = (statusflags ?? "").Split(',');
             ShowCombinedGiving = db.GetSetting("CombinedGivingSummary", "") == "true";
-            IsBusiness = (bool)p.IsBusiness.GetValueOrDefault();
+            IsBusiness = p.IsBusiness;
 
             basic = new BasicPersonInfo(p.PeopleId, IsBusiness);
             
@@ -156,7 +156,7 @@ namespace CmsWeb.Areas.People.Models
             }
         }
 
-        public bool? IsBusiness
+        public bool IsBusiness
         {
             get => isBusiness ?? false;
             set => isBusiness = value;

@@ -13,6 +13,10 @@
         @ContactLine()
     </li>
     <li class="badges">
+        @if (Model.IsBusiness)
+        {
+            @Badge(true, "Business / entity", "label-warning")
+        }
         @if (Model.basic.Campus.Items.Count() > 1)
         {
             @Html.DisplayFor(m => m.basic.Campus, "InlineCodeEditCampus", new { label = Util2.CampusLabel, canedit = Model.Person.CanUserEditCampus })

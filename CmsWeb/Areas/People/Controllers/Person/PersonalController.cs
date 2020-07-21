@@ -25,9 +25,9 @@ namespace CmsWeb.Areas.People.Controllers
         }
 
         [HttpPost]
-        public ActionResult PersonalEdit(int id)
+        public ActionResult PersonalEdit(int id, bool isBusiness)
         {
-            var m = new BasicPersonInfo(id);
+            var m = new BasicPersonInfo(id, isBusiness);            
             return View("Personal/Edit", m);
         }
 

@@ -3,7 +3,7 @@ Group,Group,,,,Grouping,,,"Groups conditions or other groups together in an ""al
 Age,NullInteger,,,,Personal,,,Enter an age. Leave blank to find those without a DOB.
 GenderId,Code,,GenderCodes,,Personal,Gender,,Select Gender from the list.
 MaritalStatusId,Code,,MaritalStatusCodes,,Personal,Marital Status,,Select Marital Status from the list.
-PeopleRecordType,Code,,PeopleRecordCodes,,Personal,People Record Type,,Select Record Type from the list.
+RecordType,Code,,PeopleRecordCodes,,Personal,People Record Type,,Select Record Type from the list.
 Birthday,StringEqual,,,,Personal,Birthday,,Enter an exact date - Equal or Not Equal. (MM/DD/YYYY) or day of month (MM/DD) or month (MM) or year (YYYY)
 BDate,Date,,,,Personal,Birthdate,,Pick a date with a comparison.
 DaysTillBirthday,Integer,,,,Personal,Days Till Birthday,,Enter a number of days less than 365.

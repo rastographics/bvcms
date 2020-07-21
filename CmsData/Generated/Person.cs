@@ -8,6 +8,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.ComponentModel;
 using CmsData.Infrastructure;
+using UtilityExtensions;
 
 namespace CmsData
 {
@@ -20,7 +21,7 @@ namespace CmsData
 
         private int _PeopleId;
 
-        private bool? _IsBusiness;
+        private bool _IsBusiness;
 
         private int _CreatedBy;
 
@@ -2384,9 +2385,14 @@ namespace CmsData
 
         [Column(Name = "IsBusiness", UpdateCheck = UpdateCheck.Never, Storage = "_IsBusiness",
             DbType = "bit")]
-        public bool? IsBusiness
+        public bool IsBusiness
         {
-            get { return this._IsBusiness; }
+            get {
+                if (this._IsBusiness.IsNull())
+                    return false;
+                else
+                    return this._IsBusiness;
+            }
 
             set
             {

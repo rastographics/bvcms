@@ -193,14 +193,7 @@
                 @if (Model.Person.CanUserEditBasic)
                 {
                 <a class="personal-picture" href="/Person2/PictureDialog/@Model.PeopleId" title="Click to see larger version or upload new">                    
-                    <div id="profile-portrait" class="img-circle">
-                        @if ((bool)Model.IsBusiness)
-                        {
-                            <div class="img-circle biz-watermark">
-                                Business Account
-                            </div>
-                        }
-                    </div>
+                    <div id="profile-portrait" class="img-circle"></div>
                 </a>
                 }
                 else

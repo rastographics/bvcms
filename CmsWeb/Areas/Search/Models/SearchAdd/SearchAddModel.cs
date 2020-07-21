@@ -186,7 +186,7 @@ namespace CmsWeb.Areas.Search.Models
                 p.IsBusiness = (bool)isBusiness;
                 p.Gender = new CodeInfo(0, "Gender");
                 p.MaritalStatus = new CodeInfo(0, "MaritalStatus");
-                p.LastName = ".";
+                p.FirstName = "na";
             }
             else
             {

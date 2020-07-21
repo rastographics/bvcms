@@ -25,16 +25,17 @@ namespace CmsWeb.Areas.Search.Models
         public CMSDataContext CurrentDatabase { get; set; }
         public int index { get; set; }
         public string context { get; set; }
-
+        private string _FirstName;
         [StringLength(25), Required(ErrorMessage = "required, or put 'na' if not known"), RemoveNA]
-        public string FirstName { get; set; }
-        public string FirstNameLabel
-        {
+        public string FirstName {
             get
             {
-                return (this.IsBusiness) ? "Business/Entity name" : "First Name";
+                return (this.IsBusiness) ? "na" : _FirstName;
             }
-        }
+            set {
+                _FirstName = value;
+            }
+        }        
 
         [StringLength(25)]
         public string NickName { get; set; }
@@ -45,11 +46,15 @@ namespace CmsWeb.Areas.Search.Models
         [StringLength(100), Required(ErrorMessage = "required")]
         public string LastName
         {
+            get;
+            set;
+        }
+        public string LastNameLabel
+        {
             get
             {
-                return (this.IsBusiness) ? "Business/Entity name" : "First Name";
+                return (this.IsBusiness) ? "Business/Entity name" : "Last Name";
             }
-            set { _LastName = value; }
         }
 
         [StringLength(10)]
@@ -192,7 +197,9 @@ namespace CmsWeb.Areas.Search.Models
 
         public bool IsNewFamily { get; set; }
         [DisplayName("Add a business/entity")]
-        public bool IsBusiness { get; set; }
+        public bool IsBusiness {
+            get;
+            set; }
 
         internal void AddPerson(int originid, int? entrypointid, int? campusid, bool? isbusiness = false)
         {

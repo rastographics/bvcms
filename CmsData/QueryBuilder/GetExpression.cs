@@ -152,7 +152,7 @@ namespace CmsData
                 { QueryType.FamilyExtraDate, FamilyExtraDate },
                 { QueryType.FamilyExtraInt, FamilyExtraInt },
                 { QueryType.PeopleIds, PeopleIds },
-                { QueryType.PeopleRecordType, PeopleRecordType },
+                { QueryType.RecordType, RecordType },
                 { QueryType.PendingCurrentOrg, PendingCurrentOrg },
                 { QueryType.InactiveCurrentOrg, InactiveCurrentOrg },
                 { QueryType.PreviousCurrentOrg, PreviousCurrentOrg },

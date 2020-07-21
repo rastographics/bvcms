@@ -18,7 +18,7 @@ namespace CmsData
 
         #region Private Fields
 
-        private bool? _IsBusiness;
+        private bool _IsBusiness;
 
         private int _FamilyId;
 		
@@ -305,8 +305,8 @@ namespace CmsData
 
 		}
 
-        [Column(Name = "IsBusiness", UpdateCheck = UpdateCheck.Never, Storage = "_IsBusiness", DbType = "bit")]
-        public bool? IsBusiness
+        [Column(Name = "IsBusiness", UpdateCheck = UpdateCheck.Never, Storage = "_IsBusiness", DbType = "bit NOT NULL")]
+        public bool IsBusiness
         {
             get { return this._IsBusiness; }
 

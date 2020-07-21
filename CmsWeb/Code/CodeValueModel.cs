@@ -842,8 +842,7 @@ namespace CmsWeb.Code
             return list;
         }        
         public IEnumerable<CodeValueItem> PeopleRecordCodes()
-        {
-            //return new SelectList(PeopleRecordTypes(), "Id", "Value", m.peoplerecordtype);
+        {            
             var list = new List<CodeValueItem>
             {
                 new CodeValueItem {Code = "Person", Value = "Person", Id = 0},

@@ -110,7 +110,7 @@ namespace CmsData
                 expr = Expression.Not(expr);
             return expr;
         }
-        internal Expression PeopleRecordType()
+        internal Expression RecordType()
         {
             var codes0 = CodeValues.Split(',').Select(ff => ff.Trim()).ToList();
             var isbusiness = (codes0[0].ToInt() == 1 ? true : false);

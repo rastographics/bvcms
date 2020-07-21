@@ -19,7 +19,7 @@ namespace CmsWeb.Models
         {
         }
 
-        public int peoplerecordtype { get; set; }
+        public int recordtype { get; set; }
         public string name { get; set; }
         public string communication { get; set; }
         public string address { get; set; }
@@ -261,7 +261,7 @@ namespace CmsWeb.Models
                 people = people.Where(p => p.MaritalStatusId == m.marital);
             }
             
-            switch (m.peoplerecordtype)
+            switch (m.recordtype)
             {
                 case 0:
                     people = people.Where(p => p.IsBusiness == false || p.IsBusiness == null);
@@ -426,7 +426,7 @@ namespace CmsWeb.Models
         {
             return new SelectList(cv.MaritalStatusCodes99(), "Id", "Value", m.marital);
         }
-        public IEnumerable<CodeValueItem> PeopleRecordTypes()
+        public IEnumerable<CodeValueItem> RecordTypes()
         {   
             var list = new List<CodeValueItem>
             {
@@ -439,7 +439,7 @@ namespace CmsWeb.Models
         }
         public SelectList PeopleRecordCodes()
         {
-            return new SelectList(PeopleRecordTypes(), "Id", "Value", m.peoplerecordtype);
+            return new SelectList(RecordTypes(), "Id", "Value", m.recordtype);
         }
         public IEnumerable<SelectListItem> Campuses()
         {

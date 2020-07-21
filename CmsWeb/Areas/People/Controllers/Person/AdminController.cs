@@ -64,8 +64,8 @@ namespace CmsWeb.Areas.People.Controllers
 
         [HttpPost, Authorize(Roles = "Admin")]
         public ActionResult ConvertRecordType(int id)
-        {
-            var person = CurrentDatabase.LoadPersonById(id);
+        {            
+            var person = CurrentDatabase.LoadPersonById(id);            
             string first = "", last = "";
             if ((bool)person?.IsBusiness)
             {
@@ -75,9 +75,9 @@ namespace CmsWeb.Areas.People.Controllers
                 person.IsBusiness = false;
             }
             else
-            {                
+            {   
+                person.LastName = String.Concat(person.LastName, ", ", person.FirstName);
                 person.FirstName = "na";
-                person.LastName = String.Concat( first, " ", last);
                 person.IsBusiness = true;
             }
             CurrentDatabase.SubmitChanges();

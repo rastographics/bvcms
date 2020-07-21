@@ -8,7 +8,7 @@
 @if (isbiz)
 {
     <div class="col-md-6">
-        @Html.EditorFor(m => m.FirstName, new { label = Model.FirstNameLabel })
+        @Html.EditorFor(m => m.LastName, new { label = Model.LastNameLabel })
     </div>
     <div class="col-md-3">
         @Html.EditorFor(m => m.EmailAddress)
@@ -39,8 +39,8 @@ else
     <div class="col-md-4">
         @Html.EditorFor(m => m.MiddleName)
     </div>
-    <div class="col-md-6">
-        @Html.EditorFor(m => m.LastName)
+    <div class="col-md-6">        
+        @Html.EditorFor(m => m.LastName, new { label = Model.LastNameLabel })
     </div>
     <div class="col-md-2">
         @Html.EditorFor(m => m.SuffixCode)
