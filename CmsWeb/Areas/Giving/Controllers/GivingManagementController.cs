@@ -13,23 +13,20 @@ using CmsData;
 namespace CmsWeb.Areas.Giving.Controllers
 {
     [Authorize(Roles = "Admin,Finance,FinanceViewOnly")]
-    [RouteArea("Giving", AreaPrefix = "Giving"), Route("{action}/{id?}")]
+    [RouteArea("Giving", AreaPrefix = "Giving"), Route("{action=index}/{id?}")]
     public class GivingManagementController : GivingPaymentController
     {
         public GivingManagementController(IRequestManager requestManager) : base(requestManager)
         {
         }
 
-        [HttpGet]
-        [Route("~/Giving")]
-        
         [Authorize(Roles = "Admin,Finance,FinanceViewOnly")]
         public ActionResult Index()
         {
             return View();
         }
 
-        [Route("~/Giving/{id}")]
+        
         [Authorize(Roles = "Admin,Finance,FinanceViewOnly")]
         public ActionResult Manage(string id)
         {
@@ -50,7 +47,6 @@ namespace CmsWeb.Areas.Giving.Controllers
                 return View(page);
         }
 
-        [HttpGet]
         [Authorize(Roles = "Admin,Finance,FinanceViewOnly")]
         public ActionResult New()
         {

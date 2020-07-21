@@ -19,6 +19,8 @@ namespace CMSWebTests
         public CMSImageDataContext CurrentImageDatabase { get; private set; }
         public ISessionProvider SessionProvider { get; }
 
+        public string VisitorIpAddress => "127.0.0.1";
+
         public FakeRequestManager(bool isAuthenticated)
         {
             CurrentHttpContext = ContextTestUtils.CreateMockHttpContext(isAuthenticated).Object;
@@ -69,6 +71,11 @@ namespace CMSWebTests
             Dispose(true);
             // TODO: uncomment the following line if the finalizer is overridden above.
             // GC.SuppressFinalize(this);
+        }
+
+        public string GetVisitorIpAddress()
+        {
+            return "127.0.0.1";
         }
         #endregion
     }

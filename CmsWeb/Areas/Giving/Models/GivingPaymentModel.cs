@@ -7,6 +7,7 @@ using Elmah;
 using Newtonsoft.Json;
 using System;
 using System.Linq;
+using System.Net.Mail;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Giving.Models
@@ -693,6 +694,10 @@ namespace CmsWeb.Areas.Giving.Models
                             CurrentDatabase.Contributions.InsertOnSubmit(contribution);
                             CurrentDatabase.SubmitChanges();
                         }
+
+                        var givingPage = (from g in CurrentDatabase.GivingPages where g.GivingPageId == viewModel.givingPageId select g).FirstOrDefault();
+                        //CurrentDatabase.SendEmail(new MailAddress(DbUtil.AdminMail, DbUtil.AdminMailName), CurrentDatabase.Setting("MobileQuickSignInCodeSubject", "Mobile Sign In Code"), body, mailAddresses);
+
                         return Message.successMessage("Credit card payment processed successfully.", Message.API_ERROR_NONE, totalAmount);
                     }
                     else
