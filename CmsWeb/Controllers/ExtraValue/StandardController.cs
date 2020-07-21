@@ -56,7 +56,7 @@ namespace CmsWeb.Controllers
                 ViewBag.RefreshTab = m.ExtraValueLocation.Value;
             }
             i.views.Save(CurrentDatabase);
-            return View("ListStandard", new ExtraValueModel(CurrentDatabase, m.Id, m.ExtraValueTable, m.ExtraValueLocation.Value));
+            return View("ListStandard", new ExtraValueModel(CurrentDatabase, m.Id, m.ExtraValueTable, m.OriginalExtraValueLocation));
         }
 
         [HttpPost, Route("ExtraValue/ListStandard/{table}/{location}/{id:int}")]
