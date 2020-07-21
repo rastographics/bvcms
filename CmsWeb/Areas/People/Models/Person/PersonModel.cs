@@ -65,6 +65,7 @@ namespace CmsWeb.Areas.People.Models
             AddressTypeId = p.AddressTypeId;
             FamilyId = p.FamilyId;
             Name = p.Name;
+            LastName = p.LastName;
             Picture = i.Picture;
             FamilyPicture = i.FamilyPicture;
             StatusFlags = (statusflags ?? "").Split(',');
@@ -114,6 +115,7 @@ namespace CmsWeb.Areas.People.Models
         public int FamilyId { get; set; }
         public string[] StatusFlags { get; set; }
         public string Name { get; set; }
+        public string LastName { get; set; }
         public string MemberStatus { get; set; }
         public bool ShowCombinedGiving { get; set; }
 

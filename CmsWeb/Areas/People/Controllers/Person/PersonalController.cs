@@ -1,5 +1,6 @@
 using CmsData;
 using CmsWeb.Areas.People.Models;
+using CmsWeb.Code;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -17,23 +18,36 @@ namespace CmsWeb.Areas.People.Controllers
         }
 
         [HttpPost]
+        [Route("PersonalDisplay/{id:int}/{isBusiness:bool}")]
+        [Route("PersonalDisplay/{id:int}")]
         public ActionResult PersonalDisplay(int id, bool isBusiness)
-        {
+        {            
             InitExportToolbar(id);
             var m = new BasicPersonInfo(id, isBusiness);
             return View("Personal/Display", m);
         }
 
         [HttpPost]
+        [Route("PersonalEdit/{id:int}/{isBusiness:bool}")]
+        [Route("PersonalEdit/{id:int}")]
         public ActionResult PersonalEdit(int id, bool isBusiness)
         {
-            var m = new BasicPersonInfo(id, isBusiness);            
+            var m = new BasicPersonInfo(id, isBusiness);
             return View("Personal/Edit", m);
         }
 
         [HttpPost]
-        public ActionResult PersonalUpdate(int id, BasicPersonInfo m)
+        [Route("PersonalUpdate/{id:int}/{isBusiness:bool}")]
+        [Route("PersonalUpdate/{id:int}")]
+        public ActionResult PersonalUpdate(int id, BasicPersonInfo m, bool isBusiness)
         {
+            m.IsBusiness = isBusiness;
+            if (isBusiness)
+            {
+                m.Gender = new CodeInfo(0, "Gender");
+                m.MaritalStatus = new CodeInfo(0, "MaritalStatus");
+            }   
+
             if (!ModelState.IsValid)
             {
                 return View("Personal/Edit", m);

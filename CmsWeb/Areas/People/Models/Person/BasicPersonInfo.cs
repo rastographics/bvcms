@@ -230,8 +230,7 @@ namespace CmsWeb.Areas.People.Models
 
             person.SendEmailAddress1 = person.SendEmailAddress1 ?? true; // set sendemailaddress1 to either true or false, null is not allowed, default is true
             
-            person.IsBusiness = isBusiness;
-            RecordType = isBusiness ? 1 : 0;
+            person.IsBusiness = isBusiness;            
             RecordType = isBusiness.ToInt();
 
             this.CopyPropertiesFrom(person);

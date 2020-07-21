@@ -3,9 +3,16 @@
 @using CmsWeb.Areas.People.Models
 @using UtilityExtensions
 @model PersonModel
-<h1 id="nameline" class="@(Model.Person.IsDeceased == true ? "alert alert-danger" : "")">
-    @Model.Name
-</h1>
+    <h1 id="nameline" class="@(Model.Person.IsDeceased == true ? " alert alert-danger" : "" )">
+        @if (Model.IsBusiness)
+        {
+        @Model.LastName
+        }
+        else
+        {
+        @Model.Name
+        }
+    </h1>
 <ul class="meta list-unstyled">
     <li class="role">
         @ShowAddress(Model.PrimaryAddr)

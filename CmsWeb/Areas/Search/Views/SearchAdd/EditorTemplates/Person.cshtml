@@ -7,8 +7,8 @@
 }
 @if (isbiz)
 {
-    <div class="col-md-6">
-        @Html.EditorFor(m => m.LastName, new { label = Model.LastNameLabel })
+    <div class="col-md-6">        
+        @Html.EditorFor(m => m.LastName, new { label = Model.LastNameLabel})
     </div>
     <div class="col-md-3">
         @Html.EditorFor(m => m.EmailAddress)
@@ -17,16 +17,12 @@
         @Html.EditorFor(m => m.CellPhone)
     </div>
     <div class="clearfix"></div>
-
-
-
-    <div class="clearfix"></div>
-    @*<div class="col-md-3">
+<div class="col-md-3">
             @Html.HiddenFor(m => m.Gender, plainselect)
         </div>
         <div class="col-md-3">
             @Html.HiddenFor(m => m.MaritalStatus, plainselect)
-        </div>*@
+        </div> 
 }
 else
 {
