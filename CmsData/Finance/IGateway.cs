@@ -22,8 +22,8 @@ namespace CmsData
         // new
         TransactionResponse AuthCreditCardVault(PaymentMethod paymentMethod, decimal amt, string description, int tranid, string lastName, string firstName, string address, string address2, string city, string state, string country, string zip, string phone, string emailAddress);
         // new
-        TransactionResponse ChargeCreditCardOneTime(decimal amt, string cardNumber, string expires, string cardCode, string firstName, string lastName, string address, string address2, string city, string state, string country, string zip, string phone, string email, bool testing = false);
-        TransactionResponse ChargeBankAccountOneTime(decimal amt, string accountNumber, string routingNumber, string accountName, string nameOnAccount, string firstName, string lastName, string address, string address2, string city, string state, string country, string zip, string phone, string email, bool testing = false);
+        TransactionResponse ChargeCreditCardOneTime(decimal amt, string cardNumber, string expires, string cardCode, string description, string firstName, string lastName, string address, string address2, string city, string state, string country, string zip, string phone, string email, bool testing = false);
+        TransactionResponse ChargeBankAccountOneTime(decimal amt, string accountNumber, string routingNumber, string accountName, string nameOnAccount, string description, string firstName, string lastName, string address, string address2, string city, string state, string country, string zip, string phone, string email, bool testing = false);
         void CheckBatchSettlements(DateTime start, DateTime end);
         void CheckBatchSettlements(List<string> transactionids);
         BatchResponse GetBatchDetails(DateTime start, DateTime end);

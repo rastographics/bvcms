@@ -3,6 +3,7 @@ using CmsData.Finance;
 using CmsWeb.Code;
 using CmsWeb.Constants;
 using CmsWeb.Models;
+using DocumentFormat.OpenXml.Office2010.Excel;
 using Elmah;
 using Newtonsoft.Json;
 using System;
@@ -585,7 +586,7 @@ namespace CmsWeb.Areas.Giving.Models
             var gateway = CurrentDatabase.Gateway(viewModel.testing, account, PaymentProcessTypes.OneTimeGiving);
             #endregion
 
-            // get totalAmount
+            // get totalAmount, get giving page, set description
             #region
             decimal totalAmount = 0;
             if (viewModel.gifts.Count == 1)
@@ -599,13 +600,23 @@ namespace CmsWeb.Areas.Giving.Models
                     totalAmount += item.amount;
                 }
             }
+            var givingPage = (from g in CurrentDatabase.GivingPages where g.GivingPageId == viewModel.givingPageId select g).FirstOrDefault();
+            var desc = "";
+            if (viewModel.testing == true)
+            {
+                desc = "test transaction";
+            }
+            else
+            {
+                desc = (from c in CurrentDatabase.ContributionFunds where c.FundId == givingPage.FundId select c).FirstOrDefault().FundName;
+            }
             #endregion
 
             // execute payment and return results from gateway
             #region
             if (viewModel.paymentTypeId == 1)
             {
-                var transactionResponseForBankPayment = gateway.ChargeBankAccountOneTime(totalAmount, viewModel.bankInfo.accountNumber, viewModel.bankInfo.routingNumber, viewModel.bankInfo.accountName, viewModel.bankInfo.nameOnAccount, viewModel.billingInfo.firstName, viewModel.billingInfo.lastName, viewModel.billingInfo.address, viewModel.billingInfo.address2, viewModel.billingInfo.city, viewModel.billingInfo.state, viewModel.billingInfo.country, viewModel.billingInfo.zip, viewModel.billingInfo.phone, viewModel.billingInfo.email, viewModel.testing);
+                var transactionResponseForBankPayment = gateway.ChargeBankAccountOneTime(totalAmount, viewModel.bankInfo.accountNumber, viewModel.bankInfo.routingNumber, viewModel.bankInfo.accountName, viewModel.bankInfo.nameOnAccount, desc, viewModel.billingInfo.firstName, viewModel.billingInfo.lastName, viewModel.billingInfo.address, viewModel.billingInfo.address2, viewModel.billingInfo.city, viewModel.billingInfo.state, viewModel.billingInfo.country, viewModel.billingInfo.zip, viewModel.billingInfo.phone, viewModel.billingInfo.email, viewModel.testing);
 
                 if (transactionResponseForBankPayment.Approved == true)
                 {
@@ -652,13 +663,11 @@ namespace CmsWeb.Areas.Giving.Models
             {
                 var expires = HelperMethods.FormatExpirationDate(Convert.ToInt32(viewModel.cardInfo.expDateMonth), Convert.ToInt32(viewModel.cardInfo.expDateYear));
 
-                //var description = "Recurring Giving Auth";
-                var description = "test transaction";
-                var transactionResponse = gateway.AuthCreditCard(currentPeopleId, totalAmount, viewModel.cardInfo.cardNumber, expires, description, 0, viewModel.cardInfo.cardCode, string.Empty, viewModel.billingInfo.firstName, viewModel.billingInfo.lastName, viewModel.billingInfo.address, viewModel.billingInfo.address2, viewModel.billingInfo.city, viewModel.billingInfo.state, viewModel.billingInfo.country, viewModel.billingInfo.zip, viewModel.billingInfo.phone, viewModel.testing);
+                var transactionResponse = gateway.AuthCreditCard(currentPeopleId, totalAmount, viewModel.cardInfo.cardNumber, expires, desc, 0, viewModel.cardInfo.cardCode, string.Empty, viewModel.billingInfo.firstName, viewModel.billingInfo.lastName, viewModel.billingInfo.address, viewModel.billingInfo.address2, viewModel.billingInfo.city, viewModel.billingInfo.state, viewModel.billingInfo.country, viewModel.billingInfo.zip, viewModel.billingInfo.phone, viewModel.testing);
 
                 if (transactionResponse.Approved == true)
                 {
-                    var transactionResponseForCreditCardPayment = gateway.ChargeCreditCardOneTime(totalAmount, viewModel.cardInfo.cardNumber, expires, viewModel.cardInfo.cardCode, viewModel.billingInfo.firstName, viewModel.billingInfo.lastName, viewModel.billingInfo.address, viewModel.billingInfo.address2, viewModel.billingInfo.city, viewModel.billingInfo.state, viewModel.billingInfo.country, viewModel.billingInfo.zip, viewModel.billingInfo.phone, viewModel.billingInfo.email, viewModel.testing);
+                    var transactionResponseForCreditCardPayment = gateway.ChargeCreditCardOneTime(totalAmount, viewModel.cardInfo.cardNumber, expires, viewModel.cardInfo.cardCode, desc, viewModel.billingInfo.firstName, viewModel.billingInfo.lastName, viewModel.billingInfo.address, viewModel.billingInfo.address2, viewModel.billingInfo.city, viewModel.billingInfo.state, viewModel.billingInfo.country, viewModel.billingInfo.zip, viewModel.billingInfo.phone, viewModel.billingInfo.email, viewModel.testing);
 
                     if (transactionResponseForCreditCardPayment.Approved == true)
                     {
@@ -694,9 +703,6 @@ namespace CmsWeb.Areas.Giving.Models
                             CurrentDatabase.Contributions.InsertOnSubmit(contribution);
                             CurrentDatabase.SubmitChanges();
                         }
-
-                        var givingPage = (from g in CurrentDatabase.GivingPages where g.GivingPageId == viewModel.givingPageId select g).FirstOrDefault();
-                        //CurrentDatabase.SendEmail(new MailAddress(DbUtil.AdminMail, DbUtil.AdminMailName), CurrentDatabase.Setting("MobileQuickSignInCodeSubject", "Mobile Sign In Code"), body, mailAddresses);
 
                         return Message.successMessage("Credit card payment processed successfully.", Message.API_ERROR_NONE, totalAmount);
                     }

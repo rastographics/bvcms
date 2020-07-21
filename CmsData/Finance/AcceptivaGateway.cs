@@ -39,7 +39,15 @@ namespace CmsData.Finance
         {
             this.db = db;
             this.ProcessType = ProcessType;
-            _visitorIpAddress = visitorIpAddress;
+
+            if(visitorIpAddress?.Length > 0)
+            {
+                _visitorIpAddress = visitorIpAddress;
+            }
+            else
+            {
+                _visitorIpAddress = "127.0.0.1";
+            }
 
             if (testing || MultipleGatewayUtils.GatewayTesting(db, ProcessType))
             {
@@ -81,13 +89,13 @@ namespace CmsData.Finance
         }
 
         // New methods
-        public TransactionResponse ChargeCreditCardOneTime(decimal amt, string cardNumber, string expires, string cardCode, string firstName, string lastName, string address, string address2, string city, string state, string country, string zip, string phone, string email, bool testing = false)
+        public TransactionResponse ChargeCreditCardOneTime(decimal amt, string cardNumber, string expires, string cardCode, string description, string firstName, string lastName, string address, string address2, string city, string state, string country, string zip, string phone, string email, bool testing = false)
         {
             const SslProtocols _Tls12 = (SslProtocols)0x00000C00;
             const SecurityProtocolType Tls12 = (SecurityProtocolType)_Tls12;
             ServicePointManager.SecurityProtocol = Tls12;
 
-            var response = CreditCardCharge(0, amt, cardNumber, expires, "", 0, cardCode, email, firstName, lastName, address, address2, city, state, country, zip, phone);
+            var response = CreditCardCharge(0, amt, cardNumber, expires, description, 0, cardCode, email, firstName, lastName, address, address2, city, state, country, zip, phone);
 
             if (_automaticSettle && response.Approved)
                 SettleTransaction(response.TransactionId);
@@ -95,7 +103,7 @@ namespace CmsData.Finance
             return response;
         }
 
-        public TransactionResponse ChargeBankAccountOneTime(decimal amt, string accountNumber, string routingNumber, string accountName, string nameOnAccount, string firstName, string lastName, string address, string address2, string city, string state, string country, string zip, string phone, string email, bool testing = false)
+        public TransactionResponse ChargeBankAccountOneTime(decimal amt, string accountNumber, string routingNumber, string accountName, string nameOnAccount, string description, string firstName, string lastName, string address, string address2, string city, string state, string country, string zip, string phone, string email, bool testing = false)
         {
             const SslProtocols _Tls12 = (SslProtocols)0x00000C00;
             const SecurityProtocolType Tls12 = (SecurityProtocolType)_Tls12;
@@ -103,7 +111,6 @@ namespace CmsData.Finance
 
             var tranid = 0;
             var peopleId = 0;
-            var description = "";
             var achCharge = new AchCharge(
                 _isTesting,
                 _apiKey,

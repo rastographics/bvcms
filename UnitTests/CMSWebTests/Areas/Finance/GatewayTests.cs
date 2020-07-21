@@ -3,8 +3,6 @@ using Shouldly;
 using System.Linq;
 using Xunit;
 using CMSWebTests.Support;
-using CmsWeb.Lifecycle;
-using CmsWeb.Membership;
 using CmsWeb.Areas.Giving.Models;
 using System;
 using System.Collections.Generic;

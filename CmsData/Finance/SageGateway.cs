@@ -89,7 +89,7 @@ namespace CmsData.Finance
         }
 
         // New methods
-        public TransactionResponse ChargeCreditCardOneTime(decimal amt, string cardNumber, string expires, string cardCode, string firstName, string lastName, string address, string address2, string city, string state, string country, string zip, string phone, string email, bool testing = false)
+        public TransactionResponse ChargeCreditCardOneTime(decimal amt, string cardNumber, string expires, string cardCode, string description, string firstName, string lastName, string address, string address2, string city, string state, string country, string zip, string phone, string email, bool testing = false)
         {
             var creditCardSaleRequest = new CreditCardSaleRequest(
                 _id,
@@ -124,7 +124,7 @@ namespace CmsData.Finance
             };
         }
 
-        public TransactionResponse ChargeBankAccountOneTime(decimal amt, string accountNumber, string routingNumber, string accountName, string nameOnAccount, string firstName, string lastName, string address, string address2, string city, string state, string country, string zip, string phone, string email, bool testing = false)
+        public TransactionResponse ChargeBankAccountOneTime(decimal amt, string accountNumber, string routingNumber, string accountName, string nameOnAccount, string description, string firstName, string lastName, string address, string address2, string city, string state, string country, string zip, string phone, string email, bool testing = false)
         {
             var achSaleRequest = new AchSaleRequest(_id,
                 _key,

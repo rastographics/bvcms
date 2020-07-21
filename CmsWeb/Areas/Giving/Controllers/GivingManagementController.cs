@@ -26,7 +26,6 @@ namespace CmsWeb.Areas.Giving.Controllers
             return View();
         }
 
-        
         [Authorize(Roles = "Admin,Finance,FinanceViewOnly")]
         public ActionResult Manage(string id)
         {
@@ -34,9 +33,13 @@ namespace CmsWeb.Areas.Giving.Controllers
             var page = new GivingPageItem();
 
             if (id.ToLower() == "new")
+            {
                 page.PageId = 0;
+            }
             else
+            {
                 page = model.GetGivingPages(id.ToInt()).SingleOrDefault();
+            }
 
             if (page == null)
             {
@@ -64,8 +67,8 @@ namespace CmsWeb.Areas.Giving.Controllers
             return Json(givingPageList, JsonRequestBehavior.AllowGet);
         }
 
-        [Authorize(Roles = "Admin,Finance,FinanceViewOnly")]
         [HttpPost]
+        [Authorize(Roles = "Admin,Finance,FinanceViewOnly")]
         public ActionResult Create(GivingPageViewModel viewModel)
         {
             var model = new GivingPageModel(CurrentDatabase);
@@ -73,8 +76,8 @@ namespace CmsWeb.Areas.Giving.Controllers
             return Json(result, JsonRequestBehavior.AllowGet);
         }
 
-        [Authorize(Roles = "Admin,Finance,FinanceViewOnly")]
         [HttpPost]
+        [Authorize(Roles = "Admin,Finance,FinanceViewOnly")]
         public ActionResult Update(GivingPageViewModel viewModel)
         {
             var givingPage = (from gp in CurrentDatabase.GivingPages where gp.GivingPageId == viewModel.PageId select gp).FirstOrDefault();
@@ -90,8 +93,8 @@ namespace CmsWeb.Areas.Giving.Controllers
             }
         }
 
-        [Authorize(Roles = "Admin,Finance,FinanceViewOnly")]
         [HttpPost]
+        [Authorize(Roles = "Admin,Finance,FinanceViewOnly")]
         public JsonResult SaveGivingPageEnabled(bool value, int PageId)
         {
             var givingPage = CurrentDatabase.GivingPages.Where(g => g.GivingPageId == PageId).FirstOrDefault();
@@ -100,8 +103,8 @@ namespace CmsWeb.Areas.Giving.Controllers
             return Json(new { givingPage.GivingPageId, givingPage.PageName, givingPage.Enabled });
         }
 
-        [Authorize(Roles = "Admin,Finance,FinanceViewOnly")]
         [HttpPost]
+        [Authorize(Roles = "Admin,Finance,FinanceViewOnly")]
         public JsonResult SetGivingDefaultPage(bool value, int PageId)
         {
             var model = new GivingPageModel(CurrentDatabase);
@@ -109,29 +112,24 @@ namespace CmsWeb.Areas.Giving.Controllers
             return Json(result, JsonRequestBehavior.AllowGet);
         }
 
-        [HttpGet]
         [Authorize(Roles = "Admin,Finance,FinanceViewOnly")]
         public JsonResult CheckUrlAvailability(string url)
         {
             bool result = false;
             Regex regex = new Regex("^([a-z0-9-])+$");
-            if (regex.IsMatch(url) && url.Length > 1 && CurrentDatabase.GivingPages.Where(p => p.PageUrl == url).Count() == 0) {
+            if (regex.IsMatch(url) && url.Length > 1 && CurrentDatabase.GivingPages.Where(p => p.PageUrl == url).Count() == 0)
+            {
                 result = true;
             }
-            return Json(new
-            {
-               result
-            }, JsonRequestBehavior.AllowGet);
+            return Json(new {result}, JsonRequestBehavior.AllowGet);
         }
 
-        [HttpGet]
         public JsonResult GetPageTypes()
         {
             var pageTypesList = GivingPageTypes.GetGivingPageTypes();
             return Json(pageTypesList, JsonRequestBehavior.AllowGet);
         }
         
-        [HttpGet]
         [Authorize(Roles = "Admin,Finance,FinanceViewOnly")]
         public JsonResult GetAvailableFunds()
         {
@@ -139,7 +137,6 @@ namespace CmsWeb.Areas.Giving.Controllers
             return Json(availableFundsList, JsonRequestBehavior.AllowGet);
         }
 
-        [HttpGet]
         public JsonResult GetFundsByGivingPage(string givingPageTitle)
         {
             var model = new GivingPageModel(CurrentDatabase);
@@ -147,22 +144,28 @@ namespace CmsWeb.Areas.Giving.Controllers
             return Json(result, JsonRequestBehavior.AllowGet);
         }
 
-        [HttpGet]
         public JsonResult GetGivingFrequencies()
         {
             var givingFrequencyList = (from t in CurrentDatabase.ScheduledGiftTypes orderby t.Id select new { Id = t.Id, Name = t.Description }).ToList();
             if (!CurrentDatabase.Setting("UseQuarterlyRecurring"))
+            {
                 givingFrequencyList = givingFrequencyList.Where(f => f.Name != "Quarterly").ToList();
+            }
             if (!CurrentDatabase.Setting("UseAnnualRecurring"))
+            {
                 givingFrequencyList = givingFrequencyList.Where(f => f.Name != "Annually").ToList();
+            }
             if (CurrentDatabase.Setting("HideBiWeeklyRecurring"))
+            {
                 givingFrequencyList = givingFrequencyList.Where(f => f.Name != "Biweekly").ToList();
+            }
             if (CurrentDatabase.Setting("HideSemiMonthlyRecurring"))
+            {
                 givingFrequencyList = givingFrequencyList.Where(f => f.Name != "Semi-monthly").ToList();
+            }
             return Json(givingFrequencyList, JsonRequestBehavior.AllowGet);
         }
 
-        [HttpGet]
         [Authorize(Roles = "Admin,Finance,FinanceViewOnly")]
         public JsonResult GetEntryPoints()
         {
@@ -170,7 +173,6 @@ namespace CmsWeb.Areas.Giving.Controllers
             return Json(entryPointsList, JsonRequestBehavior.AllowGet);
         }
 
-        [HttpGet]
         [Authorize(Roles = "Admin,Finance,FinanceViewOnly")]
         public JsonResult GetOnlineNotifyPersonList()
         {
@@ -185,7 +187,6 @@ namespace CmsWeb.Areas.Giving.Controllers
             return Json(onlineNotifyPersonList, JsonRequestBehavior.AllowGet);
         }
 
-        [HttpGet]
         [Authorize(Roles = "Admin,Finance,FinanceViewOnly")]
         public JsonResult GetConfirmationEmailList()
         {
@@ -196,7 +197,6 @@ namespace CmsWeb.Areas.Giving.Controllers
             return Json(confirmationEmailList, JsonRequestBehavior.AllowGet);
         }
 
-        [HttpGet]
         [Authorize(Roles = "Admin,Finance,FinanceViewOnly")]
         public JsonResult GetShellList()
         {
@@ -208,7 +208,6 @@ namespace CmsWeb.Areas.Giving.Controllers
             return Json(shellList, JsonRequestBehavior.AllowGet);
         }
 
-        [HttpGet]
         public JsonResult GetSimpleGivingPages()
         {
             var givingPages = (from g in CurrentDatabase.GivingPages

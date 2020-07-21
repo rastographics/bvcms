@@ -51,7 +51,7 @@ namespace CmsData.Finance
         }
 
         // New methods
-        public TransactionResponse ChargeCreditCardOneTime(decimal amt, string cardNumber, string expires, string cardCode, string firstName, string lastName, string address, string address2, string city, string state, string country, string zip, string phone, string email, bool testing = false)
+        public TransactionResponse ChargeCreditCardOneTime(decimal amt, string cardNumber, string expires, string cardCode, string description, string firstName, string lastName, string address, string address2, string city, string state, string country, string zip, string phone, string email, bool testing = false)
         {
             var gateway = createGateway();
             gateway.setupCCTransaction(0, cardNumber, expires, "", null, cardCode, email, firstName, lastName, address, city, state, zip, phone);
@@ -63,7 +63,7 @@ namespace CmsData.Finance
             return getResponse(gateway);
         }
 
-        public TransactionResponse ChargeBankAccountOneTime(decimal amt, string accountNumber, string routingNumber, string accountName, string nameOnAccount, string firstName, string lastName, string address, string address2, string city, string state, string country, string zip, string phone, string email, bool testing = false)
+        public TransactionResponse ChargeBankAccountOneTime(decimal amt, string accountNumber, string routingNumber, string accountName, string nameOnAccount, string description, string firstName, string lastName, string address, string address2, string city, string state, string country, string zip, string phone, string email, bool testing = false)
         {
             var gateway = createGateway();
             gateway.setupACHTransaction(0, routingNumber, accountNumber, "", null, email, firstName, lastName, address, city, state, zip, phone);
