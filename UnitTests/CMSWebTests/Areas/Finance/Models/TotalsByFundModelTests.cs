@@ -22,7 +22,7 @@ namespace CMSWebTests.Areas.Finance.Models
         {
             var username = RandomString();
             var password = RandomString();
-            CreateUser(username, password, roles: new string[] { "Access", "Edit", "Admin", "FinanceViewOnly" });
+            CreateUser(username, password, roles: new string[] { "Access", "Edit", "Admin" });
             var requestManager = FakeRequestManager.Create();
             var db = requestManager.CurrentDatabase;
             requestManager.CurrentHttpContext.Request.Headers["Authorization"] = BasicAuthenticationString(username, password);
