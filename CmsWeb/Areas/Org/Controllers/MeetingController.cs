@@ -658,7 +658,7 @@ namespace CmsWeb.Areas.Org.Controllers
                 .Where(m => m.OrganizationId == orgId && m.MeetingDate == meetingDate)
                 .FirstOrDefault();
             ViewBag.Meeting = meeting;
-            Util.SandboxedPath = @"(/Meeting/|/Home/ShowError).*";
+            Util.SandboxedPath = @"(/Meeting/|/Home/ShowError|/Home/Status).*";
             return View();
         }
 

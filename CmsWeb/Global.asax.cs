@@ -209,7 +209,7 @@ namespace CmsWeb
                     var pattern = Util.SandboxedPath;
                     if (pattern.HasValue())
                     {
-                        var sandbox = new Regex(pattern);
+                        var sandbox = new Regex(pattern, RegexOptions.IgnoreCase);
                         if (!sandbox.IsMatch(Request.Path))
                         {
                             FormsAuthentication.SignOut();
