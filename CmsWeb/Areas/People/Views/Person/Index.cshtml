@@ -24,10 +24,6 @@
 
     var showMinistryTab = Util.IsMyDataUser ? false : !RoleChecker.HasSetting(SettingName.HideMinistryTab, false);
     showMinistryTab = !businessrecordtype ? showMinistryTab : false;
-
-    var showInvolvementTab = !businessrecordtype ? true : false;
-    var showProfileTab = !businessrecordtype ? true : false;
-
 }
 @section head
 {
@@ -232,7 +228,7 @@
             <li class="active">
                 <a href="#personal" aria-controls="personal" data-toggle="tab">Personal</a>
             </li>
-            @if (showInvolvementTab)
+            @if (!businessrecordtype)
             {
             <li id="involvementstop">
                 <a href="#enrollment" aria-controls="enrollment" data-toggle="tab">Involvement</a>
@@ -240,7 +236,7 @@
             }
             @if (canviewmemberstatus)
             {
-                if (showProfileTab)
+                if (!businessrecordtype)
                 {
                 <li>
                     <a href="#profile" aria-controls="profile" data-toggle="tab">Profile</a>

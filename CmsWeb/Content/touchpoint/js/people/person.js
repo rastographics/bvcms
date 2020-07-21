@@ -104,7 +104,7 @@
             type: "warning",
             showCancelButton: true,
             confirmButtonClass: "btn-danger",
-            confirmButtonText: "Yes, convert it!",
+            confirmButtonText: "Yes, convert it.",
             closeOnConfirm: false
         },
             function () {
