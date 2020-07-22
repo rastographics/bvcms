@@ -1,0 +1,15 @@
+﻿<!DOCTYPE html>
+<html lang="@System.Globalization.CultureInfo.CurrentUICulture.Name">
+<head>
+    <link rel="shortcut icon" href="@Url.Content("~/favicon.ico?v=4")">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="robots" content="noindex" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    @ViewExtensions2.GoogleFonts()
+    @ViewExtensions2.FontAwesome()
+    @Fingerprint.Css("/Content/touchpoint/css/app.css")
+    @RenderSection("head", false)
+</head>
+@RenderBody()
+</html>

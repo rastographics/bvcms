@@ -1,6 +1,7 @@
 ﻿@using CmsWeb.Code
 @model CmsWeb.Areas.Org.Models.MeetingModel
 @{
+    Layout = "~/Views/Shared/_AttendanceLayout.cshtml";
     var customSmallHeaderImage = CustomHeader.SmallHeaderImage("~/Content/touchpoint/img/logo_sm.png");
     var showDescription = Model.ShowDescriptionOnCheckin;
     var allowEditDescription = Model.AllowEditDescription;
@@ -8,19 +9,8 @@
     var inAttendanceRole = User.IsInRole("Attendance");
     var headcount = Model.meeting.HeadCount ?? 0;
 }
-
-<!DOCTYPE html>
-<html lang="@System.Globalization.CultureInfo.CurrentUICulture.Name">
-<head>
-    <link rel="shortcut icon" href="@Url.Content("~/favicon.ico?v=4")">
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="robots" content="noindex" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+@section head {
     <title>@Model.org.OrganizationName</title>
-    @ViewExtensions2.GoogleFonts()
-    @ViewExtensions2.FontAwesome()
-    @Fingerprint.Css("/Content/touchpoint/css/app.css")
     @Fingerprint.Css("/Content/touchpoint/css/attendance.css")
     <style>
     .logo-md {
@@ -28,7 +18,7 @@
         background-image: url(@Url.Content(customSmallHeaderImage.Url));
     }
     </style>
-</head>
+}
 <body class="meeting-attendance">
     @Html.Hidden("meetingid", Model.meeting.MeetingId)
     <div id="head" class="box box-primary">
@@ -246,4 +236,3 @@
         }
     </script>
 </body>
-</html>

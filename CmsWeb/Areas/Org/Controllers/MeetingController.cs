@@ -658,7 +658,7 @@ namespace CmsWeb.Areas.Org.Controllers
                 .Where(m => m.OrganizationId == orgId && m.MeetingDate == meetingDate)
                 .FirstOrDefault();
             ViewBag.Meeting = meeting;
-            Util.SandboxedPath = @"(/Meeting/|/Home/ShowError|/Home/Status|/Portrait).*";
+            Util.SandboxedPath = @"(/Meeting/|/Home/Status|/Portrait).*";
             return View();
         }
 
@@ -669,7 +669,8 @@ namespace CmsWeb.Areas.Org.Controllers
             var meetingDate = DateTimeOffset.FromUnixTimeSeconds(timestamp).DateTime.ToLocalTime();
             if ((DateTime.Now - meetingDate).TotalDays >= 7)
             {
-                return RedirectShowError("This meeting has expired");
+                ViewBag.Error = "This meeting has expired";
+                return View("ScheduleAttendance");
             }
 
             var meeting = Meeting.FetchOrCreateMeeting(CurrentDatabase, orgId, meetingDate, didNotMeet, didNotMeet);

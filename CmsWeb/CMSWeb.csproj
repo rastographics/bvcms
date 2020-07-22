@@ -1962,6 +1962,7 @@
     <Content Include="Areas\Manage\Views\Sms\DisplayTemplates\Int32.cshtml" />
     <Content Include="Areas\People\Views\Person\Communications\Sms.cshtml" />
     <Content Include="Views\SpecialLinks\Index.cshtml" />
+    <Content Include="Views\Shared\_AttendanceLayout.cshtml" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
