@@ -30,6 +30,28 @@ namespace CMSWebTests.Areas.Finance
             newGivingPage = MockGivingPage.CreateGivingPage(db, pageName, contributionFund.FundId, 1);
         }
 
+        //[Fact]
+        //public void TestEmail()
+        //{
+        //    var requestManager = FakeRequestManager.Create();
+        //    var controller = new GivingPaymentController(requestManager);
+        //    MockPaymentProcess.PaymentProcessNullCheck(db);
+
+        //    var contributionFund = (from c in db.ContributionFunds where c.FundId == 9 select c).FirstOrDefault();
+        //    newGivingPage = (from g in db.GivingPages where g.GivingPageId == 11 select g).FirstOrDefault();
+        //    person = (from p in db.People where p.PeopleId == 2100128 select p).FirstOrDefault();
+
+        //    //string messageBody = "";
+        //    //db.SMTPClient = new MockEmailClient
+        //    //{
+        //    //    Receive = (to, from, subject, body) => {
+        //    //        messageBody = body;
+        //    //    }
+        //    //};
+
+        //    ProcessCreditCardPayment(controller);
+        //}
+
         [Fact]
         public void TestAuthAndProcessMethods()
         {

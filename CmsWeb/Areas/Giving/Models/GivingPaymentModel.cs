@@ -656,10 +656,12 @@ namespace CmsWeb.Areas.Giving.Models
                     if (viewModel.testing == false)
                     {
                         var emailFromList = givingPage.OnlineNotifyPerson?.Split(',');
-                        List<MailAddress> mailAddresses = new List<MailAddress>();
+                        List<MailAddress> mailAddressesTO = new List<MailAddress>();
+                        List<MailAddress> mailAddressesCC = new List<MailAddress>();
+                        mailAddressesTO.Add(new MailAddress(viewModel.billingInfo.email));
                         if (emailFromList == null)
                         {
-                            mailAddresses.Add(new MailAddress(DbUtil.AdminMail));
+                            return Message.successMessage("Credit card payment processed successfully. Confirmation email failed. Message: " + transactionResponseForBankPayment.Message, Message.API_ERROR_CONFIRMATION_EMAIL_FAILED, totalAmount);
                         }
                         else
                         {
@@ -668,11 +670,12 @@ namespace CmsWeb.Areas.Giving.Models
                                 var personEmail = (from p in CurrentDatabase.People where p.PeopleId == item.ToInt() select p).FirstOrDefault().EmailAddress;
                                 if (personEmail != null)
                                 {
-                                    mailAddresses.Add(new MailAddress(personEmail));
+                                    mailAddressesCC.Add(new MailAddress(personEmail));
                                 }
                             }
                         }
-                        CurrentDatabase.SendEmail(new MailAddress(DbUtil.AdminMail, DbUtil.AdminMailName), givingPage.TopText, givingPage.ThankYouText, mailAddresses);
+                        var emailBody = (from c in CurrentDatabase.Contents where c.Id == givingPage.ConfirmationEmailOneTimeId select c).FirstOrDefault().Body;
+                        CurrentDatabase.SendEmail(new MailAddress(mailAddressesCC[0].Address, mailAddressesCC[0].User), givingPage.TopText, emailBody, mailAddressesTO, null, null, mailAddressesCC);
                     }
                     return Message.successMessage("Bank payment processed successfully.", Message.API_ERROR_NONE, totalAmount);
                 }
@@ -684,13 +687,10 @@ namespace CmsWeb.Areas.Giving.Models
             else
             {
                 var expires = HelperMethods.FormatExpirationDate(Convert.ToInt32(viewModel.cardInfo.expDateMonth), Convert.ToInt32(viewModel.cardInfo.expDateYear));
-
                 var transactionResponse = gateway.AuthCreditCard(currentPeopleId, totalAmount, viewModel.cardInfo.cardNumber, expires, desc, 0, viewModel.cardInfo.cardCode, string.Empty, viewModel.billingInfo.firstName, viewModel.billingInfo.lastName, viewModel.billingInfo.address, viewModel.billingInfo.address2, viewModel.billingInfo.city, viewModel.billingInfo.state, viewModel.billingInfo.country, viewModel.billingInfo.zip, viewModel.billingInfo.phone, viewModel.testing);
-
                 if (transactionResponse.Approved == true)
                 {
                     var transactionResponseForCreditCardPayment = gateway.ChargeCreditCardOneTime(totalAmount, viewModel.cardInfo.cardNumber, expires, viewModel.cardInfo.cardCode, desc, viewModel.billingInfo.firstName, viewModel.billingInfo.lastName, viewModel.billingInfo.address, viewModel.billingInfo.address2, viewModel.billingInfo.city, viewModel.billingInfo.state, viewModel.billingInfo.country, viewModel.billingInfo.zip, viewModel.billingInfo.phone, viewModel.billingInfo.email, viewModel.testing);
-
                     if (transactionResponseForCreditCardPayment.Approved == true)
                     {
                         foreach (var item in viewModel.gifts)
@@ -728,10 +728,12 @@ namespace CmsWeb.Areas.Giving.Models
                         if(viewModel.testing == false)
                         {
                             var emailFromList = givingPage.OnlineNotifyPerson?.Split(',');
-                            List<MailAddress> mailAddresses = new List<MailAddress>();
+                            List<MailAddress> mailAddressesTO = new List<MailAddress>();
+                            List<MailAddress> mailAddressesCC = new List<MailAddress>();
+                            mailAddressesTO.Add(new MailAddress(viewModel.billingInfo.email));
                             if (emailFromList == null)
                             {
-                                mailAddresses.Add(new MailAddress(DbUtil.AdminMail));
+                                return Message.successMessage("Credit card payment processed successfully. Confirmation email failed. Message: " + transactionResponse.Message, Message.API_ERROR_CONFIRMATION_EMAIL_FAILED, totalAmount);
                             }
                             else
                             {
@@ -740,13 +742,13 @@ namespace CmsWeb.Areas.Giving.Models
                                     var personEmail = (from p in CurrentDatabase.People where p.PeopleId == item.ToInt() select p).FirstOrDefault().EmailAddress;
                                     if (personEmail != null)
                                     {
-                                        mailAddresses.Add(new MailAddress(personEmail));
+                                        mailAddressesCC.Add(new MailAddress(personEmail));
                                     }
                                 }
                             }
-                            CurrentDatabase.SendEmail(new MailAddress(DbUtil.AdminMail, DbUtil.AdminMailName), givingPage.TopText, givingPage.ThankYouText, mailAddresses);
+                            var emailBody = (from c in CurrentDatabase.Contents where c.Id == givingPage.ConfirmationEmailOneTimeId select c).FirstOrDefault().Body;
+                            CurrentDatabase.SendEmail(new MailAddress(mailAddressesCC[0].Address, mailAddressesCC[0].User), givingPage.TopText, emailBody, mailAddressesTO,null, null, mailAddressesCC);
                         }
-
                         return Message.successMessage("Credit card payment processed successfully.", Message.API_ERROR_NONE, totalAmount);
                     }
                     else

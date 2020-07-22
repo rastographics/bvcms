@@ -154,6 +154,7 @@ namespace CmsWeb.Areas.Giving.Models
         public const int API_ERROR_CREDIT_CARD_AUTHORIZATION_FAILED = 140;
         public const int API_ERROR_CREDIT_CARD_PAYMENT_FAILED = 141;
         public const int API_ERROR_BANK_PAYMENT_FAILED = 142;
+        public const int API_ERROR_CONFIRMATION_EMAIL_FAILED = 143;
 
         // API Response Codes
         public const int API_OK = 200;
