@@ -1317,6 +1317,7 @@
     <Content Include="Content\touchpoint\js\sms\ReplyWords.js" />
     <Content Include="Content\touchpoint\js\sms\Received.js" />
     <Content Include="Content\touchpoint\js\sms\Sent.js" />
+    <Content Include="Content\touchpoint\js\uploadfile.js" />
     <Content Include="Content\touchpoint\js\speciallinks.js" />
     <Content Include="Content\touchpoint\js\update-add-modal-results.js" />
     <Content Include="Content\touchpoint\js\update-modal-results.js" />
