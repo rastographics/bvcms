@@ -2134,11 +2134,13 @@ namespace CmsData
 
         [Function(Name = "dbo.FilterOrgSearchName", IsComposable = true)]
         public IQueryable<View.FilterOrgSearchName> FilterOrgSearchName(
+            [Parameter(DbType = "int")] int? orgId,
             [Parameter(DbType = "varchar")] string name
             )
         {
             return CreateMethodCallQuery<View.FilterOrgSearchName>(this,
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                orgId,
                 name
                 );
         }
@@ -3432,6 +3434,7 @@ namespace CmsData
 
         [Function(Name = "dbo.OrgSearch", IsComposable = true)]
         public IQueryable<View.OrgSearch> OrgSearch(
+            [Parameter(DbType = "int")] int? orgId,
             [Parameter(DbType = "nvarchar")] string name,
             [Parameter(DbType = "int")] int? prog,
             [Parameter(DbType = "int")] int? div,
@@ -3446,6 +3449,7 @@ namespace CmsData
         {
             return CreateMethodCallQuery<View.OrgSearch>(this,
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                orgId,
                 name,
                 prog,
                 div,
