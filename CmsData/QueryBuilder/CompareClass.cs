@@ -37,7 +37,7 @@ namespace CmsData
             {
                 case FieldType.EqualBit:
                 case FieldType.Bit:
-                    return string.Format(Display, fld, Util.PickFirst(c.CodeIdText, "1[True]"));
+                    return string.Format(Display, fld, Util.PickFirst(c.CodeIdText, c.Friendly ? "True" : "1[True]"));
                 case FieldType.NullBit:
                 case FieldType.NullCode:
                     return string.Format(Display, fld, Util.PickFirst(c.CodeIdText, "''"));

@@ -184,7 +184,7 @@ namespace CmsWeb.Areas.Search.Models
             }
         }
 
-        public string ConditionText { get { return fieldMap.Name; } }
+        public string ConditionText { get { return Util.PickFirst(fieldMap.Title, fieldMap.Name); } }
 
         public IEnumerable<CategoryClass> FieldCategories()
         {

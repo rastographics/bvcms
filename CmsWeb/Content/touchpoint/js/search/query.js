@@ -364,7 +364,7 @@
             
             $("input.searchConditions").on('keyup', _.debounce(function (e) {
                 //split the current value of search conditions
-                var data = this.value.split(" ");
+                var terms = this.value.split(" ");
                 $("#all-conditions thead").hide();
                 //create a jquery object of the rows
                 var conditions = $("#all-conditions tr");
@@ -377,13 +377,14 @@
 
                 //recusively filter the jquery object to get results.
                 conditions.filter(function (i, v) {
-                    var $t = $(this);
-                    for (var d = 0; d < data.length; ++d) {
-                        if ($t.is(":containsi('" + data[d] + "')")) {
-                            return true;
+                    var $t = $("td.FieldLink > a", this);
+                    var finds = 0;
+                    for (var n = 0; n < terms.length; ++n) {
+                        if ($t.is(":containsi('" + terms[n] + "')")) {
+                            finds++;
                         }
                     }
-                    return false;
+                    return finds === terms.length;
                 }).show();
 
                 restripeConditions();
