@@ -971,13 +971,19 @@ namespace CmsWeb
 
         public static HtmlString GoogleAnalytics()
         {
+            var result = "";
             var s = ConfigurationManager.AppSettings["GoogleAnalytics"];
             if (s.HasValue())
             {
-                return new HtmlString($"<script>{s}</script>");
+                result += $"<script>{s}</script>\n";
+            }
+            s = CurrentDatabase.Setting("GoogleAnalyticsKey", "");
+            if (s.HasValue())
+            {
+                result += $@"<script>(function(i,s,o,g,r,a,m){{i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){{(i[r].q=i[r].q||[]).push(arguments)}},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)}})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');ga('create','{s}','auto');ga('send','pageview');</script>";
             }
 
-            return null;
+            return new HtmlString(result);
         }
 
         private static HtmlString IncludeOnce(string tag)
