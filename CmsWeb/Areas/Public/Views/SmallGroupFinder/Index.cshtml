@@ -1,4 +1,5 @@
-﻿@using CmsWeb.Areas.Public.Models;
+﻿@using CmsWeb.Areas.Public.Models
+@using UtilityExtensions
 @model CmsWeb.Areas.Public.Models.SmallGroupFinderModel
 @{
     var st = Model.getSetting("SubmitText");
@@ -17,11 +18,20 @@
     var ShowHeaders = sh != null ? bool.Parse(sh.value) : false;
 
     var GroupsFound = Model.getGroups().Organizations;
+    var state = Request.HttpMethod.Equal("post") ? "state-results" : "state-search";
 }
 <!DOCTYPE html>
-<html>
+<html lang="@System.Globalization.CultureInfo.CurrentUICulture.Name">
 <head>
     <title>Small Group Finder</title>
+    <link rel="shortcut icon" href="@Url.Content("~/favicon.ico?v=4")">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="robots" content="noindex" />
+    <meta name="viewport" content="width=device-width, maximum-scale=1.0">
+    @ViewExtensions2.GoogleFonts()
+    @ViewExtensions2.FontAwesome()
+    @Fingerprint.Css("/Content/touchpoint/css/app.css")
     <style type="text/css">
         body {
             font-size: @(TextSize)px;
@@ -70,26 +80,36 @@
         select {
           width: 12em;
         }
+        @@media only screen and (min-device-width : 320px) and (max-device-width : 640px) {
+            .state-search .search-form {
+                display:block;
+            }
+            .state-search .search-results {
+                display: none;
+            }
+            .state-results .search-form {
+                display: none;
+            }
+            .state-results .search-results {
+                display: block;
+            }
+        }
     </style>
 </head>
-<body>
-    <!--
-    Setting Count: @Model.getCount( SmallGroupFinderModel.TYPE_SETTING )<br />
-    Filter Count: @Model.getCount( SmallGroupFinderModel.TYPE_FILTER )<br />
-    <br />
-    -->
+<body class="@state">
     <table width="100%">
         <tbody>
             <tr>
-                <td width="1%" class="nowrap center top">
-                    @if( ShowHeaders ) {
+                <td width="1%" class="nowrap center top search-form">
+                    @if (ShowHeaders)
+                    {
                         <text>Select Group Options</text>
                         <hr />
                     }
                     <div class="search">
                         <form method="post">
                             <table width="100%">
-                                @for( var iX = 0; iX < Model.getCount( SmallGroupFinderModel.TYPE_FILTER ); iX++ )
+                                @for (var iX = 0; iX < Model.getCount(SmallGroupFinderModel.TYPE_FILTER); iX++)
                                 {
                                     var f = Model.getFilter(iX);
                                     var fi = Model.getFilterItems(iX);
@@ -98,10 +118,10 @@
                                         <td class="right nowrap">@(f.title + ":")</td>
                                         <td class="left">
                                             <select name="@f.name">
-                                            @foreach( var item in fi )
-                                            {
-                                                <option @(Model.IsSelectedValue( f.name, item.value ) ? "selected" : "") value="@item.value">@item.value</option>
-                                            }
+                                                @foreach (var item in fi)
+                                                {
+                                                    <option @(Model.IsSelectedValue(f.name, item.value) ? "selected" : "") value="@item.value">@item.value</option>
+                                                }
                                             </select>
                                         </td>
                                     </tr>
@@ -118,9 +138,11 @@
                         @Html.Raw(Model.getGutter())
                     </div>
                 </td>
-                <td width="99%" class="top">
-                    @if( ShowHeaders ) {
-                        <text>Search Results - </text>@(GroupsFound.Count())<text> Group(s) Found</text>
+                <td width="99%" class="top search-results">
+                    @if (ShowHeaders)
+                    {
+                        <a href="#" id="go-back" class="visible-sm visible-xs"><i class="fa fa-arrow-left fa-lg"></i></a>
+                        <span>Search Results - @(GroupsFound.Count()) Group(s) Found</span>
                         <hr />
                     }
                     @foreach (var group in GroupsFound)
@@ -133,5 +155,9 @@
             </tr>
         </tbody>
     </table>
+    <script>
+        var goback = document.getElementById('go-back');
+        goback.addEventListener('click', function (event) { event.preventDefault(); window.history.back(); });
+    </script>
 </body>
 </html>
