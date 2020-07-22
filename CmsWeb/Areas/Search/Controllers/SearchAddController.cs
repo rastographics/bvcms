@@ -141,7 +141,7 @@ namespace CmsWeb.Areas.Search.Controllers
         }
 
         [HttpPost, Route("SearchAdd2/NewPerson/{familyid?}")]
-        public ActionResult NewPerson(int familyid, SearchAddModel m, bool? IsBusiness = false)
+        public ActionResult NewPerson(int familyid, SearchAddModel m, bool isbusiness = false)
         {
             if (familyid == 0 && string.Compare(m.AddContext, "family", StringComparison.OrdinalIgnoreCase) == 0)
             {
@@ -150,7 +150,7 @@ namespace CmsWeb.Areas.Search.Controllers
                             select pp.FamilyId).Single();
             }
 
-            m.NewPerson(familyid, isBusiness: IsBusiness);
+            m.NewPerson(familyid, isbusiness: isbusiness);
             ModelState.Clear();
             return View(m);
         }

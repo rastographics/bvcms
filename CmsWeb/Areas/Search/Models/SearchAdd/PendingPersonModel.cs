@@ -21,6 +21,10 @@ namespace CmsWeb.Areas.Search.Models
         {
             CurrentDatabase = db;
         }
+        public PendingPersonModel(CMSDataContext db, bool isbusiness) : this(db)
+        {
+            this.IsBusiness = isbusiness;            
+        }
 
         public CMSDataContext CurrentDatabase { get; set; }
         public int index { get; set; }
@@ -53,7 +57,7 @@ namespace CmsWeb.Areas.Search.Models
         {
             get
             {
-                return (this.IsBusiness) ? "Business/Entity name" : "Last Name";
+                return (IsBusiness) ? "Business/Entity name" : "Last Name";
             }
         }
 
@@ -80,7 +84,7 @@ namespace CmsWeb.Areas.Search.Models
         {
             get
             {
-                return (this.IsBusiness) ? new CodeInfo(0, "Gender") : new CodeInfo(99, "Gender");
+                return IsBusiness ? new CodeInfo(0, "Gender") : new CodeInfo(99, "Gender");
             }
             set { _Gender = value; }
         }
@@ -91,7 +95,7 @@ namespace CmsWeb.Areas.Search.Models
         {
             get
             {
-                return (this.IsBusiness) ? new CodeInfo(0, "MaritalStatus") : new CodeInfo(99, "MaritalStatus");
+                return IsBusiness ? new CodeInfo(0, "MaritalStatus") : new CodeInfo(99, "MaritalStatus");
             }
             set { _MaritalStatus = value; }
         }
@@ -196,6 +200,7 @@ namespace CmsWeb.Areas.Search.Models
         }
 
         public bool IsNewFamily { get; set; }
+        private bool _IsBusiness;
         [DisplayName("Add a business/entity")]
         public bool IsBusiness {
             get;

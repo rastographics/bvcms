@@ -172,18 +172,18 @@ namespace CmsWeb.Areas.Search.Models
             return NewFamilyId;
         }
 
-        public PendingPersonModel NewPerson(int familyid, bool? isBusiness = false)
+        public PendingPersonModel NewPerson(int familyid, bool isbusiness = false)
         {
             var campuslist = CurrentDatabase.Setting("CampusRequired") ? "CampusNoNoCampus" : "Campus";
-            var p = new PendingPersonModel(CurrentDatabase);
-            if ((bool)isBusiness)
+            var p = new PendingPersonModel(CurrentDatabase, isbusiness);
+            if (isbusiness)
             {
                 p.FamilyId = familyid;
                 p.index = PendingList.Count;
                 p.Campus = new CodeInfo(CampusId, campuslist);
                 p.EntryPoint = new CodeInfo(EntryPointId, "EntryPoint");
                 p.context = AddContext;
-                p.IsBusiness = (bool)isBusiness;
+                p.IsBusiness = isbusiness;
                 p.Gender = new CodeInfo(0, "Gender");
                 p.MaritalStatus = new CodeInfo(0, "MaritalStatus");
                 p.FirstName = "na";
@@ -197,7 +197,7 @@ namespace CmsWeb.Areas.Search.Models
                 p.Campus = new CodeInfo(CampusId, campuslist);
                 p.EntryPoint = new CodeInfo(EntryPointId, "EntryPoint");
                 p.context = AddContext;
-                p.IsBusiness = (bool)isBusiness;
+                p.IsBusiness = isbusiness;
             }
 
             if (familyid == 0)
@@ -219,7 +219,7 @@ namespace CmsWeb.Areas.Search.Models
         internal void AddExisting(int id)
         {
             var p = CurrentDatabase.LoadPersonById(id);
-            var pp = new PendingPersonModel(CurrentDatabase);
+            var pp = new PendingPersonModel(CurrentDatabase, p.IsBusiness);
             pp.CopyPropertiesFrom(p);
             pp.LoadAddress();
             PendingList.Add(pp);
