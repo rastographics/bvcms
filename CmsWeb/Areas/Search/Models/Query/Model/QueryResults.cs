@@ -59,7 +59,7 @@ namespace CmsWeb.Areas.Search.Models
 
         override protected void Init()
         {
-            Sort = "na";
+            Sort = "Name";
             Direction = "asc";
             base.Init();
         }

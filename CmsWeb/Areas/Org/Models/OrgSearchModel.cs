@@ -340,6 +340,10 @@ namespace CmsWeb.Areas.Search.Models
         // ReSharper disable once FunctionComplexityOverflow
         public List<OrgSearch> ApplySort(List<OrgSearch> query)
         {
+            if (!Pager.Sort.HasValue())
+                Pager.Sort = "Name";
+            if (!Pager.Direction.HasValue())
+                Pager.Direction = "asc";
             var regdt = DateTime.Today.AddYears(5);
             IEnumerable<OrgSearch> list = query;
             if (Pager.Direction == "asc")
