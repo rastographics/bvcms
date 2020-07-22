@@ -12,8 +12,8 @@
         "serve": "vue-cli-service serve",
         "build": "vue-cli-service build",
         "lint": "vue-cli-service lint",
-        "dev": "vue-cli-service build --mode development",
-        "watch": "vue-cli-service build --watch --mode development"
+        "dev": "vue-cli-service build --no-clean --mode development",
+        "watch": "vue-cli-service build --no-clean --watch --mode development"
     },
     "dependencies": {
         "@chenfengyuan/vue-number-input": "^1.2.1",
