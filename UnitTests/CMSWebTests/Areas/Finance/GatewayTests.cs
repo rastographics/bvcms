@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using CmsData;
 using CmsWeb.Areas.Giving.Controllers;
+using SharedTestFixtures.Network;
 
 namespace CMSWebTests.Areas.Finance
 {
@@ -21,10 +22,11 @@ namespace CMSWebTests.Areas.Finance
         {
             MockAppSettings.Apply(
                 ("PublicKey", "mytest"),
-                ("PublicSalt", "66 82 79 78 66 82 79 78")
+                ("PublicSalt", "66 82 79 78 66 82 79 78"),
+                ("sysfromemail", "info@touchpointsoftware.com")
             );
             var contributionFund = MockFunds.CreateContributionFund(db, null);
-            var pageName = "Giving Page Test" + DateTime.Now.ToString();
+            var pageName = "Giving Page Test, " + DateTime.Now.ToString();
             newGivingPage = MockGivingPage.CreateGivingPage(db, pageName, contributionFund.FundId, 1);
         }
 

@@ -11,6 +11,8 @@ namespace SharedTestFixtures
                 GivingPageId = DatabaseTestBase.RandomNumber(),
                 PageName = pageName ?? DatabaseTestBase.RandomString(),
                 PageUrl = DatabaseTestBase.RandomString(),
+                TopText = "this is the subject of the email",
+                ThankYouText = "this is the thank you text",
                 PageType = pageTypeId,
                 FundId = fundId,
                 Enabled = true,

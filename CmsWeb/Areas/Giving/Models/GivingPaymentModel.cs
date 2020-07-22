@@ -7,6 +7,7 @@ using DocumentFormat.OpenXml.Office2010.Excel;
 using Elmah;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net.Mail;
 using UtilityExtensions;
@@ -652,6 +653,27 @@ namespace CmsWeb.Areas.Giving.Models
                         CurrentDatabase.Contributions.InsertOnSubmit(contribution);
                         CurrentDatabase.SubmitChanges();
                     }
+                    if (viewModel.testing == false)
+                    {
+                        var emailFromList = givingPage.OnlineNotifyPerson?.Split(',');
+                        List<MailAddress> mailAddresses = new List<MailAddress>();
+                        if (emailFromList == null)
+                        {
+                            mailAddresses.Add(new MailAddress(DbUtil.AdminMail));
+                        }
+                        else
+                        {
+                            foreach (var item in emailFromList)
+                            {
+                                var personEmail = (from p in CurrentDatabase.People where p.PeopleId == item.ToInt() select p).FirstOrDefault().EmailAddress;
+                                if (personEmail != null)
+                                {
+                                    mailAddresses.Add(new MailAddress(personEmail));
+                                }
+                            }
+                        }
+                        CurrentDatabase.SendEmail(new MailAddress(DbUtil.AdminMail, DbUtil.AdminMailName), givingPage.TopText, givingPage.ThankYouText, mailAddresses);
+                    }
                     return Message.successMessage("Bank payment processed successfully.", Message.API_ERROR_NONE, totalAmount);
                 }
                 else
@@ -684,7 +706,7 @@ namespace CmsWeb.Areas.Giving.Models
                                 Origin = 0
                             };
                             var contributionFund = (from c in CurrentDatabase.ContributionFunds where c.FundId == item.fund.fundId select c).FirstOrDefault();
-                            if(contributionFund != null)
+                            if (contributionFund != null)
                             {
                                 contribution.FundId = item.fund.fundId;
                                 if (contributionFund.Notes == true)
@@ -703,6 +725,27 @@ namespace CmsWeb.Areas.Giving.Models
                             CurrentDatabase.Contributions.InsertOnSubmit(contribution);
                             CurrentDatabase.SubmitChanges();
                         }
+                        if(viewModel.testing == false)
+                        {
+                            var emailFromList = givingPage.OnlineNotifyPerson?.Split(',');
+                            List<MailAddress> mailAddresses = new List<MailAddress>();
+                            if (emailFromList == null)
+                            {
+                                mailAddresses.Add(new MailAddress(DbUtil.AdminMail));
+                            }
+                            else
+                            {
+                                foreach (var item in emailFromList)
+                                {
+                                    var personEmail = (from p in CurrentDatabase.People where p.PeopleId == item.ToInt() select p).FirstOrDefault().EmailAddress;
+                                    if (personEmail != null)
+                                    {
+                                        mailAddresses.Add(new MailAddress(personEmail));
+                                    }
+                                }
+                            }
+                            CurrentDatabase.SendEmail(new MailAddress(DbUtil.AdminMail, DbUtil.AdminMailName), givingPage.TopText, givingPage.ThankYouText, mailAddresses);
+                        }
 
                         return Message.successMessage("Credit card payment processed successfully.", Message.API_ERROR_NONE, totalAmount);
                     }
@@ -715,6 +758,7 @@ namespace CmsWeb.Areas.Giving.Models
                 {
                     return Message.createErrorReturn("Card authorization failed. Message: " + transactionResponse.Message, Message.API_ERROR_CREDIT_CARD_AUTHORIZATION_FAILED);
                 }
+
             }
             #endregion
         }
