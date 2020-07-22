@@ -14,7 +14,7 @@ using UtilityExtensions;
 
 namespace CmsWeb.Models
 {
-    public class TotalsByFundModel :IDbBinder
+    public class TotalsByFundModel : IDbBinder
     {
         public DateTime? Dt1 { get; set; }
         public DateTime? Dt2 { get; set; }
@@ -30,6 +30,7 @@ namespace CmsWeb.Models
         public bool NonTaxDeductible { get; set; }
         public bool FilterByActiveTag { get; set; }
         public bool IncludePledges { get; set; }
+        public List<int> AuthorizedFundIds { get; set; }
 
         private CMSDataContext _currentDatabase;
         public CMSDataContext CurrentDatabase
@@ -49,6 +50,7 @@ namespace CmsWeb.Models
             CurrentDatabase = db;
             var today = Util.Now.Date;
             var first = new DateTime(today.Year, today.Month, 1);
+            AuthorizedFundIds = CurrentDatabase.ContributionFunds.ScopedByRoleMembership(CurrentDatabase).Select(f => f.FundId).ToList();
             if (today.Day < 8)
             {
                 first = first.AddMonths(-1);
@@ -92,20 +94,21 @@ namespace CmsWeb.Models
         public IEnumerable<string> CustomReports()
         {
             // if a user is a member of the fundmanager role, we do not want to enable custom reports as this could bypass the fund restrictions at present
-            var fundmanagerRoleName = "FundManager";
-            var currentUserIsFundManager = DbUtil.Db.CurrentUser.Roles.Contains(fundmanagerRoleName, StringComparer.OrdinalIgnoreCase);
+            var currentUserIsFundManager = CurrentDatabase.CurrentUser.Roles.Contains("FundManager", StringComparer.OrdinalIgnoreCase);
+
+            var currentUserIsFinance = CurrentDatabase.CurrentUser.Roles.Contains("Finance", StringComparer.OrdinalIgnoreCase);
 
             if (currentUserIsFundManager)
-            {
                 return new string[] { };
-            }
 
-            var q = from c in DbUtil.Db.Contents
-                    where c.TypeID == ContentTypeCode.TypeSqlScript
-                    where c.Body.Contains("--class=TotalsByFund")
-                    select c.Name;
+            var customReports = CurrentDatabase.Contents.Where(c => c.TypeID == ContentTypeCode.TypeSqlScript && c.Body.Contains("--class=TotalsByFund"));
 
-            return q;
+            if (!currentUserIsFinance)
+                customReports = customReports.Where(c => !c.Body.Contains("--Roles=Finance"));
+
+            var ReportsNameList = customReports.Select(c => c.Name);
+
+            return ReportsNameList;
         }
 
         public IEnumerable<FundTotalInfo> TotalsByFund()

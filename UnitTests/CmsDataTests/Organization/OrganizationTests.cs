@@ -39,7 +39,7 @@ namespace CmsDataTests
 
             int expectedCount = orgList.Count();
 
-            var actualCount = db.OrgSearch(searchString, programId, divisionId, typeId, campusId, scheduleId, statusId, onlineReg, userId, tagDiv);
+            var actualCount = db.OrgSearch(null, searchString, programId, divisionId, typeId, campusId, scheduleId, statusId, onlineReg, userId, tagDiv);
 
             Assert.Equal(expectedCount, actualCount.Count());
 

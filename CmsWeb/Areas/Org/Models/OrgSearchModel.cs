@@ -300,12 +300,12 @@ namespace CmsWeb.Areas.Search.Models
 
             if(CampusId == -1)
             {
-                queryable = CurrentDatabase.OrgSearch(Name, ProgramId, DivisionId, TypeId, 0, ScheduleId, StatusId, OnlineReg,
+                queryable = CurrentDatabase.OrgSearch(null, Name, ProgramId, DivisionId, TypeId, 0, ScheduleId, StatusId, OnlineReg,
                  CurrentDatabase.CurrentUser.UserId, TagDiv).Where(x => x.Campus == null);
             }
             else
             {
-                queryable = CurrentDatabase.OrgSearch(Name, ProgramId, DivisionId, TypeId, CampusId, ScheduleId, StatusId, OnlineReg, CurrentDatabase.CurrentUser.UserId, TagDiv);
+                queryable = CurrentDatabase.OrgSearch(null, Name, ProgramId, DivisionId, TypeId, CampusId, ScheduleId, StatusId, OnlineReg, CurrentDatabase.CurrentUser.UserId, TagDiv);
             }
 
             if (ExtraValuesDict != null && ExtraValuesDict.Any())
@@ -334,12 +334,16 @@ namespace CmsWeb.Areas.Search.Models
 
         public static IQueryable<OrgSearch> FetchOrgs(int orgId)
         {
-            return DbUtil.Db.OrgSearch(orgId.ToString(), null, null, null, null, null, null, null, DbUtil.Db.CurrentUser.UserId, null);
+            return DbUtil.Db.OrgSearch(orgId, orgId.ToString(), null, null, null, null, null, null, null, DbUtil.Db.CurrentUser.UserId, null);
         }
 
         // ReSharper disable once FunctionComplexityOverflow
         public List<OrgSearch> ApplySort(List<OrgSearch> query)
         {
+            if (!Pager.Sort.HasValue())
+                Pager.Sort = "Name";
+            if (!Pager.Direction.HasValue())
+                Pager.Direction = "asc";
             var regdt = DateTime.Today.AddYears(5);
             IEnumerable<OrgSearch> list = query;
             if (Pager.Direction == "asc")

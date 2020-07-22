@@ -222,7 +222,10 @@ namespace CmsWeb.Areas.Finance.Controllers
         public ActionResult TotalsByFundCustomReport(string id, TotalsByFundModel model)
         {
             var content = CurrentDatabase.ContentOfTypeSql(id);
-            if (content == null)
+            var isFinanceContent = content.Contains("--Roles=Finance");
+            var currentUserIsFinance = CurrentDatabase.CurrentUser.Roles.Contains("Finance", StringComparer.OrdinalIgnoreCase);
+
+            if (content == null || (isFinanceContent && !currentUserIsFinance))
             {
                 return SimpleContent("no content");
             }

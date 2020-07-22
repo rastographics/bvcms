@@ -52,17 +52,17 @@
 }
 @helper ClauseItem(Condition clause)
 {
-  var cstr = clause.ToString();
+  var cstr = clause.FriendlyString();
   var newcondition = "";
   var disabled = clause.DisableOnScratchpad ? "disabled" : "";
-  if (cstr == "MatchAnything = 1[True]")
+  if (clause.ConditionName == "MatchAnything")
   {
     newcondition = "newcondition";
     cstr = "Select Condition";
   }
   <li class="condition @newcondition @disabled" data-qid="@clause.Id">
-    <a href="#editcondition" class="edit edit-condition" title="@cstr">
-      <span class="value">@(cstr.Length > 30 ? $"{cstr.Substring(0, 30)}..." : cstr)</span>
+    <a href="#editcondition" class="edit edit-condition">
+      <span class="value">@cstr</span>
     </a>
     <div class="pull-right">
       @CogItems(clause)
