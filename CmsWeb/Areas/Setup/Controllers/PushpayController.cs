@@ -181,15 +181,41 @@ namespace CmsWeb.Areas.Setup.Controllers
         }
 
         [Route("~/Pushpay/OneTime/{PeopleId:int}")]
-        public ActionResult OneTime(int PeopleId)
+        public async Task<ActionResult> OneTime(int PeopleId)
         {
             var oid = CmsData.API.APIContribution.OneTimeGiftOrgId(CurrentDatabase);
             if (oid == null)
                 return View("OnePageGiving/NotConfigured");
 
             var merchantHandle = GetMerchantHandle(oid.Value);
+
+            var merchantExists = await isPushpayAPIworking(merchantHandle);
+
+            if (!merchantExists)
+            {
+                ViewBag.Message = "Gateway is not well configured. Please contact support.";
+                return View("~/Views/Shared/PageError.cshtml");
+            }
+
             string mobile = CurrentDatabase.People.SingleOrDefault(p => p.PeopleId == PeopleId).CellPhone;
             return Redirect($"{_givingLink}{merchantHandle}?ru={_ru}&sr=ot_{_state}_{PeopleId}&rcv=false&r=no&up={mobile}");
+        }
+
+        private async Task<bool> isPushpayAPIworking(string merchantHandle)
+        {
+            bool merchantExists = false;
+            try
+            {
+                merchantExists = await _resolver.MerchantNameExist(merchantHandle);
+                if (!merchantExists)
+                    throw new Exception("Merchant not found in Pushpay", new Exception("Pushpay API error"));
+            }
+            catch (Exception e)
+            {
+                var c = CurrentHttpContext;
+                ErrorSignal.FromCurrentContext().Raise(e);
+            }
+            return merchantExists;
         }
 
         [Route("~/Pushpay/OnePage/{OrgId:int}")]
