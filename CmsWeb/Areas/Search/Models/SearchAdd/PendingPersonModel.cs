@@ -46,7 +46,7 @@ namespace CmsWeb.Areas.Search.Models
         [StringLength(100), Required(ErrorMessage = "required")]
         public string LastName
         {
-            get { return _LastName ; }
+            get { return _LastName ?? "HardcodedLastNameISNULL" ; }
             set { _LastName = value; }
         }
         public string LastNameLabel
