@@ -235,7 +235,6 @@ namespace CmsData
         public int UserId
         {
             get => _UserId;
-
             set
             {
                 if (_UserId != value)
@@ -254,7 +253,6 @@ namespace CmsData
         public int? PeopleId
         {
             get => _PeopleId;
-
             set
             {
                 if (_PeopleId != value)
@@ -277,7 +275,6 @@ namespace CmsData
         public string Username
         {
             get => _Username;
-
             set
             {
                 if (_Username != value)
@@ -295,7 +292,6 @@ namespace CmsData
         public string Comment
         {
             get => _Comment;
-
             set
             {
                 if (_Comment != value)
@@ -313,7 +309,6 @@ namespace CmsData
         public string Password
         {
             get => _Password;
-
             set
             {
                 if (_Password != value)
@@ -331,7 +326,6 @@ namespace CmsData
         public string PasswordQuestion
         {
             get => _PasswordQuestion;
-
             set
             {
                 if (_PasswordQuestion != value)
@@ -349,7 +343,6 @@ namespace CmsData
         public string PasswordAnswer
         {
             get => _PasswordAnswer;
-
             set
             {
                 if (_PasswordAnswer != value)
@@ -367,7 +360,6 @@ namespace CmsData
         public bool IsApproved
         {
             get => _IsApproved;
-
             set
             {
                 if (_IsApproved != value)
@@ -385,7 +377,6 @@ namespace CmsData
         public DateTime? LastActivityDate
         {
             get => _LastActivityDate;
-
             set
             {
                 if (_LastActivityDate != value)
@@ -403,7 +394,6 @@ namespace CmsData
         public DateTime? LastLoginDate
         {
             get => _LastLoginDate;
-
             set
             {
                 if (_LastLoginDate != value)
@@ -421,7 +411,6 @@ namespace CmsData
         public DateTime? LastPasswordChangedDate
         {
             get => _LastPasswordChangedDate;
-
             set
             {
                 if (_LastPasswordChangedDate != value)
@@ -439,7 +428,6 @@ namespace CmsData
         public DateTime? CreationDate
         {
             get => _CreationDate;
-
             set
             {
                 if (_CreationDate != value)
@@ -457,7 +445,6 @@ namespace CmsData
         public bool IsLockedOut
         {
             get => _IsLockedOut;
-
             set
             {
                 if (_IsLockedOut != value)
@@ -475,7 +462,6 @@ namespace CmsData
         public DateTime? LastLockedOutDate
         {
             get => _LastLockedOutDate;
-
             set
             {
                 if (_LastLockedOutDate != value)
@@ -493,7 +479,6 @@ namespace CmsData
         public int FailedPasswordAttemptCount
         {
             get => _FailedPasswordAttemptCount;
-
             set
             {
                 if (_FailedPasswordAttemptCount != value)
@@ -511,7 +496,6 @@ namespace CmsData
         public DateTime? FailedPasswordAttemptWindowStart
         {
             get => _FailedPasswordAttemptWindowStart;
-
             set
             {
                 if (_FailedPasswordAttemptWindowStart != value)
@@ -529,7 +513,6 @@ namespace CmsData
         public int FailedPasswordAnswerAttemptCount
         {
             get => _FailedPasswordAnswerAttemptCount;
-
             set
             {
                 if (_FailedPasswordAnswerAttemptCount != value)
@@ -547,7 +530,6 @@ namespace CmsData
         public DateTime? FailedPasswordAnswerAttemptWindowStart
         {
             get => _FailedPasswordAnswerAttemptWindowStart;
-
             set
             {
                 if (_FailedPasswordAnswerAttemptWindowStart != value)
@@ -565,7 +547,6 @@ namespace CmsData
         public string EmailAddress
         {
             get => _EmailAddress;
-
             set
             {
                 if (_EmailAddress != value)
@@ -583,7 +564,6 @@ namespace CmsData
         public int? ItemsInGrid
         {
             get => _ItemsInGrid;
-
             set
             {
                 if (_ItemsInGrid != value)
@@ -601,7 +581,6 @@ namespace CmsData
         public string CurrentCart
         {
             get => _CurrentCart;
-
             set
             {
                 if (_CurrentCart != value)
@@ -619,7 +598,6 @@ namespace CmsData
         public bool MustChangePassword
         {
             get => _MustChangePassword;
-
             set
             {
                 if (_MustChangePassword != value)
@@ -637,7 +615,6 @@ namespace CmsData
         public bool MFAEnabled
         {
             get { return _MFAEnabled; }
-
             set
             {
                 if (_MFAEnabled != value)
@@ -655,7 +632,6 @@ namespace CmsData
         public string Secret
         {
             get { return _Secret; }
-
             set
             {
                 if (_Secret != value)
@@ -673,7 +649,6 @@ namespace CmsData
         public string Host
         {
             get => _Host;
-
             set
             {
                 if (_Host != value)
@@ -691,7 +666,6 @@ namespace CmsData
         public string TempPassword
         {
             get => _TempPassword;
-
             set
             {
                 if (_TempPassword != value)
@@ -709,7 +683,6 @@ namespace CmsData
         public string Name
         {
             get => _Name;
-
             set
             {
                 if (_Name != value)
@@ -727,7 +700,6 @@ namespace CmsData
         public string Name2
         {
             get => _Name2;
-
             set
             {
                 if (_Name2 != value)
@@ -745,7 +717,6 @@ namespace CmsData
         public Guid? ResetPasswordCode
         {
             get => _ResetPasswordCode;
-
             set
             {
                 if (_ResetPasswordCode != value)
@@ -763,7 +734,6 @@ namespace CmsData
         public string DefaultGroup
         {
             get => _DefaultGroup;
-
             set
             {
                 if (_DefaultGroup != value)
@@ -781,7 +751,6 @@ namespace CmsData
         public DateTime? ResetPasswordExpires
         {
             get => _ResetPasswordExpires;
-
             set
             {
                 if (_ResetPasswordExpires != value)
@@ -798,64 +767,52 @@ namespace CmsData
         [Column(Name = "code", UpdateCheck = UpdateCheck.Never, Storage = "_Code", DbType = "varchar(64)")]
         public string Code
         {
-            get { return this._Code; }
-
+            get { return _Code; }
             set
             {
-                if (this._Code != value)
+                if (_Code != value)
                 {
-
-                    this.OnCodeChanging(value);
-                    this.SendPropertyChanging();
-                    this._Code = value;
-                    this.SendPropertyChanged("Code");
-                    this.OnCodeChanged();
+                    OnCodeChanging(value);
+                    SendPropertyChanging();
+                    _Code = value;
+                    SendPropertyChanged("Code");
+                    OnCodeChanged();
                 }
-
             }
-
         }
 
         [Column(Name = "codeExpires", UpdateCheck = UpdateCheck.Never, Storage = "_CodeExpires", DbType = "datetime")]
         public DateTime? CodeExpires
         {
-            get { return this._CodeExpires; }
-
+            get { return _CodeExpires; }
             set
             {
-                if (this._CodeExpires != value)
+                if (_CodeExpires != value)
                 {
-
-                    this.OnCodeExpiresChanging(value);
-                    this.SendPropertyChanging();
-                    this._CodeExpires = value;
-                    this.SendPropertyChanged("CodeExpires");
-                    this.OnCodeExpiresChanged();
+                    OnCodeExpiresChanging(value);
+                    SendPropertyChanging();
+                    _CodeExpires = value;
+                    SendPropertyChanged("CodeExpires");
+                    OnCodeExpiresChanged();
                 }
-
             }
-
         }
 
         [Column(Name = "codeEmail", UpdateCheck = UpdateCheck.Never, Storage = "_CodeEmail", DbType = "varchar(255)")]
         public string CodeEmail
         {
-            get { return this._CodeEmail; }
-
+            get { return _CodeEmail; }
             set
             {
-                if (this._CodeEmail != value)
+                if (_CodeEmail != value)
                 {
-
-                    this.OnCodeEmailChanging(value);
-                    this.SendPropertyChanging();
-                    this._CodeEmail = value;
-                    this.SendPropertyChanged("CodeEmail");
-                    this.OnCodeEmailChanged();
+                    OnCodeEmailChanging(value);
+                    SendPropertyChanging();
+                    _CodeEmail = value;
+                    SendPropertyChanged("CodeEmail");
+                    OnCodeEmailChanged();
                 }
-
             }
-
         }
 
         #endregion
@@ -864,66 +821,52 @@ namespace CmsData
 
         [Association(Name = "FK_Coupons_Users", Storage = "_Coupons", OtherKey = "UserId")]
         public EntitySet<Coupon> Coupons
-           {
-               get => _Coupons;
-
+        {
+            get => _Coupons;
             set => _Coupons.Assign(value);
-
-           }
+        }
 
         [Association(Name = "FK_MobileAppDevices_Users", Storage = "_MobileAppDevices", OtherKey = "UserID")]
         public EntitySet<MobileAppDevice> MobileAppDevices
-           {
-               get => _MobileAppDevices;
-
+        {
+            get => _MobileAppDevices;
             set => _MobileAppDevices.Assign(value);
-
-           }
+        }
 
         [Association(Name = "FK_SMSGroupMembers_Users", Storage = "_SMSGroupMembers", OtherKey = "UserID")]
         public EntitySet<SMSGroupMember> SMSGroupMembers
-           {
-               get => _SMSGroupMembers;
-
+        {
+            get => _SMSGroupMembers;
             set => _SMSGroupMembers.Assign(value);
-
-           }
+        }
 
         [Association(Name = "FK_UserPreferences_Users", Storage = "_Preferences", OtherKey = "UserId")]
         public EntitySet<Preference> Preferences
-           {
-               get => _Preferences;
-
+        {
+            get => _Preferences;
             set => _Preferences.Assign(value);
-
-           }
+        }
 
         [Association(Name = "FK_UserRole_Users", Storage = "_UserRoles", OtherKey = "UserId")]
         public EntitySet<UserRole> UserRoles
-           {
-               get => _UserRoles;
-
+        {
+            get => _UserRoles;
             set => _UserRoles.Assign(value);
-
-           }
+        }
 
         [Association(Name = "FK_Users_ApiSession", Storage = "_ApiSessions", OtherKey = "UserId")]
         public EntitySet<ApiSession> ApiSessions
-           {
-               get => _ApiSessions;
-
+        {
+            get => _ApiSessions;
             set => _ApiSessions.Assign(value);
-
-           }
+        }
 
         [Association(Name = "VolunteerFormsUploaded__Uploader", Storage = "_VolunteerFormsUploaded", OtherKey = "UploaderId")]
         public EntitySet<VolunteerForm> VolunteerFormsUploaded
-           {
-               get => _VolunteerFormsUploaded;
-
+        {
+            get => _VolunteerFormsUploaded;
             set => _VolunteerFormsUploaded.Assign(value);
-
-           }
+        }
 
         #endregion
 
@@ -933,12 +876,10 @@ namespace CmsData
         public Person Person
         {
             get => _Person.Entity;
-
             set
             {
                 Person previousValue = _Person.Entity;
-                if (((previousValue != value)
-                            || (_Person.HasLoadedOrAssignedValue == false)))
+                if (previousValue != value || _Person.HasLoadedOrAssignedValue == false)
                 {
                     SendPropertyChanging();
                     if (previousValue != null)
@@ -953,13 +894,11 @@ namespace CmsData
                         value.Users.Add(this);
 
                         _PeopleId = value.PeopleId;
-
                     }
 
                     else
                     {
                         _PeopleId = default(int?);
-
                     }
 
                     SendPropertyChanged("Person");
@@ -972,7 +911,7 @@ namespace CmsData
         public event PropertyChangingEventHandler PropertyChanging;
         protected virtual void SendPropertyChanging()
         {
-            if ((PropertyChanging != null))
+            if (PropertyChanging != null)
             {
                 PropertyChanging(this, emptyChangingEventArgs);
             }
@@ -981,7 +920,7 @@ namespace CmsData
         public event PropertyChangedEventHandler PropertyChanged;
         protected virtual void SendPropertyChanged(string propertyName)
         {
-            if ((PropertyChanged != null))
+            if (PropertyChanged != null)
             {
                 PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }

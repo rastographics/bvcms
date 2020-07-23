@@ -14,7 +14,7 @@ namespace CmsData
 	[Table(Name="lookup.ScheduledGiftType")]
 	public partial class ScheduledGiftType : INotifyPropertyChanging, INotifyPropertyChanged
 	{
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(string.Empty);
 		
 	#region Private Fields
 		
@@ -23,17 +23,15 @@ namespace CmsData
 		private string _Description;
 		
 		private bool? _Hardwired;
-		
-   		
+		   		
    		private EntitySet<ScheduledGift> _ScheduledGifts;
 		
-    	
 	#endregion
 	
     #region Extensibility Method Definitions
-    partial void OnLoaded();
-    partial void OnValidate(System.Data.Linq.ChangeAction action);
-    partial void OnCreated();
+		partial void OnLoaded();
+		partial void OnValidate(System.Data.Linq.ChangeAction action);
+		partial void OnCreated();
 		
 		partial void OnIdChanging(int value);
 		partial void OnIdChanged();
@@ -50,74 +48,59 @@ namespace CmsData
 			OnCreated();
 		}
 
-		
     #region Columns
 		
 		[Column(Name="Id", UpdateCheck=UpdateCheck.Never, Storage="_Id", AutoSync=AutoSync.OnInsert, DbType="int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
 		public int Id
 		{
-			get { return this._Id; }
-
+			get { return _Id; }
 			set
 			{
-				if (this._Id != value)
+				if (_Id != value)
 				{
-				
-                    this.OnIdChanging(value);
-					this.SendPropertyChanging();
-					this._Id = value;
-					this.SendPropertyChanged("Id");
-					this.OnIdChanged();
+                    OnIdChanging(value);
+					SendPropertyChanging();
+					_Id = value;
+					SendPropertyChanged("Id");
+					OnIdChanged();
 				}
-
 			}
-
 		}
-
 		
 		[Column(Name="Description", UpdateCheck=UpdateCheck.Never, Storage="_Description", DbType="nvarchar(50)")]
 		public string Description
 		{
-			get { return this._Description; }
-
+			get { return _Description; }
 			set
 			{
-				if (this._Description != value)
+				if (_Description != value)
 				{
-				
-                    this.OnDescriptionChanging(value);
-					this.SendPropertyChanging();
-					this._Description = value;
-					this.SendPropertyChanged("Description");
-					this.OnDescriptionChanged();
+                    OnDescriptionChanging(value);
+					SendPropertyChanging();
+					_Description = value;
+					SendPropertyChanged("Description");
+					OnDescriptionChanged();
 				}
-
 			}
-
 		}
-
 		
 		[Column(Name="Hardwired", UpdateCheck=UpdateCheck.Never, Storage="_Hardwired", DbType="bit")]
 		public bool? Hardwired
 		{
-			get { return this._Hardwired; }
-
+			get { return _Hardwired; }
 			set
 			{
-				if (this._Hardwired != value)
+				if (_Hardwired != value)
 				{
 				
-                    this.OnHardwiredChanging(value);
-					this.SendPropertyChanging();
-					this._Hardwired = value;
-					this.SendPropertyChanged("Hardwired");
-					this.OnHardwiredChanged();
+                    OnHardwiredChanging(value);
+					SendPropertyChanging();
+					_Hardwired = value;
+					SendPropertyChanged("Hardwired");
+					OnHardwiredChanged();
 				}
-
 			}
-
 		}
-
 		
     #endregion
         
@@ -126,12 +109,9 @@ namespace CmsData
    		[Association(Name="FK_ScheduledGift_ScheduledGiftType", Storage="_ScheduledGifts", OtherKey="ScheduledGiftTypeId")]
    		public EntitySet<ScheduledGift> ScheduledGifts
    		{
-   		    get { return this._ScheduledGifts; }
-
-			set	{ this._ScheduledGifts.Assign(value); }
-
+   		    get { return _ScheduledGifts; }
+			set	{ _ScheduledGifts.Assign(value); }
    		}
-
 		
 	#endregion
 	
@@ -142,16 +122,15 @@ namespace CmsData
 		public event PropertyChangingEventHandler PropertyChanging;
 		protected virtual void SendPropertyChanging()
 		{
-			if ((this.PropertyChanging != null))
-				this.PropertyChanging(this, emptyChangingEventArgs);
+			if (PropertyChanging != null)
+				PropertyChanging(this, emptyChangingEventArgs);
 		}
 
 		public event PropertyChangedEventHandler PropertyChanged;
 		protected virtual void SendPropertyChanged(String propertyName)
 		{
-			if ((this.PropertyChanged != null))
-				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			if (PropertyChanged != null)
+				PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
 		}
 	}
 }
-
