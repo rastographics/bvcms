@@ -49,7 +49,6 @@ namespace CmsWeb.Models.Api
             //If there is no PeopleId in the request, OR if the PeopleId found no matches, then proceed with the search to find the right person...
             if (person == null)
             {
-
                 var list = db.FindPerson(First, Last, null, Email, Phone.GetDigits()).ToList();
                 var count = list.Count;
                 if (count > 0)
@@ -57,14 +56,11 @@ namespace CmsWeb.Models.Api
                     person = db.LoadPersonById(list[0].PeopleId ?? 0);
                 }
 
-
                 if (count > 1)
                 {
                     result.MultipleMatches = true;
                 }
-
             }
-
 
             //Check if FirstName and LastName are included before attempting to create a new person. If the IgnoreUnknownPerson 
             if (person == null && !string.IsNullOrWhiteSpace(First) && !string.IsNullOrWhiteSpace(Last) && !IgnoreUnknownPerson.GetValueOrDefault())
