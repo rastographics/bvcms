@@ -14,7 +14,7 @@ namespace CmsData
 	[Table(Name="lookup.ScheduledGiftType")]
 	public partial class ScheduledGiftType : INotifyPropertyChanging, INotifyPropertyChanged
 	{
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(string.Empty);
+		private static PropertyChangingEventArgs emptyChangingEventArgs => new PropertyChangingEventArgs(string.Empty);
 		
 	#region Private Fields
 		
@@ -92,7 +92,6 @@ namespace CmsData
 			{
 				if (_Hardwired != value)
 				{
-				
                     OnHardwiredChanging(value);
 					SendPropertyChanging();
 					_Hardwired = value;
