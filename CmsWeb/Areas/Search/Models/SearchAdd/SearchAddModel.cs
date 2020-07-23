@@ -175,7 +175,7 @@ namespace CmsWeb.Areas.Search.Models
         public PendingPersonModel NewPerson(int familyid, bool isbusiness = false)
         {
             var campuslist = CurrentDatabase.Setting("CampusRequired") ? "CampusNoNoCampus" : "Campus";
-            var p = new PendingPersonModel(CurrentDatabase, isbusiness);
+            var p = new PendingPersonModel(CurrentDatabase);
             if (isbusiness)
             {
                 p.FamilyId = familyid;
@@ -186,7 +186,7 @@ namespace CmsWeb.Areas.Search.Models
                 p.IsBusiness = isbusiness;
                 p.Gender = new CodeInfo(0, "Gender");
                 p.MaritalStatus = new CodeInfo(0, "MaritalStatus");
-                p.FirstName = "na";
+                p.FirstName = "na";                
             }
             else
             {
@@ -219,7 +219,7 @@ namespace CmsWeb.Areas.Search.Models
         internal void AddExisting(int id)
         {
             var p = CurrentDatabase.LoadPersonById(id);
-            var pp = new PendingPersonModel(CurrentDatabase, p.IsBusiness);
+            var pp = new PendingPersonModel(CurrentDatabase);
             pp.CopyPropertiesFrom(p);
             pp.LoadAddress();
             PendingList.Add(pp);

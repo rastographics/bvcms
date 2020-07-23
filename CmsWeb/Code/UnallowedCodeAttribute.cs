@@ -14,9 +14,8 @@ namespace CmsWeb.Code
         }
         public override bool IsValid(object value)
         {
-            var code = value as CodeInfo;
-            Debug.Assert(code != null, "code != null");
-            if (code.Value == unallowed)
+            var code = value as CodeInfo;            
+            if (code?.Value == unallowed)
                 return false;
             return true;
         }

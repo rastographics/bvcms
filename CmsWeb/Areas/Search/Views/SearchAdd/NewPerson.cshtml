@@ -1,29 +1,22 @@
 ﻿@using UtilityExtensions
 @model CmsWeb.Areas.Search.Models.SearchAddModel
+@for (int n = 0; n < Model.PendingList.Count; n++)
+{
+    @Html.EditorFor(m => m.PendingList[n], "HiddenPerson")
+    @Html.EditorFor(m => m.PendingList[n], "HiddenAddress")
+}
 @{
     var hasErrors = ViewData.ModelState.Any(mm => mm.Value.Errors.Count > 0);
     var errors = ViewData.ModelState.Where(x => x.Value.Errors.Count > 0)
              .Select(x => new { x.Key, x.Value.Errors })
              .ToArray();
+
+    var p = Model.PendingList.Last();
+    var potentialDuplicate = p.PotentialDuplicate.HasValue() && !hasErrors && !Model.ShowLimitedSearch;
+    var last = Model.PendingList.Count - 1;
 }
 @Html.EditorFor(m => m, "HiddenSearch")
 @Html.EditorFor(m => m, "HiddenMeta")
-@{
-    var n = 0;
-    for (n = 0; n < Model.PendingList.Count - 1; n++)
-    {
-        @Html.EditorFor(m => m.PendingList[n], "HiddenPerson")
-        @Html.EditorFor(m => m.PendingList[n], "HiddenAddress")
-    }
-
-    var p = Model.PendingList[n];
-    var potentialDuplicate = p.PotentialDuplicate.HasValue() && !hasErrors && !Model.ShowLimitedSearch;
-    @Html.HiddenFor(m => Model.PendingList[n].IsNewFamily)
-    @Html.HiddenFor(m => Model.PendingList[n].context)
-    @Html.HiddenFor(m => Model.PendingList[n].FamilyId)
-    @Html.HiddenFor(m => Model.PendingList[n].IsNewFamily)
-    @Html.HiddenFor(m => Model.PendingList[n].IsBusiness)
-}
 <div class="modal-dialog modal-lg">
     <div class="modal-content">
         <div class="modal-header">
@@ -32,7 +25,7 @@
         </div>
         <div class="modal-body">
             <div class="row">
-                @Html.EditorFor(m => Model.PendingList[n], "Person")
+                @Html.EditorFor(m => Model.PendingList[last], "Person")
             </div>
             @if (potentialDuplicate)
             {
@@ -42,7 +35,7 @@
                     <p>
                         Looking for a unique combination of First, Last, Birthday, or Phone
                     </p>
-                    <div>@Html.Raw(Model.PendingList[n].PotentialDuplicate)</div>
+                    <div>@Html.Raw(Model.PendingList[last].PotentialDuplicate)</div>
                 </div>
             }
         </div>
@@ -50,7 +43,7 @@
             <div class="pull-left">
                 <a href="#" class="btn btn-default" data-dismiss="modal">Cancel All</a>
             </div>
-            <a href="/SearchAdd2/CancelPerson/@n" class="btn btn-default ajax">Cancel Person</a>
+            <a href="/SearchAdd2/CancelPerson/@last" class="btn btn-default ajax">Cancel Person</a>
             @if (potentialDuplicate)
             {
                 <a href="/SearchAdd2/AddNewPerson/NoDupCheck" class="btn btn-danger ajax">Submit, no duplicate check</a>

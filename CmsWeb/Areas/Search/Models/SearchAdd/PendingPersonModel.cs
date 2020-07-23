@@ -19,11 +19,7 @@ namespace CmsWeb.Areas.Search.Models
         public PendingPersonModel() { }
         public PendingPersonModel(CMSDataContext db)
         {
-            CurrentDatabase = db;
-        }
-        public PendingPersonModel(CMSDataContext db, bool isbusiness) : this(db)
-        {
-            this.IsBusiness = isbusiness;            
+            CurrentDatabase = db;            
         }
 
         public CMSDataContext CurrentDatabase { get; set; }
@@ -50,8 +46,8 @@ namespace CmsWeb.Areas.Search.Models
         [StringLength(100), Required(ErrorMessage = "required")]
         public string LastName
         {
-            get;
-            set;
+            get { return _LastName ; }
+            set { _LastName = value; }
         }
         public string LastNameLabel
         {
@@ -78,24 +74,25 @@ namespace CmsWeb.Areas.Search.Models
         [StringLength(150), EmailAddress, RemoveNA]
         public string EmailAddress { get; set; }
 
-        private CodeInfo _Gender;
+        private CodeInfo _Gender = new CodeInfo(99, "Gender");
         [UnallowedCode("99", ErrorMessage = "specify gender (or unknown)")]
         public CodeInfo Gender
         {
             get
             {
-                return IsBusiness ? new CodeInfo(0, "Gender") : new CodeInfo(99, "Gender");
+                return IsBusiness ? new CodeInfo(0, "Gender") : _Gender;
             }
             set { _Gender = value; }
         }
 
-        private CodeInfo _MaritalStatus;
+        private CodeInfo _MaritalStatus = new CodeInfo(99, "MaritalStatus");
+
         [UnallowedCode("99", ErrorMessage = "specify marital status (or unknown)")]
         public CodeInfo MaritalStatus
         {
             get
             {
-                return IsBusiness ? new CodeInfo(0, "MaritalStatus") : new CodeInfo(99, "MaritalStatus");
+                return IsBusiness ? new CodeInfo(0, "MaritalStatus") : _MaritalStatus;
             }
             set { _MaritalStatus = value; }
         }
@@ -203,8 +200,9 @@ namespace CmsWeb.Areas.Search.Models
         private bool _IsBusiness;
         [DisplayName("Add a business/entity")]
         public bool IsBusiness {
-            get;
-            set; }
+            get { return _IsBusiness; }
+            set { _IsBusiness = value; }
+        }
 
         internal void AddPerson(int originid, int? entrypointid, int? campusid, bool? isbusiness = false)
         {

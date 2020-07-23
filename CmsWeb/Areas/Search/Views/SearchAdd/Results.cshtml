@@ -122,13 +122,13 @@
             {
                 if (Model.AddContext == "Family")
                 {
-                    <a href="/SearchAdd2/NewPerson/0" class="btn btn-success ajax"><i class="fa fa-plus-circle"></i> Add New Person</a>
+                    <a href="/SearchAdd2/NewPerson/0?isbusiness=@Model.IsBusiness" class="btn btn-success ajax"><i class="fa fa-plus-circle"></i> Add New Person</a>
                 }
                 else
                 {
                     if (Model.ShowLimitedSearch)
                     {
-                        <a href="/SearchAdd2/NewPerson/0" class="btn btn-success ajax"><i class="fa fa-plus-circle"></i> Create New Person</a>
+                        <a href="/SearchAdd2/NewPerson/0?isbusiness=@Model.IsBusiness" class="btn btn-success ajax"><i class="fa fa-plus-circle"></i> Create New Person</a>
                         if (Model.ViewList().Count() == 1)
                         {
                             @:or <a href="/SearchAdd2/CommitAdd" class="commit btn btn-primary"><i class="fa fa-plus-circle"></i> Add This Person to Org</a>

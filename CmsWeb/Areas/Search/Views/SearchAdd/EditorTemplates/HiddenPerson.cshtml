@@ -1,4 +1,5 @@
 ﻿@model CmsWeb.Areas.Search.Models.PendingPersonModel
+@Html.HiddenFor(m => m.IsBusiness)
 @Html.HiddenFor(m => m.PeopleId)
 @Html.HiddenFor(m => m.FamilyId)
 @Html.HiddenFor(m => m.IsNewFamily)
@@ -16,4 +17,4 @@
 @Html.EditorFor(m => m.Gender, "HiddenCodeInfo")
 @Html.EditorFor(m => m.Campus, "HiddenCodeInfo")
 @Html.EditorFor(m => m.EntryPoint, "HiddenCodeInfo")
-@Html.HiddenFor(m => m.IsBusiness)
+
