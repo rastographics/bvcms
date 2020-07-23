@@ -70,13 +70,13 @@ namespace CmsWeb.Areas.People.Controllers
             if ((bool)person?.IsBusiness)
             {
                 Util.NameSplit(person.LastName, out first, out last);
-                person.FirstName = first.Equals("") || person.LastName.Contains(first)  ? "na" :  first;
+                person.FirstName = first.Equals("") || person.LastName.Equals(first)  ? "na" :  first;
                 person.LastName = last.Equals("") ? person.LastName : last;
                 person.IsBusiness = false;
             }
             else
             {                
-                person.LastName = String.Concat(person.LastName, " ", person.FirstName.Equals("na") ? "" : person.FirstName);
+                person.LastName = String.Concat(person.FirstName.Equals("na") ? "" : person.FirstName, " ", person.LastName);
                 person.FirstName = "na";
                 person.IsBusiness = true;
             }
