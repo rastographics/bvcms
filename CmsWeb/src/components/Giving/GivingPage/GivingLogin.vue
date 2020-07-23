@@ -2,9 +2,9 @@
     <transition name="slide-left" mode="out-in">
         <div v-if="view == 'phone'" class="text-center" key="phone">
             <div class="well">
-                <h3>Enter your cell phone number <a href="#" tabindex="0" id="page_url"><i class="fa fa-question-circle"></i></a></h3>
+                <h3>Enter your cell phone number <a href="#" tabindex="0" id="phone_help"><i class="fa fa-question-circle"></i></a></h3>
                 <p>We will text you a secure one-time code to sign in to your account.</p>
-                <b-popover target="page_url" placement="bottom" triggers="focus">
+                <b-popover target="phone_help" placement="bottom" triggers="focus">
                     You can also
                     <a href="#" @click="loadView('email')">sign in with your email</a> or <a href="#" @click="loadView('user')">sign in with a username and password</a>
                 </b-popover>
@@ -33,8 +33,11 @@
         </div>
         <div v-if="view == 'email'" class="text-center" key="email">
             <div class="well">
-                <h3>Enter your email address</h3>
+                <h3>Enter your email address <a href="#" tabindex="0" id="email_help"><i class="fa fa-question-circle"></i></a></h3>
                 <p>We will send you a secure one-time code to sign in to your account.</p>
+                <b-popover target="email_help" placement="bottom" triggers="focus">
+                    You can also <span v-if="SMSReady"><a href="#" @click="loadView('phone')">sign in with your phone</a> or </span><a href="#" @click="loadView('user')">sign in with a username and password</a>
+                </b-popover>
                 <form @submit.prevent="emailSearch">
                     <div class="row text-left">
                         <div class="col-md-8 col-md-offset-2">
@@ -62,8 +65,11 @@
         </div>
         <div v-if="view == 'user'" class="text-center" key="user">
             <div class="well">
-                <h3>Sign in with username</h3>
-                <p>If you don't have a username and password you can also <a @click="loadView('phone')">sign in with a phone number</a> or <a @click="loadView('email')">sign in with email</a>.</p>
+                <h3>Sign in with username <a href="#" tabindex="0" id="user_help"><i class="fa fa-question-circle"></i></a></h3>
+                <b-popover target="user_help" placement="bottom" triggers="focus">
+                    If you don't have a username and password you can also <span v-if="SMSReady"><a href="#" @click="loadView('phone')">sign in with your phone number</a> or </span>
+                    <a href="#" @click="loadView('email')">sign in with your email</a>
+                </b-popover>
                 <form @submit.prevent="userLogin">
                     <div class="row text-left">
                         <div class="col-md-8 col-md-offset-2">

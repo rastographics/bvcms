@@ -5,7 +5,7 @@
             <payment-list v-model="value" :paymentTypes="paymentTypes"></payment-list>
         </div>
         <div v-else>
-            <new-payment-method v-model="value" :showValidation="showValidation" :paymentTypes="paymentTypes"></new-payment-method>
+            <edit-payment-method v-model="value" :showValidation="showValidation" :paymentTypes="paymentTypes"></edit-payment-method>
         </div>
     </div>
 </template>
@@ -27,7 +27,7 @@
             };
         },
         mounted() {
-            if (!this.value.length) {
+            if (!this.value.length) { 
                 this.$emit('input', {
                     cardInfo: {
                         number: "",
@@ -57,9 +57,9 @@
 </script>
 <style scoped>
     .payment-container {
-        margin: 25px 0 20px;
+        margin: 25px 0;
         border: 1px solid #ddd;
         border-radius: 4px;
-        padding: 20px 20px 5px;
+        padding: 20px 20px 0;
     }
 </style>

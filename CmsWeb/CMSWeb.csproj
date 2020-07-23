@@ -2931,7 +2931,7 @@
     <Content Include="Views\Shared\Menu\Involvement.cshtml" />
     <Content Include="src\components\Giving\GivingPage\GivingLogin.vue" />
     <Content Include="src\components\Giving\GivingPage\PledgeGift.vue" />
-    <Content Include="src\components\Giving\GivingPage\NewPaymentMethod.vue" />
+    <Content Include="src\components\Giving\GivingPage\EditPaymentMethod.vue" />
     <Content Include="src\components\Giving\GivingPage\PaymentList.vue" />
     <Content Include="src\components\Giving\GivingPage\PaymentMethod.vue" />
     <Content Include="src\components\Giving\GivingPage\CardInput.vue" />

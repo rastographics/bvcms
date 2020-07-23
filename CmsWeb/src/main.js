@@ -33,7 +33,7 @@ Vue.component('fund-picker', require('./components/Giving/GivingPage/FundPicker.
 //Vue.component('giving-login', require('./components/Giving/GivingPage/GivingLogin.vue').default);
 Vue.component('payment-method', require('./components/Giving/GivingPage/PaymentMethod.vue').default);
 Vue.component('payment-list', require('./components/Giving/GivingPage/PaymentList.vue').default);
-Vue.component('new-payment-method', require('./components/Giving/GivingPage/NewPaymentMethod.vue').default);
+Vue.component('edit-payment-method', require('./components/Giving/GivingPage/EditPaymentMethod.vue').default);
 
 // Touchpoint Common Components
 Vue.component('tp-toggle', require('./components/Common/Toggle.vue').default);

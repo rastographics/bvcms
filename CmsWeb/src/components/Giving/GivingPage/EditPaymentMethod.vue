@@ -1,5 +1,5 @@
 ﻿<template>
-    <div class="new-payment-method">
+    <div class="new-payment-method" style="position:relative;">
         <div class="text-center" style="margin-bottom: 25px;">
             <div aria-label="Payment Type" class="btn-group payment-type text-center" role="group">
                 <button v-for="type in paymentTypes" :key="type.Id" :class="[paymentType == type.Id ? 'btn-primary' : '', 'btn-default', 'btn']" @click="updateType(type.Id)">{{ type.Name }}</button>
@@ -163,7 +163,6 @@
                     this.value.billingInfo.state.length > 0 &&
                     this.value.billingInfo.zip.length > 0 &&
                     this.value.billingInfo.country.length > 0;
-                    
             },
             emailValid: function () {
                 return utils.validateEmail(this.value.billingInfo.email);

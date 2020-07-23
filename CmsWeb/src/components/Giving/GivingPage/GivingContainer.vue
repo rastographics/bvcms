@@ -55,8 +55,15 @@
                             <transition-group name="gift">
                                 <recurring-gift v-for="(gift, index) in gifts" v-model="gifts[index]" :count="gifts.length" :key="gift.key" :funds="unusedFunds" :showValidation="showValidation" :frequencies="recurringFrequencies" @remove="removeGift(index)"></recurring-gift>
                             </transition-group>
+                            <div v-if="identity.PeopleId" class="row">
+                                <div class="col-md-6 col-md-offset-6">
+                                    <button v-if="unusedFunds.length" @click="addGift" class="btn-block btn btn-default">
+                                        <i class="fa fa-plus-circle"></i> Add Gift
+                                    </button>
+                                </div>
+                            </div>
                             <payment-method v-if="identity.PeopleId" v-model="paymentMethod" :identity="identity"></payment-method>
-                            <div class="row">
+                            <div v-if="!identity.PeopleId" class="row">
                                 <div class="col-md-6">
                                     <button v-if="unusedFunds.length" @click="addGift" class="btn-block btn btn-default">
                                         <i class="fa fa-plus-circle"></i> Add Gift
@@ -65,6 +72,16 @@
                                 <div class="col-md-6">
                                     <button @click="loadView('signin')" class="btn-block btn btn-primary">
                                         Next
+                                    </button>
+                                </div>
+                            </div>
+                            <div v-else class="row">
+                                <div class="col-md-6 col-md-offset-6">
+                                    <button v-if="!showValidation" @click="submitRecurringPayment" class="btn-block btn btn-primary">
+                                        Complete Setup
+                                    </button>
+                                    <button v-else @click="submitRecurringPayment" class="btn-block btn btn-primary" disabled="disabled">
+                                        Complete Setup
                                     </button>
                                 </div>
                             </div>
@@ -296,6 +313,11 @@
                     alert('submit!');
                 }
             },
+            submitRecurringPayment() {
+                if (this.validateOneTimePayment()) {
+                    alert('submit!');
+                }
+            },
             init() {
                 let gift = {
                     key: this.onKey,
@@ -384,29 +406,6 @@
         opacity: 0
     }
 
-    .gift {
-        transition: all 0.5s;
-    }
-
-    .gift-enter,
-    .gift-leave-to {
-        opacity: 0;
-    }
-
-    .gift-enter {
-        transform: translateY(30%);
-    }
-
-    .gift-leave-to {
-        transform: translateY(30%);
-    }
-
-    .well.gift-leave-to {
-        height: 0px;
-        min-height: 0;
-        padding: 0;
-        margin: 0;
-    }
     .slide-left-enter-active,
     .slide-left-leave-active,
     .slide-right-enter-active,
@@ -427,5 +426,24 @@
     .slide-right-enter {
         opacity: 0;
         transform: translate(-100%, 0);
+    }
+    .gift {
+        transition: all 0.5s;
+    }
+    .gift-enter,
+    .gift-leave-to {
+        opacity: 0;
+    }
+    .gift-enter {
+        transform: translateY(30%);
+    }
+    .gift-leave-to {
+        transform: translateY(30%);
+    }
+    .well.gift-leave-to {
+        height: 0px;
+        min-height: 0;
+        padding: 0;
+        margin: 0;
     }
 </style>

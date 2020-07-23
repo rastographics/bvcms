@@ -15,7 +15,7 @@ using UtilityExtensions;
 namespace CmsWeb.Areas.Giving.Controllers
 {
     [RouteArea("GivingPayment", AreaPrefix = "GivingPayment"), Route("{action}/{id?}")]
-    public class GivingPaymentController : CmsStaffController
+    public class GivingPaymentController : CMSBaseController
     {
         public GivingPaymentController(IRequestManager requestManager) : base(requestManager)
         {
@@ -30,9 +30,9 @@ namespace CmsWeb.Areas.Giving.Controllers
         }
 
         [HttpGet]
-        public ActionResult CurrentUserPaymentMethodsList()
+        public ActionResult UserPaymentMethods()
         {
-            var currentUserPaymentMethods = (from p in CurrentDatabase.PaymentMethods where p.PeopleId == CurrentDatabase.CurrentPeopleId select new { p.PaymentMethodId, p.PeopleId, p.PaymentMethodTypeId, p.IsDefault, p.Name, p.NameOnAccount, p.MaskedDisplay, p.Last4, p.ExpiresMonth, p.ExpiresYear }).ToList();
+            var currentUserPaymentMethods = (from p in CurrentDatabase.PaymentMethods where p.PeopleId == CurrentDatabase.UserPeopleId select new { p.PaymentMethodId, p.PeopleId, p.PaymentMethodTypeId, p.IsDefault, p.Name, p.NameOnAccount, p.MaskedDisplay, p.Last4, p.ExpiresMonth, p.ExpiresYear }).ToList();
             var returnList = new List<PaymentMethod>();
             foreach (var item in currentUserPaymentMethods)
             {
