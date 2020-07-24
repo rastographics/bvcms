@@ -416,6 +416,7 @@
     <Compile Include="Extensions\DeleteMeetingRun.cs" />
     <Compile Include="Extensions\FamilyMember.cs" />
     <Compile Include="Extensions\LongRunningOperation.cs" />
+    <Compile Include="Extensions\MeetingExtra.cs" />
     <Compile Include="Extensions\OrgPerson.cs" />
     <Compile Include="Extensions\PaymentInfo.cs" />
     <Compile Include="Extensions\RepairTransactionRun.cs" />
